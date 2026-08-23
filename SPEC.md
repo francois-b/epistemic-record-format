@@ -174,7 +174,7 @@ interface Question {
   title: string;
   status: QuestionStatus;
   created: ActorStamp;
-  modified?: ActorStamp;
+  last_modified?: ActorStamp;
   families: FamilyName[];
   sub_questions: QuestionId[]; // the only structure a question carries
   answered_by: ClaimId[];      // written when status becomes answered
