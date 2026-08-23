@@ -130,8 +130,8 @@ rule, which the authors regard as the system working.
 
 ## Part II — Prior art
 
-Surveyed 2026-08-22: four parallel research passes across ~24 candidates
-in four territories, with primary sources captured at fetch (24 captured
+Surveyed 2026-08-22: five research passes across ~30 candidates in five
+territories, with primary sources captured at fetch (24 captured
 documents; the captures remain in the author's corpus, since captured
 copies of third-party works do not travel with a published corpus — see
 the spec's security considerations). Summary verdicts; the spec's Related
@@ -202,6 +202,41 @@ earlier findings, and the corpus records that correction (atom kwg-147).
 git, numbered monotonically, superseded never deleted — with no
 evidentiary or standing machinery at all.
 
+### Archival science and diplomatics
+
+**Diplomatics** (Mabillon, 1681, formalized from Valla's 1440 exposure of
+the Donation of Constantine) is the oldest working precedent in this
+whole survey for judging a record's trustworthiness from its form and
+provenance rather than its content: Duranti's own gloss, "the study of
+the content of the document is extraneous to diplomatics." **InterPARES**
+(Duranti, UBC, 1998-) is the closest institutional match anywhere in
+this scan: its Authenticity Task Force splits authenticity into
+identity and integrity, and its benchmark/baseline requirements draw
+exactly the presumption-versus-gate line ERF draws with `ERF-6.13` — eight
+cumulative, partial-credit requirements building a working presumption
+against three that must ALL be met before a certified copy may issue.
+No other territory surveyed supplied a tested precedent for that split.
+**MacNeil** (2001, after Duranti) names the split ERF performs but never
+names: reliability (truth-value as a statement, judged by the maker's
+proximity to the facts) against authenticity (truth-value as an
+artifact, judged by unbroken custody) — the nearest match anywhere to
+`source_quality` against the mechanical quote-check. The **archival
+bond** (Cencetti 1937; revived by Duranti and MacNeil) — originary,
+necessary, and determined by a record's function — reads on inspection
+less like a field ERF is missing than a decades-old name for what ERF's
+own atom-to-claim edges already do. The **records continuum** (Upward,
+McKemmish, Monash, 1996) rejects the life-cycle model's split between
+current records and archives for the same reason ERF never separates
+minting from use. Appraisal theory (Schellenberg's evidential/
+informational split; Cook's macroappraisal) asks a question no other
+territory asks — which activities are significant enough to record and
+audit at all — and stops there. None of this supplies a standings
+ledger: the presumption of authenticity is an institutional, largely
+static status attached to a recordkeeping system, never a per-person,
+dated, reasoned stance on one proposition, and diplomatics has no unit
+smaller than the whole document to check a quote against. Human-role
+attribution here is dense (author, writer, originator, addressee) but,
+like everywhere else surveyed, never runs the human-versus-machine axis.
 ### The two absences
 
 Across all territories, two elements of ERF appear nowhere: the
@@ -220,3 +255,88 @@ machine-assisted and human-adjudicated. ERF is a synthesis whose parts
 mostly have better-resourced prior art in their own narrow lanes, plus
 two elements with none. The name is carried on that basis, and this
 document is the receipt.
+
+## Part III — Decided against, and deferred
+
+A format's readers keep proposing what its authors already considered. This
+part exists so that a proposal can be checked against a ruling instead of
+re-argued, and so the reasons stay attached to the decisions. Things retired
+*after* being used live in the subtraction ledger above; this register holds
+what was considered and declined, and what waits on a named trigger.
+
+### Rejected
+
+- **Degrees of belief on claims** (probabilities, confidence percentages):
+  invites false precision and averaging over judgments that were never
+  commensurable.
+- **Strength grades on held positions**: settledness is readable from tenure,
+  from disputes survived, and from evidence accumulated, so storing it
+  duplicates what the record already shows.
+- **A decision record type**: an active bet plus the standing that activated
+  it is the solo decision system; the adversarial reviewer's dissent is
+  preserved rather than resolved.
+- **Quorum, voting, and merge resolution**: permanently out of scope. What a
+  disagreement means is a judgment its owner makes, not a computation.
+- **A tie-break for disposition**: `contested` is the terminal reading of a
+  disagreement. No stance outranks another (v1.0.2).
+- **Reader-safe summaries of hidden evidence** ("rests on three primary
+  sources, two audited"): a second version of the truth to maintain, and an
+  unfalsifiable claim of backing offered exactly where a reader can least
+  check it.
+- **A typed vocabulary of reasons for negative standings**: measured against
+  every withdrawal in the reference practice; five existed, none carried
+  one, and four of the five actual reasons were absent from the proposed
+  list.
+- **Mechanical check results stored on records**: recomputable by anyone
+  holding the corpus and its captures, therefore derived, never a field.
+- **Splitting state into three fields**, and **multi-valued epistemic
+  kinds**: both from the adversarial review, both rejected as complexity
+  without a forcing instance.
+- **A lettered source-reliability scale** (Admiralty style) and **a
+  two-field split of source quality**: the literature records 87% of
+  two-axis ratings collapsing onto the diagonal, and letter grades measuring
+  exactly as fuzzy as English words.
+- **schema.org `Claim` export as a requirement**: consumption-side mapping
+  with no bearing on the record format. It may be written; it is not owed.
+- **A default query lens as a normative requirement**: consumer mechanics,
+  kept as advice in a note rather than as a rule.
+- **Topic tags on atoms**: measured rot, 201 distinct tags across 146 atoms,
+  more vocabulary than records.
+- **Requiring a register of the author's own positions**: the format permits
+  one; the reference practice deliberately keeps its author's positions
+  outside the format, and says so.
+
+### Deferred, each with the trigger that would revive it
+
+- **Non-text evidence payloads** (measurement, table, image): the first
+  non-text atom in real work.
+- **Per-attachment evidence roles**: the first atom that must sit in both
+  evidence lists at once.
+- **Atom lifecycle** (`withdrawn`, `superseded_by`): the first bad atom
+  discovered after it has been cited. This is also where an undercutting
+  defeater, evidence that a support no longer holds without arguing the
+  claim false, would be expressed.
+- **A capture manifest with content-hash identity**: a captures
+  reorganization, a same-URL revision collision, or any corpus sharing.
+- **A families registry** (definitions and rename history): the first family
+  split or rename that matters to an existing document.
+- **An actor registry**: a second human in a corpus.
+- **Declared perishability** (`stale_after`): a report that needs it.
+- **Structured bet settlement**: calibration across many settled bets, which
+  is also the day the one-union-versus-bet-as-type question gets decided
+  with usage data.
+- **Inference grouping** (joint premises, OR-of-ANDs): a lint or a cold
+  reader miscounting a joint premise set where it matters.
+- **A counter-survey mirror**: the first survey that must stand against a
+  claim rather than back one.
+- **A typed cause on withdrawals**: something that must filter withdrawals by
+  reason. Its vocabulary would then be derived from accumulated reasons
+  rather than invented ahead of them.
+- **Ownership as a format concern**: the multi-operator design, where whose
+  corpus is authoritative and who may admit records become real questions.
+- **Import provenance on copied records, and a declared deciding actor**: a
+  second human in a corpus.
+- **A relation for near-identical claims**: two parties holding the same
+  proposition at a shared boundary. Within one corpus, near-duplicates are
+  merged rather than related.
+
