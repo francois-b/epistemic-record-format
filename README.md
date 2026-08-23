@@ -4,7 +4,7 @@ The Epistemic Record Format (ERF) is a plain-text record format for bringing rig
 
 ## Status
 
-This is a draft (v1.0-draft-2, August 22, 2026), extracted from a working
+This is a draft (v1.0-draft-3, August 22, 2026), extracted from a working
 practice rather than designed in advance: roughly 740 audited atoms and
 300 claims and questions across seven corpora preceded the specification,
 and a pilot ran the records on a third-party substrate before it was
@@ -45,6 +45,12 @@ stance, and the reason; nobody's position is a stored status, and the
 claim's disposition (proposal, active, contested, retired) is computed
 from the ledger, never written down.
 
+One more record type covers what atoms cannot: a **survey** records
+search acts and their yield (which instruments, which queries, what came
+back), so a claim that something is absent, niche, or well-covered rests
+on a citable record of the search instead of an unrecorded impression.
+Absence is evidenced by surveys; presence by atoms.
+
 ## Documents
 
 | File | What it is |
@@ -53,7 +59,7 @@ from the ledger, never written down.
 | [`types/erf.ts`](types/erf.ts) | The normative data model as a compiling TypeScript file; `SPEC.md` carries an inline mirror. |
 | [`DESIGN-HISTORY.md`](DESIGN-HISTORY.md) | Non-normative companion: how the format got this way (the subtraction ledger, the reversals) and the prior-art survey. |
 | [`CHANGELOG.md`](CHANGELOG.md) | Change history, newest first. |
-| [`examples/`](examples/) | Real records from a working corpus, as standalone valid YAML: two atoms (a book source and a web source), a claim, a question. |
+| [`examples/`](examples/) | Real records from a working corpus, as standalone valid YAML: two atoms (a book source and a web source), a claim, a question, and three surveys (a gap survey with limitations, a mixed web-plus-private-corpus survey backing a density reading, and a closed-corpus survey where absence is conclusive). |
 | [`tools/lint-spec-style.py`](tools/lint-spec-style.py) | The style lint the spec itself is held to (requirement-block shape, note form, no em dashes in prose). Run: `python3 tools/lint-spec-style.py`. |
 
 ## License

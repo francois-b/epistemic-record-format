@@ -4,6 +4,43 @@ Newest first. Requirement ids are stable once published: insertions use
 letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
 change lands here with a date.
 
+## v1.0-draft-3 (2026-08-22) — the survey record type
+
+Gap claims ("nothing off the shelf does X", "this is niche") were
+unbackable: atoms hold what sources say, not what searches failed to
+find. The new `survey` record holds search acts and their yield, neutral
+as to polarity: the same shape backs absence, sparseness, and density
+readings, and the citing claim decides the use. Design decisions, each
+with its reasoning in SPEC.md section 4.6:
+
+- **Asymmetry**: absence and coverage are evidenced by surveys, presence
+  by atoms; a found source is atom-shaped, so claims carry one `surveys`
+  list and no against side (a counter-survey mirror is deferred until a
+  real instance demands it).
+- **SearchAct precision**: a query means nothing without its instrument,
+  so each act carries `tool` (the concrete instrument, never a category)
+  and `query` in that instrument's own terms (`ERF-4.27`); `hits` stays
+  text because instruments report with different precision, and inventing
+  precision is the sin (`ERF-4.28`).
+- **`limitations` optional with a SHOULD** (`ERF-4.30`): a complete
+  search of a closed corpus has no coverage bounds to state; the
+  universe-relation note (world index, private sample, closed corpus)
+  carries the weighting judgment the type cannot.
+- **`prior` chain** (`ERF-4.29`): a re-run is a new record linking its
+  predecessor; staleness of absence backing is computed from `conducted`
+  timestamps; cadence is pipeline policy, never format.
+
+Amendments: `ERF-4.21` (universal negatives SHOULD cite surveys),
+`ERF-6.1` (surveys resolve), `ERF-6.11` (survey-backed observations are
+not unbacked), `ERF-7.2` (surveys self-describe). The narrative and
+personal-corpus sections renumber to 4.7 and 4.8; requirement ids are
+untouched. Naming-convention rule 3 admits event-named entry types
+(`SearchAct`) beside the `-Entry` suffix. `examples/` gains three real
+survey records (gap, mixed, closed-corpus); the gap survey is the
+2026-08-19 prior-art scan given record form, and the spec's own
+subtraction-ledger measurement of the retired `granted` field now exists
+as the closed-corpus record `granted-flag-uses-2026-08-22`.
+
 ## 2026-08-22 — worked examples replaced
 
 The inline claim example (`no-continuous-claim-check`) is replaced by

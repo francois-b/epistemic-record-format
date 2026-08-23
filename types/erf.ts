@@ -1,6 +1,6 @@
 /**
  * The Epistemic Record Format (ERF): normative data model.
- * v1.0-draft-2, 2026-08-22.
+ * v1.0-draft-3, 2026-08-22.
  *
  * This file is the normative data model of the specification (SPEC.md,
  * section 3, which carries an inline mirror of it; where the two differ,
@@ -25,6 +25,9 @@ export type ClaimId = string;
 
 /** Same global namespace as ClaimId (ERF-6.2). */
 export type QuestionId = string;
+
+/** Same global namespace; slug SHOULD end with the conducted date (ERF-4.29). */
+export type SurveyId = string;
 
 /** A registered corpus id, per the corpus registry (ERF-8.3). */
 export type CorpusId = string;
@@ -85,6 +88,25 @@ export interface StandingEntry {
     atoms_for: AtomId[];
     atoms_against: AtomId[];
   };
+}
+
+/** One search act within a survey (ERF-4.27, ERF-4.28). Named for what a
+ *  line of `searches` records: an act, conducted once. */
+export interface SearchAct {
+  /** The concrete instrument, named: which search engine, which database,
+   *  which index, which script. Never a category. */
+  tool: string;
+  /** In the tool's own terms; for a manual review, the universe inspected. */
+  query: string;
+  /** Restriction where one applied: site filter, date range, corpus slice,
+   *  inspection depth. */
+  scope?: string;
+  /** Yield as the instrument reported it; text, because reported precision
+   *  varies by instrument (ERF-4.28). */
+  hits: string;
+  /** When this act ran, for a survey spanning sittings; defaults to the
+   *  survey's `conducted` timestamp. */
+  timestamp?: string;
 }
 
 /** One recorded audit judgment (ERF-4.9, section 4.4). */
@@ -148,6 +170,9 @@ export interface Claim {
   families: FamilyName[];
   atoms_for: AtomId[];
   atoms_against: AtomId[];
+  /** Absence/coverage backing (section 4.6): one list, no against side.
+   *  Absence is evidenced by surveys; presence by atoms. */
+  surveys?: SurveyId[];
   /** Typed relations to other claims (section 5, ERF-6.6). */
   edges: { to: ClaimId; relation: Relation }[];
   /** Append-only; per-person; humans only (ERF-4.14, ERF-4.15). */
@@ -176,6 +201,34 @@ export interface Question {
   sub_questions: QuestionId[];
   /** Written when status becomes answered (ERF-4.23). */
   answered_by: ClaimId[];
+  body: string;
+}
+
+/** A record of search acts and their yield (section 4.6). Neutral as to
+ *  polarity: the same record backs an absence, sparseness, or density
+ *  reading; the citing claim decides the use. */
+export interface Survey {
+  /** Globally unique slug; SHOULD end with the conducted date (ERF-4.29). */
+  id: SurveyId;
+  type: "survey";
+  corpus: CorpusId;
+  /** What the survey sought, stated as one phrase or question. */
+  title: string;
+  /** When, and which actor, conducted the search. Machine actors are legal
+   *  here: searching is machine work; judgment stays on the citing claim. */
+  conducted: ActorStamp;
+  /** The acts, one or more, each self-contained (ERF-4.27). */
+  searches: SearchAct[];
+  /** The curated subset worth recording; entries mint atoms when a hit
+   *  deserves quoting (ERF-4.28). */
+  notable_results: { what: string; note: string; atoms?: AtomId[] }[];
+  /** What the acts did not cover and how deeply hits were inspected;
+   *  SHOULD when cited for absence or sparseness; correctly absent for a
+   *  complete search of a closed corpus (ERF-4.30). */
+  limitations?: string;
+  /** The predecessor record when the same sought is searched again. */
+  prior?: SurveyId;
+  /** The search narrated: method, yield, and reading. */
   body: string;
 }
 

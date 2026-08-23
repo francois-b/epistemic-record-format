@@ -1,7 +1,7 @@
 ---
 title: "The Epistemic Record Format"
 subtitle: "Specification: the record types, the data model, and the invariants, stated so an implementer can build to them or diff an existing system against them."
-spec_version: 1.0-draft-2
+spec_version: 1.0-draft-3
 status: draft
 last_updated: 2026-08-22
 generated: 2026-08-22
@@ -10,7 +10,7 @@ model: claude-fable-5
 
 # The Epistemic Record Format
 
-Specification, v1.0-draft-2. The abstract and status are in `README.md`;
+Specification, v1.0-draft-3. The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way, and
 what the surrounding field holds, is the companion document
 `DESIGN-HISTORY.md`. The normative data model is the TypeScript file
@@ -18,9 +18,10 @@ what the surrounding field holds, is the companion document
 
 ## 1. Scope and conformance
 
-This format records four things: what a source *said* (atoms over captured
+This format records five things: what a source *said* (atoms over captured
 sources), what an author *claims* (claims), what is *open* (questions),
-and where people *stand* (standings). What was *done* about any of it
+what was *searched* and what it yielded (surveys), and where people
+*stand* (standings). What was *done* about any of it
 (decisions, actions, outcomes) is out of scope: a neighboring system may
 consume these records, and an activated bet plus its standing entries covers
 the common case.
@@ -65,8 +66,8 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 (RFC 2119, RFC 8174) when, and only when, they appear in all capitals, as
 shown here.
 
-- *record*: one atom, claim, or question. Structured fields plus one body
-  text.
+- *record*: one atom, claim, question, or survey. Structured fields plus
+  one body text.
 - *corpus*: a body of work owning records; a research program, an
   engagement, a venture, or the personal corpus. The unit of ownership and
   confidentiality.
@@ -140,6 +141,7 @@ interface Claim {
   families: FamilyName[];      // recorded membership for exact pulls
   atoms_for: AtomId[];
   atoms_against: AtomId[];
+  surveys?: SurveyId[];        // absence/coverage backing (section 4.6)
   edges: { to: ClaimId; relation: Relation }[];
   standings: StandingEntry[];  // append-only; per-person; humans only
   backing_audit: AuditEntry[]; // does the backing carry the claim (section 4.4)
@@ -158,6 +160,27 @@ interface Question {
   families: FamilyName[];
   sub_questions: QuestionId[]; // the only structure a question carries
   answered_by: ClaimId[];      // written when status becomes answered
+  body: string;
+}
+
+interface SearchAct {
+  tool: string;                // the concrete instrument, named
+  query: string;               // in the tool's own terms
+  scope?: string;              // restriction, when one applied
+  hits: string;                // yield as the instrument reported it
+  timestamp?: string;          // when acts span sittings
+}
+
+interface Survey {
+  id: SurveyId;                // globally unique; slug SHOULD end with the date
+  type: "survey";
+  corpus: CorpusId;
+  title: string;               // what the survey sought
+  conducted: ActorStamp;       // machine actors legal; judgment stays on claims
+  searches: SearchAct[];
+  notable_results: { what: string; note: string; atoms?: AtomId[] }[];
+  limitations?: string;        // SHOULD when cited for absence (ERF-4.30)
+  prior?: SurveyId;            // re-run linkage
   body: string;
 }
 ```
@@ -264,6 +287,10 @@ that constrain it. "Tool" means a producer acting under the machine role;
 **`atoms_for`**, **`atoms_against`** (AtomId lists; tool proposes, human admits; as evidence lands) [ERF-4.17]
 :   Evidence in both directions on this one claim.
 
+**`surveys`** (SurveyId list, optional; tool proposes, human admits; as coverage lands) [ERF-4.21, ERF-4.30]
+:   The survey records an absence or coverage reading rests on; one
+    list, no against side (section 4.6).
+
 **`edges`** (list of `{to, rel}`; tool proposes, human rules; during composition and challenge) [ERF-6.6]
 :   The claim's typed relations (section 5); an argument's structure lives
     here, not in its body.
@@ -305,6 +332,68 @@ Shares `id`, `type`, `corpus`, `title`, `created`, `modified`, and
 
 **`body`** (string; human; freely)
 :   The question elaborated.
+
+#### Survey
+
+**`id`** (SurveyId; tool; at mint) [ERF-4.29]
+:   Globally unique slug; SHOULD end with the conducted date, since a
+    re-run of the same sought is a new record.
+
+**`type`** (the literal `survey`; tool; at mint) [ERF-7.2]
+:   Self-description.
+
+**`corpus`** (CorpusId; tool writes, a human directs changes; at mint and on transfer)
+:   As on the claim: ownership and confidentiality, never namespace or
+    meaning.
+
+**`title`** (string; either; at mint)
+:   What the survey sought, stated as one phrase or question.
+
+**`conducted`** (ActorStamp; tool; at the search) [ERF-4.29]
+:   When, and which actor, conducted the search. Machine actors are legal
+    here: searching is machine work, and judgment stays on the citing
+    claim.
+
+**`searches`** (SearchAct list; tool; at the search) [ERF-4.27, ERF-4.28]
+:   The acts, one or more, each self-contained: instrument, query,
+    restriction, yield.
+
+**`notable_results`** (list of `{what, note, atoms?}`; either; at the search and as atoms mint) [ERF-4.28]
+:   The curated subset worth recording; entries mint atoms when a hit
+    deserves quoting.
+
+**`limitations`** (string, optional; either; at the search) [ERF-4.30]
+:   What the acts did not cover and how deeply hits were inspected;
+    absent for a complete search of a closed corpus.
+
+**`prior`** (SurveyId, optional; tool; at a re-run) [ERF-4.29]
+:   The predecessor record when the same sought is searched again; the
+    chain staleness computations walk.
+
+**`body`** (string; either; freely)
+:   The search narrated: method, yield, and reading.
+
+#### Search act
+
+**`tool`** (string; tool; at the act) [ERF-4.27]
+:   The concrete instrument, named: which search engine, which database,
+    which index, which script. Never a category.
+
+**`query`** (string; tool; at the act) [ERF-4.27]
+:   The query in the instrument's own terms; for a manual review, the
+    universe inspected.
+
+**`scope`** (string, optional; tool; at the act)
+:   The restriction where one applied: site filter, date range, corpus
+    slice, inspection depth.
+
+**`hits`** (string; tool; at the act) [ERF-4.28]
+:   The yield as the instrument reported it; text, because reported
+    precision varies by instrument.
+
+**`timestamp`** (RFC 3339, optional; tool; at the act)
+:   When this act ran, for a survey spanning sittings; defaults to the
+    survey's `conducted` timestamp.
 
 #### Standing entry
 
@@ -367,8 +456,9 @@ Five rules govern every name in this model, present and future:
    `EpistemicKind`, not `Kind`; `QuestionStatus`, not `Status`.
    SCREAMING_SNAKE is not used; in TypeScript it denotes constant values.
 3. Types that populate an in-record list are suffixed `-Entry`
-   (`StandingEntry`, `AuditEntry`): the suffix separates a record from a
-   line within one.
+   (`StandingEntry`, `AuditEntry`) or name the event one line records
+   (`SearchAct`): either way the name separates a record from a line
+   within one.
 4. The compound-reading test: every `field: TypeName` pair must read as
    spoken English (`created: ActorStamp` passes; `modified: Provenance`
    failed it and was renamed).
@@ -611,7 +701,10 @@ together, actually support its statement is a further judgment, recorded in
   negative: on a claim of the form "no shipped tool does X," the atoms
   evidence the coverage of a survey, not the absence itself; the audit
   checks the statement is scoped to what its evidence can carry, and
-  SUPPORTED on such a claim means supported as scoped, never proof.
+  SUPPORTED on such a claim means supported as scoped, never proof. Such
+  a claim SHOULD cite the survey records whose coverage it rests on
+  (`surveys`, section 4.6) rather than atoms alone: atoms can only quote
+  what exists.
 
 > *Note (non-normative):* on the word "jury". A cross-vendor model jury
 > diversifies judgment; it does not make verdicts independent in the
@@ -655,7 +748,86 @@ Which mechanisms convert positioning into a steady flow of engagements?
   the answering claim(s). Questions carry no ledger; their history lives
   with the substrate (section 8).
 
-### 4.6 The narrative and its bindings
+### 4.6 The survey
+
+A record of search acts and their yield: what was sought, where, with what
+queries, and what came back. A survey is neutral as to polarity: the same
+record backs an absence reading (zero yield across the acts), a sparseness
+reading, or a density reading (the ground is well covered), and the citing
+claim decides the use. The asymmetry with atoms is the design: absence and
+coverage are evidenced by surveys; presence is evidenced by atoms. A survey
+cannot disconfirm a gap claim, because what disconfirms it is a found
+source, and a found source is atom-shaped; that is why a claim carries one
+`surveys` list and no against side.
+
+```yaml
+---
+id: granted-flag-uses-2026-08-22
+type: survey
+corpus: knowledge-work-governance
+title: "Current uses of the granted field across the seven registered
+  corpora"
+conducted: {timestamp: 2026-08-22, by: "agent/claude-fable-5"}
+searches:
+  - tool: "grep -rnE (BSD grep, macOS)"
+    query: "^granted:|^  granted:"
+    scope: "all *.md under the seven registered corpus [private claims dir]/ homes;
+      305 claim and question files"
+    hits: "0"
+  - tool: "grep -rn (BSD grep, macOS)"
+    query: "granted (word-level, --include=*.md)"
+    scope: "same seven [private claims dir]/ homes"
+    hits: "4 lines in 3 files; none a field use"
+notable_results:
+  - what: "The claims-tree doc-class granted dimension"
+    note: "A render-layer field of one document class, documented in an
+      internal corpus; the word's nearest live relative, not a record
+      field."
+---
+```
+
+- **ERF-4.27** Each search act MUST name its concrete instrument in
+  `tool` and its `query` in that instrument's own terms: a search string,
+  a database query, a semantic prompt, or, for a manual review, the
+  universe inspected. A category ("web search") without the instrument
+  does not satisfy this; yields are comparable only where instruments are
+  named.
+- **ERF-4.28** `hits` MUST record each act's yield as the instrument
+  reported it, as text ("0", "3", "~120 reported, two pages inspected"); a
+  record MUST NOT state precision the instrument did not give.
+  `notable_results` is the curated subset worth keeping (near-misses with
+  why they fall short, exemplars with why they matter); entries mint atoms
+  when a hit deserves quoting, and the full yield stays in the acts.
+- **ERF-4.29** A survey MUST be an immutable record of a conducted
+  search: a re-run of the same sought is a new record, SHOULD name its
+  predecessor in `prior`, and its id SHOULD end with the conducted date.
+  Staleness of a claim's survey backing is computed from `conducted`
+  timestamps, never stored; how often a fruitful survey re-runs is
+  pipeline policy, not format.
+- **ERF-4.30** A survey cited by a claim asserting absence or sparseness
+  SHOULD carry `limitations`: what the acts did not cover and how deeply
+  hits were inspected. A complete search of a closed corpus correctly
+  carries none.
+
+> *Note (non-normative):* the weight of an empty search is the relation
+> between the universe searched and the universe the claim is about. A
+> world-claim over the world's indexes (web, preprint servers, patent
+> databases): absence is real, defeasible, decaying evidence. A
+> world-claim over a private sample (a curated thousand-volume library):
+> absence is nearly no evidence; the sample says something about its
+> curation, nothing about the world; record such an act as color, in
+> `limitations`. A closed-corpus claim with a complete search of that
+> corpus: absence is conclusive, and there are no limitations to state.
+> The same relation, read from the other side, is why `conducted` admits
+> machine actors: searching is machine work, and the judgment that the
+> coverage carries the claim stays where judgment lives, in the citing
+> claim's standings and its backing audit.
+
+> *Note (non-normative):* references are global ids, so a claim MAY cite
+> a survey in another corpus; the classification wall (`ERF-6.8`) applies
+> to surveys exactly as to atoms.
+
+### 4.7 The narrative and its bindings
 
 A narrative is a document written for people: an essay, a brief, a memo.
 Prose alone has a problem: assertions live inside sentences, so nothing
@@ -682,7 +854,7 @@ the prose keeps saying what it said.
   whose claims changed since the binding was made, and a reader can walk
   from a sentence to the claims, atoms, quotes, and sources beneath it.
 
-### 4.7 The personal corpus
+### 4.8 The personal corpus
 
 One corpus belongs to the author: the doxastic register. Claims there on
 which the owner currently stands are the author's standing positions.
@@ -757,9 +929,9 @@ All machine-checkable. Types express what types can express; the validator
 checks the relations no type can see.
 
 - **ERF-6.1** Every reference MUST resolve: atoms in their registries,
-  claims and questions in the global namespace; `atoms_for`,
-  `atoms_against`, `edges.to`, `sub_questions`, and `answered_by` name
-  existing records.
+  claims, questions, and surveys in the global namespace; `atoms_for`,
+  `atoms_against`, `edges.to`, `sub_questions`, `answered_by`, and
+  `surveys` name existing records.
 - **ERF-6.2** Claim and question ids MUST be unique across all corpora.
 - **ERF-6.3** Every standing entry MUST have a `human:` actor and a
   non-empty `why`.
@@ -783,8 +955,8 @@ checks the relations no type can see.
   `finding_audit`, `backing_audit`, or binding older than the last change
   to what it judged is flagged stale.
 - **ERF-6.11** A validator MUST flag as unbacked an `observation` someone
-  stands on with empty `atoms_for`, and such an `argument` with no edges
-  (the computed warning a render shows).
+  stands on with empty `atoms_for` and empty `surveys`, and such an
+  `argument` with no edges (the computed warning a render shows).
 - **ERF-6.12** The mechanical quote check (the normalized quote occurs in
   the capture) MUST be re-runnable by anyone holding the corpus and its
   captures; it MUST run as a gate at minting and after any transform that
@@ -807,7 +979,8 @@ checks the relations no type can see.
   entries in a registry document for atoms. A conforming store MUST
   round-trip records through this form without loss.
 - **ERF-7.2** Files MUST self-describe: `type` and `corpus` are always
-  written on claim and question records, and no meaning lives in a path.
+  written on claim, question, and survey records, and no meaning lives
+  in a path.
 - **ERF-7.3** A collection document (an atom registry) MUST declare its
   registry id and entry type in its own header; entries inherit both, and
   the same atom serialized standalone materializes `type: atom`.
