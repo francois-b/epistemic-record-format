@@ -56,7 +56,8 @@ export type EpistemicKind  = "observation" | "argument" | "bet" | "commitment";
 export type Stance         = "for" | "against" | "withdrawn";
 export type QuestionStatus = "open" | "answered" | "parked";
 export type Relation       = "supports" | "assumes" | "decomposes-into" | "conflicts-with";
-/** Grades the source situation only (ERF-4.8a). Value vocabulary under review. */
+/** How much weight the attester's word carries for the fact the finding
+ *  conveys; two inputs, the weaker governing (ERF-4.8a, ERF-4.8b). */
 export type SourceQuality  = "high" | "medium" | "low";
 /** Typed reasons for negative standing moves (ERF-4.14c). Provisional. */
 export type StanceCause    = "superseded-by" | "disconfirmed" | "scope-too-broad"

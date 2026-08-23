@@ -225,15 +225,16 @@ that constrain it. "Tool" means a producer acting under the machine role;
 :   The locator actually retrieved; absent for received files. A
     web-native work's own identity belongs in `citation.URL`, not here.
 
-**`source_quality`** (SourceQuality; either; at mint) [ERF-4.8a]
-:   The source situation only, assessed by three questions at minting:
-    who wrote it and what is their interest (first-party or regulator
-    material versus a vendor describing its product); how far from
-    primary (direct capture, one-hop secondary, or a relay of a relay);
-    and was the primary captured (an unpulled chain is `low` regardless
-    of how good it sounds). Not audit state, not capture fidelity. The
-    value vocabulary (high, medium, low) is under review pending
-    source-typology research.
+**`source_quality`** (SourceQuality; either; at mint) [ERF-4.8a, ERF-4.8b]
+:   How much weight the attester's word carries for the fact the finding
+    conveys, graded `high`, `medium`, or `low`. Two inputs are assessed
+    and the weaker governs: provenance distance (hops from the captured
+    text to the fact) and attester accountability (identifiable,
+    answerable, and positioned to know, or not). Assessed against the
+    substance, never against the bare fact of utterance, so reported
+    speech from an anonymous source stays low. Not audit state, not
+    capture fidelity: a reader wanting a combined trust signal composes
+    it from the three at read time.
 
 **`as_of`** (date, optional; either; at mint)
 :   The date the fact is true of, distinct from when it was recorded.
@@ -534,13 +535,32 @@ One piece of evidence: a verbatim quote, a finding, and the trail.
   source. Hand-written `citation_text` strings SHOULD follow "Author, Title
   (venue, year), locator when it matters"; the upgrade path to exactness
   is the citation block.
-- **ERF-4.8a** `source_quality` MUST grade one axis only, the source
-  situation: `high`, a captured primary or first-party material; `medium`,
-  secondary, vendor self-report, or one-hop relay; `low`, a relay chain
-  not yet pulled to primary. It MUST NOT encode audit state (that is
-  `finding_audit`'s record) or capture fidelity (that is the mechanical
-  check's derived result); a consumer wanting a combined trust signal
-  computes it from the three at read time.
+- **ERF-4.8a** `source_quality` MUST grade one axis, how much weight the
+  attester's word carries for the fact the finding conveys. Two inputs are
+  assessed and the weaker governs: provenance distance (how many hops from
+  the captured text to the fact) and attester accountability (whether the
+  source is identifiable, answerable, and positioned to know, or anonymous,
+  self-interested, or of unknown competence). `high` is direct and
+  accountable: a regulator or court filing, an organization's disclosure
+  about itself, a named study reporting its own data, a captured primary.
+  `medium` is an identifiable intermediary reporting someone else's fact,
+  or a first party with an interest in the answer: trade press, an analyst
+  note, a vendor's claim about its own product, a one-hop relay. `low` is
+  an unaccountable or unidentifiable attester, or a chain not yet pulled to
+  primary: a forum comment, an aggregator citing an unnamed original. The
+  specific reason SHOULD be recorded in `limitations`. It MUST NOT encode
+  audit state (that is `finding_audit`'s record) or capture fidelity (that
+  is the mechanical check's derived result); a consumer wanting a combined
+  trust signal computes it from the three at read time.
+- **ERF-4.8b** The grade MUST be assessed against the substance the finding
+  conveys, not against the bare fact that someone uttered it. Reported
+  speech does not raise it: "a commenter reported X", sourced to an
+  anonymous forum, stays `low`, because what a reader must weigh is X.
+  Where a corpus's subject IS discourse (what a population says, believes,
+  or claims), the utterance is the substance, and a captured identified
+  utterance is direct and accountable; a finding resting on that reading
+  MUST say so in its own words, so that the grade can be checked against
+  what the atom actually attests.
 - **ERF-4.9** The mechanical check (the normalized quote occurs in the
   capture) is recomputable by anyone holding the corpus and its captures,
   so its result MUST NOT be stored. The judgment (does the quote, in

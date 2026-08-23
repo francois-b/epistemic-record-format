@@ -4,6 +4,31 @@ Newest first. Requirement ids are stable once published: insertions use
 letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
 change lands here with a date.
 
+## v1.0-draft-3 (2026-08-22) — source_quality rubric rewritten
+
+The value vocabulary stays `high | medium | low`. A proposed rename to
+`primary | secondary | unresolved`, defined by a countable hop test, was
+rejected on evidence from the reference practice: the hop test scores a
+practitioner's first-hand forum comment as `primary`, which would have
+relabelled eighty-five atoms into a badge telling readers to lean on
+anonymous posts. Vague labels are honest for a composite judgment, and a
+survey of the field found letter grades exactly as fuzzy as English
+words, so a rename buys connotation rather than precision.
+
+What changed is the rubric, in `ERF-4.8a`. The axis is named as the
+composite it always was: how much weight the attester's word carries for
+the fact the finding conveys, assessed on two inputs (provenance
+distance and attester accountability) with the weaker governing. That
+rule reproduces the existing assignments across 787 atoms, so no
+migration follows from it.
+
+`ERF-4.8b` is new, and answers the discourse case: grade against the
+substance the finding conveys, not the bare fact that someone uttered
+it. Reported speech does not launder an unaccountable attester upward.
+Where a corpus's subject IS discourse, the utterance is the substance,
+and the finding must say so, so that the grade can be checked against
+what the atom attests.
+
 ## v1.0-draft-3 (2026-08-22) — corpus narrowed
 
 The corpus carries two jobs, not three: the confidentiality boundary
