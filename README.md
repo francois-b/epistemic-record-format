@@ -21,31 +21,29 @@ directions; who actually stands where is an append-only ledger:
 
 ```yaml
 ---
-id: no-continuous-claim-check
+id: citators-disagree-on-negative-treatment
 type: claim
 corpus: knowledge-work-governance
-title: "No shipped tool runs a claim-against-source check continuously
-  over a maintained document; the check exists only as per-response
-  evaluation"
+title: "The major legal citators disagree substantially on identifying
+  negative treatment, and the leading vendor defense is that no
+  objectively correct interpretation exists"
 epistemic_kind: observation
-created: {timestamp: 2026-08-19, by: "agent/claude-fable-5"}
-families: [prior-art, checks]
-atoms_for: [kwg-146]
-edges: [{to: discipline-needs-primitives, relation: supports}]
-standings:
-  - {timestamp: 2026-08-21T14:02:00Z, stance: for, by: "human:fbouet",
-     why: "Second primary captured; the negative now rests on more than
-       one vendor."}
+created: {timestamp: 2026-08-22, by: "agent/claude-fable-5"}
+families: [prior-art]
+atoms_for: [kwg-014, kwg-015, kwg-016]
 ---
 ```
 
 Reading it: an LLM drafted the claim (`created.by` says so). Its kind,
-`observation`, sets what would check it: data, carried by the atom
-`kwg-146`, whose verbatim quote is checkable against a captured copy of
-its source. One person stands behind the statement, with a dated reason;
-nobody's position is a stored status, and the claim's disposition
-(proposal, active, contested, retired) is computed from the ledger, never
-written down.
+`observation`, sets what would check it: data, carried by three atoms (a
+peer-reviewed study of citator disagreement and the vendor's response to
+it), each holding a verbatim quote checkable against a captured copy of
+its source. Nobody has stood behind the statement yet, so the `standings`
+ledger is empty and omitted, and the claim is a proposal. A standing, when
+one comes, is an append-only entry naming the person, the date, the
+stance, and the reason; nobody's position is a stored status, and the
+claim's disposition (proposal, active, contested, retired) is computed
+from the ledger, never written down.
 
 ## Documents
 
@@ -55,7 +53,7 @@ written down.
 | [`types/erf.ts`](types/erf.ts) | The normative data model as a compiling TypeScript file; `SPEC.md` carries an inline mirror. |
 | [`DESIGN-HISTORY.md`](DESIGN-HISTORY.md) | Non-normative companion: how the format got this way (the subtraction ledger, the reversals) and the prior-art survey. |
 | [`CHANGELOG.md`](CHANGELOG.md) | Change history, newest first. |
-| [`examples/`](examples/) | Real records from a working corpus, one per record type, as standalone valid YAML. |
+| [`examples/`](examples/) | Real records from a working corpus, as standalone valid YAML: two atoms (a book source and a web source), a claim, a question. |
 | [`tools/lint-spec-style.py`](tools/lint-spec-style.py) | The style lint the spec itself is held to (requirement-block shape, note form, no em dashes in prose). Run: `python3 tools/lint-spec-style.py`. |
 
 ## License

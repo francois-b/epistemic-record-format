@@ -492,27 +492,33 @@ same statement, standing in a worse light.
 
 ```yaml
 ---
-id: no-continuous-claim-check
+id: citators-disagree-on-negative-treatment
 type: claim
 corpus: knowledge-work-governance
-title: "No shipped tool runs a claim-against-source check continuously
-  over a maintained document; the check exists only as per-response
-  evaluation"
+title: "The major legal citators disagree substantially on identifying
+  negative treatment, and the leading vendor defense is that no
+  objectively correct interpretation exists"
 epistemic_kind: observation
-created: {timestamp: 2026-08-19, by: "agent/claude-fable-5"}
-families: [prior-art, checks]
-atoms_for: [kwg-146]
-edges: [{to: discipline-needs-primitives, relation: supports}]
-standings:
-  - {timestamp: 2026-08-21T14:02:00Z, stance: for, by: "human:fbouet",
-     why: "Second primary captured; the negative now rests on more than one vendor."}
+created: {timestamp: 2026-08-22, by: "agent/claude-fable-5"}
+families: [prior-art]
+atoms_for: [kwg-014, kwg-015, kwg-016]
 ---
-No shipped tool runs a claim-against-source check continuously over a
-maintained document; the check exists only as per-response evaluation.
+The major legal citators disagree substantially on identifying negative
+treatment, and the leading vendor defense is that no objectively correct
+interpretation exists.
 
 ## Working notes
 ...
 ```
+
+The example ships as a proposal: no one has stood behind it, so its
+`standings` ledger is empty and therefore omitted from the file (ERF-7.4),
+and its computed disposition is *proposal*. When someone does stand, the
+first entry appends under `standings` with a full timestamp, a stance
+(`for`, `against`, or `withdrawn`), a `human:` actor, and a written `why`;
+the requirements below govern that ledger. The spec invents no standing
+entries in its examples: a stance is a real person's recorded judgment,
+and there is none to show yet.
 
 - **ERF-4.11** `id` MUST be unique across all corpora (one global
   namespace). References are bare ids and MUST NOT encode location: a

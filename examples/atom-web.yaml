@@ -1,0 +1,29 @@
+# A standalone atom record (SPEC.md, section 4.2) with a web-native
+# source: `fetched_url` records where the capture was taken (here a
+# stable arXiv address), while `citation_text` stays a human-readable
+# citation and is never a URL (ERF-4.5). The backslash in the quote is
+# verbatim from the source abstract; capture fidelity beats cleanup.
+type: atom
+id: kwg-038
+finding: >-
+  Lightman et al.'s process-supervised reward model solves 78.2% of a
+  representative MATH test subset, and the authors state process
+  supervision "can train much more reliable reward models" than outcome
+  supervision.
+quote: >-
+  We show that process supervision can train much more reliable reward
+  models than outcome supervision. We use our state-of-the-art PRM to
+  solve 78.2\% of problems from a representative subset of the MATH test
+  set.
+citation_text: >-
+  Lightman et al., "Let's Verify Step by Step" (arXiv 2305.20050)
+fetched_url: "https://arxiv.org/abs/2305.20050"
+source_quality: high
+as_of: "2023-05-31"
+created: {timestamp: 2026-07-19, by: "agent/claude-fable-5"}
+modified: {timestamp: 2026-07-19, by: "agent/claude-fable-5"}
+finding_audit:
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: 2026-07-19,
+     protocol: finding-audit-v2}
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: 2026-07-19,
+     protocol: finding-audit-v2}

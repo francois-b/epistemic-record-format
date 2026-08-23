@@ -4,6 +4,24 @@ Newest first. Requirement ids are stable once published: insertions use
 letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
 change lands here with a date.
 
+## 2026-08-22 — worked examples replaced
+
+The inline claim example (`no-continuous-claim-check`) is replaced by
+`citators-disagree-on-negative-treatment`, a claim fully backed by three
+captured atoms (a peer-reviewed citator-disagreement study and the
+vendor's response). Two defects motivated the swap: the old example was a
+universal negative whose one atom evidences a single case, not the
+negative (the situation ERF-4.21 scopes), and its standing entry was
+invented for illustration. The rule now applied: no invented human
+stances anywhere in the spec; the example claim ships as a proposal with
+the standings mechanics described in prose beside it. `examples/` gains a
+web-sourced atom (`atom-web.yaml`, stable arXiv `fetched_url`) beside the
+book-sourced one (`atom.yaml` renamed `atom-book.yaml`), and `claim.yaml`
+carries the new claim. The retired example remains a real claim in its
+home corpus; only its example role ended. The ERF-4.25 binding
+illustration keeps the old slug deliberately: it quotes a real binding in
+a real narrative document. No normative change.
+
 ## 2026-08-22 — repository split
 
 The specification moved from a single working document into this
