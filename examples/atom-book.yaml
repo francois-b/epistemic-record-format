@@ -1,9 +1,10 @@
 # A standalone atom record (SPEC.md, section 4.2) with a book source and
 # a structured CSL `citation` block; `atom-web.yaml` shows the web-native
-# case. In a registry document, entries inherit the registry id and entry type
-# from the document's own header and omit `type`; serialized standalone,
-# the atom materializes `type: atom` (ERF-7.3), as here.
+# case. Every atom carries its own `type` and `corpus`, in a collection
+# document or standalone alike: a record extracted from a file is complete
+# without it (ERF-7.2, ERF-7.3).
 type: atom
+corpus: knowledge-work-governance
 id: kwg-117
 finding: >-
   Pacioli's 1494 treatise states the double-entry rule explicitly: every

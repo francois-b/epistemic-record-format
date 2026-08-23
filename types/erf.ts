@@ -1,6 +1,6 @@
 /**
  * The Epistemic Record Format (ERF): normative data model.
- * v1.0, 2026-08-22.
+ * v1.0.1, 2026-08-23.
  *
  * This file is the normative data model of the specification (SPEC.md,
  * section 3, which carries an inline mirror of it; where the two differ,
@@ -17,17 +17,17 @@
 // Identifiers
 // ---------------------------------------------------------------------------
 
-/** Registry prefix plus sequence, e.g. "kwg-117". Never renamed, never reused. */
+/** Corpus prefix plus sequence, e.g. "kwg-117". Never renamed, never reused. */
 export type AtomId = string;
 
-/** Unique across the registry's corpora; encodes no location (ERF-4.11).
- *  Across registries, identity is the pair of registry and id. */
+/** Unique across the realm's corpora; encodes no location (ERF-4.11).
+ *  Across realms, identity is the pair of realm and id. */
 export type ClaimId = string;
 
-/** Same registry namespace as ClaimId (ERF-6.2). */
+/** Same realm namespace as ClaimId (ERF-6.2). */
 export type QuestionId = string;
 
-/** Same registry namespace; slug SHOULD end with the conducted date (ERF-4.29). */
+/** Same realm namespace; slug SHOULD end with the conducted date (ERF-4.29). */
 export type SurveyId = string;
 
 /** A registered corpus id, per the corpus registry (ERF-8.3). */
@@ -100,7 +100,7 @@ export interface SearchAct {
   scope?: string;
   /** Yield as the instrument reported it; text, because reported precision
    *  varies by instrument (ERF-4.28). */
-  hits: string;
+  hits_reported: string;
   /** When this act ran, for a survey spanning sittings; defaults to the
    *  survey's `conducted` timestamp. */
   timestamp?: string;
@@ -125,8 +125,11 @@ export interface AuditEntry {
 
 /** One piece of evidence: a verbatim quote, a finding, and the trail. */
 export interface Atom {
-  /** Registry prefix + number, e.g. kwg-117. */
+  /** Corpus prefix + number, e.g. kwg-117. */
   id: AtomId;
+  type: "atom";
+  /** Confidentiality tier and governing policy (ERF-7.2). */
+  corpus: CorpusId;
   /** One sentence: what the quote shows (ERF-4.6). */
   finding: string;
   /** Verbatim from the capture; `[...]` marks elision (ERF-4.5). */
@@ -139,11 +142,11 @@ export interface Atom {
   fetched_url?: string;
   source_quality: SourceQuality;
   /** The date the FACT is true of, distinct from when it was recorded. */
-  as_of?: string;
+  as_of_date?: string;
   /** Recorded caveat about the evidence. */
   limitations?: string;
   created: ActorStamp;
-  modified?: ActorStamp;
+  last_modified?: ActorStamp;
   /** Judgment verdicts, recorded per auditor (ERF-4.9). */
   finding_audit: AuditEntry[];
 }
@@ -151,7 +154,7 @@ export interface Atom {
 /** A statement that can be true or false, one a person could stand behind
  *  or dispute (section 4.3). */
 export interface Claim {
-  /** Unique across the registry's corpora (ERF-4.11). */
+  /** Unique across the realm's corpora (ERF-4.11). */
   id: ClaimId;
   type: "claim";
   /** Confidentiality tier and governing policy; mutable where identity is not (ERF-4.12). */
@@ -160,9 +163,9 @@ export interface Claim {
   title: string;
   epistemic_kind: EpistemicKind;
   created: ActorStamp;
-  modified?: ActorStamp;
+  last_modified?: ActorStamp;
   /** Compact spoken name. */
-  handle?: string;
+  short_name?: string;
   /** Recorded membership for exact pulls. */
   families: FamilyName[];
   atoms_for: AtomId[];
@@ -174,8 +177,8 @@ export interface Claim {
   edges: { to: ClaimId; relation: Relation }[];
   /** Append-only; per-person; humans only (ERF-4.14, ERF-4.15). */
   standings: StandingEntry[];
-  /** Does the backing carry the claim (section 4.4). */
-  backing_audit: AuditEntry[];
+  /** Does the evidence carry the claim (section 4.4). */
+  evidence_audit: AuditEntry[];
   /** Pre-authored evidence-search key (SPEC.md section 3.1). */
   semantic_query?: string;
   /** SHOULD open by restating title; then working notes. */
@@ -185,14 +188,14 @@ export interface Claim {
 /** A question asserts nothing; it is a sibling record, not a claim
  *  (section 4.5). */
 export interface Question {
-  /** Same registry namespace as claims (ERF-6.2). */
+  /** Same realm namespace as claims (ERF-6.2). */
   id: QuestionId;
   type: "question";
   corpus: CorpusId;
   title: string;
   status: QuestionStatus;
   created: ActorStamp;
-  modified?: ActorStamp;
+  last_modified?: ActorStamp;
   families: FamilyName[];
   /** The only structure a question carries (ERF-4.22). */
   sub_questions: QuestionId[];
@@ -205,7 +208,7 @@ export interface Question {
  *  polarity: the same record backs an absence, sparseness, or density
  *  reading; the citing claim decides the use. */
 export interface Survey {
-  /** Unique in the registry; SHOULD end with the conducted date (ERF-4.29). */
+  /** Unique in the realm; SHOULD end with the conducted date (ERF-4.29). */
   id: SurveyId;
   type: "survey";
   corpus: CorpusId;
@@ -224,7 +227,7 @@ export interface Survey {
    *  complete search of a closed corpus (ERF-4.30). */
   limitations?: string;
   /** The predecessor record when the same sought is searched again. */
-  prior?: SurveyId;
+  prior_survey?: SurveyId;
   /** The search narrated: method, yield, and reading. */
   body: string;
 }
@@ -232,4 +235,4 @@ export interface Survey {
 // Lists are total in the type and MAY be empty; empty lists are omitted in
 // serialization (SPEC.md section 7). Optional fields (`?`) assert existence
 // when present: a `citation` means structure exists, a `fetched_url` means
-// a fetch happened, a `modified` means an edit happened.
+// a fetch happened, a `last_modified` means an edit happened.

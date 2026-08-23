@@ -15,15 +15,15 @@ conducted: {timestamp: 2026-08-22, by: "agent/claude-fable-5"}
 searches:
   - tool: "WebSearch (Claude Code web search tool)"
     query: "citator agreement negative treatment Shepard's KeyCite empirical study"
-    hits: "9 results returned, all inspected; Hellyer 2018 the top scholarly hit"
+    hits_reported: "9 results returned, all inspected; Hellyer 2018 the top scholarly hit"
   - tool: "WebSearch (Claude Code web search tool)"
     query: "Hellyer Taylor McKenzie citator comparison study Law Library Journal case validation"
-    hits: "9 results returned, all inspected"
+    hits_reported: "9 results returned, all inspected"
   - tool: "semantic_search ([private search tool]) over the private research library and public engagement index"
     query: >-
       reliability of legal citators, disagreement between Shepard's and
       KeyCite on treatment classification
-    hits: "15 passages returned; 7 on point, all tracing to sources already captured in this corpus"
+    hits_reported: "15 passages returned; 7 on point, all tracing to sources already captured in this corpus"
 notable_results:
   - what: >-
       Hellyer, Evaluating Shepard's, KeyCite, and BCite for Case

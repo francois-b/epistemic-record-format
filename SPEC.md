@@ -1,16 +1,16 @@
 ---
 title: "The Epistemic Record Format"
 subtitle: "Specification: the record types, the data model, and the invariants, stated so an implementer can build to them or diff an existing system against them."
-spec_version: 1.0
+spec_version: 1.0.1
 status: draft
-last_updated: 2026-08-22
+last_updated: 2026-08-23
 generated: 2026-08-22
 model: claude-fable-5
 ---
 
 # The Epistemic Record Format
 
-Specification, v1.0. The abstract and status are in `README.md`;
+Specification, v1.0.1. The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way, and
 what the surrounding field holds, is the companion document
 `DESIGN-HISTORY.md`. The normative data model is the TypeScript file
@@ -43,7 +43,7 @@ Conformance is claimed per class, not against the whole document:
 
 - Record: a single atom, claim, or question. Binds the data model
   (section 3) and its record type's requirements (section 4).
-- Corpus: a collection of records under one registry entry. Binds the
+- Corpus: a collection of records under one corpus-registry entry. Binds the
   invariants (section 6) and `ERF-8.1` and `ERF-8.3`.
 - Producer: a tool or process that writes records. Binds the serialization
   rules (section 7) and the producer SHOULDs of section 4 (for example
@@ -87,6 +87,16 @@ shown here.
   separate acts recorded in separate fields: who wrote a record need not be
   who checked it.
 - *owner*: the corpus's responsible person, per the corpus registry.
+- *corpus registry*: the deployment's list of registered corpora, each with
+  an id, a home, a classification, and a purpose (`ERF-8.3`). It registers
+  corpora, not sources; a map from atom ids to captured copies is a separate
+  file and a separate concern.
+- *realm*: the set of corpora one operator or organization governs, and the
+  scope within which record ids are unique (`ERF-4.11`). One deployment is
+  one realm; two parties sharing records are two realms.
+- *collection document*: one file carrying many records of a type, as an
+  atom file carries atoms. A grouping convenience only: every record inside
+  still carries its own `type` and `corpus` (`ERF-7.3`).
 - *disposition*: the computed reading of a claim's standings (`ERF-6.5`).
   Never a stored field.
 - *binding*: a marker in a narrative document naming the claim a passage
@@ -120,36 +130,38 @@ interface AuditEntry { auditor: string;
                        timestamp: string; protocol: string; accepted?: true }
 
 interface Atom {
-  id: AtomId;                  // registry prefix + number, e.g. kwg-117
+  id: AtomId;                  // corpus prefix + number, e.g. kwg-117
+  type: "atom";
+  corpus: CorpusId;            // confidentiality tier and governing policy
   finding: string;             // one sentence: what the quote shows
   quote: string;               // verbatim from the capture; [...] marks an omission
   citation_text: string;       // human-readable citation; never contains a URL
   citation?: CSL;              // canonical when present; citation_text renders from it
   fetched_url?: string;        // the locator actually retrieved; absent for received files
   source_quality: SourceQuality;
-  as_of?: string;              // the date the FACT is true of
+  as_of_date?: string;         // the date the FACT is true of
   limitations?: string;        // recorded caveat about the evidence
   created: ActorStamp;
-  modified?: ActorStamp;
+  last_modified?: ActorStamp;
   finding_audit: AuditEntry[]; // judgment verdicts, recorded per auditor
 }
 
 interface Claim {
-  id: ClaimId;                 // unique across the registry's corpora
+  id: ClaimId;                 // unique across the realm's corpora
   type: "claim";
   corpus: CorpusId;            // confidentiality and policy; mutable
   title: string;               // THE claim statement (normative)
   epistemic_kind: EpistemicKind;
   created: ActorStamp;
-  modified?: ActorStamp;
-  handle?: string;             // compact spoken name
+  last_modified?: ActorStamp;
+  short_name?: string;         // compact spoken name
   families: FamilyName[];      // recorded membership for exact pulls
   atoms_for: AtomId[];
   atoms_against: AtomId[];
   surveys?: SurveyId[];        // absence/coverage backing (section 4.6)
   edges: { to: ClaimId; relation: Relation }[];
   standings: StandingEntry[];  // append-only; per-person; humans only
-  backing_audit: AuditEntry[]; // does the backing carry the claim (section 4.4)
+  evidence_audit: AuditEntry[]; // does the evidence carry the claim (section 4.4)
   semantic_query?: string;     // pre-authored evidence-search key; see 3.1
   body: string;                // SHOULD open by restating title; then working notes
 }
@@ -172,7 +184,7 @@ interface SearchAct {
   tool: string;                // the concrete instrument, named
   query: string;               // in the tool's own terms
   scope?: string;              // restriction, when one applied
-  hits: string;                // yield as the instrument reported it
+  hits_reported: string;       // yield as the instrument reported it
   timestamp?: string;          // when acts span sittings
 }
 
@@ -185,7 +197,7 @@ interface Survey {
   searches: SearchAct[];
   notable_results: { what: string; note: string; atoms?: AtomId[] }[];
   limitations?: string;        // SHOULD when cited for absence (ERF-4.30)
-  prior?: SurveyId;            // re-run linkage
+  prior_survey?: SurveyId;     // re-run linkage
   body: string;
 }
 ```
@@ -193,7 +205,7 @@ interface Survey {
 Lists are total in the type and MAY be empty; empty lists are omitted in
 serialization (section 7). Optional fields (`?`) assert existence when
 present: a `citation` means structure exists, a `fetched_url` means a fetch
-happened, a `modified` means an edit happened.
+happened, a `last_modified` means an edit happened.
 
 ### 3.1 Field reference
 
@@ -210,16 +222,18 @@ tool usually drafts and a human may author or repair.
 | Field | Type | Writer | When | Requirements |
 |:-------------------|:-----------------|:---------------------|:---------------------|:-----------------|
 | `id` | AtomId | tool | at mint | `ERF-4.10a` |
+| `type` | the literal `atom` | tool | at mint | `ERF-7.2` |
+| `corpus` | CorpusId | tool | at mint, on transfer | `ERF-7.2` |
 | `finding` | string | tool drafts, human repairs | at mint, at re-audit | `ERF-4.6`, `ERF-4.9` |
 | `quote` | string | tool | at mint | `ERF-4.5` |
 | `citation_text` | string | tool | at mint, regenerated from `citation` | `ERF-4.7`, `ERF-4.8` |
 | `citation` | CSL, optional | tool | at mint or ship-time upgrade | `ERF-4.8` |
 | `fetched_url` | string, optional | tool | at capture | `ERF-4.7` |
 | `source_quality` | SourceQuality | either | at mint | `ERF-4.8a`, `ERF-4.8b` |
-| `as_of` | date, optional | either | at mint | `ERF-4.10b` |
+| `as_of_date` | date, optional | either | at mint | `ERF-4.10b` |
 | `limitations` | string, optional | either | at mint, when a caveat emerges | `ERF-4.10b` |
 | `created` | ActorStamp | tool | at creation | `ERF-7.5` |
-| `modified` | ActorStamp, optional | tool | at a later substantive edit | `ERF-6.10` |
+| `last_modified` | ActorStamp, optional | tool | at a later substantive edit | `ERF-6.10` |
 | `finding_audit` | AuditEntry list | tool | after each audit run | `ERF-4.9` |
 
 :::
@@ -236,15 +250,15 @@ tool usually drafts and a human may author or repair.
 | `title` | string | human owns, machine may draft | at mint, when reviewing renders | `ERF-4.13`, `ERF-6.9` |
 | `epistemic_kind` | EpistemicKind | either | at mint, refined at cut entry | `ERF-4.19`, `ERF-6.11` |
 | `created` | ActorStamp | tool | at creation | `ERF-7.5` |
-| `modified` | ActorStamp, optional | tool | at a later substantive edit | `ERF-6.10` |
-| `handle` | string, optional | human | at cut entry | `ERF-4.13a` |
+| `last_modified` | ActorStamp, optional | tool | at a later substantive edit | `ERF-6.10` |
+| `short_name` | string, optional | human | at cut entry | `ERF-4.13a` |
 | `families` | FamilyName list | tool proposes, human rules | at mint, at reconciliation | `ERF-4.13b` |
 | `atoms_for` | AtomId list | tool proposes, human admits | as evidence lands | `ERF-4.17` |
 | `atoms_against` | AtomId list | tool proposes, human admits | as evidence lands | `ERF-4.17` |
 | `surveys` | SurveyId list, optional | tool proposes, human admits | as coverage lands | `ERF-4.21`, `ERF-4.30` |
 | `edges` | Edge list | tool proposes, human rules | at composition and challenge | `ERF-6.6`, `ERF-6.7` |
 | `standings` | StandingEntry list | tool writes, humans in `by` | at each stance | `ERF-4.14`, `ERF-4.15` |
-| `backing_audit` | AuditEntry list | tool | change-triggered | `ERF-4.19`, `ERF-4.20` |
+| `evidence_audit` | AuditEntry list | tool | change-triggered | `ERF-4.19`, `ERF-4.20` |
 | `semantic_query` | string, optional | tool drafts | at mint or at need | `ERF-4.13c` |
 | `body` | string | human | freely | `ERF-4.13`, `ERF-6.9` |
 
@@ -252,7 +266,7 @@ tool usually drafts and a human may author or repair.
 
 #### Question
 
-Shares `id`, `type`, `corpus`, `title`, `created`, `modified`, and
+Shares `id`, `type`, `corpus`, `title`, `created`, `last_modified`, and
 `families` with the claim; plus:
 
 ::: {.cols widths="20 18 22 22 18"}
@@ -280,7 +294,7 @@ Shares `id`, `type`, `corpus`, `title`, `created`, `modified`, and
 | `searches` | SearchAct list | tool | at the search | `ERF-4.27`, `ERF-4.28` |
 | `notable_results` | list of `{what, note, atoms?}` | either | at the search, as atoms mint | `ERF-4.28` |
 | `limitations` | string, optional | either | at the search | `ERF-4.30` |
-| `prior` | SurveyId, optional | tool | at a re-run | `ERF-4.29` |
+| `prior_survey` | SurveyId, optional | tool | at a re-run | `ERF-4.29` |
 | `body` | string | either | freely | `ERF-4.29` |
 
 :::
@@ -294,7 +308,7 @@ Shares `id`, `type`, `corpus`, `title`, `created`, `modified`, and
 | `tool` | string | tool | at the act | `ERF-4.27` |
 | `query` | string | tool | at the act | `ERF-4.27` |
 | `scope` | string, optional | tool | at the act | `ERF-4.27` |
-| `hits` | string | tool | at the act | `ERF-4.28` |
+| `hits_reported` | string | tool | at the act | `ERF-4.28` |
 | `timestamp` | RFC 3339, optional | tool | at the act | `ERF-4.29` |
 
 :::
@@ -351,7 +365,7 @@ Five rules govern every name in this model, present and future:
    (`SearchAct`): either way the name separates a record from a line
    within one.
 4. The compound-reading test: every `field: TypeName` pair must read as
-   spoken English (`created: ActorStamp` passes; `modified: Provenance`
+   spoken English (`created: ActorStamp` passes; `last_modified: Provenance`
    failed it and was renamed).
 5. One meaning per word, checked against the glossary at naming time. The
    registered failure: the atom field once named `source` collided with
@@ -473,9 +487,9 @@ One piece of evidence: a verbatim quote, a finding, and the trail.
   a verdict clears (which auditors, whether an LLM's verdict counts) is
   policy the corpus owner sets, not a rule of the format.
 - **ERF-4.10** An atom MUST NOT carry a topic field.
-- **ERF-4.10a** An atom's `id` MUST be permanent: a registry prefix plus a
+- **ERF-4.10a** An atom's `id` MUST be permanent: a corpus prefix plus a
   sequence number (`kwg-117`), never renamed and never reused.
-- **ERF-4.10b** `as_of`, where present, MUST record the date the fact is
+- **ERF-4.10b** `as_of_date`, where present, MUST record the date the fact is
   true of, which is distinct from the date the atom recorded it: dated
   statistics carry it and timeless statements omit it. `limitations`
   records the caveat about the evidence, whether that is chain quality, a
@@ -542,15 +556,14 @@ the requirements below govern that ledger. The spec invents no standing
 entries in its examples: a stance is a real person's recorded judgment,
 and there is none to show yet.
 
-- **ERF-4.11** `id` MUST be unique across every corpus in a registry: the
-  set of corpora one operator or organization governs, enumerated in that
-  registry's corpus registry.
+- **ERF-4.11** `id` MUST be unique across every corpus in a realm: the set
+  of corpora one operator or organization governs, enumerated in that
+  realm's corpus registry.
 - **ERF-4.11a** References MUST be bare ids and MUST NOT encode location.
   A claim moved between corpora keeps its id, and no reference changes.
-- **ERF-4.11b** A shared surface MUST resolve a reference against the
-  registry it came from. Across registries, identity is the pair of
-  registry and id, and bare ids are not promised to be unique between two
-  parties' registries.
+- **ERF-4.11b** A shared surface MUST resolve a reference against the realm
+  it came from. Across realms, identity is the pair of realm and id, and
+  bare ids are not promised to be unique between two parties' realms.
 - **ERF-4.12** `corpus` MUST be written on every claim and MUST name a
   registered corpus. Changing it is a promotion or transfer; the change
   SHOULD be accompanied by a standing entry recording why.
@@ -558,7 +571,7 @@ and there is none to show yet.
   statement. The body SHOULD open by restating it; the validator compares
   the two (`ERF-6.9`). Beyond that restatement the body is the one
   operator-authored text on the record, and carries the working notes.
-- **ERF-4.13a** A claim MAY carry a `handle`, a compact spoken name for
+- **ERF-4.13a** A claim MAY carry a `short_name`, a compact spoken name for
   use in conversation and in cut documents: the `title` states the claim,
   the handle names it.
 - **ERF-4.13b** `families`, where present, MUST record topic-family
@@ -628,7 +641,7 @@ and there is none to show yet.
 
 The atom's checks stop at the finding. Whether a claim's atoms, taken
 together, actually support its statement is a further judgment, recorded in
-`backing_audit` with the same entry shape as `finding_audit`.
+`evidence_audit` with the same entry shape as `finding_audit`.
 
 - **ERF-4.19** The backing audit MUST ask the question the epistemic kind
   sets, because the kind is the backing contract. For an `observation`: do
@@ -720,11 +733,11 @@ searches:
     query: "^granted:|^  granted:"
     scope: "all *.md under the seven registered corpus [private claims dir]/ homes;
       305 claim and question files"
-    hits: "0"
+    hits_reported: "0"
   - tool: "grep -rn (BSD grep, macOS)"
     query: "granted (word-level, --include=*.md)"
     scope: "same seven [private claims dir]/ homes"
-    hits: "4 lines in 3 files; none a field use"
+    hits_reported: "4 lines in 3 files; none a field use"
 notable_results:
   - what: "The claims-tree doc-class granted dimension"
     note: "A render-layer field of one document class, documented in an
@@ -740,7 +753,7 @@ notable_results:
   does not satisfy this; yields are comparable only where instruments are
   named. An act MAY carry a `scope` naming the restriction that applied: a
   site filter, a date range, a corpus slice, or the depth inspected.
-- **ERF-4.28** `hits` MUST record each act's yield as the instrument
+- **ERF-4.28** `hits_reported` MUST record each act's yield as the instrument
   reported it, as text ("0", "3", "~120 reported, two pages inspected"); a
   record MUST NOT state precision the instrument did not give.
   `notable_results` is the curated subset worth keeping (near-misses with
@@ -748,7 +761,7 @@ notable_results:
   when a hit deserves quoting, and the full yield stays in the acts.
 - **ERF-4.29** A survey MUST be an immutable record of a conducted
   search: a re-run of the same sought is a new record, SHOULD name its
-  predecessor in `prior`, and its id SHOULD end with the conducted date.
+  predecessor in `prior_survey`, and its id SHOULD end with the conducted date.
   Staleness of a claim's survey backing is computed from `conducted`
   timestamps, never stored; how often a fruitful survey re-runs is
   pipeline policy, not format. The `title` MUST state what was sought. An
@@ -878,12 +891,12 @@ are not a stored vocabulary; see `ERF-6.5`.
 All machine-checkable. Types express what types can express; the validator
 checks the relations no type can see.
 
-- **ERF-6.1** Every reference MUST resolve: atoms in their registries,
-  claims, questions, and surveys in the registry namespace; `atoms_for`,
+- **ERF-6.1** Every reference MUST resolve: atoms in their corpora, claims,
+  questions, and surveys in the realm namespace; `atoms_for`,
   `atoms_against`, `edges.to`, `sub_questions`, `answered_by`, and
   `surveys` name existing records.
 - **ERF-6.2** Claim, question, and survey ids MUST be unique across every
-  corpus in the registry.
+  corpus in the realm.
 - **ERF-6.3** Every standing entry MUST have a `human:` actor and a
   non-empty `why`.
 - **ERF-6.4** Standings MUST be append-only; an edit or deletion of an
@@ -929,8 +942,8 @@ checks the relations no type can see.
 > *Note (non-normative):* on more than one operator. Two designs hold the
 > boundary when corpora are shared. First, records meet by reference rather
 > than by copy: a shared surface exposes records where they live, nothing
-> is imported by default, and identity across registries is the pair of
-> registry and id (`ERF-4.11`), so bare slugs never have to be globally
+> is imported by default, and identity across realms is the pair of realm
+> and id (`ERF-4.11`), so bare slugs never have to be globally
 > unique between parties. Second, standings never travel: a disposition is
 > computed inside one corpus from that corpus's own standings, and a
 > foreign record's home standings are visible as attributed context that is
@@ -956,14 +969,14 @@ checks the relations no type can see.
 
 - **ERF-7.1** The canonical interchange form MUST be the textual record:
   YAML frontmatter plus markdown body for claims and questions; YAML
-  entries in a registry document for atoms. A conforming store MUST
+  entries in a collection document for atoms. A conforming store MUST
   round-trip records through this form without loss.
-- **ERF-7.2** Files MUST self-describe: `type` and `corpus` are always
-  written on claim, question, and survey records, and no meaning lives
-  in a path.
-- **ERF-7.3** A collection document (an atom registry) MUST declare its
-  registry id and entry type in its own header; entries inherit both, and
-  the same atom serialized standalone materializes `type: atom`.
+- **ERF-7.2** Records MUST self-describe: `type` and `corpus` are written
+  on every record of every type, and no meaning lives in a path.
+- **ERF-7.3** A collection document MAY group records of one type in one
+  file. It carries no meaning of its own: every record inside states its
+  own `type` and `corpus`, and a record extracted from one is complete
+  without it.
 - **ERF-7.4** Empty lists MUST be omitted: a field's absence means none.
   Unknown keys are errors, not passengers.
 - **ERF-7.5** The event-time key MUST be `timestamp`, everywhere.
@@ -1061,7 +1074,7 @@ below that threshold.
 ## Security and privacy considerations
 
 - Classification is edge-checked. Each corpus carries a classification in
-  the registry, and the reference direction is constrained: a record in a
+  the corpus registry, and the reference direction is constrained: a record in a
   public corpus MUST NOT reference a record in a confidential corpus (the
   reverse is permitted). A compiled public document leaning on
   confidential material is a leak at build time; the validator's wall

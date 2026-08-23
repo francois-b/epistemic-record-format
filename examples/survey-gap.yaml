@@ -19,29 +19,29 @@ searches:
       AI memory layers and knowledge-graph-in-Markdown tools, graded
       against five epistemic capacities (provenance, check, standing,
       authorship, kinds and lifecycle)
-    hits: "19 tools graded; per-query yields not recorded"
+    hits_reported: "19 tools graded; per-query yields not recorded"
   - tool: "Claude Sonnet research subagent (web search plus primary-doc fetch, 30-40 tool calls)"
     query: >-
       capture-side tools (annotation, archiving, highlight capture) and
       checks shipped since July 2026 (entailment, grounding, cite-check)
-    hits: "25 tools and standards graded; per-query yields not recorded"
+    hits_reported: "25 tools and standards graded; per-query yields not recorded"
   - tool: "Claude Sonnet research subagent (web search plus primary-doc fetch, 30-40 tool calls)"
     query: >-
       judgment capture: dated human standing on claims, in forecasting
       platforms, argument platforms, digital-garden conventions, decision
       registers, verdict systems
-    hits: "15 searches run; ~20 platforms and conventions graded"
+    hits_reported: "15 searches run; ~20 platforms and conventions graded"
   - tool: "Claude Sonnet research subagent (web search plus primary-doc fetch, 30-40 tool calls)"
     query: >-
       lifecycle and ontology standards, document-class governance tooling,
       AI authorship marks in prose tools
-    hits: "~32 standards and tools graded; per-query yields not recorded"
+    hits_reported: "~32 standards and tools graded; per-query yields not recorded"
   - tool: "web search (within pass 1; query recorded verbatim in the scan)"
     query: '"asserted by" OR "created_by" human AI agent field markdown PKM tool'
-    hits: "nothing on-point (generic trust-score commentary, no shipped field)"
+    hits_reported: "nothing on-point (generic trust-score commentary, no shipped field)"
   - tool: "web search (within pass 1; query recorded verbatim in the scan)"
     query: '"knowledge graph" markdown "human verified"'
-    hits: "nothing on-point (academic KG-refinement papers, not personal tools)"
+    hits_reported: "nothing on-point (academic KG-refinement papers, not personal tools)"
 notable_results:
   - what: "Google Vertex Check Grounding API"
     note: >-
