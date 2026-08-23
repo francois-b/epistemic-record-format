@@ -1020,8 +1020,10 @@ checks the relations no type can see.
   adds, and it MUST NOT relax the sequence above.
 - **ERF-6.12b** Only the exact marker `[...]` MUST be treated as an
   omission, and it is the only wildcard. A bare `...` and a bare `…` are literal source
-  characters and MUST be matched literally (`ERF-4.5`). The normalized
-  quote MUST be split on `[...]`; every non-empty span MUST occur in the
+  characters and MUST be matched literally (`ERF-4.5`). The quote MUST be
+  split on `[...]` BEFORE normalization, because normalization may fold or
+  strip brackets and would otherwise destroy the marker; each span is then
+  normalized independently. Every non-empty span MUST occur in the
   normalized capture, in order and without overlap. A quote whose spans are
   all empty MUST fail rather than trivially pass. The text between two
   spans is unbounded by design: an elision marker is the author's assertion
