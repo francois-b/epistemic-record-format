@@ -4,7 +4,15 @@ Newest first. Requirement ids are stable once published: insertions use
 letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
 change lands here with a date.
 
-## v1.1.0 (2026-08-23)
+## Unreleased
+
+Everything below is pre-publication iteration. The format has not shipped a
+version yet, so these dated entries record how the design moved rather than
+what changed between releases; at first publication they become **v1.0** and
+version numbers start meaning something. The durable record of what was
+decided, and why, is the register in `DESIGN-HISTORY.md`.
+
+### 2026-08-23
 
 The question record type is removed. A minor-version change rather than a
 patch, because a record type leaving is a change to what the format is.
@@ -31,7 +39,7 @@ preserved: each of the 18 claims that bore on a question now says so in its
 working notes, in prose, naming the question and where it lives. The relation
 vocabulary stays at four.
 
-## v1.0.7 (2026-08-23)
+### 2026-08-23
 
 `bears-on` becomes the `bears_on` field and stops being a relation. This
 partially reverts v1.0.3 from earlier the same day.
@@ -57,7 +65,7 @@ The external reviewer caught the placement rather than the evidence, and
 said so explicitly: admitting the relation was not shown to be a mistake,
 adding a heterogeneous target to a claim-only interface was.
 
-## v1.0.6 (2026-08-23)
+### 2026-08-23
 
 `ERF-4.5` reserved `[...]` for an omission and said a bare `...` was a
 literal source character. `ERF-6.12b`, written the same day, treated any
@@ -81,7 +89,7 @@ pilot checker had a second one that the fix removes: it split on bare dots,
 which left stray brackets in every span of a `[...]` quote and would have
 failed all of them.
 
-## v1.0.5 (2026-08-23)
+### 2026-08-23
 
 `ERF-6.5` was not a total function. A claim whose current stances are all
 `against` matched none of its four branches, so the format's central
@@ -105,7 +113,7 @@ The earlier rule also read one `for` and one `withdrawn` as disagreement,
 reporting a contest that was not happening. That is fixed by the same
 discard.
 
-## v1.0.4 (2026-08-23)
+### 2026-08-23
 
 Six areas the reference consumer could not implement from the text alone.
 Every one was found by building `erf-view` against the specification rather
@@ -153,7 +161,7 @@ evidence, no standings, and no disposition, which is exactly why it stays
 out of the data model: nothing about it is adjudicated, and a reader
 disputes the claims it binds to rather than the prose.
 
-## v1.0.3 (2026-08-23)
+### 2026-08-23
 
 A fifth relation, `bears-on`, admitted on a forcing instance rather than on
 symmetry. It records that a claim bears on a question, it MUST target a
@@ -171,7 +179,7 @@ The lesson is recorded in the design history as the fourth reversal: a
 retirement is only as good as the coverage of the check that confirmed the
 disuse.
 
-## v1.0.2 (2026-08-23)
+### 2026-08-23
 
 `ERF-6.5` no longer breaks ties. It said the corpus owner's newest stance
 governed when stances differed, which contradicted the format's own
@@ -192,7 +200,7 @@ and computed at read time. A reader-safe summary of hidden evidence was
 considered and rejected: it is a second version of the truth to maintain,
 and an unfalsifiable claim of backing offered where it can least be checked.
 
-## v1.0.1 (2026-08-23) — nomenclature and self-description
+### 2026-08-23 — nomenclature and self-description
 
 Field names now carry the noun that tells a reader the type, the pattern
 `fetched_url` and `source_quality` already followed.
@@ -230,7 +238,7 @@ An atom id's leading token is a corpus prefix, not a registry prefix.
 corpus registry keeps its name and gains a definition that says it
 registers corpora, not sources.
 
-## v1.0 (2026-08-22)
+### 2026-08-22
 
 First published version. The format was extracted from a working practice
 rather than designed up front: roughly 740 audited atoms and 300 claims

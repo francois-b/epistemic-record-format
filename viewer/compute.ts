@@ -74,8 +74,14 @@ export function disposition(claim: Claim): DispositionReading {
 }
 
 /**
- * `ERF-6.8a`. Whether a reader can resolve an atom's backing. In a published
- * corpus, "can resolve" means the captured copy travelled with the records.
+ * Whether a reader can resolve an atom's backing: in a published corpus,
+ * whether the captured copy travelled with the records.
+ *
+ * This is the viewer's own choice, not a rule of the format. `ERF-6.8a`
+ * once required it and was retired on 2026-08-23, because v1 says nothing
+ * about how a claim is presented to a reader without the sources. Showing
+ * the gap is still the honest thing for a reader to see, so the reference
+ * consumer keeps doing it.
  */
 export function resolvable(atomId: string, c: LoadedCorpus): { ok: boolean; why: string } {
   const cap = c.captures.get(atomId);
@@ -92,7 +98,8 @@ export interface BackingReading {
   note: string;
 }
 
-/** What `ERF-6.8a` obliges a consumer to say before calling a claim backed. */
+/** What the viewer says before calling a claim backed. Its own rule, not the
+ *  format's: see the note on `resolvable` above. */
 export function backing(claim: Claim, c: LoadedCorpus): BackingReading {
   const ids = [...claim.atoms_for, ...claim.atoms_against];
   const ok = ids.filter((a) => resolvable(a, c).ok).length;

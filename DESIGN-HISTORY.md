@@ -86,8 +86,7 @@ measurements that decided each:
 
 ### Reversals worth recording
 
-Three decisions were made and unmade within the design period, each
-leaving a principle:
+Decisions made and unmade, each leaving a principle:
 
 1. **Body-first-sentence as the claim statement → title-normative.** The
    original rule made the body's first sentence canonical with the title
@@ -123,6 +122,16 @@ leaving a principle:
    it are separate questions, decided separately. The link's own name is
    narrower than `answers` because a claim can bear on a question for months
    without answering it.
+5. **The corpus narrowed twice in two days.** On 2026-08-22 it went from
+   three jobs to two: confidentiality and policy scope, with ownership
+   struck. On 2026-08-23 the second went too. The policy scope existed to
+   serve gates, chiefly the ship gate that decided whether a deliverable
+   could rest on unaudited atoms; when v1 ruled that the format specifies
+   records and bindings and leaves use to the consumer, the gates left and
+   the scope had nothing to attach to. A corpus is now a named body of work
+   with a confidentiality tier. Principle: a field justified by a mechanism
+   does not outlive the mechanism, and the second ruling is cheap only
+   because the first one wrote down what the field was for.
 
    The story ends the same day it was settled. The question record type was
    cut for scope hours later, so `bears_on` went with the only target it
@@ -291,87 +300,68 @@ mostly have better-resourced prior art in their own narrow lanes, plus
 two elements with none. The name is carried on that basis, and this
 document is the receipt.
 
-## Part III — Decided against, and deferred
+## Part III — The decision register
 
 A format's readers keep proposing what its authors already considered. This
-part exists so that a proposal can be checked against a ruling instead of
+register exists so a proposal can be checked against a ruling instead of
 re-argued, and so the reasons stay attached to the decisions. Things retired
-*after* being used live in the subtraction ledger above; this register holds
-what was considered and declined, and what waits on a named trigger.
+*after* being used also appear in the subtraction ledger above, with the
+measurement that decided them; this table is the scannable index.
 
-### Rejected
+Rows carry the date the ruling was taken. Versions are deliberately
+absent: before first publication they record iteration rather than
+release, and dates are what a reader can actually use. A decision
+that closes a proposal is recorded here in the same commit that implements
+it, on the same discipline the changelog already follows. A register nobody
+updates is worse than none, because it reads as complete.
 
-- **Degrees of belief on claims** (probabilities, confidence percentages):
-  invites false precision and averaging over judgments that were never
-  commensurable.
-- **Strength grades on held positions**: settledness is readable from tenure,
-  from disputes survived, and from evidence accumulated, so storing it
-  duplicates what the record already shows.
-- **A decision record type**: an active bet plus the standing that activated
-  it is the solo decision system; the adversarial reviewer's dissent is
-  preserved rather than resolved.
-- **Quorum, voting, and merge resolution**: permanently out of scope. What a
-  disagreement means is a judgment its owner makes, not a computation.
-- **A tie-break for disposition**: `contested` is the terminal reading of a
-  disagreement. No stance outranks another (v1.0.2).
-- **Reader-safe summaries of hidden evidence** ("rests on three primary
-  sources, two audited"): a second version of the truth to maintain, and an
-  unfalsifiable claim of backing offered exactly where a reader can least
-  check it.
-- **A typed vocabulary of reasons for negative standings**: measured against
-  every withdrawal in the reference practice; five existed, none carried
-  one, and four of the five actual reasons were absent from the proposed
-  list.
-- **Mechanical check results stored on records**: recomputable by anyone
-  holding the corpus and its captures, therefore derived, never a field.
-- **Splitting state into three fields**, and **multi-valued epistemic
-  kinds**: both from the adversarial review, both rejected as complexity
-  without a forcing instance.
-- **A lettered source-reliability scale** (Admiralty style) and **a
-  two-field split of source quality**: the literature records 87% of
-  two-axis ratings collapsing onto the diagonal, and letter grades measuring
-  exactly as fuzzy as English words.
-- **schema.org `Claim` export as a requirement**: consumption-side mapping
-  with no bearing on the record format. It may be written; it is not owed.
-- **A default query lens as a normative requirement**: consumer mechanics,
-  kept as advice in a note rather than as a rule.
-- **Topic tags on atoms**: measured rot, 201 distinct tags across 146 atoms,
-  more vocabulary than records.
-- **Requiring a register of the author's own positions**: the format permits
-  one; the reference practice deliberately keeps its author's positions
-  outside the format, and says so.
+### Declined
+
+| Decision | Ruled | Why |
+|:--|:--|:--|
+| Policies of any kind in the format | 2026-08-23 | v1 specifies records and the bindings between them; what anyone does with a corpus is the consumer's. Supersedes the earlier ruling that made the ship gate an invariant, and takes the audit policy, its aliases (audit intensity, verification bars), and the manifest's policy block with it. |
+| Presentation rules for readers without the sources (`ERF-6.8a`) | 2026-08-23 | How a claim is shown to someone who cannot open its backing is presentation, and presentation is the consumer's. The reference viewer still shows the gap, as its own choice. |
+| Degrees of belief on claims (probabilities, confidence scores) | design period | Invites false precision and averaging over judgments that were never commensurable. |
+| Strength grades on held positions | design period | Settledness is readable from tenure, disputes survived, and evidence accumulated. |
+| A decision record type | design period | An active bet plus its activating standing is the solo decision system. Reviewer dissent preserved. |
+| Mechanical check results stored on records | design period | Recomputable by anyone holding the corpus and its captures, therefore derived. |
+| Splitting state into three fields; multi-valued kinds | design period | Complexity with no forcing instance. From the adversarial review. |
+| Topic tags on atoms | design period | Measured rot: 201 distinct tags across 146 atoms. |
+| A lettered source-reliability scale; a two-field split of source quality | 2026-08-22 | 87% of two-axis ratings collapse to the diagonal; letter grades measure as fuzzy as words. |
+| Typed reasons on negative standings (`cause`) | 2026-08-22 | Five withdrawals existed, none carried one, and four of the five real reasons were absent from the proposed list. |
+| schema.org `Claim` export as a requirement | 2026-08-22 | Consumption-side mapping, no bearing on the record format. |
+| A default query lens as a requirement | 2026-08-22 | Consumer mechanics. Kept as advice in a note (`ERF-6.14` retired). |
+| Requiring a register of the author's own positions | 2026-08-22 | The format permits one; the reference practice deliberately keeps its author's positions outside it. |
+| Migrating an existing personal knowledge base into the format | 2026-08-22 | 109 entities, all documents rather than statements, revised about quarterly, and no claim ever leaned on one. |
+| Ownership as a corpus concern | 2026-08-22 | With one operator it distinguishes nothing; contractual ownership is an engagement fact, not a record field. |
+| Quorum, voting, and merge resolution | 2026-08-22 | What a disagreement means is a judgment its owner makes, not a computation. Permanent. |
+| Reader-safe summaries of hidden evidence | 2026-08-22 | A second version of the truth to maintain, and an unfalsifiable claim of backing offered where it can least be checked. |
+| A tie-break for disposition | 2026-08-22 | No stance outranks another. `contested` is terminal. |
+| `bears-on` as a fifth relation | 2026-08-23 | `edges` are claim-to-claim; every other record type a claim reaches has its own field. Became the `bears_on` field, then left with questions. |
+| The question record type | 2026-08-23 | 25 records across five corpora, every one `status: open`, `answered_by` never written once in a year. Cut to keep v1 shippable rather than to deny questions matter. |
+| `accepted` on an audit entry | 2026-08-23 | Zero uses across 1,642 audit entries, with 87 PARTIAL verdicts unaccepted. Per-entry acceptance asks for review at a granularity nobody works at; a disagreement with an auditor is a standing on the claim. |
+| A failed audit recorded as a verdict (`PARSE_ERROR`) | 2026-08-23 | An audit that produced nothing is an audit that did not happen. Tool failure is not a judgment. |
+| Optional capture unwrapping | 2026-08-23 | Measured: the same corpus failed at 19% without it and 9% with it, so an optional step decided one verdict in ten. Made mandatory instead. |
+| An enumerated list of substantive fields for `last_modified` | 2026-08-23 | A list that must move in lockstep with the schema, and lockstep failed three times in two days. |
 
 ### Deferred, each with the trigger that would revive it
 
-- **Non-text evidence payloads** (measurement, table, image): the first
-  non-text atom in real work.
-- **Per-attachment evidence roles**: the first atom that must sit in both
-  evidence lists at once.
-- **Atom lifecycle** (`withdrawn`, `superseded_by`): the first bad atom
-  discovered after it has been cited. This is also where an undercutting
-  defeater, evidence that a support no longer holds without arguing the
-  claim false, would be expressed.
-- **A capture manifest with content-hash identity**: a captures
-  reorganization, a same-URL revision collision, or any corpus sharing.
-- **A families registry** (definitions and rename history): the first family
-  split or rename that matters to an existing document.
-- **An actor registry**: a second human in a corpus.
-- **Declared perishability** (`stale_after`): a report that needs it.
-- **Structured bet settlement**: calibration across many settled bets, which
-  is also the day the one-union-versus-bet-as-type question gets decided
-  with usage data.
-- **Inference grouping** (joint premises, OR-of-ANDs): a lint or a cold
-  reader miscounting a joint premise set where it matters.
-- **A counter-survey mirror**: the first survey that must stand against a
-  claim rather than back one.
-- **A typed cause on withdrawals**: something that must filter withdrawals by
-  reason. Its vocabulary would then be derived from accumulated reasons
-  rather than invented ahead of them.
-- **Ownership as a format concern**: the multi-operator design, where whose
-  corpus is authoritative and who may admit records become real questions.
-- **Import provenance on copied records, and a declared deciding actor**: a
-  second human in a corpus.
-- **A relation for near-identical claims**: two parties holding the same
-  proposition at a shared boundary. Within one corpus, near-duplicates are
-  merged rather than related.
-
+| Deferred | Trigger |
+|:--|:--|
+| Non-text evidence payloads (measurement, table, image) | The first non-text atom in real work. |
+| Per-attachment evidence roles | The first atom that must sit in both evidence lists at once. |
+| Atom lifecycle (`withdrawn`, `superseded_by`) | The first bad atom found after citation. Also where an undercutting defeater would be expressed. |
+| A capture manifest with content-hash identity | A captures reorganization, a same-URL revision collision, or any corpus sharing. |
+| Content-addressed record ids | A second writer minting into a shared corpus, where check-before-write cannot prevent a collision. |
+| A families registry (definitions, rename history) | The first family split or rename that matters to an existing document. |
+| An actor registry | A second human in a corpus. |
+| Import provenance on copied records, and a declared deciding actor | A second human in a corpus. |
+| Declared perishability (`stale_after`) | A report that needs it. |
+| Structured bet settlement | Calibration across many settled bets. |
+| Inference grouping (joint premises) | A lint or a cold reader miscounting a joint premise set. |
+| A counter-survey mirror | The first survey that must stand against a claim rather than back one. |
+| A typed cause on withdrawals | Something that must filter withdrawals by reason. Its vocabulary would then be derived from accumulated reasons. |
+| A relation for near-identical claims | Two parties holding the same proposition at a shared boundary. |
+| Media-type extraction profiles for capture text | The first capture that is not text or markdown. |
+| A machine-readable audit policy schema | A second corpus with a genuinely different audit bar. |
+| The question record type's return | Questions that need a lifecycle, meaning someone actually marking one answered rather than just minting the claim that settles it. |

@@ -1,7 +1,7 @@
 ---
 title: "The Epistemic Record Format"
 subtitle: "Specification: the record types, the data model, and the invariants, stated so an implementer can build to them or diff an existing system against them."
-spec_version: 1.1.0
+spec_version: 1.0
 status: draft
 last_updated: 2026-08-23
 generated: 2026-08-22
@@ -10,7 +10,7 @@ model: claude-fable-5
 
 # The Epistemic Record Format
 
-Specification, v1.1.0. The abstract and status are in `README.md`;
+Specification, v1.0 (draft). The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way, and
 what the surrounding field holds, is the companion document
 `DESIGN-HISTORY.md`. The normative data model is the TypeScript file
@@ -51,7 +51,8 @@ Conformance is claimed per class, not against the whole document:
 - Consumer: a tool that reads records. Consumers are tolerant: a consumer
   MUST NOT reject a corpus over unknown fields, unknown types, or records
   it cannot interpret. It reads what it understands and preserves the rest
-  (the same stance the Open Knowledge Format takes).
+  as opaque data, reporting what it did not recognize (the same stance the
+  Open Knowledge Format takes).
 - Validator: a tool that checks. Binds section 6 in full.
 
 Strict producers, tolerant consumers: divergence is caught by validators
@@ -69,8 +70,8 @@ shown here.
   one body text.
 - *corpus*: a body of work owning records; a research program, an
   engagement, a venture, or the personal corpus. The unit of
-  confidentiality, and the unit the governing policies attach to (audit
-  intensity, verification bars, ship gates).
+  confidentiality, which is what the classification wall (`ERF-6.8`) is
+  drawn between.
 - *canonical store*: the one authoritative home of a corpus's records.
   Everything else (indexes, databases, embeddings) is a *projection*:
   derived, recomputable, never authoritative.
@@ -127,12 +128,12 @@ interface StandingEntry { timestamp: string; stance: Stance;
                          atoms_for: AtomId[]; atoms_against: AtomId[] } }
 interface AuditEntry { auditor: string;
                        verdict: "SUPPORTED" | "PARTIAL" | "UNSUPPORTED";
-                       timestamp: string; protocol: string; accepted?: true }
+                       timestamp: string; protocol: string }
 
 interface Atom {
   id: AtomId;                  // corpus prefix + number, e.g. kwg-117
   type: "atom";
-  corpus: CorpusId;            // confidentiality tier and governing policy
+  corpus: CorpusId;            // confidentiality tier
   finding: string;             // one sentence: what the quote shows
   quote: string;               // verbatim from the capture; [...] marks an omission
   citation_text: string;       // human-readable citation; never contains a URL
@@ -149,7 +150,7 @@ interface Atom {
 interface Claim {
   id: ClaimId;                 // unique across the realm's corpora
   type: "claim";
-  corpus: CorpusId;            // confidentiality and policy; mutable
+  corpus: CorpusId;            // confidentiality tier; mutable
   title: string;               // THE claim statement (normative)
   epistemic_kind: EpistemicKind;
   created: ActorStamp;
@@ -307,7 +308,6 @@ tool usually drafts and a human may author or repair.
 | `verdict` | SUPPORTED, PARTIAL, or UNSUPPORTED | the auditor | at the run | `ERF-4.9` |
 | `timestamp` | RFC 3339 | tool | at the run | `ERF-7.5` |
 | `protocol` | string | tool | at the run | `ERF-4.9` |
-| `accepted` | the literal `true`, optional | human | at the ruling | `ERF-4.9` |
 
 :::
 
@@ -361,8 +361,9 @@ Five rules govern every name in this model, present and future:
 - **ERF-4.4a** Every atom MUST have an entry in that mapping. An entry
   either gives the capture's path, or records that no capture is held and
   why. Absence MUST be explicit: a missing entry is a defect, not a signal,
-  because `ERF-6.8a` cannot distinguish "no capture exists" from "nobody
-  wrote it down", and a reader is owed that difference.
+  because a mapping is only checkable when it is complete: a validator can
+  tell a recorded absence from an omission, and cannot tell an omission
+  from an oversight.
 - **ERF-4.4b** An entry recording an absence MUST carry a reason from a
   closed set and a human-readable note. The set in use is
   `not-redistributable` (a licence permits reading but not republication)
@@ -463,11 +464,19 @@ One piece of evidence: a verbatim quote, a finding, and the trail.
   it. Verdicts rendered under different protocol versions MUST NOT be read
   as like for like, which is why the protocol travels with the verdict and
   why an auditor's identity (a hosted model id whose weights drift under a
-  stable name) is recorded beside it. A PARTIAL the operator rules
-  acceptable as recorded, the disagreement being where a caveat sits rather
-  than what the evidence shows, carries `accepted: true` on its entry. What
-  a verdict clears (which auditors, whether an LLM's verdict counts) is
-  policy the corpus owner sets, not a rule of the format.
+  stable name) is recorded beside it. A PARTIAL stays a PARTIAL: disagreeing with an
+  auditor is a judgment about the claim, recorded as a standing with its
+  reason, at the grain a person actually works at rather than as a flag on
+  a machine's output. What
+  a verdict clears, which auditors count and whether an LLM's counts at all, is
+  not this format's business: the record carries the verdicts, and what they
+  clear is decided by whoever uses it.
+- **ERF-4.9a** A verdict MUST be exactly one of `SUPPORTED`, `PARTIAL`, or
+  `UNSUPPORTED`. A failed, unparseable, or abandoned audit MUST NOT be
+  written as a verdict: an audit that produced nothing is an audit that did
+  not happen, the atom is unaudited, and the remedy is to run it again.
+  Recording a tool failure in the field that holds a judgment makes the two
+  indistinguishable to everything downstream.
 - **ERF-4.10** An atom MUST NOT carry a topic field.
 - **ERF-4.10a** An atom's `id` MUST be permanent: a mint-time prefix plus a
   sequence number (`kwg-117`), never renamed and never reused.
@@ -475,7 +484,7 @@ One piece of evidence: a verbatim quote, a finding, and the trail.
   true of, which is distinct from the date the atom recorded it: dated
   statistics carry it and timeless statements omit it. `limitations`
   records the caveat about the evidence, whether that is chain quality, a
-  capture block, a scope warning, or an accepted-PARTIAL note.
+  capture block, a scope warning, or a note on a PARTIAL verdict.
 
 > *Note (non-normative):* on `ERF-4.8a`: earlier operational anchors baked
 > dual-auditor confirmation into the tiers; that conflation is
@@ -658,13 +667,13 @@ together, actually support its statement is a further judgment, recorded in
 > stable name, is recorded with a protocol version rather than trusted
 > alone.
 
-> *Note (non-normative):* where the bar lives. Verification intensity is
-> corpus policy, not format. The record carries verdicts whatever the
-> policy; each corpus declares its audit policy (which auditors, what
-> clears) in the corpus registry, and may raise or lower it as models
-> change without any record changing shape. The format's own line is the
-> ship gate (`ERF-6.13`): consequence, not minting, is where verification
-> concentrates.
+> *Note (non-normative):* where the bar lives. Nowhere in this format. The
+> record carries its verdicts and says what they were; how many auditors
+> count, what clears, and whether an unaudited atom may appear in something
+> you send are all decisions for whoever is using the corpus. v1
+> deliberately specifies records and bindings and stops there. A practice
+> that wants a bar states it in its own governance, where it can change as
+> models change without any record changing shape.
 
 ### 4.5 The survey
 
@@ -878,8 +887,17 @@ checks the relations no type can see.
 - **ERF-6.1** Every reference MUST resolve: atoms in their corpora, claims
   and surveys in the realm namespace; `atoms_for`, `atoms_against`,
   `edges.to`, and `surveys` name existing records.
-- **ERF-6.2** Claim and survey ids MUST be unique across every corpus in
-  the realm.
+- **ERF-6.2** Every record id MUST be unique across every corpus in the
+  realm, regardless of record type: one atom, claim, or survey may hold a
+  given id, and no second record of any type may repeat it.
+- **ERF-6.2a** A producer MUST verify that an id is unused in the realm
+  before writing a record. The means are the substrate's: a directory that
+  cannot hold two files of one name, a unique index, a lookup against the
+  registry. The format states the invariant and declines to specify the
+  mechanism, because the mechanism is exactly what varies between
+  substrates (section 8).
+- **ERF-6.2b** A validator MUST reject a realm containing duplicate record
+  ids, regardless of record type.
 - **ERF-6.3** Every standing entry MUST have a `human:` actor and a
   non-empty `why`.
 - **ERF-6.4** Standings MUST be append-only; an edit or deletion of an
@@ -893,8 +911,9 @@ checks the relations no type can see.
   remaining means `contested`. Every input has exactly one reading. No
   stance outranks another and the format supplies no tie-break: `contested`
   is the terminal reading of a disagreement, not a state resolved by
-  arithmetic. Which disposition a *use* requires (a ship gate, a team
-  policy) is corpus or doc-class policy, not format.
+  arithmetic. What any particular use requires of a
+  disposition is not specified here: the format computes the reading and a
+  consumer decides what to do with it.
 - **ERF-6.5a** `rejected` and `retired` MUST NOT be conflated. A rejected
   claim is one every current holder judges false; a retired claim is one
   every current holder has left. Both are terminal readings and neither is
@@ -904,19 +923,35 @@ checks the relations no type can see.
   MUST terminate in non-argument leaves, none of them retired. Self-edges MUST NOT exist; `assumes` and `decomposes-into` MUST
   admit no cycles.
 - **ERF-6.7** `conflicts-with` MUST be stored once per pair.
-- **ERF-6.8** A claim in a public corpus MUST NOT reference records
-  (edges or evidence) in a confidential corpus. Confidential MAY cite
-  public; never the reverse. Classification per the corpus registry.
-- **ERF-6.8a** A consumer MUST NOT present a claim as backed to a reader
-  who cannot resolve that backing. Whether a reader can resolve a record's
-  evidence follows from what that reader may access and from the corpora
-  holding the evidence, so it is computed at read time and never stored.
-  How the gap is shown (a count, a marker, a note) is the consumer's
-  choice; concealing it is not.
+- **ERF-6.8** A record MUST NOT reference a record whose classification is
+  narrower than its own, in edges or in evidence. A narrower corpus MAY
+  cite a more open one; never the reverse.
+- **ERF-6.8b** The comparison in `ERF-6.8` MUST be evaluated against the
+  ordered classification levels the realm's corpus registry declares
+  (`ERF-8.3`). Without a declared order the wall is not machine-checkable,
+  because nothing tells a validator that one label is narrower than
+  another; two deployments may use different vocabularies, and neither is
+  wrong.
+> *Note (non-normative):* `ERF-6.8a` is a retired id and is not reused. It
+> required a consumer not to present a claim as backed to a reader who
+> could not resolve that backing. Withdrawn 2026-08-23: v1 says nothing
+> about how a claim is shown to a reader who lacks the source material.
+> That is a question about presentation, and presentation is the
+> consumer's.
 - **ERF-6.9** `title` and the body's opening statement MUST agree.
 - **ERF-6.10** Staleness MUST be computed, never stored: a
   `finding_audit`, `evidence_audit`, or binding older than the last change
   to what it judged is flagged stale.
+- **ERF-6.10a** Any change to a record MUST set `last_modified` to a
+  timestamp later than its `created` and later than any prior
+  `last_modified`. The one exception: appending to an append-only list
+  (`standings`, `finding_audit`, `evidence_audit`) MUST NOT advance it, or
+  every audit and every stance would invalidate itself at the moment it was
+  recorded. A record never edited since minting correctly carries no
+  `last_modified` at all.
+
+> *Note (non-normative):* the rule is deliberately blunt rather than enumerating which fields are substantive. An enumerated list is one more thing that must move in lockstep with the schema, and this format's own record shows that lockstep failing three times in two days. Over-stamping costs an unnecessary re-audit; under-stamping shows a current verdict on a finding that has since moved, which is the failure that matters.
+
 - **ERF-6.11** A validator MUST flag as unbacked an `observation` someone
   stands on with empty `atoms_for` and empty `surveys`, and such an
   `argument` with no edges (the computed warning a render shows).
@@ -943,10 +978,31 @@ checks the relations no type can see.
   Case MUST NOT be folded. Case is part of a verbatim quote, and folding it
   lets a mis-cased quote pass a check whose whole job is fidelity.
 
-  A consumer MAY additionally unwrap markup its capture format introduced
-  (link syntax to its link text, attribute blobs, blockquote markers) when
-  the same unwrapping is applied to both sides; it MUST document what it
-  adds, and it MUST NOT relax the sequence above.
+  Steps 1 through 10 above run AFTER the markup-unwrapping steps below,
+  which are equally mandatory. Unwrapping was optional until 2026-08-23 and
+  is not any longer: measured over one corpus, running the sequence without
+  it moved the failure rate from 9% to 19%, so an optional step decided the
+  verdict on roughly one atom in ten and two conforming tools could disagree
+  about the same quote. The unwrapping steps, in order, before step 1:
+
+  - a. Markdown link syntax reduces to its link text.
+  - b. Attribute blobs in braces are removed.
+  - c. Parenthesized link targets are removed: absolute, protocol-relative,
+       root-relative, and fragment-only.
+  - d. Blockquote markers at the start of a line are removed, with one
+       following space if present.
+  - e. Square brackets, straight double quotes, and the symbols `®`, `™`,
+       `©`, `^`, and `\` are removed.
+  - f. A space before `,` `.` `;` `:` `!` `?` is removed, an artifact of
+       document export.
+
+  These assume a text or markdown capture, which is what every capture in
+  the reference practice is. A capture in another format (a PDF, an HTML
+  file, a spreadsheet) has no defined conversion to comparison text, and
+  specifying one per media type is the successor design, deferred until the
+  first capture that is not text. A validator facing a capture whose format
+  it cannot convert MUST report the check as unavailable rather than pass or
+  fail it.
 - **ERF-6.12b** Only the exact marker `[...]` MUST be treated as an
   omission, and it is the only wildcard. A bare `...` and a bare `…` are literal source
   characters and MUST be matched literally (`ERF-4.5`). The quote MUST be
@@ -958,10 +1014,27 @@ checks the relations no type can see.
   spans is unbounded by design: an elision marker is the author's assertion
   that they removed material, and whether the removal misleads is a
   judgment for the audit, not a distance a validator can measure.
-- **ERF-6.13** A deliverable MUST NOT rest on atoms that are unaudited or
-  audit-doubted under the corpus's declared audit policy. Verification
-  state is recorded on records, the bar is policy, and this ship gate is
-  where the two meet.
+> *Note (non-normative):* `ERF-6.13` is a retired id and is not reused. It
+> was a ship gate: a deliverable must not rest on unaudited or
+> audit-doubted atoms under a bar the corpus declared. It was withdrawn on
+> 2026-08-23, and the declared bar went with it. v1 specifies records and
+> the bindings between them; what may ship, what clears, and what an
+> unaudited atom is worth are questions for whoever holds the corpus, not
+> for the format that stores it.
+> *Note (non-normative):* on enforcing uniqueness. Detection is mechanical
+> and belongs to the validator; prevention at mint belongs to the producer;
+> concurrent minting is addressed by neither. Two writers, or two git
+> branches, can each mint the same next sequence number and merge without
+> conflict, because the additions touch different lines of different files.
+> This cannot bite a single sequential writer, which is the reference
+> practice, and it becomes real with a second person minting into a shared
+> corpus, the same trigger that holds the multi-operator mechanics. The
+> structural answer, when it stops being hypothetical, is content-addressed
+> identity in the nanopublication Trusty URI shape, already deferred behind
+> corpus sharing: an id derived from a record's content cannot collide by
+> construction, which dissolves the problem rather than detecting it
+> afterwards.
+
 > *Note (non-normative):* on `rejected`, added 2026-08-23. The earlier rule
 > named four readings and left a legal input unnamed: a claim whose current
 > stances are all `against` matched none of them, so two conforming
@@ -1001,18 +1074,6 @@ checks the relations no type can see.
 > disagreement means is a judgment its owner makes, not one the format
 > computes.
 
-> *Note (non-normative):* on asymmetric visibility. `ERF-6.8` governs what
-> a record may rest on inside a corpus. It does not govern what a reader
-> sees when a reference crosses a boundary. A claim resting legally on its
-> own corpus's evidence can still reach a reader who can open none of it,
-> and at that point a backed claim and a bare assertion look the same.
-> Recording a reader-safe summary of hidden evidence ("three primary
-> sources, two audited") is the tempting fix and is rejected here: it is a
-> second version of the truth to maintain, and it is an unfalsifiable claim
-> of backing offered exactly where the reader is least able to check it.
-> When the evidence cannot be shown, the honest move is to present the
-> claim as a position rather than as a backed claim.
-
 > *Note (non-normative):* on default lenses: tools are advised to return
 > claims whose disposition is active unless a wider lens (proposals,
 > contested, retired) is explicitly requested, so consumers of one corpus
@@ -1035,7 +1096,9 @@ checks the relations no type can see.
   own `type` and `corpus`, and a record extracted from one is complete
   without it.
 - **ERF-7.4** Empty lists MUST be omitted: a field's absence means none.
-  Unknown keys are errors, not passengers.
+  A producer MUST NOT originate a field the declared `spec_version` does
+  not define. An unknown key is a producer validation error, caught by a
+  validator, and never a consumer's licence to refuse (`ERF-7.4b`).
 - **ERF-7.4a** A reader MUST materialize an omitted list-typed field as an
   empty list. An omitted list means none, never unknown, so a record that
   omits one is complete rather than partial. This applies to
@@ -1044,21 +1107,34 @@ checks the relations no type can see.
   data model types these fields as required because they are always present
   in a loaded record; the serialization omits them because a file should
   not spend a line saying nothing.
+- **ERF-7.4b** A consumer MUST preserve unknown fields and unknown record
+  types as opaque data, MUST report them, and MUST NOT reject a corpus
+  solely because it contains them. Strictness belongs to the producer and
+  detection to the validator; a consumer that refuses what it does not
+  recognize breaks forward compatibility for everything downstream of it.
 - **ERF-7.5** The event-time key MUST be `timestamp`, everywhere.
 - **ERF-7.6** Actor ids MUST follow the attribution convention of
   section 2; writing and confirming are separate acts in separate fields.
 - **ERF-7.7** A corpus MUST carry a manifest. It MUST declare `id` (the
   corpus id), `title` (for a person), `spec_version` (the version its
   records conform to), and `classification` (the confidentiality tier the
-  corpus registry records). It MAY declare a `policy` block, whose contents
-  are that corpus's own bars (an audit bar, a ship gate, an age bar for
-  absence backing) and never the format's, and it MAY name an `owner`, the
-  actor who sets that policy.
-- **ERF-7.7a** A consumer MUST refuse a corpus whose `spec_version` it does
-  not support, and MUST say so. Reading a corpus under the wrong version is
-  worse than refusing it, because the failure is silent: fields shift
-  meaning between versions and nothing in the file announces the mismatch.
-  Migrations between versions are explicit.
+  corpus registry records). It MAY name an `owner`, the actor
+  responsible for the corpus. It declares no bars or gates: v1 specifies
+  what records mean and how references resolve, and leaves use to the
+  consumer.
+- **ERF-7.7a** A consumer MAY refuse a corpus whose MAJOR `spec_version` it
+  does not support, and MUST say so when it does. For an unsupported MINOR
+  version it MUST either preserve unrecognized content losslessly or refuse
+  with an explicit diagnostic; silently dropping what it does not
+  understand is forbidden. Reading a corpus under the wrong major version
+  is worse than refusing it, because the failure is silent: fields shift
+  meaning and nothing in the file announces the mismatch. Migrations
+  between majors are explicit.
+- **ERF-7.7b** A MAJOR increment MUST mean a change that makes a
+  conforming corpus of the previous major unreadable, rather than merely
+  under-interpreted. A MINOR increment adds or refines what an older
+  consumer can safely ignore. The distinction is what `ERF-7.7a` hangs on:
+  without it, "unsupported version" has no agreed consequence.
 
 > *Note (non-normative):* on `ERF-7.5`: `on` is a YAML 1.1 boolean; the
 > key round-tripped as `True` through standard parsers and was renamed
@@ -1074,7 +1150,9 @@ checks the relations no type can see.
   in git are the reference implementation (history and diffing for free);
   a record's body is one more field in a database.
 - **ERF-8.3** A deployment MUST keep a corpus registry: corpus id, home,
-  classification, purpose. A corpus travels as a directory or archive of
+  classification, purpose. The registry MUST declare the realm's
+  classification levels as an ordered list, most open first, and every
+  corpus's `classification` MUST be a member of it. A corpus travels as a directory or archive of
   its records and captures; a sensitive corpus MAY publish a redacted cut
   through the same machinery.
 
@@ -1102,6 +1180,11 @@ A format without these stays an essay:
   suffixes (`ERF-4.8a`), retired ids are never reused, and every change
   lands in `CHANGELOG.md` with a date.
 
+
+A decision that closes a proposal, whether declining it or deferring
+it behind a trigger, is recorded in the design history's register in the
+same commit that implements it. A register nobody updates reads as
+complete and is worse than none.
 ## Related formats (non-normative)
 
 The full survey and the format's design history (what was tried, measured,

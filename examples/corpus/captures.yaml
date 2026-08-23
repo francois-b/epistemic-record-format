@@ -2,9 +2,8 @@
 #
 # The mechanical check reads the capture, never the live web. Where a
 # capture cannot ship, the entry says so explicitly rather than going
-# silently absent: an unresolvable backing is a fact a reader is entitled
-# to (`ERF-6.8a`), and a missing key would be indistinguishable from an
-# oversight.
+# silently absent (`ERF-4.4a`): a mapping is only checkable when it is
+# complete, and a missing key is indistinguishable from an oversight.
 #
 # `path` is relative to this file. `status: shipped` means the copy is in
 # this repository and the quote check runs. Any other status means the

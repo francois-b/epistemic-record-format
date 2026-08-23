@@ -6,21 +6,7 @@
 
 id: erf-example
 title: "ERF example corpus"
-spec_version: 1.0.4
+spec_version: 1.0
 classification: public
-
-# Policy is corpus-level, never format-level (ERF-4.9, ERF-6.13). These are
-# this corpus's declared bars, not the specification's.
-policy:
-  # What clears an atom's finding for use in a deliverable.
-  audit_bar: "two SUPPORTED verdicts from distinct auditors, or one PARTIAL
-    the owner has accepted"
-  # What a claim must compute to before it may carry weight in a shipped
-  # document (ERF-6.13).
-  ship_gate: "disposition active, and every atom it rests on clears the
-    audit bar"
-  # Absence backing ages faster than presence backing; a report flags gap
-  # claims whose newest survey is older than this.
-  survey_age_bar: "180 days"
 
 owner: "human:fbouet"

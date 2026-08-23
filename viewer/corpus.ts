@@ -40,7 +40,6 @@ export interface CorpusManifest {
   spec_version: string;
   classification: string;
   owner?: string;
-  policy?: Record<string, string>;
 }
 
 export interface LoadedCorpus {

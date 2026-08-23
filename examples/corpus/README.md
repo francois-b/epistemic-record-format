@@ -62,9 +62,9 @@ Unverified is not permission, so nothing shipped.
 
 `captures.yaml` records each one with its status and the reason. The viewer
 reads that file and, on every claim resting on an atom whose capture did not
-ship, says so instead of presenting the claim as backed. That behaviour is
-`ERF-6.8a`, and this corpus exercises it thoroughly by accident of its own
-sourcing.
+ship, says so instead of presenting the claim as backed. That is the viewer's own
+choice rather than a rule of the format, and this corpus exercises it
+thoroughly by accident of its own sourcing.
 
 Closing the gap needs one atom over an openly licensed source: a W3C
 document, a United States federal publication, a Creative Commons article,

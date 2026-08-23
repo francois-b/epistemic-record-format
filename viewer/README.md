@@ -38,7 +38,7 @@ of whether the rules are implementable as written.
 | Reading | Rule |
 |:--|:--|
 | Disposition, with an explanation | `ERF-6.5` |
-| Whether a reader can resolve a claim's backing | `ERF-6.8a` |
+| Whether a reader can resolve a claim's backing | the viewer's own choice |
 | The mechanical quote check | `ERF-6.12` |
 | Stale verdicts | `ERF-6.10` |
 | The unbacked warning | `ERF-6.11` |
@@ -67,3 +67,10 @@ worth closing in the specification rather than in this file.
 - **Health** claims with no evidence, uncited atoms, unaudited atoms, failed
   and unrunnable quote checks, dangling references, and records that diverge
   from the normative model
+
+One reading in that table is not a rule of the format. Showing whether a
+reader can resolve a claim's backing was `ERF-6.8a` until 2026-08-23,
+when it was retired: v1 says nothing about how a claim is presented to
+someone without the sources. The viewer keeps doing it because it is the
+honest thing for a reader to see, which makes it a demonstration of a
+consumer choosing to show more than the specification asks.

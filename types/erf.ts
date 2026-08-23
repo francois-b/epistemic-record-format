@@ -1,6 +1,6 @@
 /**
  * The Epistemic Record Format (ERF): normative data model.
- * v1.1.0, 2026-08-23.
+ * v1.0, 2026-08-23. Draft; not yet published.
  *
  * This file is the normative data model of the specification (SPEC.md,
  * section 3, which carries an inline mirror of it; where the two differ,
@@ -113,8 +113,6 @@ export interface AuditEntry {
   /** The versioned procedure that produced the verdict; verdicts under
    *  different protocols are not comparable. */
   protocol: string;
-  /** Operator ruling that a PARTIAL stands as recorded. */
-  accepted?: true;
 }
 
 // ---------------------------------------------------------------------------
@@ -126,7 +124,7 @@ export interface Atom {
   /** Corpus prefix + number, e.g. kwg-117. */
   id: AtomId;
   type: "atom";
-  /** Confidentiality tier and governing policy (ERF-7.2). */
+  /** Confidentiality tier (ERF-7.2). */
   corpus: CorpusId;
   /** One sentence: what the quote shows (ERF-4.6). */
   finding: string;
@@ -155,7 +153,7 @@ export interface Claim {
   /** Unique across the realm's corpora (ERF-4.11). */
   id: ClaimId;
   type: "claim";
-  /** Confidentiality tier and governing policy; mutable where identity is not (ERF-4.12). */
+  /** Confidentiality tier; mutable where identity is not (ERF-4.12). */
   corpus: CorpusId;
   /** THE claim statement (normative, ERF-4.13). */
   title: string;

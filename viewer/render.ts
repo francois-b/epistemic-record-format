@@ -215,7 +215,7 @@ export function renderClaim(cl: Claim, c: LoadedCorpus): string {
 
 ${b.presentableAsBacked
   ? `<div class="okbox">Every atom this claim rests on can be opened here.</div>`
-  : `<div class="warnbox"><b>Shown as a position, not as backed evidence.</b><br>${esc(b.note)}. Presenting it as backed to a reader who cannot open the backing is what <span class="id">ERF-6.8a</span> forbids.</div>`}
+  : `<div class="warnbox"><b>Shown as a position, not as backed evidence.</b><br>${esc(b.note)}. The viewer will not present a claim as backed to a reader who cannot open the backing.</div>`}
 
 ${unbacked(cl) ? `<div class="warnbox">Someone stands on this claim while it carries no evidence of the kind its epistemic kind owes (<span class="id">ERF-6.11</span>).</div>` : ""}
 
@@ -265,7 +265,7 @@ ${a.limitations ? `<h3>Limitations</h3><p>${esc(a.limitations.trim())}</p>` : ""
 ${a.finding_audit.length === 0
   ? `<div class="warnbox">No verdict has been recorded on this atom. The finding has never been checked against the quote by any auditor.</div>`
   : `<table><tr><th>Auditor</th><th>Verdict</th><th>When</th><th>Protocol</th></tr>${a.finding_audit.map((v) =>
-      `<tr><td>${esc(v.auditor)}</td><td>${esc(v.verdict)}${v.accepted ? " (accepted)" : ""}</td><td>${esc(v.timestamp)}</td><td><span class="id">${esc(v.protocol)}</span></td></tr>`).join("")}</table>
+      `<tr><td>${esc(v.auditor)}</td><td>${esc(v.verdict)}</td><td>${esc(v.timestamp)}</td><td><span class="id">${esc(v.protocol)}</span></td></tr>`).join("")}</table>
      <p class="sub">Verdicts under different protocol versions are not comparable as like for like, which is why the protocol travels with each one.</p>`}
 ${staleAudits(a) ? `<div class="warnbox">A verdict here predates the last change to the atom (<span class="id">ERF-6.10</span>).</div>` : ""}
 
@@ -298,7 +298,7 @@ export function renderCapture(a: Atom, c: LoadedCorpus, captureText: string | nu
 ${chk.state === "pass" ? `<div class="okbox"><b>Quote check passes.</b><br>${esc(chk.detail)}</div>` : ""}
 ${chk.state === "fail" ? `<div class="warnbox"><b>Quote check fails.</b><br>${esc(chk.detail)}</div>` : ""}
 ${chk.state === "uncheckable" ? `<div class="warnbox"><b>The check cannot run here.</b><br>${esc(chk.detail)}${
-  cap?.reason ? `<br><br>${esc(cap.reason)}` : ""}<br><br>This is not a defect in the record. The atom names its source and its locator, and the check runs wherever the captured copy is held. It cannot run in a published copy that may not carry someone else's text, and saying so is what <span class="id">ERF-6.8a</span> requires instead of quietly showing the claim as backed.</div>` : ""}
+  cap?.reason ? `<br><br>${esc(cap.reason)}` : ""}<br><br>This is not a defect in the record. The atom names its source and its locator, and the check runs wherever the captured copy is held. It cannot run in a published copy that may not carry someone else's text, and saying so is this viewer's choice, in preference to quietly showing the claim as backed.</div>` : ""}
 
 <h3>The quote</h3>
 <blockquote class="q">${esc(a.quote.trim())}</blockquote>

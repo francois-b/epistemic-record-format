@@ -4,7 +4,7 @@ The Epistemic Record Format (ERF) is a plain-text record format for bringing rig
 
 ## Status
 
-This is version 1.1.0 (August 23, 2026), extracted from a working practice
+This is version 1.0 (draft, August 2026), extracted from a working practice
 rather than designed in advance: roughly 740 audited atoms and 300 claims
 across seven corpora preceded the specification, and a pilot
 ran the records on a third-party substrate before it was written.
@@ -67,9 +67,9 @@ computes to `proposal`, because nobody has stood behind any of them and the
 format never infers a position from the strength of the evidence. And none
 of the captured copies could be republished, mostly for copyright reasons,
 so the quote check cannot run there. The viewer says so on every claim
-rather than presenting an unresolvable backing as backing, which is what
-`ERF-6.8a` requires. The demonstration is weaker for it and honest about
-why.
+rather than presenting an unresolvable backing as backing. That is the
+viewer's own choice, not a rule of the format, which says nothing about
+presentation. The demonstration is weaker for it and honest about why.
 
 ## Documents
 
