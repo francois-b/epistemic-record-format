@@ -51,6 +51,27 @@ back), so a claim that something is absent, niche, or well-covered rests
 on a citable record of the search instead of an unrecorded impression.
 Absence is evidenced by surveys; presence by atoms.
 
+## Seeing it work
+
+[`examples/corpus/`](examples/corpus/) is a small corpus of real records,
+copied unchanged from a working practice: five atoms, five claims, three
+surveys, a question, and a narrative whose passages bind to the claims they
+rest on. [`viewer/`](viewer/) renders it to static HTML.
+
+```
+cd viewer && npm install
+npx tsx erf-view.ts ../examples/corpus -o ../examples/site
+```
+
+Two things in that corpus are worth knowing before you look. Every claim
+computes to `proposal`, because nobody has stood behind any of them and the
+format never infers a position from the strength of the evidence. And none
+of the captured copies could be republished, mostly for copyright reasons,
+so the quote check cannot run there. The viewer says so on every claim
+rather than presenting an unresolvable backing as backing, which is what
+`ERF-6.8a` requires. The demonstration is weaker for it and honest about
+why.
+
 ## Documents
 
 | File | What it is |
@@ -59,7 +80,8 @@ Absence is evidenced by surveys; presence by atoms.
 | [`types/erf.ts`](types/erf.ts) | The normative data model as a compiling TypeScript file; `SPEC.md` carries an inline mirror. |
 | [`DESIGN-HISTORY.md`](DESIGN-HISTORY.md) | Non-normative companion: how the format got this way (the subtraction ledger, the reversals) and the prior-art survey. |
 | [`CHANGELOG.md`](CHANGELOG.md) | Change history, newest first. |
-| [`examples/`](examples/) | Real records from a working corpus, as standalone valid YAML: two atoms (a book source and a web source), a claim, a question, and three surveys (a gap survey with limitations, a mixed web-plus-private-corpus survey backing a density reading, and a closed-corpus survey where absence is conclusive). |
+| [`examples/`](examples/) | Single-record examples as standalone YAML, plus [`examples/corpus/`](examples/corpus/), a small complete corpus of real records exercising every record type, and [`examples/site/`](examples/site/), that corpus rendered. |
+| [`viewer/`](viewer/) | `erf-view`, the reference consumer: a TypeScript static-site generator that imports the normative model and computes every derived reading from the specification text. |
 | [`tools/lint-spec-style.py`](tools/lint-spec-style.py) | The style lint the spec itself is held to (requirement-block shape, note form, no em dashes in prose). Run: `python3 tools/lint-spec-style.py`. |
 
 ## License

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI-era knowledge-work pains are being named bottom-up in three disconnected communities (workslop, verification bottleneck, context rot); no public voice connects them to each other or to the governance traditions</title>
+<style>
+:root { --ink:#1a1a1a; --muted:#5a5550; --mutedlt:#a5a09a; --rule:#d8d3cc;
+  --rulelt:#eae6e0; --accent:#1a3a6e; --highlight:#fcf6ec; --codebg:#fefcf8;
+  --paper:#ffffff; --warn:#8a4b1e; --good:#1f5c3d;
+  --base:16.5px; --measure:calc(42 * var(--base)); --gutter:calc(1.4 * var(--base)); }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--paper); color:var(--ink); font-size:var(--base);
+  font-family: Literata, Georgia, 'Iowan Old Style', serif; line-height:1.55; }
+.topbar { font-family: Inter, -apple-system, 'Helvetica Neue', sans-serif;
+  font-size:11.5px; color:var(--muted); border-bottom:1px solid var(--rule);
+  padding:7px 20px; background:var(--paper); position:sticky; top:0; z-index:2; }
+.topbar a { color:var(--muted); margin-right:1.1em; }
+.topbar a:hover { color:var(--accent); }
+main { max-width:var(--measure); margin:0 auto; padding:2.4em var(--gutter) 4em; }
+footer { max-width:var(--measure); margin:0 auto; padding:1.1em var(--gutter) 2.5em;
+  color:var(--muted); font-size:12px; border-top:1px solid var(--rulelt);
+  font-family: Inter, -apple-system, sans-serif; }
+a { color:var(--accent); text-decoration:none; }
+a:hover { text-decoration:underline; }
+h1 { font-size:1.55em; font-weight:700; margin:0 0 .35em; line-height:1.25; }
+h2 { font-size:1.16em; font-weight:700; color:var(--accent); margin:2.4em 0 .9em;
+  padding-top:.9em; border-top:1px solid var(--rule); }
+h3 { font-family: Inter, -apple-system, sans-serif; font-size:.9em;
+  text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:2em 0 .8em; }
+.sub { font-family: Inter, -apple-system, sans-serif; font-size:.82em;
+  color:var(--muted); margin:0 0 1.8em; }
+.id { font-family: Menlo, ui-monospace, monospace; font-size:.78em; color:var(--muted); }
+.chips { font-family: Inter, -apple-system, sans-serif; font-size:.76em;
+  color:var(--muted); margin:.5em 0 1.4em; }
+.chip { display:inline-block; border:1px solid var(--rule); border-radius:2px;
+  padding:1px 7px; margin:0 .35em .35em 0; background:var(--codebg); }
+.chip.d-active { border-color:var(--good); color:var(--good); }
+.chip.d-contested { border-color:var(--warn); color:var(--warn); }
+.chip.d-proposal { border-color:var(--mutedlt); }
+.chip.d-retired { color:var(--mutedlt); }
+.because { background:var(--highlight); border-left:2px solid var(--rule);
+  padding:.7em 1em; margin:.2em 0 1.6em; font-size:.9em; }
+.because b { font-family: Inter, sans-serif; font-size:.85em; text-transform:uppercase;
+  letter-spacing:.05em; color:var(--muted); display:block; margin-bottom:.3em; }
+.warnbox { border-left:2px solid var(--warn); background:#fdf7f2; padding:.7em 1em;
+  margin:1.2em 0; font-size:.9em; color:var(--warn); }
+.okbox { border-left:2px solid var(--good); background:#f4f9f6; padding:.7em 1em;
+  margin:1.2em 0; font-size:.9em; color:var(--good); }
+blockquote.q { margin:.6em 0 1.2em; padding:.7em 1em; background:var(--codebg);
+  border-left:2px solid var(--accent); font-size:.95em; }
+table { border-collapse:collapse; width:100%; font-size:.86em;
+  font-family: Inter, -apple-system, sans-serif; margin:.6em 0 1.6em; }
+th, td { text-align:left; padding:.42em .6em; border-bottom:1px solid var(--rulelt);
+  vertical-align:top; }
+th { font-weight:600; color:var(--muted); border-bottom:1px solid var(--rule); }
+ul.plain { list-style:none; padding-left:0; }
+ul.plain li { padding:.3em 0; border-bottom:1px solid var(--rulelt); }
+.ledger { font-size:.9em; }
+.ledger .row { border-left:2px solid var(--rule); padding:.5em .9em; margin:.5em 0;
+  background:var(--codebg); }
+.ledger .meta { font-family: Menlo, ui-monospace, monospace; font-size:.78em;
+  color:var(--muted); }
+.bind { background:var(--highlight); border-bottom:1px dotted var(--accent);
+  padding:0 .12em; }
+.bindnote { font-family: Inter, sans-serif; font-size:.72em; color:var(--muted);
+  display:block; margin:.2em 0 1.1em; }
+mark { background:#fff2b8; padding:0 .1em; }
+pre.capture { white-space:pre-wrap; font-family: Menlo, ui-monospace, monospace;
+  font-size:.78em; line-height:1.6; background:var(--codebg); padding:1em;
+  border:1px solid var(--rulelt); overflow-x:auto; }
+p { margin:0 0 1em; }
+</style></head>
+<body>
+<nav class="topbar"><a href="index.html">ERF example corpus</a><a href="health.html">health</a></nav>
+<main>
+<h1>AI-era knowledge-work pains are being named bottom-up in three disconnected communities (workslop, verification bottleneck, context rot); no public voice connects them to each other or to the governance traditions</h1>
+<p class="sub"><span class="id">three-vocabularies-zero-synthesis</span> &middot; claim &middot; observation</p>
+<div class="chips">
+  <span class="chip d-proposal">proposal</span>
+  
+</div>
+
+<div class="because"><b>Why this disposition</b>No one has taken a stance, so the claim is a proposal. The format never infers a position from the strength of the evidence.</div>
+
+<div class="warnbox"><b>Shown as a position, not as backed evidence.</b><br>no evidence attached. Presenting it as backed to a reader who cannot open the backing is what <span class="id">ERF-6.8a</span> forbids.</div>
+
+
+
+
+
+
+<h3>Relations</h3><ul class="plain"><li><span class="id">supports</span> &rarr; <a href="claim-lawyers-lack-personal-compounding-km.html">Individual lawyers have no compounding personal KM for their own work product</a></li></ul>
+
+<h3>Standings</h3>
+<p class="sub">The ledger is empty. Nobody has stood behind this claim or withdrawn from it, which is why it computes to a proposal.</p>
+
+<h2>The record</h2>
+<p>The claim: within roughly a year, three separate communities independently coined names for the pains this corpus catalogs — &quot;workslop&quot; (BetterUp × Stanford via HBR, Sept 2025; reached WEF; = production outruns judgment, E/A families) · &quot;the verification bottleneck&quot; (software engineering, Farley et al.; = [pain] stated verbatim) · &quot;context rot&quot; (Chroma, 2025; = [pain] with measurement). Meanwhile the institutions holding the governance traditions (legal KM, NASA/nuclear/Army lessons-learned, APQC/KMWorld) discuss AI in platform-and-vendor terms, and the tools-for-thought community does not engage the institutional pains (provenance discipline, sign-off, audit). Nobody publicly connects the three vocabularies to each other or to the traditions; whole pain families (A provenance, G institutional memory, J control, K sign-off/agent authority) have no public video discourse at all.</p>
+<p>Method strength: the emptiness survived two independent search strategies with disjoint vocabulary (pass 1 tradition terms, pass 2 pain terms, ~2,200 candidates total) — the gap is not an artifact of searching the wrong words.</p>
+<p>Edge rationale: supports <span class="id">lawyers-lack-personal-compounding-km</span> weakly at the market level — if no public synthesis exists anywhere, lawyers have nowhere to have learned one.</p>
+<p>Working notes (positioning): the gap is namable in the market's own emerging words — &quot;workslop&quot; [redacted], &quot;verification bottleneck&quot; [redacted]; [redacted] with decades of prior art. Watch-fors: a credible voice (Every, a KM consultancy, a lab) connecting workslop → verification → architecture [redacted]; &quot;workslop&quot; fading as a news cycle weakens the door-opener while the pain remains.</p>
+<p>Grounding status: argued from [private memo] (memo + addendum); zero atoms. Atomizable if promoted: the HBR workslop primary, WEF uptake, Farley talk, Chroma context-rot report.</p></main>
+<footer>Rendered by <span class="id">erf-view</span>, the reference consumer for the
+Epistemic Record Format. Every reading on these pages is computed from the records at
+render time and stored nowhere.</footer>
+</body></html>
