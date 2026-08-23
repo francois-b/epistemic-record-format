@@ -1,7 +1,7 @@
 ---
 title: "The Epistemic Record Format"
 subtitle: "Specification: the record types, the data model, and the invariants, stated so an implementer can build to them or diff an existing system against them."
-spec_version: 1.0.1
+spec_version: 1.0.2
 status: draft
 last_updated: 2026-08-23
 generated: 2026-08-22
@@ -10,7 +10,7 @@ model: claude-fable-5
 
 # The Epistemic Record Format
 
-Specification, v1.0.1. The abstract and status are in `README.md`;
+Specification, v1.0.2. The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way, and
 what the surrounding field holds, is the companion document
 `DESIGN-HISTORY.md`. The normative data model is the TypeScript file
@@ -901,19 +901,27 @@ checks the relations no type can see.
   non-empty `why`.
 - **ERF-6.4** Standings MUST be append-only; an edit or deletion of an
   existing entry is a violation, verified against the substrate's history.
-- **ERF-6.5** Disposition MUST be computed, never stored: no standings
-  means proposal; current stances (each person's newest) on both sides
-  means contested; otherwise the owner's newest stance governs (`for`:
-  active; `withdrawn`: retired). Which standings a *use* requires (a ship
-  gate, a team policy) is corpus or doc-class policy, not format.
+- **ERF-6.5** Disposition MUST be computed, never stored, from the current
+  stances alone (each person's newest): no standings means `proposal`;
+  current stances that disagree mean `contested`; current stances all `for`
+  mean `active`; current stances all `withdrawn` mean `retired`. No stance
+  outranks another and the format supplies no tie-break: `contested` is the
+  terminal reading of a disagreement, not a state resolved by arithmetic.
+  Which disposition a *use* requires (a ship gate, a team policy) is corpus
+  or doc-class policy, not format.
 - **ERF-6.6** An argument's transitive `assumes` and `supports` closure
-  MUST terminate in non-argument leaves, none of them withdrawn by their
-  owner. Self-edges MUST NOT exist; `assumes` and `decomposes-into` MUST
+  MUST terminate in non-argument leaves, none of them retired. Self-edges MUST NOT exist; `assumes` and `decomposes-into` MUST
   admit no cycles.
 - **ERF-6.7** `conflicts-with` MUST be stored once per pair.
 - **ERF-6.8** A claim in a public corpus MUST NOT reference records
   (edges or evidence) in a confidential corpus. Confidential MAY cite
   public; never the reverse. Classification per the corpus registry.
+- **ERF-6.8a** A consumer MUST NOT present a claim as backed to a reader
+  who cannot resolve that backing. Whether a reader can resolve a record's
+  evidence follows from what that reader may access and from the corpora
+  holding the evidence, so it is computed at read time and never stored.
+  How the gap is shown (a count, a marker, a note) is the consumer's
+  choice; concealing it is not.
 - **ERF-6.9** `title` and the body's opening statement MUST agree.
 - **ERF-6.10** Staleness MUST be computed, never stored: a
   `finding_audit`, `backing_audit`, or binding older than the last change
@@ -957,6 +965,18 @@ checks the relations no type can see.
 > contested already means current stances on both sides, and what a
 > disagreement means is a judgment its owner makes, not one the format
 > computes.
+
+> *Note (non-normative):* on asymmetric visibility. `ERF-6.8` governs what
+> a record may rest on inside a corpus. It does not govern what a reader
+> sees when a reference crosses a boundary. A claim resting legally on its
+> own corpus's evidence can still reach a reader who can open none of it,
+> and at that point a backed claim and a bare assertion look the same.
+> Recording a reader-safe summary of hidden evidence ("three primary
+> sources, two audited") is the tempting fix and is rejected here: it is a
+> second version of the truth to maintain, and it is an unfalsifiable claim
+> of backing offered exactly where the reader is least able to check it.
+> When the evidence cannot be shown, the honest move is to present the
+> claim as a position rather than as a backed claim.
 
 > *Note (non-normative):* on default lenses: tools are advised to return
 > claims whose disposition is active unless a wider lens (proposals,

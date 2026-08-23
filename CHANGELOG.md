@@ -4,6 +4,27 @@ Newest first. Requirement ids are stable once published: insertions use
 letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
 change lands here with a date.
 
+## v1.0.2 (2026-08-23)
+
+`ERF-6.5` no longer breaks ties. It said the corpus owner's newest stance
+governed when stances differed, which contradicted the format's own
+position that quorum and merge resolution are out of scope because what a
+disagreement means is a judgment rather than a computation. Disposition now
+follows the current stances alone: none is a proposal, disagreement is
+contested, agreement gives active or retired. `contested` is terminal, and
+which disposition permits a use remains corpus policy. `owner` accordingly
+means only the person who sets that policy, and `ERF-6.6` now tests
+argument leaves on the computed disposition.
+
+`ERF-6.8a` is new: a consumer must not present a claim as backed to a
+reader who cannot resolve that backing. The classification wall constrains
+what a record rests on inside a corpus and says nothing about what a reader
+sees when a reference crosses a boundary, which is where a backed claim and
+a bare assertion become indistinguishable. Resolvability is reader-relative
+and computed at read time. A reader-safe summary of hidden evidence was
+considered and rejected: it is a second version of the truth to maintain,
+and an unfalsifiable claim of backing offered where it can least be checked.
+
 ## v1.0.1 (2026-08-23) — nomenclature and self-description
 
 Field names now carry the noun that tells a reader the type, the pattern
