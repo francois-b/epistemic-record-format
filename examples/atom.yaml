@@ -1,0 +1,29 @@
+# A standalone atom record (SPEC.md, section 4.2).
+# In a registry document, entries inherit the registry id and entry type
+# from the document's own header and omit `type`; serialized standalone,
+# the atom materializes `type: atom` (ERF-7.3), as here.
+type: atom
+id: kwg-117
+finding: >-
+  Pacioli's 1494 treatise states the double-entry rule explicitly: every
+  ledger entry is made twice, once as a debit and once as a credit.
+quote: >-
+  All entries made in the ledger have to be double entries -- that is, if
+  you make one creditor, you must make some one debtor.
+citation_text: >-
+  Luca Pacioli, Particularis de Computis et Scripturis (Venice, 1494),
+  ch. 36, trans. Geijsbeek 1914
+citation:
+  type: book
+  author: [{family: Pacioli, given: Luca}]
+  title: "Particularis de Computis et Scripturis"
+  issued: 1494
+  translator: [{family: Geijsbeek, given: John B.}]
+fetched_url: "https://archive.org/details/ancientdoubleent00geij"
+source_quality: high
+created: {timestamp: 2026-07-19, by: "agent/claude-fable-5"}
+finding_audit:
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: 2026-07-19,
+     protocol: finding-audit-v2}
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: 2026-07-19,
+     protocol: finding-audit-v2}

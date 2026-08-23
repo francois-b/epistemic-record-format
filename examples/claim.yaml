@@ -1,0 +1,26 @@
+# A claim record (SPEC.md, section 4.3), shown as one YAML document with
+# the body as a field. The canonical textual interchange form is YAML
+# frontmatter plus a markdown body (ERF-7.1); in a database the body is
+# one more field, as here. Empty lists are omitted (ERF-7.4).
+type: claim
+id: no-continuous-claim-check
+corpus: knowledge-work-governance
+title: >-
+  No shipped tool runs a claim-against-source check continuously over a
+  maintained document; the check exists only as per-response evaluation
+epistemic_kind: observation
+created: {timestamp: 2026-08-19, by: "agent/claude-fable-5"}
+families: [prior-art, checks]
+atoms_for: [kwg-146]
+edges: [{to: discipline-needs-primitives, relation: supports}]
+standings:
+  - {timestamp: 2026-08-21T14:02:00Z, stance: for, by: "human:fbouet",
+     why: "Second primary captured; the negative now rests on more than
+       one vendor."}
+body: |
+  No shipped tool runs a claim-against-source check continuously over a
+  maintained document; the check exists only as per-response evaluation.
+
+  ## Working notes
+
+  (Elided in this example.)
