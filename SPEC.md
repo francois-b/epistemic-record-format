@@ -58,6 +58,20 @@ Conformance is claimed per class, not against the whole document:
 Strict producers, tolerant consumers: divergence is caught by validators
 and surfaced, never by consumers refusing to read.
 
+**What a consumer rule may say.** This format constrains a consumer's
+fidelity to the record and never its use of the corpus. A rule that says do
+not misrepresent what a record says, or do not lose data in transit, is in
+scope: `ERF-6.5a` (do not render `rejected` and `retired` identically
+without saying which), `ERF-4.26a` (report a binding whose id resolves to
+nothing rather than inventing a record), `ERF-7.4b` (preserve and report
+what you do not recognize), `ERF-7.7a` (refuse an unsupported major version
+openly rather than guessing). A rule that says do not ship this, or this
+counts as enough evidence, is out of scope and belongs to whoever runs the
+corpus. That line is why this version specifies no gates and no policies:
+the format states what a record means and how records refer to each other,
+and every decision about what to do with them is deliberately left to the
+reader.
+
 ## 2. Definitions
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
