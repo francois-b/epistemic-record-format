@@ -1,7 +1,7 @@
 ---
 title: "The Epistemic Record Format"
 subtitle: "Specification: the record types, the data model, and the invariants, stated so an implementer can build to them or diff an existing system against them."
-spec_version: 1.0-draft-3
+spec_version: 1.0
 status: draft
 last_updated: 2026-08-22
 generated: 2026-08-22
@@ -10,7 +10,7 @@ model: claude-fable-5
 
 # The Epistemic Record Format
 
-Specification, v1.0-draft-3. The abstract and status are in `README.md`;
+Specification, v1.0. The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way, and
 what the surrounding field holds, is the companion document
 `DESIGN-HISTORY.md`. The normative data model is the TypeScript file
@@ -77,6 +77,11 @@ shown here.
   derived, recomputable, never authoritative.
 - *capture*: the copy of a source saved when first read. Checks run
   against the capture, never the live web.
+- *attester*: whoever is speaking in a captured text: the person or body
+  whose word a quote carries, as distinct from the document carrying it.
+  A vendor's page attests the vendor; a forum post attests its poster.
+- *substrate*: the system a corpus's canonical store runs on, whether a
+  git repository, a wiki, or a database (section 8).
 - *actor*: `human:<id>` for a person, `<producer>/<version>` for a model
   or agent, `process:<id>` for automation. Writing and confirming are
   separate acts recorded in separate fields: who wrote a record need not be
@@ -84,6 +89,8 @@ shown here.
 - *owner*: the corpus's responsible person, per the corpus registry.
 - *disposition*: the computed reading of a claim's standings (`ERF-6.5`).
   Never a stored field.
+- *binding*: a marker in a narrative document naming the claim a passage
+  rests on (`ERF-4.25`).
 
 ## 3. Data model (normative)
 
@@ -115,7 +122,7 @@ interface AuditEntry { auditor: string;
 interface Atom {
   id: AtomId;                  // registry prefix + number, e.g. kwg-117
   finding: string;             // one sentence: what the quote shows
-  quote: string;               // verbatim from the capture; [...] marks elision
+  quote: string;               // verbatim from the capture; [...] marks an omission
   citation_text: string;       // human-readable citation; never contains a URL
   citation?: CSL;              // canonical when present; citation_text renders from it
   fetched_url?: string;        // the locator actually retrieved; absent for received files
@@ -397,53 +404,61 @@ One piece of evidence: a verbatim quote, a finding, and the trail.
        protocol: finding-audit-v2}
 ```
 
-- **ERF-4.5** The `quote` MUST be verbatim from the capture. Editorial
-  elision MUST be written `[...]`; bare `...` is reserved for dots the
-  source itself contains.
+- **ERF-4.5** The `quote` MUST be verbatim from the capture. An omission
+  inside a quote MUST be written `[...]`; bare `...` is reserved for dots
+  the source itself contains.
 - **ERF-4.6** The `finding` MUST be one sentence stating what the quote
-  shows. It is not the quote restated: it may name the author, the year,
-  the kind of document, and name what the quote exhibits. That context is
-  what makes an atom usable away from its source, and why the finding is
-  audited against the quote rather than assumed correct.
+  shows. It is not the quote restated: it carries the context (author,
+  year, kind of document) that makes the atom usable away from its source.
+  The finding is audited against the quote, never assumed correct.
 - **ERF-4.7** `citation_text` MUST NOT contain a URL. A citation identifies a
   work; a locator retrieves one copy. The retrieved locator is
   `fetched_url`; a web-native work's own identity MAY appear as
   `citation.URL`. A received file has no retrieval locator, so its atoms
   carry no `fetched_url`.
 - **ERF-4.8** When `citation` is present it is canonical: it MUST carry
-  everything the rendered `citation_text` string shows (chapter, translator,
-  edition included), and `citation_text` MUST be rendered from it. Default
-  rendering style is Chicago (via CSL); a deliverable MAY override. A
-  `locator` (page, section, timestamp) MAY pin the evidence inside a long
-  source. Hand-written `citation_text` strings SHOULD follow "Author, Title
-  (venue, year), locator when it matters"; the upgrade path to exactness
-  is the citation block.
-- **ERF-4.8a** `source_quality` MUST grade one axis, how much weight the
+  everything the rendered `citation_text` string shows, chapter,
+  translator, and edition included, and `citation_text` MUST be rendered
+  from it. The default rendering style is Chicago, via CSL; a deliverable
+  MAY override it.
+- **ERF-4.8c** Where no `citation` block exists, `citation_text` SHOULD
+  follow "Author, Title (venue, year), locator when it matters". The
+  upgrade path to exactness is the citation block.
+- **ERF-4.8d** A `locator` (page, section, timestamp) MAY pin the evidence
+  inside a long source.
+- **ERF-4.8a** `source_quality` MUST grade one axis: how much weight the
   attester's word carries for the fact the finding conveys. Two inputs are
-  assessed and the weaker governs: provenance distance (how many hops from
-  the captured text to the fact) and attester accountability (whether the
-  source is identifiable, answerable, and positioned to know, or anonymous,
-  self-interested, or of unknown competence). `high` is direct and
-  accountable: a regulator or court filing, an organization's disclosure
-  about itself, a named study reporting its own data, a captured primary.
-  `medium` is an identifiable intermediary reporting someone else's fact,
-  or a first party with an interest in the answer: trade press, an analyst
-  note, a vendor's claim about its own product, a one-hop relay. `low` is
-  an unaccountable or unidentifiable attester, or a chain not yet pulled to
-  primary: a forum comment, an aggregator citing an unnamed original. The
-  specific reason SHOULD be recorded in `limitations`. It MUST NOT encode
-  audit state (that is `finding_audit`'s record) or capture fidelity (that
-  is the mechanical check's derived result); a consumer wanting a combined
-  trust signal computes it from the three at read time.
-- **ERF-4.8b** The grade MUST be assessed against the substance the finding
-  conveys, not against the bare fact that someone uttered it. Reported
-  speech does not raise it: "a commenter reported X", sourced to an
-  anonymous forum, stays `low`, because what a reader must weigh is X.
-  Where a corpus's subject IS discourse (what a population says, believes,
-  or claims), the utterance is the substance, and a captured identified
-  utterance is direct and accountable; a finding resting on that reading
-  MUST say so in its own words, so that the grade can be checked against
-  what the atom actually attests.
+  assessed and the weaker governs. Provenance distance is how many hops
+  separate the captured text from the fact. Attester accountability is
+  whether the source is identifiable, answerable, and positioned to know,
+  or anonymous, self-interested, or of unknown competence.
+
+::: {.cols widths="14,86"}
+
+| Value | The attester and the chain |
+|:---------|:-------------------------------------------------------------|
+| `high` | Direct and accountable: a regulator or court filing, an organization's disclosure about itself, a named study reporting its own data, a captured primary. |
+| `medium` | An identifiable intermediary reporting someone else's fact, or a first party with an interest in the answer: trade press, an analyst note, a vendor's claim about its own product, a one-hop relay. |
+| `low` | An unaccountable or unidentifiable attester, or a chain not yet pulled to primary: a forum comment, an aggregator citing an unnamed original. |
+
+:::
+
+- **ERF-4.8e** `source_quality` MUST NOT encode audit state, which is
+  `finding_audit`'s record, or capture fidelity, which is the mechanical
+  check's derived result. A consumer wanting one combined trust signal
+  computes it from the three at read time.
+- **ERF-4.8f** The reason for a `medium` or `low` grade SHOULD be recorded
+  in `limitations`.
+- **ERF-4.8b** The grade MUST be assessed against the substance the
+  finding conveys, not against the bare fact that someone uttered it.
+  Reported speech does not raise it: "a commenter reported X", sourced to
+  an anonymous forum, stays `low`, because the reader's question is
+  whether X holds, not whether someone said it.
+- **ERF-4.8g** A finding whose subject is discourse itself, what a
+  population says, believes, or claims, MUST say so in its own words. The
+  utterance is then the substance, a captured identified utterance is
+  direct and accountable, and the grade can be checked against what the
+  atom attests.
 - **ERF-4.9** The mechanical check (the normalized quote occurs in the
   capture) is recomputable by anyone holding the corpus and its captures,
   so its result MUST NOT be stored. The judgment (does the quote, in
@@ -484,8 +499,8 @@ One piece of evidence: a verbatim quote, a finding, and the trail.
 > and it hedges exactly as hard as the source does ("states," not
 > "proves"). A good claim statement reads as true-or-false standing alone:
 > if a reader cannot disagree with the sentence, it is not a claim yet.
-> Compression is a defect in both; the redundancy that makes a statement
-> checkable away from its context is the point, not padding.
+> Compression is a defect in both. Redundancy that makes a statement
+> checkable away from its context is doing work, not padding.
 
 ### 4.3 The claim
 
@@ -527,14 +542,15 @@ the requirements below govern that ledger. The spec invents no standing
 entries in its examples: a stance is a real person's recorded judgment,
 and there is none to show yet.
 
-- **ERF-4.11** `id` MUST be unique across every corpus in a registry (the
+- **ERF-4.11** `id` MUST be unique across every corpus in a registry: the
   set of corpora one operator or organization governs, enumerated in that
-  registry's corpus registry). References are bare ids and MUST NOT encode
-  location: a claim moved between corpora keeps its id and no reference
-  changes. Across registries, identity is the pair of registry and id.
-  Bare ids are NOT promised to be unique between two parties' registries,
-  so a shared surface MUST resolve a reference against the registry it
-  came from.
+  registry's corpus registry.
+- **ERF-4.11a** References MUST be bare ids and MUST NOT encode location.
+  A claim moved between corpora keeps its id, and no reference changes.
+- **ERF-4.11b** A shared surface MUST resolve a reference against the
+  registry it came from. Across registries, identity is the pair of
+  registry and id, and bare ids are not promised to be unique between two
+  parties' registries.
 - **ERF-4.12** `corpus` MUST be written on every claim and MUST name a
   registered corpus. Changing it is a promotion or transfer; the change
   SHOULD be accompanied by a standing entry recording why.
@@ -559,19 +575,21 @@ and there is none to show yet.
   regenerated freely.
 - **ERF-4.14** `standings` is append-only: entries MUST NOT be edited or
   deleted; a correction is a new entry. Each entry MUST carry a full
-  timestamp (same-day entries must order), a stance, and a non-empty
+  timestamp (same-day entries MUST order), a stance, and a non-empty
   `why`: an entry without a reason is a toggle, not a judgment.
 - **ERF-4.14a** Producer tools SHOULD stamp each standing entry with the
   evidence sets attached at ruling time, by id
-  (`evidence_at_stance: {atoms_for: [ids], atoms_against: [ids]}`). This
-  is the one non-recomputable fact about the ruling's context: attachment
-  events are recorded nowhere, so which evidence the ruler faced cannot be
-  derived later, while content drift (an atom modified after the stance)
-  and audit drift (verdicts newer than the stance) are derivable from
-  existing timestamps and MUST NOT be stored here. Counts are not an
-  acceptable digest: swapping one atom for another leaves a count
-  unchanged and hides exactly the staleness this field exists to expose.
-- **ERF-4.15** A standing's `by` MUST be a `human:` actor. An LLM may
+  (`evidence_at_stance: {atoms_for: [ids], atoms_against: [ids]}`). Which
+  evidence the ruler faced is the one fact about a ruling's context that
+  cannot be recovered later, because attachment events are recorded
+  nowhere.
+- **ERF-4.14d** Drift MUST NOT be stored in `evidence_at_stance`. Content
+  drift, an atom modified after the stance, and audit drift, verdicts
+  newer than the stance, are both derivable from existing timestamps.
+  Counts are not an acceptable digest either: swapping one atom for
+  another leaves the count unchanged and hides the staleness the field
+  exists to expose.
+- **ERF-4.15** A standing's `by` MUST be a `human:` actor. An LLM can
   propose a claim; only a person takes a stance. A stance speaks for one
   person only; endorsement by one person or by five is the same act,
   recorded the same way.
@@ -592,12 +610,13 @@ and there is none to show yet.
 > deferred per-attachment evidence shape ever lands; the two share one
 > migration.
 
-> *Note (non-normative):* practice around `ERF-4.14`: dispositive stances
-> (anything that activates or contests) go through the show-both-sides
-> flow individually; the cold-reader audit applies to standings too (does
-> the recorded why survive the evidence on record?). A batch-size stamp
-> was considered and rejected: "batch" has no enforceable boundary, and
-> ruling mechanics do not belong in a record format.
+> *Note (non-normative):* practice around `ERF-4.14`: a stance that
+> decides something, meaning one that activates or contests a claim, goes
+> through the show-both-sides flow individually. The cold-reader audit
+> applies to standings too: does the recorded why survive the evidence on
+> record? A batch-size stamp was considered and rejected. "Batch" has no
+> enforceable boundary, and ruling mechanics do not belong in a record
+> format.
 
 > *Note (non-normative):* `ERF-4.14b` and `ERF-4.14c` are retired ids and
 > are not reused. `ERF-4.14c` typed a `cause` vocabulary for negative
@@ -624,24 +643,25 @@ together, actually support its statement is a further judgment, recorded in
   changes there is nothing to re-run.
 - **ERF-4.21** A verdict on a multi-atom claim SHOULD name the atoms that
   carried the weight: joint entailment is a weaker judgment than the
-  atom's one-quote-one-sentence check. No set of atoms proves a universal
-  negative: on a claim of the form "no shipped tool does X," the atoms
-  evidence the coverage of a survey, not the absence itself; the audit
-  checks the statement is scoped to what its evidence can carry, and
-  SUPPORTED on such a claim means supported as scoped, never proof. Such
-  a claim SHOULD cite the survey records whose coverage it rests on
-  (`surveys`, section 4.6) rather than atoms alone: atoms can only quote
-  what exists.
+  atom's one-quote-one-sentence check.
+- **ERF-4.21a** A universal negative, a claim of the form "no shipped tool
+  does X", MUST be audited as scoped rather than as proved. No set of
+  atoms proves such a claim: the atoms evidence the coverage of a survey,
+  not the absence itself, and SUPPORTED means supported as scoped.
+- **ERF-4.21b** Such a claim SHOULD cite the survey records whose coverage
+  it rests on (`surveys`, section 4.6) rather than atoms alone. Atoms can
+  only quote what exists.
 
 > *Note (non-normative):* on the word "jury". A cross-vendor model jury
 > diversifies judgment; it does not make verdicts independent in the
 > statistical sense. Models trained on overlapping corpora share failure
 > modes, and two SUPPORTED verdicts can be one correlated error wearing
 > two names. The jury exists to reduce single-model idiosyncrasy, and its
-> verdicts are recorded hypotheses, not proof; that is why the format
-> keeps human review at the point of consequence, and why an auditor's
-> identity (a hosted model id whose weights drift under a stable name) is
-> recorded together with a protocol version rather than trusted alone.
+> verdicts are recorded hypotheses rather than proof. That is why the
+> format keeps human review at the point of consequence. It is also why
+> an auditor's identity, a hosted model id whose weights drift under a
+> stable name, is recorded with a protocol version rather than trusted
+> alone.
 
 > *Note (non-normative):* where the bar lives. Verification intensity is
 > corpus policy, not format. The record carries verdicts whatever the
@@ -788,7 +808,7 @@ the prose keeps saying what it said.
 ### 4.8 The personal corpus
 
 > *Note (non-normative):* nothing stops a corpus from holding its author's
-> own positions, a doxastic register in which the claims the owner
+> own positions, a register in which the claims the owner
 > currently stands on are that person's standing positions, and in which
 > "conviction" and "insight" are readings rather than record types.
 > Whether to keep one is a practice decision, not a requirement.
@@ -798,7 +818,7 @@ the prose keeps saying what it said.
 > carrying a headline position, each revised about once a quarter, none of
 > them leaned on as a premise by any claim in any corpus. Nothing in that
 > population asked for backing, audits, or a ledger, and founding a
-> register ahead of that demand would be machinery without a use. What
+> register ahead of that demand would add machinery nothing uses. What
 > would change it is an argument in a real claims tree resting on one of
 > those positions. This is recorded rather than hidden: a format's
 > credibility rests on its author saying which parts he runs.
@@ -879,7 +899,7 @@ checks the relations no type can see.
   admit no cycles.
 - **ERF-6.7** `conflicts-with` MUST be stored once per pair.
 - **ERF-6.8** A claim in a public corpus MUST NOT reference records
-  (edges or evidence) in a confidential corpus. Confidential may cite
+  (edges or evidence) in a confidential corpus. Confidential MAY cite
   public; never the reverse. Classification per the corpus registry.
 - **ERF-6.9** `title` and the body's opening statement MUST agree.
 - **ERF-6.10** Staleness MUST be computed, never stored: a
@@ -897,14 +917,14 @@ checks the relations no type can see.
   state is recorded on records, the bar is policy, and this ship gate is
   where the two meet.
 > *Note (non-normative):* a `retired` disposition MUST NOT be read as
-> "shown false". Of the withdrawals on record, some absorb a claim into
-> another or split it in two (the content survives elsewhere), some
-> record that a claim should never have stood (unbacked when minted, or
-> contradicted by a claim its owner kept), and at least one is not about
-> truth at all: a claim was withdrawn because asserting it in a document
-> its subject would read was the wrong move, not because the evidence
-> turned. The `why` is required so that a reader can tell these apart,
-> and reading it is the only way to.
+> "shown false". Withdrawals on record split three ways. Some absorb a
+> claim into another or split it in two, so the content survives
+> elsewhere. Some record that a claim should never have stood, unbacked
+> when minted or contradicted by a claim its owner kept. At least one is
+> not about truth at all: a claim was withdrawn because asserting it in a
+> document its subject would read was the wrong move, not because the
+> evidence turned. The `why` is required so a reader can tell these
+> apart, and reading it is the only way to.
 
 > *Note (non-normative):* on more than one operator. Two designs hold the
 > boundary when corpora are shared. First, records meet by reference rather
@@ -1010,7 +1030,7 @@ summary:
   no standing concept.
 - SEPIO (ClinGen): evidence explicitly for and against one assertion,
   with evidence lines as arguments, the closest claim model; OWL-locked,
-  no doxastic layer.
+  with no layer recording who stands behind an assertion.
 - Discourse Graphs: Question/Claim/Evidence nodes with supports and
   opposes relations, the nearest overall shape; one flat claim kind, no
   capture checking, no standings, tool-native rather than git-native.

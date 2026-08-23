@@ -4,14 +4,14 @@ The Epistemic Record Format (ERF) is a plain-text record format for bringing rig
 
 ## Status
 
-This is a draft (v1.0-draft-3, August 22, 2026), extracted from a working
-practice rather than designed in advance: roughly 740 audited atoms and
-300 claims and questions across seven corpora preceded the specification,
-and a pilot ran the records on a third-party substrate before it was
-written. Breaking changes are expected before 1.0; requirement ids are
-stable within a published draft. Feedback is invited; the intended reading
-is implementation, or a requirement-by-requirement diff against an
-existing system.
+This is version 1.0 (August 22, 2026), extracted from a working practice
+rather than designed in advance: roughly 740 audited atoms and 300 claims
+and questions across seven corpora preceded the specification, and a pilot
+ran the records on a third-party substrate before it was written.
+Requirement ids are stable from this version on: insertions take letter
+suffixes, and a retired id is never reused. Feedback is invited; the
+intended reading is implementation, or a requirement-by-requirement diff
+against an existing system.
 
 ## A record, in brief
 
