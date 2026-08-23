@@ -4,6 +4,33 @@ Newest first. Requirement ids are stable once published: insertions use
 letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
 change lands here with a date.
 
+## v1.0-draft-3 (2026-08-22) — cause retired before first use
+
+`ERF-4.14c` typed a closed vocabulary of reasons for negative standing
+moves, modeled on Wikidata's P2241. It is removed, along with the
+`StanceCause` type and the optional `cause` field on a standing entry.
+Both ids stay retired and are not reused.
+
+The measurement that decided it, taken across every withdrawal in the
+reference practice: five exist, none carried a cause, one of the six
+proposed values had a real instance, and four of the five actual reasons
+were absent from the list (a claim split in two, a claim unbacked when
+minted, a claim contradicted by one its owner kept, and a claim
+withdrawn for what asserting it would say to a reader who would see it).
+The required `why` sentence stated each reason better than an enum
+could, and nothing yet queries standings by reason. `against`, the other
+stance the field applied to, has no instances at all.
+
+A non-normative note now sits beside the disposition rules: a computed
+`retired` must not be read as "shown false". Withdrawals split three
+ways. The content survives elsewhere (absorbed, split), the claim should
+never have stood (unbacked, contradicted), or the withdrawal is not
+about truth at all. Only the `why` distinguishes them.
+
+If the concept returns, its vocabulary is derived from accumulated `why`
+sentences rather than invented ahead of them, and it applies to
+withdrawals only.
+
 ## v1.0-draft-3 (2026-08-22) — source_quality rubric rewritten
 
 The value vocabulary stays `high | medium | low`. A proposed rename to

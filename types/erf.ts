@@ -59,9 +59,6 @@ export type Relation       = "supports" | "assumes" | "decomposes-into" | "confl
 /** How much weight the attester's word carries for the fact the finding
  *  conveys; two inputs, the weaker governing (ERF-4.8a, ERF-4.8b). */
 export type SourceQuality  = "high" | "medium" | "low";
-/** Typed reasons for negative standing moves (ERF-4.14c). Provisional. */
-export type StanceCause    = "superseded-by" | "disconfirmed" | "scope-too-broad"
-                           | "absorbed-into" | "no-longer-relevant" | "source-unreliable";
 
 // ---------------------------------------------------------------------------
 // Entries (lines within a record; the -Entry suffix marks them)
@@ -82,8 +79,6 @@ export interface StandingEntry {
   by: `human:${string}`;
   /** Required; an entry without a reason is a toggle, not a judgment. */
   why: string;
-  /** Negative moves (`against`, `withdrawn`) only (ERF-4.14c). */
-  cause?: StanceCause;
   /** What the ruler faced at ruling time, by id (ERF-4.14a). */
   evidence_at_stance?: {
     atoms_for: AtomId[];

@@ -101,14 +101,11 @@ type Stance         = "for" | "against" | "withdrawn";
 type QuestionStatus = "open" | "answered" | "parked";
 type Relation       = "supports" | "assumes" | "decomposes-into" | "conflicts-with";
 type SourceQuality  = "high" | "medium" | "low";
-type StanceCause    = "superseded-by" | "disconfirmed" | "scope-too-broad"
-                    | "absorbed-into" | "no-longer-relevant" | "source-unreliable";
 type Actor  = `human:${string}` | `${string}/${string}` | `process:${string}`;
 
 interface ActorStamp   { timestamp: string; by: Actor }      // RFC 3339
 interface StandingEntry { timestamp: string; stance: Stance;
                        by: `human:${string}`; why: string;   // humans only
-                       cause?: StanceCause;                  // negative moves only (ERF-4.14c)
                        evidence_at_stance?: {                // what the ruler faced (ERF-4.14a)
                          atoms_for: AtomId[]; atoms_against: AtomId[] } }
 interface AuditEntry { auditor: string;
@@ -411,10 +408,6 @@ Shares `id`, `type`, `corpus`, `title`, `created`, `modified`, and
 **`why`** (string, required; human; at the stance) [ERF-4.14]
 :   The reason. An entry without one is a toggle, not a judgment.
 
-**`cause`** (StanceCause, optional; human; on `against` and `withdrawn` only) [ERF-4.14c]
-:   The queryable classification of a negative move; `why` remains the
-    sentence.
-
 **`evidence_at_stance`** (id sets; tool, a SHOULD; at the stance) [ERF-4.14a]
 :   The evidence attached at ruling time, by id.
 
@@ -654,12 +647,6 @@ and there is none to show yet.
   existing timestamps and MUST NOT be stored here. Counts are not an
   acceptable digest: swapping one atom for another leaves a count
   unchanged and hides exactly the staleness this field exists to expose.
-- **ERF-4.14c** A standing entry whose stance is `against` or
-  `withdrawn` MAY carry a typed `cause` from a closed list:
-  `superseded-by`, `disconfirmed`, `scope-too-broad`, `absorbed-into`,
-  `no-longer-relevant`, `source-unreliable`. `why` remains required
-  regardless: `cause` is the queryable classification, `why` the human
-  sentence.
 - **ERF-4.15** A standing's `by` MUST be a `human:` actor. An LLM may
   propose a claim; only a person takes a stance. A stance speaks for one
   person only; endorsement by one person or by five is the same act,
@@ -688,12 +675,16 @@ and there is none to show yet.
 > was considered and rejected: "batch" has no enforceable boundary, and
 > ruling mechanics do not belong in a record format.
 
-> *Note (non-normative):* on `ERF-4.14c`, provisional; vocabulary under
-> review. Modeled on Wikidata's P2241, where typed reasons exist only for
-> the negative move: the reason you stand is the claim's own backing. The
-> list grows only under subtraction pressure. `ERF-4.14b` was retired
-> before this id was assigned; per change control, retired ids are not
-> reused.
+> *Note (non-normative):* `ERF-4.14b` and `ERF-4.14c` are retired ids and
+> are not reused. `ERF-4.14c` typed a `cause` vocabulary for negative
+> standing moves, modeled on Wikidata's P2241. It was retired unused on
+> the format's own subtraction rule: across every corpus five withdrawals
+> existed and none carried a cause, one of the six proposed values had a
+> real instance, and four of the five actual reasons were not in the list
+> at all. Each `why` sentence stated its reason better than an enum could.
+> The concept returns only when something needs to filter withdrawals by
+> reason, and its vocabulary is then derived from accumulated `why`
+> sentences rather than invented ahead of them.
 
 > *Note (non-normative):* on `ERF-4.18`: a structured settlement
 > vocabulary is deferred; zero settled bets exist, and typing one forces
@@ -986,6 +977,16 @@ checks the relations no type can see.
   audit-doubted under the corpus's declared audit policy. Verification
   state is recorded on records, the bar is policy, and this ship gate is
   where the two meet.
+> *Note (non-normative):* a `retired` disposition MUST NOT be read as
+> "shown false". Of the withdrawals on record, some absorb a claim into
+> another or split it in two (the content survives elsewhere), some
+> record that a claim should never have stood (unbacked when minted, or
+> contradicted by a claim its owner kept), and at least one is not about
+> truth at all: a claim was withdrawn because asserting it in a document
+> its subject would read was the wrong move, not because the evidence
+> turned. The `why` is required so that a reader can tell these apart,
+> and reading it is the only way to.
+
 > *Note (non-normative):* on default lenses: tools are advised to return
 > claims whose disposition is active unless a wider lens (proposals,
 > contested, retired) is explicitly requested, so consumers of one corpus
