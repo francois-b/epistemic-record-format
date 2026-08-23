@@ -1,6 +1,6 @@
 /**
  * The Epistemic Record Format (ERF): normative data model.
- * v1.0.5, 2026-08-23.
+ * v1.0.6, 2026-08-23.
  *
  * This file is the normative data model of the specification (SPEC.md,
  * section 3, which carries an inline mirror of it; where the two differ,

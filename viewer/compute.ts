@@ -141,8 +141,8 @@ export function quoteCheck(atom: Atom, captureText: string | null): QuoteCheck {
     return { state: "uncheckable", detail: "the captured copy is not present, so the check cannot run here" };
   }
   const hay = normalizeForCheck(captureText);
-  // `ERF-6.12b`: [...], ... and … are all elision markers.
-  const parts = atom.quote.split(/\[\.\.\.\]|\.\.\.|…/).map(normalizeForCheck).filter(Boolean);
+  // `ERF-6.12b`: only [...] elides. Bare ... and … are literal source text.
+  const parts = atom.quote.split("[...]").map(normalizeForCheck).filter(Boolean);
   if (parts.length === 0) {
     return { state: "fail", detail: "the quote is nothing but elisions, so it checks nothing" };
   }

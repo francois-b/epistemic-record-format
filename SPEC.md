@@ -1,7 +1,7 @@
 ---
 title: "The Epistemic Record Format"
 subtitle: "Specification: the record types, the data model, and the invariants, stated so an implementer can build to them or diff an existing system against them."
-spec_version: 1.0.5
+spec_version: 1.0.6
 status: draft
 last_updated: 2026-08-23
 generated: 2026-08-22
@@ -10,7 +10,7 @@ model: claude-fable-5
 
 # The Epistemic Record Format
 
-Specification, v1.0.5. The abstract and status are in `README.md`;
+Specification, v1.0.6. The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way, and
 what the surrounding field holds, is the companion document
 `DESIGN-HISTORY.md`. The normative data model is the TypeScript file
@@ -1018,10 +1018,15 @@ checks the relations no type can see.
   (link syntax to its link text, attribute blobs, blockquote markers) when
   the same unwrapping is applied to both sides; it MUST document what it
   adds, and it MUST NOT relax the sequence above.
-- **ERF-6.12b** An elision marker (`[...]`, `...`, or `…`) MUST be treated
-  as a wildcard: the quote is split on it and each remaining span MUST occur
-  in the capture, in order and without overlap. A quote reduced to nothing
-  but elisions checks nothing and MUST fail.
+- **ERF-6.12b** Only the exact marker `[...]` MUST be treated as an
+  omission, and it is the only wildcard. A bare `...` and a bare `…` are literal source
+  characters and MUST be matched literally (`ERF-4.5`). The normalized
+  quote MUST be split on `[...]`; every non-empty span MUST occur in the
+  normalized capture, in order and without overlap. A quote whose spans are
+  all empty MUST fail rather than trivially pass. The text between two
+  spans is unbounded by design: an elision marker is the author's assertion
+  that they removed material, and whether the removal misleads is a
+  judgment for the audit, not a distance a validator can measure.
 - **ERF-6.13** A deliverable MUST NOT rest on atoms that are unaudited or
   audit-doubted under the corpus's declared audit policy. Verification
   state is recorded on records, the bar is policy, and this ship gate is

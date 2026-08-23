@@ -4,6 +4,30 @@ Newest first. Requirement ids are stable once published: insertions use
 letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
 change lands here with a date.
 
+## v1.0.6 (2026-08-23)
+
+`ERF-4.5` reserved `[...]` for an omission and said a bare `...` was a
+literal source character. `ERF-6.12b`, written the same day, treated any
+ellipsis as a wildcard. The two rules contradicted each other, and the
+looser one could pass a quotation the source never contained: quoting
+"Wait... what?" matched a capture reading "Wait, despite the warning,
+what?", and the mechanical check whose only job is fidelity blessed it.
+
+Only `[...]` elides now. Bare `...` and `…` are matched literally. The
+quote is split on `[...]`, every non-empty span must occur in the capture
+in order and without overlap, and a quote of nothing but elisions fails
+rather than trivially passing.
+
+The gap between spans stays unbounded, stated explicitly with its reason:
+an elision marker is the author's assertion that they removed material,
+and whether the removal misleads is a judgment for the audit rather than a
+distance a validator can measure.
+
+Both working implementations had the same defect and are corrected. The
+pilot checker had a second one that the fix removes: it split on bare dots,
+which left stray brackets in every span of a `[...]` quote and would have
+failed all of them.
+
 ## v1.0.5 (2026-08-23)
 
 `ERF-6.5` was not a total function. A claim whose current stances are all
