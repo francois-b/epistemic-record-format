@@ -128,7 +128,7 @@ interface Atom {
 }
 
 interface Claim {
-  id: ClaimId;                 // globally unique across ALL corpora
+  id: ClaimId;                 // unique across the registry's corpora
   type: "claim";
   corpus: CorpusId;            // confidentiality and policy; mutable
   title: string;               // THE claim statement (normative)
@@ -148,7 +148,7 @@ interface Claim {
 }
 
 interface Question {
-  id: QuestionId;              // same global namespace as claims
+  id: QuestionId;              // same namespace as claims
   type: "question";
   corpus: CorpusId;
   title: string;
@@ -170,7 +170,7 @@ interface SearchAct {
 }
 
 interface Survey {
-  id: SurveyId;                // globally unique; slug SHOULD end with the date
+  id: SurveyId;                // same namespace; slug SHOULD end with date
   type: "survey";
   corpus: CorpusId;
   title: string;               // what the survey sought
@@ -624,9 +624,14 @@ the requirements below govern that ledger. The spec invents no standing
 entries in its examples: a stance is a real person's recorded judgment,
 and there is none to show yet.
 
-- **ERF-4.11** `id` MUST be unique across all corpora (one global
-  namespace). References are bare ids and MUST NOT encode location: a
-  claim moved between corpora keeps its id and no reference changes.
+- **ERF-4.11** `id` MUST be unique across every corpus in a registry (the
+  set of corpora one operator or organization governs, enumerated in that
+  registry's corpus registry). References are bare ids and MUST NOT encode
+  location: a claim moved between corpora keeps its id and no reference
+  changes. Across registries, identity is the pair of registry and id.
+  Bare ids are NOT promised to be unique between two parties' registries,
+  so a shared surface MUST resolve a reference against the registry it
+  came from.
 - **ERF-4.12** `corpus` MUST be written on every claim and MUST name a
   registered corpus. Changing it is a promotion or transfer; the change
   SHOULD be accompanied by a standing entry recording why.
@@ -868,18 +873,21 @@ the prose keeps saying what it said.
 
 ### 4.8 The personal corpus
 
-One corpus belongs to the author: the doxastic register. Claims there on
-which the owner currently stands are the author's standing positions.
-"Conviction" and "insight" are readings, not record types: an insight leans
-`observation` or `argument` (world-facing, distilled from experience,
-overturnable by evidence); a conviction spans the kinds (a seasoned
-argument, an enforced commitment, a standing bet). How settled a position
-is stays readable rather than stored: tenure, the standings it survived,
-the evidence accumulated. The intake pipeline has three stations: a field
-note (pre-claim material, deliberately schema-free), a proposed claim
-distilled from it, and the author's first `for` entry. Promotion from a
-working corpus into the personal corpus is a corpus change with a standing
-entry recording why.
+> *Note (non-normative):* nothing stops a corpus from holding its author's
+> own positions, a doxastic register in which the claims the owner
+> currently stands on are that person's standing positions, and in which
+> "conviction" and "insight" are readings rather than record types.
+> Whether to keep one is a practice decision, not a requirement.
+>
+> The reference practice deliberately does not. Its author's positions live
+> outside the format, in a separate writing system: 109 essays, each
+> carrying a headline position, each revised about once a quarter, none of
+> them leaned on as a premise by any claim in any corpus. Nothing in that
+> population asked for backing, audits, or a ledger, and founding a
+> register ahead of that demand would be machinery without a use. What
+> would change it is an argument in a real claims tree resting on one of
+> those positions. This is recorded rather than hidden: a format's
+> credibility rests on its author saying which parts he runs.
 
 ## 5. Vocabularies
 
@@ -941,10 +949,11 @@ All machine-checkable. Types express what types can express; the validator
 checks the relations no type can see.
 
 - **ERF-6.1** Every reference MUST resolve: atoms in their registries,
-  claims, questions, and surveys in the global namespace; `atoms_for`,
+  claims, questions, and surveys in the registry namespace; `atoms_for`,
   `atoms_against`, `edges.to`, `sub_questions`, `answered_by`, and
   `surveys` name existing records.
-- **ERF-6.2** Claim and question ids MUST be unique across all corpora.
+- **ERF-6.2** Claim, question, and survey ids MUST be unique across every
+  corpus in the registry.
 - **ERF-6.3** Every standing entry MUST have a `human:` actor and a
   non-empty `why`.
 - **ERF-6.4** Standings MUST be append-only; an edit or deletion of an
@@ -986,6 +995,25 @@ checks the relations no type can see.
 > its subject would read was the wrong move, not because the evidence
 > turned. The `why` is required so that a reader can tell these apart,
 > and reading it is the only way to.
+
+> *Note (non-normative):* on more than one operator. Two designs hold the
+> boundary when corpora are shared. First, records meet by reference rather
+> than by copy: a shared surface exposes records where they live, nothing
+> is imported by default, and identity across registries is the pair of
+> registry and id (`ERF-4.11`), so bare slugs never have to be globally
+> unique between parties. Second, standings never travel: a disposition is
+> computed inside one corpus from that corpus's own standings, and a
+> foreign record's home standings are visible as attributed context that is
+> never counted. The second rule is the multi-operator form of "only a
+> person takes a stance" (`ERF-4.15`), and it is what keeps borrowed
+> authority from crossing a shared boundary. The mechanics a second
+> operator would need (an actor registry, provenance on a copied record,
+> and a declared actor whose stance decides a contested claim) are
+> deliberately unspecified until a second person exists in a corpus.
+> Quorum, voting, and merge resolution are out of scope permanently:
+> contested already means current stances on both sides, and what a
+> disagreement means is a judgment its owner makes, not one the format
+> computes.
 
 > *Note (non-normative):* on default lenses: tools are advised to return
 > claims whose disposition is active unless a wider lens (proposals,

@@ -20,13 +20,14 @@
 /** Registry prefix plus sequence, e.g. "kwg-117". Never renamed, never reused. */
 export type AtomId = string;
 
-/** Globally unique slug across ALL corpora; encodes no location (ERF-4.11). */
+/** Unique across the registry's corpora; encodes no location (ERF-4.11).
+ *  Across registries, identity is the pair of registry and id. */
 export type ClaimId = string;
 
-/** Same global namespace as ClaimId (ERF-6.2). */
+/** Same registry namespace as ClaimId (ERF-6.2). */
 export type QuestionId = string;
 
-/** Same global namespace; slug SHOULD end with the conducted date (ERF-4.29). */
+/** Same registry namespace; slug SHOULD end with the conducted date (ERF-4.29). */
 export type SurveyId = string;
 
 /** A registered corpus id, per the corpus registry (ERF-8.3). */
@@ -150,7 +151,7 @@ export interface Atom {
 /** A statement that can be true or false, one a person could stand behind
  *  or dispute (section 4.3). */
 export interface Claim {
-  /** Globally unique across ALL corpora (ERF-4.11). */
+  /** Unique across the registry's corpora (ERF-4.11). */
   id: ClaimId;
   type: "claim";
   /** Confidentiality tier and governing policy; mutable where identity is not (ERF-4.12). */
@@ -184,7 +185,7 @@ export interface Claim {
 /** A question asserts nothing; it is a sibling record, not a claim
  *  (section 4.5). */
 export interface Question {
-  /** Same global namespace as claims (ERF-6.2). */
+  /** Same registry namespace as claims (ERF-6.2). */
   id: QuestionId;
   type: "question";
   corpus: CorpusId;
@@ -204,7 +205,7 @@ export interface Question {
  *  polarity: the same record backs an absence, sparseness, or density
  *  reading; the citing claim decides the use. */
 export interface Survey {
-  /** Globally unique slug; SHOULD end with the conducted date (ERF-4.29). */
+  /** Unique in the registry; SHOULD end with the conducted date (ERF-4.29). */
   id: SurveyId;
   type: "survey";
   corpus: CorpusId;

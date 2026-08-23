@@ -4,6 +4,33 @@ Newest first. Requirement ids are stable once published: insertions use
 letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
 change lands here with a date.
 
+## v1.0-draft-3 (2026-08-22) — identity scoped to a registry
+
+`ERF-4.11` and `ERF-6.2` said ids are unique "across all corpora", which
+is true inside one operator's registry and false the moment two parties
+share records. Identity is now scoped to a registry (the set of corpora
+one operator or organization governs), and across registries identity is
+the pair of registry and id. Bare slugs never have to be unique between
+parties. `ERF-6.2` also picks up surveys, which the survey pass missed.
+
+A non-normative note states the two designs that hold a shared boundary.
+Records meet by reference rather than by copy, so nothing is imported by
+default. And standings never travel: a disposition is computed inside one
+corpus from that corpus's own standings, while a foreign record's home
+standings are visible as attributed context that is never counted. That
+second rule is the multi-operator form of "only a person takes a stance",
+and it keeps borrowed authority from crossing a boundary.
+
+Left unspecified on purpose until a second person exists in a corpus: an
+actor registry, provenance on copied records, and a declared actor whose
+stance decides a contested claim. Out of scope permanently: quorum,
+voting, and merge resolution.
+
+Section 4.8 (the personal corpus) is reduced to a non-normative note. The
+format permits a register of the author's own positions; the reference
+practice deliberately keeps its author's positions outside the format, and
+the spec now says so rather than describing a register nobody runs.
+
 ## v1.0-draft-3 (2026-08-22) — cause retired before first use
 
 `ERF-4.14c` typed a closed vocabulary of reasons for negative standing
@@ -68,8 +95,8 @@ work-product is a fact about the engagement, not a field on a record. It
 returns only if the multi-operator design needs it, where whose corpus is
 authoritative and who may admit records are the real questions, and the
 answer most likely arrives through actor identity and import provenance.
-Unchanged: a corpus is never a namespace (ids are one global space) and
-never meaning. Text only, in the scope line, the claim and survey field
+Unchanged: a corpus is never a namespace (ids are unique across the
+registry, not scoped per corpus) and never meaning. Text only, in the scope line, the claim and survey field
 cards, and the `CorpusId` comment in `types/erf.ts`.
 
 ## v1.0-draft-3 (2026-08-22) — the survey record type
