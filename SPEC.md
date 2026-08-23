@@ -487,7 +487,7 @@ One piece of evidence: a verbatim quote, a finding, and the trail.
   a verdict clears (which auditors, whether an LLM's verdict counts) is
   policy the corpus owner sets, not a rule of the format.
 - **ERF-4.10** An atom MUST NOT carry a topic field.
-- **ERF-4.10a** An atom's `id` MUST be permanent: a corpus prefix plus a
+- **ERF-4.10a** An atom's `id` MUST be permanent: a mint-time prefix plus a
   sequence number (`kwg-117`), never renamed and never reused.
 - **ERF-4.10b** `as_of_date`, where present, MUST record the date the fact is
   true of, which is distinct from the date the atom recorded it: dated
@@ -924,7 +924,7 @@ checks the relations no type can see.
   choice; concealing it is not.
 - **ERF-6.9** `title` and the body's opening statement MUST agree.
 - **ERF-6.10** Staleness MUST be computed, never stored: a
-  `finding_audit`, `backing_audit`, or binding older than the last change
+  `finding_audit`, `evidence_audit`, or binding older than the last change
   to what it judged is flagged stale.
 - **ERF-6.11** A validator MUST flag as unbacked an `observation` someone
   stands on with empty `atoms_for` and empty `surveys`, and such an
@@ -988,8 +988,10 @@ checks the relations no type can see.
 ## 7. Serialization
 
 - **ERF-7.1** The canonical interchange form MUST be the textual record:
-  YAML frontmatter plus markdown body for claims and questions; YAML
-  entries in a collection document for atoms. A conforming store MUST
+  YAML frontmatter plus markdown body for every record type. Atoms MAY
+  be grouped into a collection document or written one per file; both
+  round-trip, because a record carries its own type and corpus
+  (`ERF-7.2`, `ERF-7.3`). A conforming store MUST
   round-trip records through this form without loss.
 - **ERF-7.2** Records MUST self-describe: `type` and `corpus` are written
   on every record of every type, and no meaning lives in a path.
