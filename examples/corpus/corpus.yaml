@@ -6,7 +6,7 @@
 
 id: erf-example
 title: "ERF example corpus"
-spec_version: 1.0.2
+spec_version: 1.0.4
 classification: public
 
 # Policy is corpus-level, never format-level (ERF-4.9, ERF-6.13). These are

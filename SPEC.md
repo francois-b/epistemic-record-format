@@ -1,7 +1,7 @@
 ---
 title: "The Epistemic Record Format"
 subtitle: "Specification: the record types, the data model, and the invariants, stated so an implementer can build to them or diff an existing system against them."
-spec_version: 1.0.3
+spec_version: 1.0.4
 status: draft
 last_updated: 2026-08-23
 generated: 2026-08-22
@@ -10,7 +10,7 @@ model: claude-fable-5
 
 # The Epistemic Record Format
 
-Specification, v1.0.3. The abstract and status are in `README.md`;
+Specification, v1.0.4. The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way, and
 what the surrounding field holds, is the companion document
 `DESIGN-HISTORY.md`. The normative data model is the TypeScript file
@@ -389,6 +389,18 @@ Five rules govern every name in this model, present and future:
 - **ERF-4.4** The capture's location MUST be recorded in a per-corpus
   mapping (atom id to capture), not on the atom. The fetch date lives with
   the capture.
+- **ERF-4.4a** Every atom MUST have an entry in that mapping. An entry
+  either gives the capture's path, or records that no capture is held and
+  why. Absence MUST be explicit: a missing entry is a defect, not a signal,
+  because `ERF-6.8a` cannot distinguish "no capture exists" from "nobody
+  wrote it down", and a reader is owed that difference.
+- **ERF-4.4b** An entry recording an absence MUST carry a reason from a
+  closed set and a human-readable note. The set in use is
+  `not-redistributable` (a licence permits reading but not republication)
+  and `licence-unverified` (redistribution rights could not be established,
+  and unverified is not permission). The vocabulary is provisional and grows
+  the way the others do, by a demonstrated instance rather than by
+  anticipation.
 
 ### 4.2 The atom
 
@@ -808,16 +820,43 @@ the prose keeps saying what it said.
   collaborator disputes line by line and what the checks run against.
 - **ERF-4.25** A passage that asserts something SHOULD end with a binding:
   a marker naming the claims it rests on plus a few exact words from the
-  passage, so software can find the spot after edits. In the reference
-  implementation the marker is an HTML comment, invisible in every render:
+  passage, so software can find the spot after edits. The marker MUST be an
+  HTML comment, so that it is invisible in every render and survives any
+  markdown pipeline:
 
 ```markdown
 <!-- claims: no-continuous-claim-check "no test that runs on claims" -->
 ```
 
+  The grammar, which is the smallest one that covers real usage:
+
+```
+binding  ::= "<!--" ws* "claims:" ws+ ids ws+ anchor ws* "-->"
+ids      ::= id (ws+ id)*
+id       ::= a record id, matching the corpus's id grammar
+anchor   ::= '"' text '"'
+```
+
+  Ids are separated by whitespace, never by commas, because a comma inside
+  an unquoted list invites a parser to guess. The anchor is REQUIRED and is
+  a verbatim substring of the passage: it is how software finds the spot
+  after the prose moves, and a binding without one can only point at a line
+  number, which edits destroy.
+
 - **ERF-4.26** Bindings MUST be checkable: a validator flags a passage
   whose claims changed since the binding was made, and a reader can walk
   from a sentence to the claims, atoms, quotes, and sources beneath it.
+- **ERF-4.26a** A consumer encountering a binding whose id resolves to no
+  record MUST report it and MUST NOT drop it silently. A narrative claiming
+  support from a record that does not exist is a defect in the narrative,
+  and hiding it turns a broken citation into a confident sentence. A
+  consumer MUST NOT invent a record to satisfy the reference.
+- **ERF-4.26b** A narrative MUST NOT be modelled as a record: it is a
+  document. It carries frontmatter with `title`, `corpus`, and `created`,
+  and its bindings are the only structured content in it. It has no evidence, no standings, and no
+  disposition, which is precisely why it is not a record: nothing about it
+  is adjudicated, and a person disputes the claims it binds to rather than
+  the prose. It therefore has no interface in the data model of section 3.
 
 ### 4.8 The personal corpus
 
@@ -947,6 +986,33 @@ checks the relations no type can see.
   the capture) MUST be re-runnable by anyone holding the corpus and its
   captures; it MUST run as a gate at minting and after any transform that
   moves atoms between homes.
+- **ERF-6.12a** Normalization MUST be this ordered sequence, applied
+  identically to the quote and to the capture, so that two conforming tools
+  reach the same verdict on the same pair:
+
+  1. Unicode NFKC.
+  2. Remove soft hyphens (`U+00AD`).
+  3. Fold typographic single quotes (`U+2018`, `U+2019`, `U+201B`) to `'`.
+  4. Fold typographic double quotes (`U+201C`, `U+201D`, `U+201F`) to `"`.
+  5. Fold dash variants (`U+2010` through `U+2015`, `U+2212`) to `-`.
+  6. Join words broken across lines: remove a hyphen followed by a newline
+     and any leading whitespace on the next line.
+  7. Collapse runs of two or more hyphens to one.
+  8. Remove the emphasis and code markers `*`, `_`, and `` ` ``.
+  9. Unify dash spacing: whitespace either side of a hyphen is removed.
+  10. Collapse whitespace runs to a single space, then trim.
+
+  Case MUST NOT be folded. Case is part of a verbatim quote, and folding it
+  lets a mis-cased quote pass a check whose whole job is fidelity.
+
+  A consumer MAY additionally unwrap markup its capture format introduced
+  (link syntax to its link text, attribute blobs, blockquote markers) when
+  the same unwrapping is applied to both sides; it MUST document what it
+  adds, and it MUST NOT relax the sequence above.
+- **ERF-6.12b** An elision marker (`[...]`, `...`, or `…`) MUST be treated
+  as a wildcard: the quote is split on it and each remaining span MUST occur
+  in the capture, in order and without overlap. A quote reduced to nothing
+  but elisions checks nothing and MUST fail.
 - **ERF-6.13** A deliverable MUST NOT rest on atoms that are unaudited or
   audit-doubted under the corpus's declared audit policy. Verification
   state is recorded on records, the bar is policy, and this ship gate is
@@ -1015,11 +1081,29 @@ checks the relations no type can see.
   without it.
 - **ERF-7.4** Empty lists MUST be omitted: a field's absence means none.
   Unknown keys are errors, not passengers.
+- **ERF-7.4a** A reader MUST materialize an omitted list-typed field as an
+  empty list. An omitted list means none, never unknown, so a record that
+  omits one is complete rather than partial. This applies to
+  `finding_audit`: an atom nobody has audited yet carries no audit key and
+  is a complete record with an empty audit list, not a malformed one. The
+  data model types these fields as required because they are always present
+  in a loaded record; the serialization omits them because a file should
+  not spend a line saying nothing.
 - **ERF-7.5** The event-time key MUST be `timestamp`, everywhere.
 - **ERF-7.6** Actor ids MUST follow the attribution convention of
   section 2; writing and confirming are separate acts in separate fields.
-- **ERF-7.7** A corpus manifest MUST carry the `spec_version` its records
-  conform to; migrations between versions are explicit.
+- **ERF-7.7** A corpus MUST carry a manifest. It MUST declare `id` (the
+  corpus id), `title` (for a person), `spec_version` (the version its
+  records conform to), and `classification` (the confidentiality tier the
+  corpus registry records). It MAY declare a `policy` block, whose contents
+  are that corpus's own bars (an audit bar, a ship gate, an age bar for
+  absence backing) and never the format's, and it MAY name an `owner`, the
+  actor who sets that policy.
+- **ERF-7.7a** A consumer MUST refuse a corpus whose `spec_version` it does
+  not support, and MUST say so. Reading a corpus under the wrong version is
+  worse than refusing it, because the failure is silent: fields shift
+  meaning between versions and nothing in the file announces the mismatch.
+  Migrations between versions are explicit.
 
 > *Note (non-normative):* on `ERF-7.5`: `on` is a YAML 1.1 boolean; the
 > key round-tripped as `True` through standard parsers and was renamed

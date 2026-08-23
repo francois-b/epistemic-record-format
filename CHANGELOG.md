@@ -4,6 +4,54 @@ Newest first. Requirement ids are stable once published: insertions use
 letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
 change lands here with a date.
 
+## v1.0.4 (2026-08-23)
+
+Six areas the reference consumer could not implement from the text alone.
+Every one was found by building `erf-view` against the specification rather
+than against the existing tooling, which is what a reference consumer is
+for.
+
+**Omitted lists are not missing fields** (`ERF-7.4a`). The data model types
+list fields as required and the serialization omits them when empty, and
+until now nothing said what a reader does with the gap. A reader
+materializes an omitted list as an empty one, and an omitted list means
+none rather than unknown. This covers `finding_audit`, so an atom nobody
+has audited is a complete record with an empty audit list. The model
+describes a record in memory; the serialization rules describe the file;
+the two differ on purpose. The viewer reported 28 divergences from this
+alone, and reports none now.
+
+**Quote normalization is defined** (`ERF-6.12a`, `ERF-6.12b`), as a ten-step
+ordered sequence applied identically to quote and capture, taken from the
+working implementation rather than invented. Case is explicitly NOT folded,
+because case is part of a verbatim quote and folding it lets a mis-cased
+quote pass a check whose whole job is fidelity. Elision markers are
+wildcards, spans must occur in order, and a quote that is nothing but
+elisions fails rather than trivially passing.
+
+**Binding syntax has a grammar** (`ERF-4.25`). Ids are whitespace-separated,
+never comma-separated, and the anchor is required, because it is how
+software finds the passage after edits. A binding whose id resolves to
+nothing MUST be reported and MUST NOT be dropped silently (`ERF-4.26a`):
+hiding a broken citation turns it into a confident sentence.
+
+**The manifest has a schema** (`ERF-7.7`): `id`, `title`, `spec_version`,
+and `classification` required, a `policy` block and an `owner` optional. A
+consumer MUST refuse a corpus whose `spec_version` it does not support
+(`ERF-7.7a`), because reading one under the wrong version fails silently.
+
+**The capture mapping has a shape, and absence is explicit** (`ERF-4.4a`,
+`ERF-4.4b`). Every atom has an entry, giving either a path or a recorded
+absence with a reason from a closed set: `not-redistributable` and
+`licence-unverified`. A missing entry is a defect rather than a signal,
+because `ERF-6.8a` cannot otherwise tell "no capture exists" from "nobody
+wrote it down".
+
+**A narrative is a document, not a record** (`ERF-4.26b`). It has no
+evidence, no standings, and no disposition, which is exactly why it stays
+out of the data model: nothing about it is adjudicated, and a reader
+disputes the claims it binds to rather than the prose.
+
 ## v1.0.3 (2026-08-23)
 
 A fifth relation, `bears-on`, admitted on a forcing instance rather than on

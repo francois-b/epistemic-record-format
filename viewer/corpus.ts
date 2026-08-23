@@ -77,6 +77,16 @@ function arr<T>(v: unknown): T[] {
   return Array.isArray(v) ? (v as T[]) : [];
 }
 
+/**
+ * Fields whose absence is a genuine defect.
+ *
+ * List-typed fields are deliberately NOT checked here. `ERF-7.4` omits an
+ * empty list from the file and `ERF-7.4a` has the reader materialize it, so
+ * an omitted list is a complete record rather than a partial one. Checking
+ * them here was this viewer applying the file rule to the in-memory type,
+ * which is what produced 28 spurious divergences and, in the reporting, the
+ * question the specification then answered.
+ */
 function requireFields(
   data: Record<string, unknown>,
   id: string,
@@ -104,9 +114,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
   for (const f of listDir(join(dir, "atoms"))) {
     const { data } = splitFrontmatter(readFileSync(join(dir, "atoms", f), "utf8"));
     const id = String(data["id"] ?? basename(f, ".md"));
-    // `finding_audit` is total in the model but genuinely absent on
-    // never-audited atoms; recorded as a finding, then materialized.
-    requireFields(data, id, ["id", "type", "corpus", "finding", "quote", "citation_text", "source_quality", "created", "finding_audit"], findings);
+    requireFields(data, id, ["id", "type", "corpus", "finding", "quote", "citation_text", "source_quality", "created"], findings);
     atoms.set(id, {
       ...(data as unknown as Atom),
       id,
@@ -119,7 +127,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
   for (const f of listDir(join(dir, "claims"))) {
     const { data, body } = splitFrontmatter(readFileSync(join(dir, "claims", f), "utf8"));
     const id = String(data["id"] ?? basename(f, ".md"));
-    requireFields(data, id, ["id", "type", "corpus", "title", "epistemic_kind", "created", "families", "atoms_for", "atoms_against", "edges", "standings", "evidence_audit"], findings);
+    requireFields(data, id, ["id", "type", "corpus", "title", "epistemic_kind", "created"], findings);
     claims.set(id, {
       ...(data as unknown as Claim),
       id,
@@ -138,7 +146,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
   for (const f of listDir(join(dir, "questions"))) {
     const { data, body } = splitFrontmatter(readFileSync(join(dir, "questions", f), "utf8"));
     const id = String(data["id"] ?? basename(f, ".md"));
-    requireFields(data, id, ["id", "type", "corpus", "title", "status", "created", "families", "sub_questions", "answered_by"], findings);
+    requireFields(data, id, ["id", "type", "corpus", "title", "status", "created"], findings);
     questions.set(id, {
       ...(data as unknown as Question),
       id,
@@ -154,7 +162,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
   for (const f of listDir(join(dir, "surveys"))) {
     const { data, body } = splitFrontmatter(readFileSync(join(dir, "surveys", f), "utf8"));
     const id = String(data["id"] ?? basename(f, ".md"));
-    requireFields(data, id, ["id", "type", "corpus", "title", "conducted", "searches", "notable_results"], findings);
+    requireFields(data, id, ["id", "type", "corpus", "title", "conducted"], findings);
     surveys.set(id, {
       ...(data as unknown as Survey),
       id,

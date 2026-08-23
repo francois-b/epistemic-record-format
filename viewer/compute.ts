@@ -101,23 +101,26 @@ export function backing(claim: Claim, c: LoadedCorpus): BackingReading {
 }
 
 /**
- * The mechanical check of `ERF-6.12`: the normalized quote occurs in the
- * capture.
+ * The normalization of `ERF-6.12a`, in the specified order.
  *
- * The specification requires the check but does not define the normalization,
- * so this is one defensible reading and not a conformance target: Unicode NFKC,
- * whitespace collapsed, typographic quotes and dashes folded to ASCII, and the
- * `[...]` elision marker of `ERF-4.5` treated as a wildcard.
+ * Case is deliberately NOT folded: case is part of a verbatim quote, and
+ * folding it lets a mis-cased quote pass a check whose whole job is fidelity.
+ * An earlier draft of this viewer lowercased, which is what prompted the
+ * requirement to say so.
  */
 export function normalizeForCheck(s: string): string {
   return s
     .normalize("NFKC")
-    .replace(/[‘’‛]/g, "'")
-    .replace(/[“”]/g, '"')
-    .replace(/[‐-―]/g, "-")
+    .replace(/\u00AD/g, "")
+    .replace(/[\u2018\u2019\u201B]/g, "'")
+    .replace(/[\u201C\u201D\u201F]/g, '"')
+    .replace(/[\u2010-\u2015\u2212]/g, "-")
+    .replace(/-\n\s*/g, "")
+    .replace(/-{2,}/g, "-")
+    .replace(/[*_`]/g, "")
+    .replace(/\s*-\s*/g, "-")
     .replace(/\s+/g, " ")
-    .trim()
-    .toLowerCase();
+    .trim();
 }
 
 export type QuoteCheck = { state: "pass" | "fail" | "uncheckable"; detail: string };
@@ -127,7 +130,11 @@ export function quoteCheck(atom: Atom, captureText: string | null): QuoteCheck {
     return { state: "uncheckable", detail: "the captured copy is not present, so the check cannot run here" };
   }
   const hay = normalizeForCheck(captureText);
-  const parts = atom.quote.split(/\[\.\.\.\]/).map(normalizeForCheck).filter(Boolean);
+  // `ERF-6.12b`: [...], ... and … are all elision markers.
+  const parts = atom.quote.split(/\[\.\.\.\]|\.\.\.|…/).map(normalizeForCheck).filter(Boolean);
+  if (parts.length === 0) {
+    return { state: "fail", detail: "the quote is nothing but elisions, so it checks nothing" };
+  }
   let cursor = 0;
   for (const p of parts) {
     const at = hay.indexOf(p, cursor);

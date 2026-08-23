@@ -235,7 +235,16 @@ export interface Survey {
   body: string;
 }
 
-// Lists are total in the type and MAY be empty; empty lists are omitted in
-// serialization (SPEC.md section 7). Optional fields (`?`) assert existence
-// when present: a `citation` means structure exists, a `fetched_url` means
-// a fetch happened, a `last_modified` means an edit happened.
+// This file describes a record IN MEMORY. The serialization rules describe
+// the file, and the two differ on purpose.
+//
+// List-typed fields are required here because a loaded record always has
+// them. In a file they are omitted when empty (ERF-7.4), and a reader
+// materializes an omitted list as an empty one (ERF-7.4a). An omitted list
+// means none, never unknown. This includes `finding_audit`: an atom nobody
+// has audited yet is a complete record whose audit list is empty, not a
+// malformed one.
+//
+// Optional fields (`?`) are different in kind. They assert existence when
+// present: a `citation` means structure exists, a `fetched_url` means a
+// fetch happened, a `last_modified` means an edit happened.
