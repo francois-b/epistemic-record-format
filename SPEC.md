@@ -190,246 +190,135 @@ happened, a `modified` means an edit happened.
 
 ### 3.1 Field reference
 
-One entry per field, grouped by record type. Each label carries the field
-name, then its metadata as (type; writer; when), then the requirement ids
-that constrain it. "Tool" means a producer acting under the machine role;
-"either" means a tool usually drafts and a human may author or repair.
+One row per field, grouped by record type: the field name, its type, who
+writes it, when it is written, and the requirement ids that constrain it.
+Definitions live with the requirements; this table is the index into them.
+"Tool" means a producer acting under the machine role; "either" means a
+tool usually drafts and a human may author or repair.
 
 #### Atom
 
-**`id`** (AtomId; tool; at mint)
-:   Permanent identity: registry prefix plus sequence (`kwg-117`). Never
-    renamed, never reused.
+::: {.cols widths="20 18 22 22 18"}
 
-**`finding`** (string; tool drafts, human repairs; at mint and during fix-and-re-audit) [ERF-4.6, ERF-4.9]
-:   One sentence stating what the quote shows, carrying the context
-    (author, year, kind of document) that makes the atom usable away from
-    its source. Audited against the quote.
+| Field | Type | Writer | When | Requirements |
+|:-------------------|:-----------------|:---------------------|:---------------------|:-----------------|
+| `id` | AtomId | tool | at mint | `ERF-4.10a` |
+| `finding` | string | tool drafts, human repairs | at mint, at re-audit | `ERF-4.6`, `ERF-4.9` |
+| `quote` | string | tool | at mint | `ERF-4.5` |
+| `citation_text` | string | tool | at mint, regenerated from `citation` | `ERF-4.7`, `ERF-4.8` |
+| `citation` | CSL, optional | tool | at mint or ship-time upgrade | `ERF-4.8` |
+| `fetched_url` | string, optional | tool | at capture | `ERF-4.7` |
+| `source_quality` | SourceQuality | either | at mint | `ERF-4.8a`, `ERF-4.8b` |
+| `as_of` | date, optional | either | at mint | `ERF-4.10b` |
+| `limitations` | string, optional | either | at mint, when a caveat emerges | `ERF-4.10b` |
+| `created` | ActorStamp | tool | at creation | `ERF-7.5` |
+| `modified` | ActorStamp, optional | tool | at a later substantive edit | `ERF-6.10` |
+| `finding_audit` | AuditEntry list | tool | after each audit run | `ERF-4.9` |
 
-**`quote`** (string; tool; at mint) [ERF-4.5]
-:   Verbatim text from the capture; `[...]` marks editorial elision. The
-    only content the mechanical check verifies.
-
-**`citation_text`** (string; tool; at mint, regenerated whenever `citation` exists) [ERF-4.7, ERF-4.8]
-:   Human-readable citation identifying the work; never a URL; rendered
-    from `citation` when present, Chicago by default.
-
-**`citation`** (CSL, optional; tool; at mint or at the ship-time upgrade) [ERF-4.8]
-:   Structured bibliographic identity; canonical when present, carrying
-    everything the rendered string shows.
-
-**`fetched_url`** (string, optional; tool; at capture) [ERF-4.7]
-:   The locator actually retrieved; absent for received files. A
-    web-native work's own identity belongs in `citation.URL`, not here.
-
-**`source_quality`** (SourceQuality; either; at mint) [ERF-4.8a, ERF-4.8b]
-:   How much weight the attester's word carries for the fact the finding
-    conveys, graded `high`, `medium`, or `low`. Two inputs are assessed
-    and the weaker governs: provenance distance (hops from the captured
-    text to the fact) and attester accountability (identifiable,
-    answerable, and positioned to know, or not). Assessed against the
-    substance, never against the bare fact of utterance, so reported
-    speech from an anonymous source stays low. Not audit state, not
-    capture fidelity: a reader wanting a combined trust signal composes
-    it from the three at read time.
-
-**`as_of`** (date, optional; either; at mint)
-:   The date the fact is true of, distinct from when it was recorded.
-    Dated statistics carry it; timeless statements omit it.
-
-**`limitations`** (string, optional; either; at mint or when a caveat emerges)
-:   The recorded caveat about the evidence: chain quality, capture blocks,
-    scope warnings, accepted-PARTIAL notes.
-
-**`created`** (ActorStamp; tool; at creation)
-:   When, and which actor, created the record.
-
-**`modified`** (ActorStamp, optional; tool; at any later substantive edit) [ERF-6.10]
-:   Last edit and its actor; staleness comparisons derive from it.
-
-**`finding_audit`** (AuditEntry list; tool; after each audit run) [ERF-4.9]
-:   The recorded judgments that the quote supports the finding, one entry
-    per auditor per run.
+:::
 
 #### Claim
 
-**`id`** (ClaimId; either; at mint) [ERF-4.11]
-:   Globally unique slug; encodes no location; survives corpus moves
-    unchanged.
+::: {.cols widths="20 18 22 22 18"}
 
-**`type`** (the literal `claim`; tool; at mint) [ERF-7.2]
-:   Self-description.
+| Field | Type | Writer | When | Requirements |
+|:-------------------|:-----------------|:---------------------|:---------------------|:-----------------|
+| `id` | ClaimId | either | at mint | `ERF-4.11`, `ERF-6.2` |
+| `type` | the literal `claim` | tool | at mint | `ERF-7.2` |
+| `corpus` | CorpusId | tool writes, human directs | at mint, on promotion or transfer | `ERF-4.12` |
+| `title` | string | human owns, machine may draft | at mint, when reviewing renders | `ERF-4.13`, `ERF-6.9` |
+| `epistemic_kind` | EpistemicKind | either | at mint, refined at cut entry | `ERF-4.19`, `ERF-6.11` |
+| `created` | ActorStamp | tool | at creation | `ERF-7.5` |
+| `modified` | ActorStamp, optional | tool | at a later substantive edit | `ERF-6.10` |
+| `handle` | string, optional | human | at cut entry | `ERF-4.13a` |
+| `families` | FamilyName list | tool proposes, human rules | at mint, at reconciliation | `ERF-4.13b` |
+| `atoms_for` | AtomId list | tool proposes, human admits | as evidence lands | `ERF-4.17` |
+| `atoms_against` | AtomId list | tool proposes, human admits | as evidence lands | `ERF-4.17` |
+| `surveys` | SurveyId list, optional | tool proposes, human admits | as coverage lands | `ERF-4.21`, `ERF-4.30` |
+| `edges` | Edge list | tool proposes, human rules | at composition and challenge | `ERF-6.6`, `ERF-6.7` |
+| `standings` | StandingEntry list | tool writes, humans in `by` | at each stance | `ERF-4.14`, `ERF-4.15` |
+| `backing_audit` | AuditEntry list | tool | change-triggered | `ERF-4.19`, `ERF-4.20` |
+| `semantic_query` | string, optional | tool drafts | at mint or at need | `ERF-4.13c` |
+| `body` | string | human | freely | `ERF-4.13`, `ERF-6.9` |
 
-**`corpus`** (CorpusId; tool writes, a human directs changes; at mint and on promotion or transfer) [ERF-4.12]
-:   The registered body of work holding the claim: the unit of
-    confidentiality, and the unit its governing policies attach to.
-
-**`title`** (string; human-owned, machine may draft; at mint, revised wherever the author reviews rendered documents) [ERF-4.13]
-:   The claim statement, normative: one complete assertion readable as
-    true or false on its own.
-
-**`epistemic_kind`** (Kind; either; at mint, refined when the claim enters a cut) [ERF-4.19, ERF-6.11]
-:   What would check the claim (section 5); sets the backing contract the
-    validator and the backing audit apply.
-
-**`created`**, **`modified`** (ActorStamp; tool; as on the atom)
-:   As on the atom.
-
-**`handle`** (string, optional; human; at cut entry)
-:   Compact spoken name: the title states the claim, the handle names it.
-
-**`families`** (FamilyName list; tool proposes, human rules; at mint and at reconciliation)
-:   Recorded topic-family membership: what makes "pull the demand claims"
-    an exact, repeatable set. Search proposes members; the family records
-    the decision.
-
-**`atoms_for`**, **`atoms_against`** (AtomId lists; tool proposes, human admits; as evidence lands) [ERF-4.17]
-:   Evidence in both directions on this one claim.
-
-**`surveys`** (SurveyId list, optional; tool proposes, human admits; as coverage lands) [ERF-4.21, ERF-4.30]
-:   The survey records an absence or coverage reading rests on; one
-    list, no against side (section 4.6).
-
-**`edges`** (list of `{to, rel}`; tool proposes, human rules; during composition and challenge) [ERF-6.6]
-:   The claim's typed relations (section 5); an argument's structure lives
-    here, not in its body.
-
-**`standings`** (Standing list; tool writes entries, only humans appear in `by`; at each stance) [ERF-4.14, ERF-4.15]
-:   The append-only doxastic ledger.
-
-**`backing_audit`** (AuditEntry list; tool; change-triggered) [ERF-4.19, ERF-4.20]
-:   Recorded judgments that the backing, taken together, carries the
-    statement.
-
-**`semantic_query`** (string, optional; tool drafts, freely regenerated; at mint or at need)
-:   A pre-authored search key, written in the source domain's vocabulary
-    rather than the claim's own compressed prose, used to query indexed
-    material for evidence that could back or cut against the claim. Exists
-    because measured retrieval over claim prose fails: the definitive
-    source for one claim ranked 16th under the claim's own wording and 1st
-    under a domain-vocabulary query. Exempt from the prose standard by
-    construction; read by machines only.
-
-**`body`** (string; human, the one operator-authored text; freely) [ERF-4.13]
-:   The statement restated, then working notes. In a database, one more
-    field.
+:::
 
 #### Question
 
 Shares `id`, `type`, `corpus`, `title`, `created`, `modified`, and
 `families` with the claim; plus:
 
-**`status`** (Status; a human directs, a tool writes; at lifecycle moves) [ERF-4.23]
-:   The whole lifecycle: `open`, `answered`, `parked`; questions carry no
-    ledger.
+::: {.cols widths="20 18 22 22 18"}
 
-**`sub_questions`** (QuestionId list; either; during decomposition) [ERF-4.22]
-:   The only structure a question carries.
+| Field | Type | Writer | When | Requirements |
+|:-------------------|:-----------------|:---------------------|:---------------------|:-----------------|
+| `status` | QuestionStatus | human directs, tool writes | at lifecycle moves | `ERF-4.22`, `ERF-4.23` |
+| `sub_questions` | QuestionId list | either | during decomposition | `ERF-4.22` |
+| `answered_by` | ClaimId list, optional | tool | when status becomes answered | `ERF-4.23` |
+| `body` | string | human | freely | `ERF-4.22` |
 
-**`answered_by`** (ClaimId list, optional; tool; when status becomes answered) [ERF-4.23]
-:   The claims that settled it.
-
-**`body`** (string; human; freely)
-:   The question elaborated.
+:::
 
 #### Survey
 
-**`id`** (SurveyId; tool; at mint) [ERF-4.29]
-:   Globally unique slug; SHOULD end with the conducted date, since a
-    re-run of the same sought is a new record.
+::: {.cols widths="20 18 22 22 18"}
 
-**`type`** (the literal `survey`; tool; at mint) [ERF-7.2]
-:   Self-description.
+| Field | Type | Writer | When | Requirements |
+|:-------------------|:-----------------|:---------------------|:---------------------|:-----------------|
+| `id` | SurveyId | tool | at mint | `ERF-4.29`, `ERF-6.2` |
+| `type` | the literal `survey` | tool | at mint | `ERF-7.2` |
+| `corpus` | CorpusId | tool writes, human directs | at mint, on transfer | `ERF-4.12` |
+| `title` | string | either | at mint | `ERF-4.29` |
+| `conducted` | ActorStamp | tool | at the search | `ERF-4.29` |
+| `searches` | SearchAct list | tool | at the search | `ERF-4.27`, `ERF-4.28` |
+| `notable_results` | list of `{what, note, atoms?}` | either | at the search, as atoms mint | `ERF-4.28` |
+| `limitations` | string, optional | either | at the search | `ERF-4.30` |
+| `prior` | SurveyId, optional | tool | at a re-run | `ERF-4.29` |
+| `body` | string | either | freely | `ERF-4.29` |
 
-**`corpus`** (CorpusId; tool writes, a human directs changes; at mint and on transfer)
-:   As on the claim: confidentiality and governing policy, never namespace
-    or meaning.
-
-**`title`** (string; either; at mint)
-:   What the survey sought, stated as one phrase or question.
-
-**`conducted`** (ActorStamp; tool; at the search) [ERF-4.29]
-:   When, and which actor, conducted the search. Machine actors are legal
-    here: searching is machine work, and judgment stays on the citing
-    claim.
-
-**`searches`** (SearchAct list; tool; at the search) [ERF-4.27, ERF-4.28]
-:   The acts, one or more, each self-contained: instrument, query,
-    restriction, yield.
-
-**`notable_results`** (list of `{what, note, atoms?}`; either; at the search and as atoms mint) [ERF-4.28]
-:   The curated subset worth recording; entries mint atoms when a hit
-    deserves quoting.
-
-**`limitations`** (string, optional; either; at the search) [ERF-4.30]
-:   What the acts did not cover and how deeply hits were inspected;
-    absent for a complete search of a closed corpus.
-
-**`prior`** (SurveyId, optional; tool; at a re-run) [ERF-4.29]
-:   The predecessor record when the same sought is searched again; the
-    chain staleness computations walk.
-
-**`body`** (string; either; freely)
-:   The search narrated: method, yield, and reading.
+:::
 
 #### Search act
 
-**`tool`** (string; tool; at the act) [ERF-4.27]
-:   The concrete instrument, named: which search engine, which database,
-    which index, which script. Never a category.
+::: {.cols widths="20 18 22 22 18"}
 
-**`query`** (string; tool; at the act) [ERF-4.27]
-:   The query in the instrument's own terms; for a manual review, the
-    universe inspected.
+| Field | Type | Writer | When | Requirements |
+|:-------------------|:-----------------|:---------------------|:---------------------|:-----------------|
+| `tool` | string | tool | at the act | `ERF-4.27` |
+| `query` | string | tool | at the act | `ERF-4.27` |
+| `scope` | string, optional | tool | at the act | `ERF-4.27` |
+| `hits` | string | tool | at the act | `ERF-4.28` |
+| `timestamp` | RFC 3339, optional | tool | at the act | `ERF-4.29` |
 
-**`scope`** (string, optional; tool; at the act)
-:   The restriction where one applied: site filter, date range, corpus
-    slice, inspection depth.
-
-**`hits`** (string; tool; at the act) [ERF-4.28]
-:   The yield as the instrument reported it; text, because reported
-    precision varies by instrument.
-
-**`timestamp`** (RFC 3339, optional; tool; at the act)
-:   When this act ran, for a survey spanning sittings; defaults to the
-    survey's `conducted` timestamp.
+:::
 
 #### Standing entry
 
-**`timestamp`** (RFC 3339 with time of day; tool; at the stance) [ERF-4.14]
-:   Same-day entries must order.
+::: {.cols widths="20 18 22 22 18"}
 
-**`stance`** (Stance; a human decides, a tool writes; at the stance)
-:   `for`, `against`, or `withdrawn` (section 5).
+| Field | Type | Writer | When | Requirements |
+|:-------------------|:-----------------|:---------------------|:---------------------|:-----------------|
+| `timestamp` | RFC 3339 with time | tool | at the stance | `ERF-4.14`, `ERF-7.5` |
+| `stance` | Stance | human decides, tool writes | at the stance | `ERF-4.14` |
+| `by` | `human:<id>` | tool writes, names the person | at the stance | `ERF-4.15`, `ERF-6.3` |
+| `why` | string | human | at the stance | `ERF-4.14`, `ERF-6.3` |
+| `evidence_at_stance` | id sets, optional | tool, a SHOULD | at the stance | `ERF-4.14a` |
 
-**`by`** (`human:<id>`; tool-written, names the person; at the stance) [ERF-4.15]
-:   Only people take stances.
-
-**`why`** (string, required; human; at the stance) [ERF-4.14]
-:   The reason. An entry without one is a toggle, not a judgment.
-
-**`evidence_at_stance`** (id sets; tool, a SHOULD; at the stance) [ERF-4.14a]
-:   The evidence attached at ruling time, by id.
+:::
 
 #### Audit entry
 
-**`auditor`** (string; tool; at the run)
-:   The model that rendered the verdict: a hosted identity whose weights
-    drift under a stable name; read together with `protocol`.
+::: {.cols widths="20 18 22 22 18"}
 
-**`verdict`** (enum; the auditor's output; at the run)
-:   `SUPPORTED`, `PARTIAL`, or `UNSUPPORTED`.
+| Field | Type | Writer | When | Requirements |
+|:-------------------|:-----------------|:---------------------|:---------------------|:-----------------|
+| `auditor` | string | tool | at the run | `ERF-4.9` |
+| `verdict` | SUPPORTED, PARTIAL, or UNSUPPORTED | the auditor | at the run | `ERF-4.9` |
+| `timestamp` | RFC 3339 | tool | at the run | `ERF-7.5` |
+| `protocol` | string | tool | at the run | `ERF-4.9` |
+| `accepted` | the literal `true`, optional | human | at the ruling | `ERF-4.9` |
 
-**`timestamp`** (RFC 3339; tool; at the run)
-:   When the verdict was rendered.
-
-**`protocol`** (string; tool; at the run)
-:   The versioned procedure that produced the verdict; verdicts under
-    different protocols are not comparable.
-
-**`accepted`** (the literal `true`, optional; human; at the ruling)
-:   The operator's ruling that a PARTIAL stands as recorded (the
-    disagreement is placement of a caveat, not substance).
+:::
 
 How records are found: atoms are retrieved by embedding `finding` and
 `quote`. The finding is written to be checkable away from its source,
@@ -519,7 +408,8 @@ One piece of evidence: a verbatim quote, a finding, and the trail.
 - **ERF-4.7** `citation_text` MUST NOT contain a URL. A citation identifies a
   work; a locator retrieves one copy. The retrieved locator is
   `fetched_url`; a web-native work's own identity MAY appear as
-  `citation.URL`.
+  `citation.URL`. A received file has no retrieval locator, so its atoms
+  carry no `fetched_url`.
 - **ERF-4.8** When `citation` is present it is canonical: it MUST carry
   everything the rendered `citation_text` string shows (chapter, translator,
   edition included), and `citation_text` MUST be rendered from it. Default
@@ -559,9 +449,22 @@ One piece of evidence: a verbatim quote, a finding, and the trail.
   so its result MUST NOT be stored. The judgment (does the quote, in
   context, support the finding?) is not recomputable: it MUST be recorded
   per auditor in `finding_audit`, with the protocol version that produced
-  it. What a verdict clears (which auditors, whether an LLM's verdict
-  counts) is policy the corpus owner sets, not a rule of the format.
+  it. Verdicts rendered under different protocol versions MUST NOT be read
+  as like for like, which is why the protocol travels with the verdict and
+  why an auditor's identity (a hosted model id whose weights drift under a
+  stable name) is recorded beside it. A PARTIAL the operator rules
+  acceptable as recorded, the disagreement being where a caveat sits rather
+  than what the evidence shows, carries `accepted: true` on its entry. What
+  a verdict clears (which auditors, whether an LLM's verdict counts) is
+  policy the corpus owner sets, not a rule of the format.
 - **ERF-4.10** An atom MUST NOT carry a topic field.
+- **ERF-4.10a** An atom's `id` MUST be permanent: a registry prefix plus a
+  sequence number (`kwg-117`), never renamed and never reused.
+- **ERF-4.10b** `as_of`, where present, MUST record the date the fact is
+  true of, which is distinct from the date the atom recorded it: dated
+  statistics carry it and timeless statements omit it. `limitations`
+  records the caveat about the evidence, whether that is chain quality, a
+  capture block, a scope warning, or an accepted-PARTIAL note.
 
 > *Note (non-normative):* on `ERF-4.8a`: earlier operational anchors baked
 > dual-auditor confirmation into the tiers; that conflation is
@@ -637,7 +540,23 @@ and there is none to show yet.
   SHOULD be accompanied by a standing entry recording why.
 - **ERF-4.13** `title` MUST state the claim; it is the normative
   statement. The body SHOULD open by restating it; the validator compares
-  the two (`ERF-6.9`).
+  the two (`ERF-6.9`). Beyond that restatement the body is the one
+  operator-authored text on the record, and carries the working notes.
+- **ERF-4.13a** A claim MAY carry a `handle`, a compact spoken name for
+  use in conversation and in cut documents: the `title` states the claim,
+  the handle names it.
+- **ERF-4.13b** `families`, where present, MUST record topic-family
+  membership as a decision rather than a guess: it is what makes a pull
+  such as "the demand claims" an exact, repeatable set. Search proposes
+  members; the recorded family is the ruling.
+- **ERF-4.13c** A claim MAY carry a `semantic_query`, a pre-authored
+  search key written in the source domain's vocabulary rather than the
+  claim's own compressed prose, used to find evidence that could back it
+  or cut against it. It exists because measured retrieval over claim prose
+  fails: one claim's definitive source ranked 16th under the claim's own
+  wording and 1st under a domain-vocabulary query. It is read by machines
+  only, is exempt from the prose standard by construction, and MAY be
+  regenerated freely.
 - **ERF-4.14** `standings` is append-only: entries MUST NOT be edited or
   deleted; a correction is a new entry. Each entry MUST carry a full
   timestamp (same-day entries must order), a stance, and a non-empty
@@ -682,18 +601,9 @@ and there is none to show yet.
 
 > *Note (non-normative):* `ERF-4.14b` and `ERF-4.14c` are retired ids and
 > are not reused. `ERF-4.14c` typed a `cause` vocabulary for negative
-> standing moves, modeled on Wikidata's P2241. It was retired unused on
-> the format's own subtraction rule: across every corpus five withdrawals
-> existed and none carried a cause, one of the six proposed values had a
-> real instance, and four of the five actual reasons were not in the list
-> at all. Each `why` sentence stated its reason better than an enum could.
-> The concept returns only when something needs to filter withdrawals by
-> reason, and its vocabulary is then derived from accumulated `why`
-> sentences rather than invented ahead of them.
-
-> *Note (non-normative):* on `ERF-4.18`: a structured settlement
-> vocabulary is deferred; zero settled bets exist, and typing one forces
-> an object-shape union.
+> standing moves; it was retired unused, and a structured settlement
+> vocabulary for `ERF-4.18` is deferred for the same reason. The
+> measurements behind both are in the design-history companion.
 
 ### 4.4 The backing audit
 
@@ -808,7 +718,8 @@ notable_results:
   a database query, a semantic prompt, or, for a manual review, the
   universe inspected. A category ("web search") without the instrument
   does not satisfy this; yields are comparable only where instruments are
-  named.
+  named. An act MAY carry a `scope` naming the restriction that applied: a
+  site filter, a date range, a corpus slice, or the depth inspected.
 - **ERF-4.28** `hits` MUST record each act's yield as the instrument
   reported it, as text ("0", "3", "~120 reported, two pages inspected"); a
   record MUST NOT state precision the instrument did not give.
@@ -820,7 +731,10 @@ notable_results:
   predecessor in `prior`, and its id SHOULD end with the conducted date.
   Staleness of a claim's survey backing is computed from `conducted`
   timestamps, never stored; how often a fruitful survey re-runs is
-  pipeline policy, not format.
+  pipeline policy, not format. The `title` MUST state what was sought. An
+  individual act MAY carry its own `timestamp` where a survey spans
+  sittings; absent one, an act inherits the survey's `conducted`
+  timestamp.
 - **ERF-4.30** A survey cited by a claim asserting absence or sparseness
   SHOULD carry `limitations`: what the acts did not cover and how deeply
   hits were inspected. A complete search of a closed corpus correctly
@@ -892,8 +806,8 @@ the prose keeps saying what it said.
 ## 5. Vocabularies
 
 Closed sets. A value outside them is a validation failure, not a dialect.
-The kinds, stances, statuses, relations, and confidence tiers are listed in
-section 3; their meanings:
+The sets themselves are listed in the data model (section 3); what they
+mean:
 
 Epistemic kinds answer one question: what would check this claim?
 
@@ -934,14 +848,10 @@ carries the edge:
 > defines forty citation relations); the working experience is that small
 > vocabularies get used and large ones get skipped.
 
-Confidence (the atom's source situation; one axis, `ERF-4.8a`): `high`, a
-captured primary or first-party source; `medium`, fetch-time extraction,
-vendor self-report, or one-hop secondary; `low`, a relay not yet
-primary-pulled. Audit state and capture fidelity are recorded elsewhere
-and never folded in. Operational meaning: read the lows and mediums
-harder.
-
-Dispositions are not a stored vocabulary; see `ERF-6.5`.
+The atom's `source_quality` tiers (`high`, `medium`, `low`) are defined
+with the rule for assessing them in `ERF-4.8a` and `ERF-4.8b`, their one
+home. Operational meaning: read the lows and mediums harder. Dispositions
+are not a stored vocabulary; see `ERF-6.5`.
 
 ## 6. Invariants (the validator)
 

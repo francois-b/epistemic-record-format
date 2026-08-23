@@ -4,6 +4,53 @@ Newest first. Requirement ids are stable once published: insertions use
 letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
 change lands here with a date.
 
+## v1.0-draft-3 (2026-08-22) — trim pass, one definitional home per field
+
+`SPEC.md` goes from 1,219 to 1,093 lines with nothing a reader needs
+removed. The motivating defect: section 5 still defined the atom quality
+axis under its old name and its retired hop-based rubric, hours after
+`ERF-4.8a` was rewritten, because a field could be defined in four places
+and one pass updated three of them.
+
+Four changes:
+
+- **Section 3.1 field reference**: 56 prose cards become tables grouped by
+  record type (Field, Type, Writer, When, Requirements). Definitions live
+  with the requirements; the table is the index into them.
+- **Section 5 vocabularies**: keeps only what lives nowhere else, the
+  epistemic kinds framed by what would check a claim and the four
+  relations stated subject-first. The quality tiers point at `ERF-4.8a`
+  and `ERF-4.8b`, their one home.
+- **Changelog section**: removed from the spec; this file is the version
+  history and `DESIGN-HISTORY.md` is the narrative.
+- **Two archaeology notes** move out, their measurements already recorded
+  in the design history's subtraction ledger. The change-control fact that
+  `ERF-4.14b` and `ERF-4.14c` are retired ids stays in the spec.
+
+The field reference was not purely duplicative: about a fifth of it was
+the only home for real rules, so the cards could not be dropped until
+that content moved into requirements. Migrated in this pass:
+
+- `ERF-4.7` gains: a received file has no retrieval locator, so its atoms
+  carry no `fetched_url`.
+- `ERF-4.9` gains: verdicts under different protocol versions are not
+  comparable, an auditor's identity is recorded beside the protocol, and
+  `accepted: true` marks a PARTIAL the operator rules acceptable.
+- `ERF-4.10a` (new): an atom's `id` is permanent, never renamed or reused.
+- `ERF-4.10b` (new): `as_of` records the date the fact is true of;
+  `limitations` records the caveat about the evidence.
+- `ERF-4.13` gains: beyond restating the title, the body is the one
+  operator-authored text and carries the working notes.
+- `ERF-4.13a` (new): the optional `handle`, a compact spoken name.
+- `ERF-4.13b` (new): `families` records membership as a decision.
+- `ERF-4.13c` (new): `semantic_query`, why it exists, and the retrieval
+  measurement behind it.
+- `ERF-4.27` gains: an act MAY carry a `scope`.
+- `ERF-4.29` gains: a survey's `title` states what was sought, and an act
+  MAY carry its own `timestamp`, inheriting `conducted` when absent.
+
+Requirement count 56 to 61. No existing id is renumbered or reused.
+
 ## v1.0-draft-3 (2026-08-22) — identity scoped to a registry
 
 `ERF-4.11` and `ERF-6.2` said ids are unique "across all corpora", which
