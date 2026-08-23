@@ -69,8 +69,9 @@ shown here.
 - *record*: one atom, claim, question, or survey. Structured fields plus
   one body text.
 - *corpus*: a body of work owning records; a research program, an
-  engagement, a venture, or the personal corpus. The unit of ownership and
-  confidentiality.
+  engagement, a venture, or the personal corpus. The unit of
+  confidentiality, and the unit the governing policies attach to (audit
+  intensity, verification bars, ship gates).
 - *canonical store*: the one authoritative home of a corpus's records.
   Everything else (indexes, databases, embeddings) is a *projection*:
   derived, recomputable, never authoritative.
@@ -132,7 +133,7 @@ interface Atom {
 interface Claim {
   id: ClaimId;                 // globally unique across ALL corpora
   type: "claim";
-  corpus: CorpusId;            // ownership; mutable where identity is not
+  corpus: CorpusId;            // confidentiality and policy; mutable
   title: string;               // THE claim statement (normative)
   epistemic_kind: EpistemicKind;
   created: ActorStamp;
@@ -262,8 +263,8 @@ that constrain it. "Tool" means a producer acting under the machine role;
 :   Self-description.
 
 **`corpus`** (CorpusId; tool writes, a human directs changes; at mint and on promotion or transfer) [ERF-4.12]
-:   The registered body of work that owns the claim: the unit of ownership
-    and confidentiality.
+:   The registered body of work holding the claim: the unit of
+    confidentiality, and the unit its governing policies attach to.
 
 **`title`** (string; human-owned, machine may draft; at mint, revised wherever the author reviews rendered documents) [ERF-4.13]
 :   The claim statement, normative: one complete assertion readable as
@@ -343,8 +344,8 @@ Shares `id`, `type`, `corpus`, `title`, `created`, `modified`, and
 :   Self-description.
 
 **`corpus`** (CorpusId; tool writes, a human directs changes; at mint and on transfer)
-:   As on the claim: ownership and confidentiality, never namespace or
-    meaning.
+:   As on the claim: confidentiality and governing policy, never namespace
+    or meaning.
 
 **`title`** (string; either; at mint)
 :   What the survey sought, stated as one phrase or question.

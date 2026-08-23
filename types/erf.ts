@@ -157,7 +157,7 @@ export interface Claim {
   /** Globally unique across ALL corpora (ERF-4.11). */
   id: ClaimId;
   type: "claim";
-  /** Ownership; mutable where identity is not (ERF-4.12). */
+  /** Confidentiality tier and governing policy; mutable where identity is not (ERF-4.12). */
   corpus: CorpusId;
   /** THE claim statement (normative, ERF-4.13). */
   title: string;

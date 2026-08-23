@@ -4,6 +4,22 @@ Newest first. Requirement ids are stable once published: insertions use
 letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
 change lands here with a date.
 
+## v1.0-draft-3 (2026-08-22) — corpus narrowed
+
+The corpus carries two jobs, not three: the confidentiality boundary
+(engagement, client, and correspondence-derived records are inherently
+private and unrelatable outside their project, while public research
+travels freely) and the policies that govern its records (audit
+intensity, verification bars, ship gates). Ownership is struck: with one
+operator it distinguishes nothing, and contractual ownership of client
+work-product is a fact about the engagement, not a field on a record. It
+returns only if the multi-operator design needs it, where whose corpus is
+authoritative and who may admit records are the real questions, and the
+answer most likely arrives through actor identity and import provenance.
+Unchanged: a corpus is never a namespace (ids are one global space) and
+never meaning. Text only, in the scope line, the claim and survey field
+cards, and the `CorpusId` comment in `types/erf.ts`.
+
 ## v1.0-draft-3 (2026-08-22) — the survey record type
 
 Gap claims ("nothing off the shelf does X", "this is niche") were
