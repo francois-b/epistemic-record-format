@@ -6,7 +6,8 @@
 import type { Atom, Claim, StandingEntry } from "../types/erf.ts";
 import type { LoadedCorpus } from "./corpus.ts";
 
-export type Disposition = "proposal" | "active" | "contested" | "retired";
+export type Disposition =
+  | "proposal" | "active" | "contested" | "rejected" | "retired";
 
 /** Each person's newest stance, which is what `ERF-6.5` reads. */
 export function currentStances(standings: StandingEntry[]): StandingEntry[] {
@@ -26,9 +27,10 @@ export interface DispositionReading {
 }
 
 /**
- * `ERF-6.5`. No standings is a proposal; current stances that disagree are
- * contested; all `for` is active; all `withdrawn` is retired. There is no
- * tie-break, deliberately: the format supplies no rule for whose stance wins.
+ * `ERF-6.5`. No standings is a proposal. Otherwise discard withdrawn
+ * stances, since withdrawal is exit rather than opposition, and read what
+ * remains: nothing is retired, all `for` is active, all `against` is
+ * rejected, a mix is contested. Total over every input, and no tie-break.
  */
 export function disposition(claim: Claim): DispositionReading {
   const current = currentStances(claim.standings);
@@ -39,25 +41,34 @@ export function disposition(claim: Claim): DispositionReading {
       current,
     };
   }
-  const stances = new Set(current.map((s) => s.stance));
-  if (stances.size > 1) {
-    const who = current.map((s) => `${s.by} ${s.stance}`).join(", ");
+  const held = current.filter((s) => s.stance !== "withdrawn");
+  if (held.length === 0) {
+    return {
+      disposition: "retired",
+      because: `Every current stance is "withdrawn", so the claim is retired. Retired means its holders left the question, not that it was shown false: read each why.`,
+      current,
+    };
+  }
+  const forCount = held.filter((s) => s.stance === "for").length;
+  const againstCount = held.length - forCount;
+  if (forCount > 0 && againstCount > 0) {
+    const who = held.map((s) => `${s.by} ${s.stance}`).join(", ");
     return {
       disposition: "contested",
       because: `Current stances disagree (${who}). Contested is the terminal reading: no stance outranks another, and the format supplies no tie-break.`,
       current,
     };
   }
-  if (stances.has("for")) {
+  if (againstCount > 0) {
     return {
-      disposition: "active",
-      because: `Every current stance is "for" (${current.length} of ${current.length}), so the claim is active.`,
+      disposition: "rejected",
+      because: `Every current holder stands against (${againstCount} of ${held.length}), so the claim is rejected. Rejected means judged false, which is not the same as retired.`,
       current,
     };
   }
   return {
-    disposition: "retired",
-    because: `Every current stance is "withdrawn", so the claim is retired. Retired does not mean shown false: read each why.`,
+    disposition: "active",
+    because: `Every current holder stands for it (${forCount} of ${held.length}), so the claim is active.`,
     current,
   };
 }

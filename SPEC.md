@@ -1,7 +1,7 @@
 ---
 title: "The Epistemic Record Format"
 subtitle: "Specification: the record types, the data model, and the invariants, stated so an implementer can build to them or diff an existing system against them."
-spec_version: 1.0.4
+spec_version: 1.0.5
 status: draft
 last_updated: 2026-08-23
 generated: 2026-08-22
@@ -10,7 +10,7 @@ model: claude-fable-5
 
 # The Epistemic Record Format
 
-Specification, v1.0.4. The abstract and status are in `README.md`;
+Specification, v1.0.5. The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way, and
 what the surrounding field holds, is the companion document
 `DESIGN-HISTORY.md`. The normative data model is the TypeScript file
@@ -97,7 +97,8 @@ shown here.
 - *collection document*: one file carrying many records of a type, as an
   atom file carries atoms. A grouping convenience only: every record inside
   still carries its own `type` and `corpus` (`ERF-7.3`).
-- *disposition*: the computed reading of a claim's standings (`ERF-6.5`).
+- *disposition*: the computed reading of a claim's standings, one of
+  `proposal`, `active`, `contested`, `rejected`, `retired` (`ERF-6.5`).
   Never a stored field.
 - *binding*: a marker in a narrative document naming the claim a passage
   rests on (`ERF-4.25`).
@@ -951,13 +952,21 @@ checks the relations no type can see.
 - **ERF-6.4** Standings MUST be append-only; an edit or deletion of an
   existing entry is a violation, verified against the substrate's history.
 - **ERF-6.5** Disposition MUST be computed, never stored, from the current
-  stances alone (each person's newest): no standings means `proposal`;
-  current stances that disagree mean `contested`; current stances all `for`
-  mean `active`; current stances all `withdrawn` mean `retired`. No stance
-  outranks another and the format supplies no tie-break: `contested` is the
-  terminal reading of a disagreement, not a state resolved by arithmetic.
-  Which disposition a *use* requires (a ship gate, a team policy) is corpus
-  or doc-class policy, not format.
+  stances alone, meaning each person's newest entry. With no standings at
+  all the disposition is `proposal`. Otherwise discard every current stance
+  of `withdrawn`, because withdrawal is exit rather than opposition, and
+  read what remains: nothing remaining means `retired`; all `for` means
+  `active`; all `against` means `rejected`; both `for` and `against`
+  remaining means `contested`. Every input has exactly one reading. No
+  stance outranks another and the format supplies no tie-break: `contested`
+  is the terminal reading of a disagreement, not a state resolved by
+  arithmetic. Which disposition a *use* requires (a ship gate, a team
+  policy) is corpus or doc-class policy, not format.
+- **ERF-6.5a** `rejected` and `retired` MUST NOT be conflated. A rejected
+  claim is one every current holder judges false; a retired claim is one
+  every current holder has left. Both are terminal readings and neither is
+  a deletion; a consumer presenting them identically MUST say which it
+  means.
 - **ERF-6.6** An argument's transitive `assumes` and `supports` closure
   MUST terminate in non-argument leaves, none of them retired. Self-edges MUST NOT exist; `assumes` and `decomposes-into` MUST
   admit no cycles.
@@ -1017,6 +1026,16 @@ checks the relations no type can see.
   audit-doubted under the corpus's declared audit policy. Verification
   state is recorded on records, the bar is policy, and this ship gate is
   where the two meet.
+> *Note (non-normative):* on `rejected`, added 2026-08-23. The earlier rule
+> named four readings and left a legal input unnamed: a claim whose current
+> stances are all `against` matched none of them, so two conforming
+> validators could disagree about the format's central computed state. The
+> vocabulary grows by one because a function was partial, not because a
+> state was wanted. Unanimous rejection had no instance in the reference
+> practice when this was written, and the correction was made anyway: a
+> total function is a property of the rule, not a feature waiting on a
+> forcing instance.
+
 > *Note (non-normative):* a `retired` disposition MUST NOT be read as
 > "shown false". Withdrawals on record split three ways. Some absorb a
 > claim into another or split it in two, so the content survives

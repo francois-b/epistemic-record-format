@@ -4,6 +4,30 @@ Newest first. Requirement ids are stable once published: insertions use
 letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
 change lands here with a date.
 
+## v1.0.5 (2026-08-23)
+
+`ERF-6.5` was not a total function. A claim whose current stances are all
+`against` matched none of its four branches, so the format's central
+computed state was undefined for a legal input and two validators could
+legitimately disagree about it. Found by a cross-vendor adversarial review.
+
+The rule now discards withdrawn stances before computing, because
+withdrawal is exit rather than opposition, and reads what remains: nothing
+is `retired`, all `for` is `active`, all `against` is `rejected`, a mix is
+`contested`. No standings at all remains `proposal`. Every input has exactly
+one reading, and there is still no tie-break.
+
+`rejected` is a fifth disposition, and `ERF-6.5a` forbids conflating it with
+`retired`: a rejected claim is one every current holder judges false, a
+retired one is one every current holder has left. The vocabulary grew
+because a function was partial, not because a state was wanted, and it grew
+without a forcing instance because totality is a property of a rule rather
+than a feature.
+
+The earlier rule also read one `for` and one `withdrawn` as disagreement,
+reporting a contest that was not happening. That is fixed by the same
+discard.
+
 ## v1.0.4 (2026-08-23)
 
 Six areas the reference consumer could not implement from the text alone.
