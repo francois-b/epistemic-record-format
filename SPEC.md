@@ -1,7 +1,7 @@
 ---
 title: "The Epistemic Record Format"
 subtitle: "Specification: the record types, the data model, and the invariants, stated so an implementer can build to them or diff an existing system against them."
-spec_version: 1.0.2
+spec_version: 1.0.3
 status: draft
 last_updated: 2026-08-23
 generated: 2026-08-22
@@ -10,7 +10,7 @@ model: claude-fable-5
 
 # The Epistemic Record Format
 
-Specification, v1.0.2. The abstract and status are in `README.md`;
+Specification, v1.0.3. The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way, and
 what the surrounding field holds, is the companion document
 `DESIGN-HISTORY.md`. The normative data model is the TypeScript file
@@ -116,7 +116,8 @@ string-literal value sets.
 type EpistemicKind  = "observation" | "argument" | "bet" | "commitment";
 type Stance         = "for" | "against" | "withdrawn";
 type QuestionStatus = "open" | "answered" | "parked";
-type Relation       = "supports" | "assumes" | "decomposes-into" | "conflicts-with";
+type Relation       = "supports" | "assumes" | "decomposes-into"
+                    | "conflicts-with" | "bears-on";
 type SourceQuality  = "high" | "medium" | "low";
 type Actor  = `human:${string}` | `${string}/${string}` | `process:${string}`;
 
@@ -873,13 +874,22 @@ carries the edge:
 - `decomposes-into`: the target is one part of this claim.
 - `conflicts-with`: mutual tension; both stand; stored once, the
   reciprocal derived.
+- `bears-on`: this claim bears on the target QUESTION. The only relation
+  whose target is not a claim, and it asserts nothing about whether the
+  question is answered.
 
-> *Note (non-normative):* the ceiling of four was reached by subtraction:
-> `implies` was `assumes` written backwards; `refutes` had zero uses
-> because counter-evidence lives on the claim; `answers` died with an
-> earlier modeling of questions. Prior art goes the other way (CiTO
-> defines forty citation relations); the working experience is that small
-> vocabularies get used and large ones get skipped.
+> *Note (non-normative):* four of these were reached by subtraction:
+> `implies` was `assumes` written backwards, and `refutes` had zero uses
+> because counter-evidence lives on the claim. `answers` was retired with
+> an earlier modeling of questions and then readmitted as `bears-on` in
+> 2026-08-23, on 18 live edges across two corpora that nothing else could
+> express. It is renamed rather than restored because every one of those
+> targets is still an open question: a claim can bear on a question for
+> months without answering it, and the older name claimed more than the
+> records supported. Prior art goes the other way (CiTO defines forty
+> citation relations); the working experience is that small vocabularies
+> get used and large ones get skipped, so a fifth is admitted on a
+> demonstrated need and not on symmetry.
 
 The atom's `source_quality` tiers (`high`, `medium`, `low`) are defined
 with the rule for assessing them in `ERF-4.8a` and `ERF-4.8b`, their one
@@ -913,6 +923,10 @@ checks the relations no type can see.
   MUST terminate in non-argument leaves, none of them retired. Self-edges MUST NOT exist; `assumes` and `decomposes-into` MUST
   admit no cycles.
 - **ERF-6.7** `conflicts-with` MUST be stored once per pair.
+- **ERF-6.7a** A `bears-on` edge MUST name a question as its target, and
+  every other relation MUST name a claim. A claim bearing on a question
+  asserts nothing about that question's `status`: only the question's own
+  `answered_by` records an answer (`ERF-4.23`).
 - **ERF-6.8** A claim in a public corpus MUST NOT reference records
   (edges or evidence) in a confidential corpus. Confidential MAY cite
   public; never the reverse. Classification per the corpus registry.

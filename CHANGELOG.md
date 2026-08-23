@@ -4,6 +4,24 @@ Newest first. Requirement ids are stable once published: insertions use
 letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
 change lands here with a date.
 
+## v1.0.3 (2026-08-23)
+
+A fifth relation, `bears-on`, admitted on a forcing instance rather than on
+symmetry. It records that a claim bears on a question, it MUST target a
+question, and it asserts nothing about whether that question is answered
+(`ERF-6.7a`). It is the only relation whose target is not a claim.
+
+It exists because widening validation from documents to whole corpora
+surfaced 18 edges still using `answers`, a relation retired months earlier,
+every one of them pointing at a question that remains open. Folding them
+into each question's `answered_by` would have asserted ten answers nobody
+gave, so the relation was readmitted instead, under a name that claims only
+what the records support.
+
+The lesson is recorded in the design history as the fourth reversal: a
+retirement is only as good as the coverage of the check that confirmed the
+disuse.
+
 ## v1.0.2 (2026-08-23)
 
 `ERF-6.5` no longer breaks ties. It said the corpus owner's newest stance

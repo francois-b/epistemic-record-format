@@ -1,6 +1,6 @@
 /**
  * The Epistemic Record Format (ERF): normative data model.
- * v1.0.2, 2026-08-23.
+ * v1.0.3, 2026-08-23.
  *
  * This file is the normative data model of the specification (SPEC.md,
  * section 3, which carries an inline mirror of it; where the two differ,
@@ -56,7 +56,10 @@ export type Actor = `human:${string}` | `${string}/${string}` | `process:${strin
 export type EpistemicKind  = "observation" | "argument" | "bet" | "commitment";
 export type Stance         = "for" | "against" | "withdrawn";
 export type QuestionStatus = "open" | "answered" | "parked";
-export type Relation       = "supports" | "assumes" | "decomposes-into" | "conflicts-with";
+/** `bears-on` targets a question; every other relation targets a claim
+ *  (ERF-6.7a). */
+export type Relation       = "supports" | "assumes" | "decomposes-into"
+                           | "conflicts-with" | "bears-on";
 /** How much weight the attester's word carries for the fact the finding
  *  conveys; two inputs, the weaker governing (ERF-4.8a, ERF-4.8b). */
 export type SourceQuality  = "high" | "medium" | "low";

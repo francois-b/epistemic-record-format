@@ -59,7 +59,7 @@ measurements that decided each:
 - **Three relation types** (`implies`, `refutes`, `answers`): retired in
   an earlier vocabulary audit — `implies` was `assumes` reversed;
   `refutes` had zero uses because counter-evidence lives on the claim;
-  `answers` died with an earlier modeling of questions.
+  `answers` died with an earlier modeling of questions, and returned on 2026-08-23 as `bears-on` when a corpus-wide lint found 18 live edges of it that nothing else could express (see the fourth reversal).
 - **The `rulings` state machine**: designed in full (a transition ledger
   with a stored state cache), then retired before first use when a
   parallel design produced the standings model — per-person positions
@@ -96,6 +96,17 @@ leaving a principle:
    key `on` as a boolean — discovered when tolerant-read shims appeared
    in two readers. Principle: a schema that requires tribal knowledge to
    parse is a defect, whatever the documentation says.
+
+4. **`answers` retired, then readmitted as `bears-on`.** The relation was
+   dropped in the vocabulary audit as a casualty of an earlier modeling of
+   questions. When validation was widened from documents to whole corpora,
+   18 edges using it surfaced across two corpora, every one pointing at a
+   question that is still open. The proposed migration, folding them into
+   each question's `answered_by`, was abandoned on inspection: it would have
+   asserted ten answers nobody had given. Principle: a retirement is only as
+   good as the coverage of the check that confirmed the disuse, and the
+   readmitted relation is renamed because the old name claimed more than the
+   records supported.
 
 ### Adversarial review
 
