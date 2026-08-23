@@ -1,6 +1,6 @@
 /**
  * The Epistemic Record Format (ERF): normative data model.
- * v1.0.6, 2026-08-23.
+ * v1.0.7, 2026-08-23.
  *
  * This file is the normative data model of the specification (SPEC.md,
  * section 3, which carries an inline mirror of it; where the two differ,
@@ -56,10 +56,10 @@ export type Actor = `human:${string}` | `${string}/${string}` | `process:${strin
 export type EpistemicKind  = "observation" | "argument" | "bet" | "commitment";
 export type Stance         = "for" | "against" | "withdrawn";
 export type QuestionStatus = "open" | "answered" | "parked";
-/** `bears-on` targets a question; every other relation targets a claim
- *  (ERF-6.7a). */
+/** Claim-to-claim only. A claim's tie to a question is the `bears_on`
+ *  field, not an edge (ERF-6.7a). */
 export type Relation       = "supports" | "assumes" | "decomposes-into"
-                           | "conflicts-with" | "bears-on";
+                           | "conflicts-with";
 /** How much weight the attester's word carries for the fact the finding
  *  conveys; two inputs, the weaker governing (ERF-4.8a, ERF-4.8b). */
 export type SourceQuality  = "high" | "medium" | "low";
@@ -176,7 +176,12 @@ export interface Claim {
   /** Absence/coverage backing (section 4.6): one list, no against side.
    *  Absence is evidenced by surveys; presence by atoms. */
   surveys?: SurveyId[];
-  /** Typed relations to other claims (section 5, ERF-6.6). */
+  /** Open questions this claim bears on. Asserts nothing about their
+   *  status: only a question's own `answered_by` records an answer
+   *  (ERF-6.7a, ERF-4.23). */
+  bears_on: QuestionId[];
+  /** Typed relations to other claims, claim-to-claim only
+   *  (section 5, ERF-6.6, ERF-6.7a). */
   edges: { to: ClaimId; relation: Relation }[];
   /** Append-only; per-person; humans only (ERF-4.14, ERF-4.15). */
   standings: StandingEntry[];

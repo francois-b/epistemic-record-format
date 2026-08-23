@@ -182,6 +182,7 @@ export function danglingRefs(c: LoadedCorpus): string[] {
       if (!c.atoms.has(a)) out.push(`${id} -> atom ${a}`);
     }
     for (const e of cl.edges) if (!has(e.to)) out.push(`${id} -> claim ${e.to}`);
+    for (const q of cl.bears_on) if (!has(q)) out.push(`${id} -> question ${q}`);
     for (const s of cl.surveys ?? []) if (!c.surveys.has(s)) out.push(`${id} -> survey ${s}`);
   }
   for (const [id, q] of c.questions) {
@@ -203,6 +204,19 @@ export function claimsUsingAtom(c: LoadedCorpus): Map<string, string[]> {
     for (const a of [...cl.atoms_for, ...cl.atoms_against]) {
       m.set(a, [...(m.get(a) ?? []), id]);
     }
+  }
+  return m;
+}
+
+/**
+ * `ERF-6.7a`. Which claims bear on a question, computed rather than stored:
+ * the claim asserts the relevance, and the reverse is derived the way the
+ * reciprocal of `conflicts-with` is.
+ */
+export function claimsBearingOn(c: LoadedCorpus): Map<string, string[]> {
+  const m = new Map<string, string[]>();
+  for (const [id, cl] of c.claims) {
+    for (const q of cl.bears_on) m.set(q, [...(m.get(q) ?? []), id]);
   }
   return m;
 }

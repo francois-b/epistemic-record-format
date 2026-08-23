@@ -134,6 +134,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
       families: arr(data["families"]),
       atoms_for: arr(data["atoms_for"]),
       atoms_against: arr(data["atoms_against"]),
+      bears_on: arr(data["bears_on"]),
       edges: arr(data["edges"]),
       standings: arr(data["standings"]),
       evidence_audit: arr(data["evidence_audit"]),

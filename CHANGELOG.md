@@ -4,6 +4,32 @@ Newest first. Requirement ids are stable once published: insertions use
 letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
 change lands here with a date.
 
+## v1.0.7 (2026-08-23)
+
+`bears-on` becomes the `bears_on` field and stops being a relation. This
+partially reverts v1.0.3 from earlier the same day.
+
+The evidence that admitted it was sound and stands: 18 live edges recorded
+that a claim bears on an open question, and nothing else in the format could
+say that. The placement was wrong. `edges` is the claim-to-claim structure,
+and every other record type a claim reaches already has its own typed field,
+so `atoms_for`, `atoms_against`, and `surveys` were the pattern and a
+question id inside `edges` was the anomaly. That anomaly is what made the
+normative prose contradict the data model: `ERF-6.7a` demanded a question
+target while `edges` was typed `to: ClaimId`, so the model forbade the legal
+case and permitted the illegal one.
+
+A field fixes it with no union and no widened target type. `Claim` gains
+`bears_on: QuestionId[]`, the `Relation` union returns to the ratified four,
+and `ERF-6.7a` now says plainly that edges are claim-to-claim and a tie to a
+question lives in `bears_on`. The reverse direction, which claims bear on a
+question, is computed rather than stored, like the reciprocal of
+`conflicts-with`.
+
+The external reviewer caught the placement rather than the evidence, and
+said so explicitly: admitting the relation was not shown to be a mistake,
+adding a heterogeneous target to a claim-only interface was.
+
 ## v1.0.6 (2026-08-23)
 
 `ERF-4.5` reserved `[...]` for an omission and said a bare `...` was a

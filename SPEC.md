@@ -1,7 +1,7 @@
 ---
 title: "The Epistemic Record Format"
 subtitle: "Specification: the record types, the data model, and the invariants, stated so an implementer can build to them or diff an existing system against them."
-spec_version: 1.0.6
+spec_version: 1.0.7
 status: draft
 last_updated: 2026-08-23
 generated: 2026-08-22
@@ -10,7 +10,7 @@ model: claude-fable-5
 
 # The Epistemic Record Format
 
-Specification, v1.0.6. The abstract and status are in `README.md`;
+Specification, v1.0.7. The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way, and
 what the surrounding field holds, is the companion document
 `DESIGN-HISTORY.md`. The normative data model is the TypeScript file
@@ -118,7 +118,7 @@ type EpistemicKind  = "observation" | "argument" | "bet" | "commitment";
 type Stance         = "for" | "against" | "withdrawn";
 type QuestionStatus = "open" | "answered" | "parked";
 type Relation       = "supports" | "assumes" | "decomposes-into"
-                    | "conflicts-with" | "bears-on";
+                    | "conflicts-with";
 type SourceQuality  = "high" | "medium" | "low";
 type Actor  = `human:${string}` | `${string}/${string}` | `process:${string}`;
 
@@ -161,7 +161,8 @@ interface Claim {
   atoms_for: AtomId[];
   atoms_against: AtomId[];
   surveys?: SurveyId[];        // absence/coverage backing (section 4.6)
-  edges: { to: ClaimId; relation: Relation }[];
+  bears_on: QuestionId[];      // open questions this claim bears on
+  edges: { to: ClaimId; relation: Relation }[];   // claim-to-claim only
   standings: StandingEntry[];  // append-only; per-person; humans only
   evidence_audit: AuditEntry[]; // does the evidence carry the claim (section 4.4)
   semantic_query?: string;     // pre-authored evidence-search key; see 3.1
@@ -258,7 +259,8 @@ tool usually drafts and a human may author or repair.
 | `atoms_for` | AtomId list | tool proposes, human admits | as evidence lands | `ERF-4.17` |
 | `atoms_against` | AtomId list | tool proposes, human admits | as evidence lands | `ERF-4.17` |
 | `surveys` | SurveyId list, optional | tool proposes, human admits | as coverage lands | `ERF-4.21`, `ERF-4.30` |
-| `edges` | Edge list | tool proposes, human rules | at composition and challenge | `ERF-6.6`, `ERF-6.7` |
+| `bears_on` | QuestionId list | tool proposes, human rules | when the claim is written against an open question | `ERF-6.7a` |
+| `edges` | Edge list, claim-to-claim | tool proposes, human rules | at composition and challenge | `ERF-6.6`, `ERF-6.7`, `ERF-6.7a` |
 | `standings` | StandingEntry list | tool writes, humans in `by` | at each stance | `ERF-4.14`, `ERF-4.15` |
 | `evidence_audit` | AuditEntry list | tool | change-triggered | `ERF-4.19`, `ERF-4.20` |
 | `semantic_query` | string, optional | tool drafts | at mint or at need | `ERF-4.13c` |
@@ -914,22 +916,22 @@ carries the edge:
 - `decomposes-into`: the target is one part of this claim.
 - `conflicts-with`: mutual tension; both stand; stored once, the
   reciprocal derived.
-- `bears-on`: this claim bears on the target QUESTION. The only relation
-  whose target is not a claim, and it asserts nothing about whether the
-  question is answered.
 
-> *Note (non-normative):* four of these were reached by subtraction:
+> *Note (non-normative):* the ceiling of four was reached by subtraction:
 > `implies` was `assumes` written backwards, and `refutes` had zero uses
 > because counter-evidence lives on the claim. `answers` was retired with
-> an earlier modeling of questions and then readmitted as `bears-on` in
-> 2026-08-23, on 18 live edges across two corpora that nothing else could
-> express. It is renamed rather than restored because every one of those
-> targets is still an open question: a claim can bear on a question for
-> months without answering it, and the older name claimed more than the
-> records supported. Prior art goes the other way (CiTO defines forty
-> citation relations); the working experience is that small vocabularies
-> get used and large ones get skipped, so a fifth is admitted on a
-> demonstrated need and not on symmetry.
+> an earlier modeling of questions, then readmitted on 2026-08-23 when a
+> corpus-wide check found 18 live edges of it that nothing else could
+> express. It came back as the `bears_on` FIELD rather than a fifth
+> relation: the evidence for the link was sound, the placement was not.
+> `edges` means claim-to-claim, and every other record type a claim
+> reaches already has its own typed field, so a question id inside
+> `edges` was the anomaly. It is renamed rather than restored because
+> every one of those targets is still an open question: a claim can bear
+> on a question for months without answering it, and the older name
+> claimed more than the records supported. Prior art goes the other way
+> (CiTO defines forty citation relations); the working experience is that
+> small vocabularies get used and large ones get skipped.
 
 The atom's `source_quality` tiers (`high`, `medium`, `low`) are defined
 with the rule for assessing them in `ERF-4.8a` and `ERF-4.8b`, their one
@@ -971,10 +973,12 @@ checks the relations no type can see.
   MUST terminate in non-argument leaves, none of them retired. Self-edges MUST NOT exist; `assumes` and `decomposes-into` MUST
   admit no cycles.
 - **ERF-6.7** `conflicts-with` MUST be stored once per pair.
-- **ERF-6.7a** A `bears-on` edge MUST name a question as its target, and
-  every other relation MUST name a claim. A claim bearing on a question
-  asserts nothing about that question's `status`: only the question's own
-  `answered_by` records an answer (`ERF-4.23`).
+- **ERF-6.7a** Every `edges` entry MUST name a claim: `edges` is the
+  claim-to-claim structure and carries no other record type. A claim's
+  relationship to a question MUST be recorded in `bears_on`, whose
+  entries MUST name questions. Bearing on a question asserts nothing
+  about that question's `status`: only the question's own `answered_by`
+  records an answer (`ERF-4.23`).
 - **ERF-6.8** A claim in a public corpus MUST NOT reference records
   (edges or evidence) in a confidential corpus. Confidential MAY cite
   public; never the reverse. Classification per the corpus registry.

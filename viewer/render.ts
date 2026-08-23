@@ -6,8 +6,8 @@
 import type { Atom, Claim, Question, Survey } from "../types/erf.ts";
 import type { LoadedCorpus, Narrative } from "./corpus.ts";
 import {
-  backing, claimsUsingAtom, danglingRefs, disposition, quoteCheck,
-  resolvable, staleAudits, unbacked,
+  backing, claimsBearingOn, claimsUsingAtom, danglingRefs, disposition,
+  quoteCheck, resolvable, staleAudits, unbacked,
 } from "./compute.ts";
 
 export const CSS = `
@@ -233,6 +233,9 @@ ${(cl.surveys?.length ?? 0) ? `<h3>Coverage</h3><ul class="plain">${(cl.surveys 
 }).join("")}</ul>` : ""}
 ${cl.edges.length ? `<h3>Relations</h3><ul class="plain">${cl.edges.map((e) =>
   `<li><span class="id">${esc(e.relation)}</span> &rarr; <a href="claim-${esc(e.to)}.html">${esc(c.claims.get(e.to)?.title ?? e.to)}</a></li>`).join("")}</ul>` : ""}
+${cl.bears_on.length ? `<h3>Bears on</h3><ul class="plain">${cl.bears_on.map((q) =>
+  `<li><a href="question-${esc(q)}.html">${esc(c.questions.get(q)?.title ?? q)}</a><br>
+    <span class="id">open question &middot; bearing on it asserts no answer</span></li>`).join("")}</ul>` : ""}
 
 <h3>Standings</h3>
 ${cl.standings.length === 0
@@ -351,6 +354,8 @@ export function renderQuestion(q: Question, c: LoadedCorpus): string {
 <p class="sub">A question asserts nothing, so it carries no evidence and takes no standing. Evidence attaches to the claims that answer it.</p>
 ${q.answered_by.length ? `<h3>Answered by</h3><ul class="plain">${q.answered_by.map((a) =>
   `<li><a href="claim-${esc(a)}.html">${esc(c.claims.get(a)?.title ?? a)}</a></li>`).join("")}</ul>` : ""}
+${(() => { const b = claimsBearingOn(c).get(q.id) ?? [];
+  return b.length ? `<h3>Claims bearing on this question</h3><p class="sub">Computed from each claim's <code>bears_on</code>, not stored here. Bearing on a question is weaker than answering it.</p><ul class="plain">${b.map((id) => `<li><a href="claim-${esc(id)}.html">${esc(c.claims.get(id)?.title ?? id)}</a></li>`).join("")}</ul>` : ""; })()}
 <h2>The record</h2>
 ${md(q.body)}`;
   return page(q.title, body, c.manifest.title);

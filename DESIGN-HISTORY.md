@@ -59,7 +59,7 @@ measurements that decided each:
 - **Three relation types** (`implies`, `refutes`, `answers`): retired in
   an earlier vocabulary audit — `implies` was `assumes` reversed;
   `refutes` had zero uses because counter-evidence lives on the claim;
-  `answers` died with an earlier modeling of questions, and returned on 2026-08-23 as `bears-on` when a corpus-wide lint found 18 live edges of it that nothing else could express (see the fourth reversal).
+  `answers` died with an earlier modeling of questions, and returned on 2026-08-23 as the `bears_on` field, not a relation, when a corpus-wide lint found 18 live edges of it that nothing else could express (see the fourth reversal).
 - **The `rulings` state machine**: designed in full (a transition ledger
   with a stored state cache), then retired before first use when a
   parallel design produced the standings model — per-person positions
@@ -97,16 +97,24 @@ leaving a principle:
    in two readers. Principle: a schema that requires tribal knowledge to
    parse is a defect, whatever the documentation says.
 
-4. **`answers` retired, then readmitted as `bears-on`.** The relation was
-   dropped in the vocabulary audit as a casualty of an earlier modeling of
-   questions. When validation was widened from documents to whole corpora,
-   18 edges using it surfaced across two corpora, every one pointing at a
-   question that is still open. The proposed migration, folding them into
-   each question's `answered_by`, was abandoned on inspection: it would have
-   asserted ten answers nobody had given. Principle: a retirement is only as
-   good as the coverage of the check that confirmed the disuse, and the
-   readmitted relation is renamed because the old name claimed more than the
-   records supported.
+4. **`answers` retired, readmitted as a relation, then moved to a field.**
+   The relation was dropped in the vocabulary audit as a casualty of an
+   earlier modeling of questions. When validation was widened from documents
+   to whole corpora, 18 edges using it surfaced across two corpora, every one
+   pointing at a question that is still open. The proposed migration, folding
+   them into each question's `answered_by`, was abandoned on inspection: it
+   would have asserted ten answers nobody had given. So it came back as
+   `bears-on`, a fifth relation, and within hours an external review showed
+   that placement was wrong: `ERF-6.7a` demanded a question target while the
+   edge interface was typed claim-only, so the model forbade the legal case
+   and permitted the illegal one. It moved again the same day, to the
+   `bears_on` field, where the relation vocabulary returns to four and no
+   union or widened target is needed. Two principles, learned in one
+   sequence: a retirement is only as good as the coverage of the check that
+   confirmed the disuse; and the evidence for a link and the right home for
+   it are separate questions, decided separately. The link's own name is
+   narrower than `answers` because a claim can bear on a question for months
+   without answering it.
 
 ### Adversarial review
 
