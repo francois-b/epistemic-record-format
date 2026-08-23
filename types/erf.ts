@@ -1,6 +1,6 @@
 /**
  * The Epistemic Record Format (ERF): normative data model.
- * v1.0.7, 2026-08-23.
+ * v1.1.0, 2026-08-23.
  *
  * This file is the normative data model of the specification (SPEC.md,
  * section 3, which carries an inline mirror of it; where the two differ,
@@ -23,9 +23,6 @@ export type AtomId = string;
 /** Unique across the realm's corpora; encodes no location (ERF-4.11).
  *  Across realms, identity is the pair of realm and id. */
 export type ClaimId = string;
-
-/** Same realm namespace as ClaimId (ERF-6.2). */
-export type QuestionId = string;
 
 /** Same realm namespace; slug SHOULD end with the conducted date (ERF-4.29). */
 export type SurveyId = string;
@@ -55,9 +52,7 @@ export type Actor = `human:${string}` | `${string}/${string}` | `process:${strin
 
 export type EpistemicKind  = "observation" | "argument" | "bet" | "commitment";
 export type Stance         = "for" | "against" | "withdrawn";
-export type QuestionStatus = "open" | "answered" | "parked";
-/** Claim-to-claim only. A claim's tie to a question is the `bears_on`
- *  field, not an edge (ERF-6.7a). */
+/** Claim-to-claim only; `edges` carries no other record type. */
 export type Relation       = "supports" | "assumes" | "decomposes-into"
                            | "conflicts-with";
 /** How much weight the attester's word carries for the fact the finding
@@ -173,15 +168,11 @@ export interface Claim {
   families: FamilyName[];
   atoms_for: AtomId[];
   atoms_against: AtomId[];
-  /** Absence/coverage backing (section 4.6): one list, no against side.
+  /** Absence/coverage backing (section 4.5): one list, no against side.
    *  Absence is evidenced by surveys; presence by atoms. */
   surveys?: SurveyId[];
-  /** Open questions this claim bears on. Asserts nothing about their
-   *  status: only a question's own `answered_by` records an answer
-   *  (ERF-6.7a, ERF-4.23). */
-  bears_on: QuestionId[];
   /** Typed relations to other claims, claim-to-claim only
-   *  (section 5, ERF-6.6, ERF-6.7a). */
+   *  (section 5, ERF-6.6, ERF-6.7). */
   edges: { to: ClaimId; relation: Relation }[];
   /** Append-only; per-person; humans only (ERF-4.14, ERF-4.15). */
   standings: StandingEntry[];
@@ -193,26 +184,7 @@ export interface Claim {
   body: string;
 }
 
-/** A question asserts nothing; it is a sibling record, not a claim
- *  (section 4.5). */
-export interface Question {
-  /** Same realm namespace as claims (ERF-6.2). */
-  id: QuestionId;
-  type: "question";
-  corpus: CorpusId;
-  title: string;
-  status: QuestionStatus;
-  created: ActorStamp;
-  last_modified?: ActorStamp;
-  families: FamilyName[];
-  /** The only structure a question carries (ERF-4.22). */
-  sub_questions: QuestionId[];
-  /** Written when status becomes answered (ERF-4.23). */
-  answered_by: ClaimId[];
-  body: string;
-}
-
-/** A record of search acts and their yield (section 4.6). Neutral as to
+/** A record of search acts and their yield (section 4.5). Neutral as to
  *  polarity: the same record backs an absence, sparseness, or density
  *  reading; the citing claim decides the use. */
 export interface Survey {

@@ -15,7 +15,6 @@ LAYOUT.md              this file
 README.md              what the corpus holds and where it came from
 atoms/<id>.md          one file per atom
 claims/<id>.md         one file per claim
-questions/<id>.md      one file per question
 surveys/<id>.md        one file per survey
 narratives/<slug>.md   prose documents, with bindings to claims
 captures/<slug>.md     the immutable copies quotes are checked against
@@ -38,7 +37,7 @@ in `fetched_url`. Neither field says where the saved copy lives. That
 separation is deliberate: a citation identifies a work, a locator retrieves
 one copy of it, and a storage path is neither. `captures.yaml` holds the
 atom-to-copy mapping so the record stays about evidence and the storage
-question stays a storage question.
+question stays a storage matter.
 
 ## What this corpus does not demonstrate
 

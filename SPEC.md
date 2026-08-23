@@ -1,7 +1,7 @@
 ---
 title: "The Epistemic Record Format"
 subtitle: "Specification: the record types, the data model, and the invariants, stated so an implementer can build to them or diff an existing system against them."
-spec_version: 1.0.7
+spec_version: 1.1.0
 status: draft
 last_updated: 2026-08-23
 generated: 2026-08-22
@@ -10,7 +10,7 @@ model: claude-fable-5
 
 # The Epistemic Record Format
 
-Specification, v1.0.7. The abstract and status are in `README.md`;
+Specification, v1.1.0. The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way, and
 what the surrounding field holds, is the companion document
 `DESIGN-HISTORY.md`. The normative data model is the TypeScript file
@@ -18,10 +18,9 @@ what the surrounding field holds, is the companion document
 
 ## 1. Scope and conformance
 
-This format records five things: what a source *said* (atoms over captured
-sources), what an author *claims* (claims), what is *open* (questions),
-what was *searched* and what it yielded (surveys), and where people
-*stand* (standings). What was *done* about any of it
+This format records four things: what a source *said* (atoms over captured
+sources), what an author *claims* (claims), what was *searched* and what it
+yielded (surveys), and where people *stand* (standings). What was *done* about any of it
 (decisions, actions, outcomes) is out of scope: a neighboring system may
 consume these records, and an activated bet plus its standing entries covers
 the common case.
@@ -41,7 +40,7 @@ are non-normative: they explain choices and bind nothing.
 
 Conformance is claimed per class, not against the whole document:
 
-- Record: a single atom, claim, or question. Binds the data model
+- Record: a single atom, claim, or survey. Binds the data model
   (section 3) and its record type's requirements (section 4).
 - Corpus: a collection of records under one corpus-registry entry. Binds the
   invariants (section 6) and `ERF-8.1` and `ERF-8.3`.
@@ -66,7 +65,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 (RFC 2119, RFC 8174) when, and only when, they appear in all capitals, as
 shown here.
 
-- *record*: one atom, claim, question, or survey. Structured fields plus
+- *record*: one atom, claim, or survey. Structured fields plus
   one body text.
 - *corpus*: a body of work owning records; a research program, an
   engagement, a venture, or the personal corpus. The unit of
@@ -108,7 +107,7 @@ shown here.
 The normative data model is the file `types/erf.ts`. The TypeScript below
 is an inline mirror of that file, kept in sync by hand; it omits the
 file's header comments and its identifier alias definitions (`AtomId`,
-`ClaimId`, `QuestionId`, `CorpusId`, `FamilyName`, `CSL`); where the two
+`ClaimId`, `SurveyId`, `CorpusId`, `FamilyName`, `CSL`); where the two
 differ, the file governs. YAML examples elsewhere are informative.
 Object-shape unions are deliberately absent; the only unions are
 string-literal value sets.
@@ -116,7 +115,6 @@ string-literal value sets.
 ```ts
 type EpistemicKind  = "observation" | "argument" | "bet" | "commitment";
 type Stance         = "for" | "against" | "withdrawn";
-type QuestionStatus = "open" | "answered" | "parked";
 type Relation       = "supports" | "assumes" | "decomposes-into"
                     | "conflicts-with";
 type SourceQuality  = "high" | "medium" | "low";
@@ -160,27 +158,12 @@ interface Claim {
   families: FamilyName[];      // recorded membership for exact pulls
   atoms_for: AtomId[];
   atoms_against: AtomId[];
-  surveys?: SurveyId[];        // absence/coverage backing (section 4.6)
-  bears_on: QuestionId[];      // open questions this claim bears on
+  surveys?: SurveyId[];        // absence/coverage backing (section 4.5)
   edges: { to: ClaimId; relation: Relation }[];   // claim-to-claim only
   standings: StandingEntry[];  // append-only; per-person; humans only
   evidence_audit: AuditEntry[]; // does the evidence carry the claim (section 4.4)
   semantic_query?: string;     // pre-authored evidence-search key; see 3.1
   body: string;                // SHOULD open by restating title; then working notes
-}
-
-interface Question {
-  id: QuestionId;              // same namespace as claims
-  type: "question";
-  corpus: CorpusId;
-  title: string;
-  status: QuestionStatus;
-  created: ActorStamp;
-  last_modified?: ActorStamp;
-  families: FamilyName[];
-  sub_questions: QuestionId[]; // the only structure a question carries
-  answered_by: ClaimId[];      // written when status becomes answered
-  body: string;
 }
 
 interface SearchAct {
@@ -259,28 +242,11 @@ tool usually drafts and a human may author or repair.
 | `atoms_for` | AtomId list | tool proposes, human admits | as evidence lands | `ERF-4.17` |
 | `atoms_against` | AtomId list | tool proposes, human admits | as evidence lands | `ERF-4.17` |
 | `surveys` | SurveyId list, optional | tool proposes, human admits | as coverage lands | `ERF-4.21`, `ERF-4.30` |
-| `bears_on` | QuestionId list | tool proposes, human rules | when the claim is written against an open question | `ERF-6.7a` |
-| `edges` | Edge list, claim-to-claim | tool proposes, human rules | at composition and challenge | `ERF-6.6`, `ERF-6.7`, `ERF-6.7a` |
+| `edges` | Edge list, claim-to-claim | tool proposes, human rules | at composition and challenge | `ERF-6.6`, `ERF-6.7` |
 | `standings` | StandingEntry list | tool writes, humans in `by` | at each stance | `ERF-4.14`, `ERF-4.15` |
 | `evidence_audit` | AuditEntry list | tool | change-triggered | `ERF-4.19`, `ERF-4.20` |
 | `semantic_query` | string, optional | tool drafts | at mint or at need | `ERF-4.13c` |
 | `body` | string | human | freely | `ERF-4.13`, `ERF-6.9` |
-
-:::
-
-#### Question
-
-Shares `id`, `type`, `corpus`, `title`, `created`, `last_modified`, and
-`families` with the claim; plus:
-
-::: {.cols widths="20 18 22 22 18"}
-
-| Field | Type | Writer | When | Requirements |
-|:-------------------|:-----------------|:---------------------|:---------------------|:-----------------|
-| `status` | QuestionStatus | human directs, tool writes | at lifecycle moves | `ERF-4.22`, `ERF-4.23` |
-| `sub_questions` | QuestionId list | either | during decomposition | `ERF-4.22` |
-| `answered_by` | ClaimId list, optional | tool | when status becomes answered | `ERF-4.23` |
-| `body` | string | human | freely | `ERF-4.22` |
 
 :::
 
@@ -362,7 +328,7 @@ Five rules govern every name in this model, present and future:
    fidelity outranks style, and every example stays copy-pasteable
    between the spec and a file.
 2. Type aliases are PascalCase and self-sufficient out of context:
-   `EpistemicKind`, not `Kind`; `QuestionStatus`, not `Status`.
+   `EpistemicKind`, not `Kind`; `SourceQuality`, not `Quality`.
    SCREAMING_SNAKE is not used; in TypeScript it denotes constant values.
 3. Types that populate an in-record list are suffixed `-Entry`
    (`StandingEntry`, `AuditEntry`) or name the event one line records
@@ -678,7 +644,7 @@ together, actually support its statement is a further judgment, recorded in
   atoms proves such a claim: the atoms evidence the coverage of a survey,
   not the absence itself, and SUPPORTED means supported as scoped.
 - **ERF-4.21b** Such a claim SHOULD cite the survey records whose coverage
-  it rests on (`surveys`, section 4.6) rather than atoms alone. Atoms can
+  it rests on (`surveys`, section 4.5) rather than atoms alone. Atoms can
   only quote what exists.
 
 > *Note (non-normative):* on the word "jury". A cross-vendor model jury
@@ -700,31 +666,7 @@ together, actually support its statement is a further judgment, recorded in
 > ship gate (`ERF-6.13`): consequence, not minting, is where verification
 > concentrates.
 
-### 4.5 The question
-
-A question asserts nothing; it is a sibling record, not a claim.
-
-```yaml
----
-id: demand-engine-open
-type: question
-corpus: venture-design
-title: "What is the demand engine underneath the ramp?"
-status: open
-created: {timestamp: 2026-08-05, by: "agent/claude-fable-5"}
-families: [demand]
----
-Which mechanisms convert positioning into a steady flow of engagements?
-```
-
-- **ERF-4.22** A question MUST NOT carry an epistemic kind, standings,
-  evidence fields, or edges. Its lifecycle is `status`; its only structure
-  is `sub_questions`.
-- **ERF-4.23** When `status` becomes `answered`, `answered_by` MUST name
-  the answering claim(s). Questions carry no ledger; their history lives
-  with the substrate (section 8).
-
-### 4.6 The survey
+### 4.5 The survey
 
 A record of search acts and their yield: what was sought, where, with what
 queries, and what came back. A survey is neutral as to polarity: the same
@@ -807,7 +749,7 @@ notable_results:
 > a survey in another corpus; the classification wall (`ERF-6.8`) applies
 > to surveys exactly as to atoms.
 
-### 4.7 The narrative and its bindings
+### 4.6 The narrative and its bindings
 
 A narrative is a document written for people: an essay, a brief, a memo.
 Prose alone has a problem: assertions live inside sentences, so nothing
@@ -861,7 +803,7 @@ anchor   ::= '"' text '"'
   is adjudicated, and a person disputes the claims it binds to rather than
   the prose. It therefore has no interface in the data model of section 3.
 
-### 4.8 The personal corpus
+### 4.7 The personal corpus
 
 > *Note (non-normative):* nothing stops a corpus from holding its author's
 > own positions, a register in which the claims the owner
@@ -897,16 +839,13 @@ Epistemic kinds answer one question: what would check this claim?
 
 > *Note (non-normative):* kinds vary the validation contract, never the
 > record shape; a kind demanding its own shape is a record type announcing
-> itself (that is how questions left the enum). Two candidates were
-> retired by the same test: "inference" named how a claim was produced,
+> itself. Two candidates were retired by that test: "inference" named how a claim was produced,
 > not what would check it; "preference" logged zero uses in 279 typed
 > claims, and every taste decomposes (enforced taste is a commitment;
 > self-reported taste is an observation about oneself).
 
 Stances: `for`, `against`, `withdrawn` (exit, dated, never a
 deletion).
-
-Question status: `open`, `answered`, `parked`.
 
 Relations, each stated subject-first, the subject being the claim that
 carries the edge:
@@ -919,17 +858,10 @@ carries the edge:
 
 > *Note (non-normative):* the ceiling of four was reached by subtraction:
 > `implies` was `assumes` written backwards, and `refutes` had zero uses
-> because counter-evidence lives on the claim. `answers` was retired with
-> an earlier modeling of questions, then readmitted on 2026-08-23 when a
-> corpus-wide check found 18 live edges of it that nothing else could
-> express. It came back as the `bears_on` FIELD rather than a fifth
-> relation: the evidence for the link was sound, the placement was not.
-> `edges` means claim-to-claim, and every other record type a claim
-> reaches already has its own typed field, so a question id inside
-> `edges` was the anomaly. It is renamed rather than restored because
-> every one of those targets is still an open question: a claim can bear
-> on a question for months without answering it, and the older name
-> claimed more than the records supported. Prior art goes the other way
+> because counter-evidence lives on the claim. `edges` means claim-to-claim
+> and carries no other record type, which is what keeps the vocabulary
+> honest: a relation that would need a different kind of target is a
+> different field, not a fifth relation. Prior art goes the other way
 > (CiTO defines forty citation relations); the working experience is that
 > small vocabularies get used and large ones get skipped.
 
@@ -943,12 +875,11 @@ are not a stored vocabulary; see `ERF-6.5`.
 All machine-checkable. Types express what types can express; the validator
 checks the relations no type can see.
 
-- **ERF-6.1** Every reference MUST resolve: atoms in their corpora, claims,
-  questions, and surveys in the realm namespace; `atoms_for`,
-  `atoms_against`, `edges.to`, `sub_questions`, `answered_by`, and
-  `surveys` name existing records.
-- **ERF-6.2** Claim, question, and survey ids MUST be unique across every
-  corpus in the realm.
+- **ERF-6.1** Every reference MUST resolve: atoms in their corpora, claims
+  and surveys in the realm namespace; `atoms_for`, `atoms_against`,
+  `edges.to`, and `surveys` name existing records.
+- **ERF-6.2** Claim and survey ids MUST be unique across every corpus in
+  the realm.
 - **ERF-6.3** Every standing entry MUST have a `human:` actor and a
   non-empty `why`.
 - **ERF-6.4** Standings MUST be append-only; an edit or deletion of an
@@ -973,12 +904,6 @@ checks the relations no type can see.
   MUST terminate in non-argument leaves, none of them retired. Self-edges MUST NOT exist; `assumes` and `decomposes-into` MUST
   admit no cycles.
 - **ERF-6.7** `conflicts-with` MUST be stored once per pair.
-- **ERF-6.7a** Every `edges` entry MUST name a claim: `edges` is the
-  claim-to-claim structure and carries no other record type. A claim's
-  relationship to a question MUST be recorded in `bears_on`, whose
-  entries MUST name questions. Bearing on a question asserts nothing
-  about that question's `status`: only the question's own `answered_by`
-  records an answer (`ERF-4.23`).
 - **ERF-6.8** A claim in a public corpus MUST NOT reference records
   (edges or evidence) in a confidential corpus. Confidential MAY cite
   public; never the reverse. Classification per the corpus registry.

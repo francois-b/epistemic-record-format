@@ -56,6 +56,14 @@ measurements that decided each:
   existed in any corpus, and typing the field cleanly forced the record
   type to pivot around one kind. A bet's settlement is the withdrawal
   entry in its standings, with the outcome in the reason.
+- **The question record type**: cut 2026-08-23 as a scope decision, to keep
+  v1 shippable. Measured first: 25 records across five corpora, every one
+  `status: open`, none ever marked answered or parked, `answered_by` never
+  written once in a year, two with sub-questions, four cited by compiled
+  documents. The lifecycle machinery was unexercised; the records were not.
+  They survive as prose in per-corpus `open-questions.md` documents, which is
+  why this is filed as scope rather than as subtraction on evidence of
+  disuse. The `bears_on` field went with it, having existed for four hours.
 - **Three relation types** (`implies`, `refutes`, `answers`): retired in
   an earlier vocabulary audit — `implies` was `assumes` reversed;
   `refutes` had zero uses because counter-evidence lives on the claim;
@@ -115,6 +123,14 @@ leaving a principle:
    it are separate questions, decided separately. The link's own name is
    narrower than `answers` because a claim can bear on a question for months
    without answering it.
+
+   The story ends the same day it was settled. The question record type was
+   cut for scope hours later, so `bears_on` went with the only target it
+   could have, and the links it carried became prose in each claim's working
+   notes. A relation retired for the wrong reason, readmitted on real
+   evidence, placed wrongly, placed rightly, and then removed with the type
+   it depended on, inside forty-eight hours. Nothing about the evidence
+   changed at any point; only where it was allowed to live.
 
 ### Adversarial review
 

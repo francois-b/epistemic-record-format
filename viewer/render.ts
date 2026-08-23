@@ -3,10 +3,10 @@
  * no scripts. The visual language follows the author's published documents
  * (Literata for prose, Inter for apparatus, monospace for identifiers).
  */
-import type { Atom, Claim, Question, Survey } from "../types/erf.ts";
+import type { Atom, Claim, Survey } from "../types/erf.ts";
 import type { LoadedCorpus, Narrative } from "./corpus.ts";
 import {
-  backing, claimsBearingOn, claimsUsingAtom, danglingRefs, disposition,
+  backing, claimsUsingAtom, danglingRefs, disposition,
   quoteCheck, resolvable, staleAudits, unbacked,
 } from "./compute.ts";
 
@@ -134,7 +134,6 @@ conforms to ERF ${esc(c.manifest.spec_version)}</p>
   [...c.atoms.values()].filter((a) => a.finding_audit.length === 0).length} with no audit verdicts</td></tr>
 <tr><td>Claims</td><td>${c.claims.size}</td><td>${
   [...dispCounts].map(([d, n]) => `${n} ${d}`).join(", ") || "none"}</td></tr>
-<tr><td>Questions</td><td>${c.questions.size}</td><td>carry no evidence, by rule</td></tr>
 <tr><td>Surveys</td><td>${c.surveys.size}</td><td>absence, density, and closed-corpus readings</td></tr>
 <tr><td>Captures</td><td>${shipped} of ${c.captures.size}</td><td>shipped with the corpus</td></tr>
 </table>
@@ -155,10 +154,6 @@ conforms to ERF ${esc(c.manifest.spec_version)}</p>
    <span class="id">${s.searches.length} search acts &middot; ${s.notable_results.length} notable results${
      s.limitations ? "" : " &middot; no limitations recorded"}</span></li>`).join("")}</ul>
 
-<h2>Questions</h2>
-<ul class="plain">${[...c.questions.values()].map((q) =>
-  `<li><a href="question-${esc(q.id)}.html">${esc(q.title)}</a>
-   <span class="chip">${esc(q.status)}</span></li>`).join("")}</ul>
 
 <h2>Atoms</h2>
 <ul class="plain">${[...c.atoms.values()].map((a) =>
@@ -233,9 +228,6 @@ ${(cl.surveys?.length ?? 0) ? `<h3>Coverage</h3><ul class="plain">${(cl.surveys 
 }).join("")}</ul>` : ""}
 ${cl.edges.length ? `<h3>Relations</h3><ul class="plain">${cl.edges.map((e) =>
   `<li><span class="id">${esc(e.relation)}</span> &rarr; <a href="claim-${esc(e.to)}.html">${esc(c.claims.get(e.to)?.title ?? e.to)}</a></li>`).join("")}</ul>` : ""}
-${cl.bears_on.length ? `<h3>Bears on</h3><ul class="plain">${cl.bears_on.map((q) =>
-  `<li><a href="question-${esc(q)}.html">${esc(c.questions.get(q)?.title ?? q)}</a><br>
-    <span class="id">open question &middot; bearing on it asserts no answer</span></li>`).join("")}</ul>` : ""}
 
 <h3>Standings</h3>
 ${cl.standings.length === 0
@@ -344,21 +336,6 @@ ${s.limitations
 <h2>The record</h2>
 ${md(s.body)}`;
   return page(s.title, body, c.manifest.title);
-}
-
-// ------------------------------------------------------------- question
-export function renderQuestion(q: Question, c: LoadedCorpus): string {
-  const body = `
-<h1>${esc(q.title)}</h1>
-<p class="sub"><span class="id">${esc(q.id)}</span> &middot; question &middot; ${esc(q.status)}</p>
-<p class="sub">A question asserts nothing, so it carries no evidence and takes no standing. Evidence attaches to the claims that answer it.</p>
-${q.answered_by.length ? `<h3>Answered by</h3><ul class="plain">${q.answered_by.map((a) =>
-  `<li><a href="claim-${esc(a)}.html">${esc(c.claims.get(a)?.title ?? a)}</a></li>`).join("")}</ul>` : ""}
-${(() => { const b = claimsBearingOn(c).get(q.id) ?? [];
-  return b.length ? `<h3>Claims bearing on this question</h3><p class="sub">Computed from each claim's <code>bears_on</code>, not stored here. Bearing on a question is weaker than answering it.</p><ul class="plain">${b.map((id) => `<li><a href="claim-${esc(id)}.html">${esc(c.claims.get(id)?.title ?? id)}</a></li>`).join("")}</ul>` : ""; })()}
-<h2>The record</h2>
-${md(q.body)}`;
-  return page(q.title, body, c.manifest.title);
 }
 
 // --------------------------------------------------------------- health

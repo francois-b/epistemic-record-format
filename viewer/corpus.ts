@@ -10,7 +10,7 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, basename } from "node:path";
 import yaml from "js-yaml";
-import type { Atom, Claim, Question, Survey } from "../types/erf.ts";
+import type { Atom, Claim, Survey } from "../types/erf.ts";
 
 /** A place where the corpus and the normative model disagree. */
 export interface ConformanceFinding {
@@ -47,7 +47,6 @@ export interface LoadedCorpus {
   manifest: CorpusManifest;
   atoms: Map<string, Atom>;
   claims: Map<string, Claim>;
-  questions: Map<string, Question>;
   surveys: Map<string, Survey>;
   narratives: Narrative[];
   captures: Map<string, CaptureEntry>;
@@ -85,7 +84,7 @@ function arr<T>(v: unknown): T[] {
  * an omitted list is a complete record rather than a partial one. Checking
  * them here was this viewer applying the file rule to the in-memory type,
  * which is what produced 28 spurious divergences and, in the reporting, the
- * question the specification then answered.
+ * ambiguity the specification then resolved.
  */
 function requireFields(
   data: Record<string, unknown>,
@@ -134,26 +133,9 @@ export function loadCorpus(dir: string): LoadedCorpus {
       families: arr(data["families"]),
       atoms_for: arr(data["atoms_for"]),
       atoms_against: arr(data["atoms_against"]),
-      bears_on: arr(data["bears_on"]),
       edges: arr(data["edges"]),
       standings: arr(data["standings"]),
       evidence_audit: arr(data["evidence_audit"]),
-      body,
-    });
-  }
-
-  // ---- questions ---------------------------------------------------------
-  const questions = new Map<string, Question>();
-  for (const f of listDir(join(dir, "questions"))) {
-    const { data, body } = splitFrontmatter(readFileSync(join(dir, "questions", f), "utf8"));
-    const id = String(data["id"] ?? basename(f, ".md"));
-    requireFields(data, id, ["id", "type", "corpus", "title", "status", "created"], findings);
-    questions.set(id, {
-      ...(data as unknown as Question),
-      id,
-      families: arr(data["families"]),
-      sub_questions: arr(data["sub_questions"]),
-      answered_by: arr(data["answered_by"]),
       body,
     });
   }
@@ -204,5 +186,5 @@ export function loadCorpus(dir: string): LoadedCorpus {
     for (const [k, v] of Object.entries(doc?.captures ?? {})) captures.set(k, v);
   }
 
-  return { manifest, atoms, claims, questions, surveys, narratives, captures, findings };
+  return { manifest, atoms, claims, surveys, narratives, captures, findings };
 }

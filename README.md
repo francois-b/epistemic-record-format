@@ -4,9 +4,9 @@ The Epistemic Record Format (ERF) is a plain-text record format for bringing rig
 
 ## Status
 
-This is version 1.0 (August 22, 2026), extracted from a working practice
+This is version 1.1.0 (August 23, 2026), extracted from a working practice
 rather than designed in advance: roughly 740 audited atoms and 300 claims
-and questions across seven corpora preceded the specification, and a pilot
+across seven corpora preceded the specification, and a pilot
 ran the records on a third-party substrate before it was written.
 Requirement ids are stable from this version on: insertions take letter
 suffixes, and a retired id is never reused. Feedback is invited; the
@@ -55,8 +55,7 @@ Absence is evidenced by surveys; presence by atoms.
 
 [`examples/corpus/`](examples/corpus/) is a small corpus of real records,
 copied unchanged from a working practice: five atoms, five claims, three
-surveys, a question, and a narrative whose passages bind to the claims they
-rest on. [`viewer/`](viewer/) renders it to static HTML.
+surveys, and a narrative whose passages bind to the claims they rest on. [`viewer/`](viewer/) renders it to static HTML.
 
 ```
 cd viewer && npm install

@@ -14,7 +14,7 @@ import { loadCorpus } from "./corpus.ts";
 import { claimsUsingAtom } from "./compute.ts";
 import {
   renderAtom, renderCapture, renderClaim, renderHealth, renderIndex,
-  renderNarrative, renderQuestion, renderSurvey,
+  renderNarrative, renderSurvey,
 } from "./render.ts";
 
 function main(argv: string[]): number {
@@ -46,17 +46,16 @@ function main(argv: string[]): number {
   write("health.html", renderHealth(c, captureText));
   for (const n of c.narratives) write(`narrative-${n.slug}.html`, renderNarrative(n, c));
   for (const cl of c.claims.values()) write(`claim-${cl.id}.html`, renderClaim(cl, c));
-  for (const q of c.questions.values()) write(`question-${q.id}.html`, renderQuestion(q, c));
   for (const s of c.surveys.values()) write(`survey-${s.id}.html`, renderSurvey(s, c));
   for (const a of c.atoms.values()) {
     write(`atom-${a.id}.html`, renderAtom(a, c, users.get(a.id) ?? []));
     write(`capture-${a.id}.html`, renderCapture(a, c, captureText(a.id)));
   }
 
-  const pages = 2 + c.narratives.length + c.claims.size + c.questions.size
+  const pages = 2 + c.narratives.length + c.claims.size
     + c.surveys.size + c.atoms.size * 2;
   console.log(`${c.manifest.id}: ${pages} pages -> ${outDir}`);
-  console.log(`  ${c.atoms.size} atoms, ${c.claims.size} claims, ${c.questions.size} questions, ${c.surveys.size} surveys`);
+  console.log(`  ${c.atoms.size} atoms, ${c.claims.size} claims, ${c.surveys.size} surveys`);
   if (c.findings.length) {
     console.log(`  ${c.findings.length} records diverge from the normative model (see health.html)`);
   }

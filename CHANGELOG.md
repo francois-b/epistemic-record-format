@@ -4,6 +4,33 @@ Newest first. Requirement ids are stable once published: insertions use
 letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
 change lands here with a date.
 
+## v1.1.0 (2026-08-23)
+
+The question record type is removed. A minor-version change rather than a
+patch, because a record type leaving is a change to what the format is.
+
+The measurements behind the decision, from the reference practice: 25
+question records across five corpora, every one `status: open`, not one ever
+marked answered or parked, `answered_by` never written once in a year, two
+with sub-questions, four cited by compiled documents. The lifecycle
+machinery was unexercised, but the records themselves were real and in use.
+This is a scope decision taken to keep v1 shippable, not a finding that
+questions were useless: the 25 questions still exist, carried as prose in
+per-corpus `open-questions.md` documents beside the corpora they belong to.
+
+Removed with it: `Question`, `QuestionId`, `QuestionStatus`, `ERF-4.22`,
+`ERF-4.23`, section 4.5, the question rows in the field reference, and the
+question status vocabulary. Sections 4.6 through 4.8 renumber to 4.5 through
+4.7; no requirement id is renumbered and no retired id is reused.
+
+`Claim.bears_on` and `ERF-6.7a` go too, and the honest account is that they
+were four hours old. `bears-on` was admitted as a fifth relation in v1.0.3,
+moved to a field in v1.0.7 because `edges` is claim-to-claim, and removed
+here because its only possible target was a question. The link it carried is
+preserved: each of the 18 claims that bore on a question now says so in its
+working notes, in prose, naming the question and where it lives. The relation
+vocabulary stays at four.
+
 ## v1.0.7 (2026-08-23)
 
 `bears-on` becomes the `bears_on` field and stops being a relation. This
