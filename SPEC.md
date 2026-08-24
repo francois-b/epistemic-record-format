@@ -573,9 +573,16 @@ prose: does the recorded why survive the evidence on record?
   (`ERF-46`). Beyond that restatement the body is the one
   operator-authored text on the record, and carries the working notes.
 - **ERF-19** `standings` is append-only: entries MUST NOT be edited or
-  deleted; a correction is a new entry. Each entry MUST carry a full
-  timestamp (same-day entries MUST order), a stance, and a non-empty
-  `why`: an entry without a reason is a toggle, not a judgment.
+  deleted; a correction is a new entry. Each entry MUST carry a
+  `timestamp`, a stance, and a non-empty `why`: an entry without a reason
+  is a toggle, not a judgment. The `timestamp` MUST be a full RFC 3339
+  instant carrying both a time and an offset (`2026-08-23T14:02:00Z`), and
+  MUST NOT be a bare date. Precision is required here and nowhere else
+  because this is the only ordered ledger in the format: a bare date and a
+  full instant on the same day cannot be ordered against each other, so a
+  consumer selecting the newest stance would settle a claim's disposition
+  by accident. A bare date remains correct where nothing is ordered, as in
+  an atom's `as_of_date` or a survey's `conducted`.
 - **ERF-20** Producer tools SHOULD stamp each standing entry with the
   evidence sets attached at ruling time, by id
   (`evidence_at_stance: {atoms_for: [ids], atoms_against: [ids]}`). Which
@@ -717,17 +724,15 @@ correctly has nothing to state.
 ### 4.6 The narrative and its narrative bindings
 
 A narrative is a document written for people: an essay, a brief, a memo.
-Prose alone has a problem: assertions live inside sentences, so nothing
-marks what a passage commits to; the writer re-derives old reasoning;
-readers argue with impressions; and when the thinking underneath changes,
-the prose keeps saying what it said.
+It is prose, authored by a person and never generated. Prose alone has a
+problem: assertions live inside sentences, so nothing marks what a passage
+commits to; the writer re-derives old reasoning; readers argue with
+impressions; and when the thinking underneath changes, the prose keeps
+saying what it said. Narrative bindings are the fix, and they are all this
+format asks of a narrative. Whether a second document is also compiled from
+the bound claims, as a structured list a collaborator can dispute line by
+line, is a matter for whoever writes the narrative.
 
-- **ERF-30** A narrative in this format MUST comprise two documents,
-  tied together: the *narrative document* (the prose, authored by a
-  person, never generated) and the *claims-tree document* (the same
-  argument as a structured list of the claims it rests on, compiled from
-  the claim records). The prose persuades; the claims-tree is what a
-  collaborator disputes line by line and what the checks run against.
 - **ERF-31** A passage that asserts something SHOULD end with a narrative
   binding: a marker naming the claims it rests on plus a few exact words
   from the passage, so software can find the spot after edits. The marker
@@ -910,18 +915,21 @@ checks the relations no type can see.
   2. Remove soft hyphens (`U+00AD`).
   3. Fold typographic single quotes (`U+2018`, `U+2019`, `U+201B`) to `'`.
   4. Fold typographic double quotes (`U+201C`, `U+201D`, `U+201F`) to `"`.
-  5. Fold dash variants (`U+2010` through `U+2015`, `U+2212`) to `-`.
-  6. Join words broken across lines: remove a hyphen followed by a newline
+  5. Remove straight double quotes (`"`). This MUST follow step 4, so that
+     a quotation typed with straight quotes and the same quotation typed
+     with typographic ones normalize to the same string.
+  6. Fold dash variants (`U+2010` through `U+2015`, `U+2212`) to `-`.
+  7. Join words broken across lines: remove a hyphen followed by a newline
      and any leading whitespace on the next line.
-  7. Collapse runs of two or more hyphens to one.
-  8. Remove the emphasis and code markers `*`, `_`, and `` ` ``.
-  9. Unify dash spacing: whitespace either side of a hyphen is removed.
-  10. Collapse whitespace runs to a single space, then trim.
+  8. Collapse runs of two or more hyphens to one.
+  9. Remove the emphasis and code markers `*`, `_`, and `` ` ``.
+  10. Unify dash spacing: whitespace either side of a hyphen is removed.
+  11. Collapse whitespace runs to a single space, then trim.
 
   Case MUST NOT be folded. Case is part of a verbatim quote, and folding it
   lets a mis-cased quote pass a check whose whole job is fidelity.
 
-  Steps 1 through 10 above run AFTER the markup-unwrapping steps below,
+  Steps 1 through 11 above run AFTER the markup-unwrapping steps below,
   which are equally mandatory. Unwrapping was optional until 2026-08-23 and
   is not any longer: measured over one corpus, running the sequence without
   it moved the failure rate from 9% to 19%, so an optional step decided the
@@ -934,8 +942,9 @@ checks the relations no type can see.
        root-relative, and fragment-only.
   - d. Blockquote markers at the start of a line are removed, with one
        following space if present.
-  - e. Square brackets, straight double quotes, and the symbols `®`, `™`,
-       `©`, `^`, and `\` are removed.
+  - e. Square brackets and the symbols `®`, `™`, `©`, `^`, and `\` are
+       removed. Straight double quotes are NOT removed here; they are
+       removed at step 5, after the typographic fold.
   - f. A space before `,` `.` `;` `:` `!` `?` is removed, an artifact of
        document export.
 

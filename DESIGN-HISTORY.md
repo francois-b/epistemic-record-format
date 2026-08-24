@@ -319,6 +319,7 @@ updates is worse than none, because it reads as complete.
 
 | Decision | Ruled | Why |
 |:--|:--|:--|
+| A narrative required to be two documents | 2026-08-23 | A claims-tree is a doc-class artifact of one practice, not something the format needs. A narrative carrying bindings already points at its claims, and requiring a companion document is the format reaching into use. `ERF-30` retired. |
 | A caveat field on records that have a body | 2026-08-23 | A record with a body carries its caveats there. `limitations` stays on the atom alone, which has no body and for which it is the only prose; the survey's copy was the same content in two places, and a claim never needed one. |
 | Policies of any kind in the format | 2026-08-23 | v1 specifies records and the bindings between them; what anyone does with a corpus is the consumer's. Supersedes the earlier ruling that made the ship gate an invariant, and takes the audit policy, its aliases (audit intensity, verification bars), and the manifest's policy block with it. |
 | Presentation rules for readers without the sources (`ERF-6.8a`) | 2026-08-23 | How a claim is shown to someone who cannot open its backing is presentation, and presentation is the consumer's. The reference viewer still shows the gap, as its own choice. |
@@ -539,6 +540,12 @@ computes.
 
 ### Retirements the specification used to narrate
 
+- **A narrative was once required to be two documents.** `ERF-30` said a
+  narrative comprises the prose and a claims-tree compiled from the claims it
+  rests on. The second document is a doc-class artifact of the reference
+  practice rather than anything the format needs, and the requirement was the
+  only one the example corpus broke. Cut on 2026-08-23; bindings alone carry
+  the tie from prose to claims.
 - **Two epistemic kinds.** "Inference" named how a claim was produced
   rather than what would check it. "Preference" logged zero uses in 279
   typed claims, and every taste decomposes: enforced taste is a commitment,

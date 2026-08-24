@@ -50,10 +50,10 @@ requirements:
   ERF-18:
     untestable-by-design: that a title states the claim is the authoring act itself; the mechanical half is ERF-46
   ERF-19:
-    uncovered: >
-      the append-only and non-empty-why halves are covered by ERF-39 and
-      ERF-40; timestamp precision is not, and is an open decision: a date-only
-      entry and a full timestamp on the same day sort by lexical accident
+    tests: [fixtures/invalid/standing-bare-date]
+    note: >
+      timestamp precision is covered by the fixture; the append-only and
+      non-empty-why halves are covered by ERF-39 and ERF-40
   ERF-20:
     untestable-by-design: a SHOULD on producer behaviour, and the field's absence is legal
   ERF-21:
@@ -73,12 +73,6 @@ requirements:
     uncovered: no fixture asserts hits_reported rejects invented precision
   ERF-28:
     uncovered: no fixture covers survey immutability or the title stating what was sought
-  ERF-30:
-    uncovered: >
-      OPEN CONFLICT, not a to-do: the requirement says a narrative comprises
-      prose plus a claims-tree document, and examples/corpus has no
-      claims-tree, so either the example is non-conforming or the requirement
-      overreaches. Ruling pending; no test until it is settled
   ERF-31:
     tests: [output]
     note: the binding grammar, exercised through the shared bindingRe

@@ -206,9 +206,26 @@ export function loadCorpus(dir: string): LoadedCorpus {
   // ---- claims ------------------------------------------------------------
   const claims = new Map<string, Claim>();
   for (const f of listDir(join(dir, "claims"))) {
-    const { data, body } = splitFrontmatter(readFileSync(join(dir, "claims", f), "utf8"));
+    const raw = readFileSync(join(dir, "claims", f), "utf8");
+    const { data, body } = splitFrontmatter(raw);
     const id = String(data["id"] ?? basename(f, ".md"));
     requireFields(data, id, ["id", "type", "corpus", "title", "epistemic_kind", "created"], findings);
+    // `ERF-19`: a standing carries a full RFC 3339 instant, never a bare
+    // date, because this is the only ordered ledger in the format. Read from
+    // the RAW frontmatter: YAML coerces both forms to a Date, so the parsed
+    // value cannot tell a bare date from a full instant.
+    const standingsBlock = /^standings:\s*$([\s\S]*?)(?=^\S|\Z)/m.exec(raw)?.[1] ?? "";
+    for (const m of standingsBlock.matchAll(/\{\s*timestamp:\s*([^,}]+)/g)) {
+      const ts = (m[1] ?? "").trim();
+      if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(ts)) {
+        findings.push({
+          record: id,
+          field: "standings[].timestamp",
+          detail: `${ts || "(absent)"} is a bare date; a standing MUST carry a `
+            + `full RFC 3339 instant with a time and an offset (ERF-19)`,
+        });
+      }
+    }
     setUnique(claims, id, {
       ...(data as unknown as Claim),
       id,

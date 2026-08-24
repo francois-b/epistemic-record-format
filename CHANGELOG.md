@@ -6,6 +6,39 @@ are never reused, and every change lands here with a date.
 
 ## Unreleased
 
+### 2026-08-23 — three rulings: standing precision, ERF-30 cut, normalization order
+
+**A standing carries a full RFC 3339 instant** (`ERF-19`), with a time and an
+offset, never a bare date. Precision is mandatory here and nowhere else
+because the standings ledger is the only ordered structure in the format: a
+bare date and a full instant on the same day cannot be ordered against each
+other, so a consumer selecting the newest stance would settle a claim's
+disposition by accident. A bare date stays correct for `as_of_date` and a
+survey's `conducted`, where nothing is ordered.
+
+Implementing it found a larger defect underneath. YAML coerces an unquoted
+timestamp into a date value, so the reference consumer was comparing
+stringified dates, which sort alphabetically by weekday name. Newest-stance
+selection, and therefore every computed disposition, turned on the day of the
+week. `currentStances` now compares parsed instants, and the precision check
+reads the raw frontmatter, since a parsed value cannot tell the two forms
+apart.
+
+**`ERF-30` is cut.** It required a narrative to comprise prose plus a
+claims-tree document. A claims-tree is an artifact of one practice's doc
+class, not something the format needs; a narrative carrying bindings already
+points at its claims; and requiring a companion document is the format
+reaching into use, which this version does not do. It was also the only
+requirement the example corpus broke. The id is retired and not reused.
+
+**Normalization is idempotent again** (`ERF-51`). Straight-quote removal ran
+in the unwrapping steps, before the fold of typographic quotes into straight
+ones, so nothing removed the results of the fold: `"straight"` normalized to
+`straight` while a curly pair normalized to `"curly"`, and one quotation typed
+two ways produced two strings. Quote removal is now step 5, immediately after
+the fold, matching the working implementation the 19-versus-9-percent
+measurement came from. No verdict changed on the example corpus.
+
 ### 2026-08-23 — the reference consumer is made to obey the specification
 
 A conformance trace over all 63 requirements asked, for each one, whether

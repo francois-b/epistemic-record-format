@@ -5,7 +5,7 @@
 # \n in either column means a newline, \t a tab; nothing else is escaped.
 #
 # The sequence is six unwrapping steps (a-f) followed by ten normalization
-# steps (1-10), applied identically to a quote and to a capture. Case is
+# steps (1-11), applied identically to a quote and to a capture. Case is
 # never folded.
 #
 # A failing line is a finding about the implementation, not a licence to
@@ -31,7 +31,7 @@ root relative (/docs/page) here	root relative here
 >no space after marker	no space after marker
 line one\n> line two	line one line two
 
-# --- e. brackets, straight double quotes, and symbols ----------------------
+# --- e. brackets and symbols (quotes now removed at step 5) ----------------
 [bracketed]	bracketed
 "straight quoted"	straight quoted
 Acme(R) and (TM) and (C)	Acme(R) and (TM) and (C)
@@ -53,35 +53,35 @@ soft­hyphen	softhyphen
 it’s a quote	it's a quote
 ‘single’	'single'
 
-# --- 4. typographic double quotes fold to " --------------------------------
-# NOTE: step e removes the STRAIGHT double quote and runs BEFORE step 4, so a
-# curly pair survives e and is then folded into straight quotes that nothing
-# removes. Two spellings of one quotation therefore normalize differently.
-# This case records the implementation's actual behaviour so the divergence
-# is visible rather than assumed; see the finding in the suite report.
-“curly”	"curly"
+# --- 4 and 5. typographic quotes fold, then straight quotes are removed -----
+# Both spellings of one quotation MUST normalize to the same string. Until
+# 2026-08-23 straight-quote removal ran before the fold, so a curly pair
+# survived it and was then folded into straight quotes nothing removed; the
+# same quotation typed two ways produced two strings and normalization was
+# not idempotent. Step 5 now follows step 4.
+“curly”	curly
 
-# --- 5. dash variants fold to - ---------------------------------------------
+# --- 6. dash variants fold to - ---------------------------------------------
 en–dash	en-dash
 em—dash	em-dash
 minus−sign	minus-sign
 
-# --- 6. words broken across lines ------------------------------------------
+# --- 7. words broken across lines ------------------------------------------
 inter-\nnational	international
 hyphen-\n   indented	hyphenindented
 
-# --- 7. runs of two or more hyphens collapse to one ------------------------
+# --- 8. runs of two or more hyphens collapse to one ------------------------
 a--b	a-b
 a-----b	a-b
 
-# --- 8. emphasis and code markers are removed ------------------------------
+# --- 9. emphasis and code markers are removed ------------------------------
 *bold* and _under_ and `code`	bold and under and code
 
-# --- 9. dash spacing is unified --------------------------------------------
+# --- 10. dash spacing is unified --------------------------------------------
 a - b	a-b
 a  -  b	a-b
 
-# --- 10. whitespace runs collapse, then trim -------------------------------
+# --- 11. whitespace runs collapse, then trim -------------------------------
   lots   of    space  	lots of space
 line\nbreak	line break
 
@@ -91,4 +91,4 @@ MiXeD CaSe	MiXeD CaSe
 
 # --- combinations, closer to real capture text ------------------------------
 > The [study](https://ex.test/s) found *no* effect .	The study found no effect.
-“Nested [link](https://ex.test/l) inside a quote”	"Nested link inside a quote"
+“Nested [link](https://ex.test/l) inside a quote”	Nested link inside a quote

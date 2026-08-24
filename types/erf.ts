@@ -71,7 +71,9 @@ export interface ActorStamp {
 
 /** One line of the append-only doxastic ledger (ERF-19, ERF-21). */
 export interface StandingEntry {
-  /** RFC 3339 with time of day; same-day entries must order. */
+  /** A full RFC 3339 instant with time and offset, never a bare date
+   *  (ERF-19). This is the only ordered ledger in the format, so it is
+   *  the only place precision is mandatory. */
   timestamp: string;
   stance: Stance;
   /** Only people take stances (ERF-21). */

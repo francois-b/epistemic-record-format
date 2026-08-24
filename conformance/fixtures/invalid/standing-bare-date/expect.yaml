@@ -1,0 +1,9 @@
+requirement: ERF-19
+record: fx-claim-001
+field: standings[].timestamp
+because: >
+  A standing carries a full RFC 3339 instant with a time and an offset, never
+  a bare date. The standings ledger is the only ordered structure in the
+  format, so a bare date and a full instant on the same day cannot be ordered
+  against each other and a consumer selecting the newest stance would settle
+  the claim by accident.
