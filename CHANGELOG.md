@@ -1,8 +1,8 @@
 # Changelog
 
-Newest first. Requirement ids are stable once published: insertions use
-letter suffixes (`ERF-4.8a`), retired ids are never reused, and every
-change lands here with a date.
+Newest first. Requirement ids are stable once published: a new requirement
+takes the next unused number, ids carry no positional meaning, retired ids
+are never reused, and every change lands here with a date.
 
 ## Unreleased
 
