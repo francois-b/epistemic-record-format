@@ -890,6 +890,25 @@ checks the relations no type can see.
   narrower than another, and two deployments may use different vocabularies
   with neither wrong. References are bare ids, so a record MAY cite one in
   another corpus; the wall is what governs which direction that may run.
+> *Note (non-normative):* on the classification vocabulary. A realm invents
+> its own ordered levels, and one is not supplied here. A registry MAY adopt
+> the Traffic Light Protocol (FIRST.org, TLP 2.0) and use `CLEAR`, `GREEN`,
+> `AMBER`, `AMBER+STRICT`, `RED` as its ordering, which has the advantage of
+> being widely practised and immediately legible to anyone outside the
+> corpus. Note the axes differ: TLP grades how far a recipient may forward
+> something, while `ERF-45` governs which records may reference which. They
+> line up well enough to reuse the names, and not well enough for this
+> format to require them.
+
+> *Note (non-normative):* on reading this format's provenance as PROV. The
+> record's attribution maps onto W3C PROV without adopting a graph model: a
+> record corresponds to a `prov:Entity`, its `created` stamp to
+> `prov:wasGeneratedBy` with the actor as `prov:wasAssociatedWith`, and a
+> `human:` actor to `prov:wasAttributedTo` a `prov:Person` while a
+> producer-and-version actor maps to a `prov:SoftwareAgent`. The mapping is
+> offered so a PROV consumer can read these records; adopting PROV itself
+> would add an RDF model and remove nothing.
+
 - **ERF-46** `title` and the body's opening statement MUST agree.
 - **ERF-47** Staleness MUST be computed, never stored: a
   `finding_audit`, `evidence_audit`, or narrative binding older than the last change

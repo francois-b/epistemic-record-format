@@ -19,6 +19,7 @@ Decisions already taken against something are not here. Those live in
 | Atom lifecycle (`withdrawn`, `superseded_by`) | The first bad atom found after citation. Also where an undercutting defeater would be expressed. |
 | A capture manifest with content-hash identity | A captures reorganization, a same-URL revision collision, or any corpus sharing. |
 | Content-addressed record ids | A second writer minting into a shared corpus, where check-before-write cannot prevent a collision. |
+| Canonical serialization of a record, before any hashing | A content-addressed id, a capture manifest, or signatures. This is the real blocker rather than the choice of hash: two byte-different files can hold the same record, and neither multihash, Subresource Integrity, nor a Trusty URI says how to canonicalize YAML-plus-markdown first. |
 | A families registry (definitions, rename history) | The first family split or rename that matters to an existing document. |
 | An actor registry | A second human in a corpus. |
 | Import provenance on copied records, and a declared deciding actor | A second human in a corpus. |
