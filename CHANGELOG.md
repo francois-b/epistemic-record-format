@@ -12,6 +12,22 @@ what changed between releases; at first publication they become **v1.0** and
 version numbers start meaning something. The durable record of what was
 decided, and why, is the register in `DESIGN-HISTORY.md`.
 
+### 2026-08-23 — the example corpus gains real captures
+
+The example corpus shipped no captured copies, so the reference viewer's
+best screen, a verbatim quote highlighted inside its source, was implemented
+and never exercised. Four atoms now quote two W3C Recommendations, PROV-DM
+and PROV-O, whose Document License permits redistributing portions of a
+document provided the original link, the copyright notice, and the status
+travel with the copy. The captures carry all three, the quote check runs
+green on all four, and the capture pages show the highlight.
+
+The five atoms whose sources cannot be republished keep their explicit
+absence entries. The mixed state is deliberate: it is what the format looks
+like in the ordinary case, where some evidence travels and some does not,
+and the viewer says which is which. `captures.yaml` now records a licence
+alongside each shipped path.
+
 ### 2026-08-23
 
 The question record type is removed. A minor-version change rather than a

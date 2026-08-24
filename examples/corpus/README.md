@@ -47,26 +47,37 @@ zero, and carries no `limitations` at all, because when the universe
 searched *is* the universe the claim is about, absence is conclusive rather
 than defeasible.
 
-## The captures problem, stated plainly
+## Captures, and why only some of them travel
 
 The format's most convincing mechanism is the verbatim quote checked against
-an immutable copy of its source. **This corpus ships none of those copies,
-and so it cannot demonstrate that check.**
+an immutable copy of its source. **Four of the nine atoms here ship their
+captured copy, and five do not.** Both halves are on purpose.
 
-The reason is copyright, not oversight. Publishing a capture means
-redistributing someone else's text. Of the five atoms here, three quote a
-law journal article that is freely readable but not licensed for
-redistribution, one quotes vendor product documentation, and one quotes a
-documentation site whose content carries no stated licence at all.
-Unverified is not permission, so nothing shipped.
+Publishing a capture means redistributing someone else's text, so the
+licence decides. The four that travel are excerpts from two W3C
+Recommendations, PROV-DM and PROV-O. The W3C Document License permits
+copying and distributing a W3C document or portions of it, in any medium and
+for any purpose, provided the original link, the copyright notice, and the
+document's status accompany the copy; each capture carries all three. For
+those four atoms the mechanical check runs here, and the capture page shows
+the quote highlighted inside the source text.
 
-`captures.yaml` records each one with its status and the reason. The viewer
-reads that file and, on every claim resting on an atom whose capture did not
-ship, says so instead of presenting the claim as backed. That is the viewer's own
-choice rather than a rule of the format, and this corpus exercises it
-thoroughly by accident of its own sourcing.
+The other five cannot travel. Three quote a law journal article that is
+freely readable but not licensed for redistribution, one quotes vendor
+product documentation, and one quotes a documentation site whose content
+carries no stated licence at all. Unverified is not permission, so nothing
+shipped for them.
 
-Closing the gap needs one atom over an openly licensed source: a W3C
-document, a United States federal publication, a Creative Commons article,
-or a public-domain text. That is a genuine piece of research work rather
-than a packaging exercise, which is why it was not improvised here.
+`captures.yaml` records every atom either way, with a path and a licence
+where the copy travels, and with a status and a reason where it does not. A
+missing entry would be indistinguishable from an oversight, which is why
+absence is written down rather than left silent. The viewer reads that file
+and, on every claim resting on an atom whose capture did not ship, says so
+instead of presenting the claim as backed. That is the viewer's own choice
+rather than a rule of the format.
+
+The mix is more instructive than a clean sweep would have been. It is what
+the format looks like in the ordinary case, where some of your evidence can
+be republished and some of it cannot, and where the reader is told which is
+which.
+

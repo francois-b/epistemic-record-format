@@ -80,12 +80,34 @@ well-funded verification apparatus, measured, turns out to disagree with
 itself at rates its marketing does not mention, and that nobody knew this
 until somebody counted. Counting is the whole idea.
 
-## What this corpus cannot show you
+## The primitive that did get standardized
+
+Provenance, meanwhile, was standardized a decade ago and is not in dispute.
+The W3C model describes a thing's history as entities, activities, and
+agents, and defines attribution as ascribing an entity to an agent.
+<!-- claims: prov-models-entities-activities-agents "entities, activities, and agents" -->
+
+Read those definitions and notice what they are about: who did what to a
+thing, and who is answerable for it. None of them is about whether a
+statement follows from the source it cites. That is the gap this corpus
+occupies, and it is worth being careful about how the point is made. The
+claim above says only what the standard does say, because quoting a
+document establishes its contents and never its omissions. A statement
+about what a body of work lacks wants a survey, which is why the universal
+negative earlier in this walk rests on one.
+
+## What this corpus can and cannot show you
 
 None of the claims above is active. Every one computes to `proposal`,
 because nobody has yet stood behind any of them in the ledger, and the
 format will not infer a position from the quality of the evidence.
 
-Neither can the quote check run here, because none of the captured copies
-could be redistributed. The viewer will tell you so on every claim rather
-than letting a backed claim and a bare assertion look the same.
+The quote check runs for four atoms and not for the rest. The four are
+excerpts from W3C Recommendations, whose licence permits redistribution, so
+their captured copies travel with this repository and you can watch a quote
+match its source character for character. The others cite journal articles
+and vendor documentation that cannot be republished here, so their captures
+stayed behind. The viewer says which is which on every page rather than
+letting a checkable claim and an uncheckable one look the same, and that
+contrast is deliberate: it is what the format looks like in the ordinary
+case, where some of your evidence travels and some of it does not.
