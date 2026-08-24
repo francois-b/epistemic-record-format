@@ -1,9 +1,13 @@
-# Atom id to captured copy (`ERF-4.9`, `ERF-6.12`).
+# Atom id to captured copy (`ERF-9`, `ERF-50`).
 #
 # The mechanical check reads the capture, never the live web. Where a
 # capture cannot ship, the entry says so explicitly rather than going
-# silently absent (`ERF-4.4a`): a mapping is only checkable when it is
+# silently absent (`ERF-4`): a mapping is only checkable when it is
 # complete, and a missing key is indistinguishable from an oversight.
+#
+# `licence` names the SPDX identifier where a capture ships (`ERF-68`);
+# `licence_name` keeps the human form, since an SPDX id is not
+# self-explaining.
 #
 # `path` is relative to this file. `status: shipped` means the copy is in
 # this repository and the quote check runs. Any other status means the
@@ -48,27 +52,32 @@ captures:
     status: shipped
     path: captures/w3c-prov-dm-2013-entities-activities.txt
     source: "W3C, PROV-DM: The PROV Data Model (Recommendation, 30 April 2013)"
-    licence: "W3C Document License 2023 — permits copying and distributing a
-      W3C document or portions of it, in any medium, for any purpose,
-      provided the original link, the copyright notice, and the document's
-      status accompany the copy. The capture carries all three."
+    licence: W3C-20150513
+    licence_name: "W3C Document License 2023"
+    licence_note: "Permits copying and distributing a W3C document or
+      portions of it, in any medium, for any purpose, provided the original
+      link, the copyright notice, and the document's status accompany the
+      copy. The capture carries all three."
 
   ex-002:
     status: shipped
     path: captures/w3c-prov-dm-2013-entities-activities.txt
     source: "W3C, PROV-DM: The PROV Data Model (Recommendation, 30 April 2013)"
-    licence: "W3C Document License 2023, as for ex-001. Two atoms share one
-      capture, which is ordinary: a capture is a copy of a source, not a copy
-      per atom."
+    licence: W3C-20150513
+    licence_name: "W3C Document License 2023"
+    licence_note: "Two atoms share one capture, which is ordinary: a capture
+      is a copy of a source, not a copy per atom."
 
   ex-003:
     status: shipped
     path: captures/w3c-prov-o-2013-agents-attribution.txt
     source: "W3C, PROV-O: The PROV Ontology (Recommendation, 30 April 2013)"
-    licence: "W3C Document License 2023, as for ex-001."
+    licence: W3C-20150513
+    licence_name: "W3C Document License 2023"
 
   ex-004:
     status: shipped
     path: captures/w3c-prov-o-2013-agents-attribution.txt
     source: "W3C, PROV-O: The PROV Ontology (Recommendation, 30 April 2013)"
-    licence: "W3C Document License 2023, as for ex-001."
+    licence: W3C-20150513
+    licence_name: "W3C Document License 2023"

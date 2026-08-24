@@ -73,10 +73,30 @@ const FM = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;
 /** `ERF-12`: the three verdicts, and nothing else. A tool failure is not one. */
 const VERDICTS = new Set(["SUPPORTED", "PARTIAL", "UNSUPPORTED"]);
 
+/**
+ * `ERF-65`, `ERF-66`. The JSON schema is the narrowest YAML 1.2 defines:
+ * only null, true, false, and JSON's number grammar leave string-land, so a
+ * date-shaped scalar stays a string. The Core schema resolves it to a date,
+ * which is how an unquoted timestamp once made a claim's disposition depend
+ * on how a weekday name sorts. `json: false` keeps js-yaml throwing on a
+ * duplicate key rather than taking the last one.
+ */
+const YAML_OPTS = { schema: yaml.JSON_SCHEMA, json: false } as const;
+
+/** `ERF-66`: a record is flat and declines anchors, aliases, and tags. */
+const YAML_GRAPH = /(^|\s)(&[A-Za-z0-9_-]+|\*[A-Za-z0-9_-]+|!![A-Za-z]+)(\s|$)/;
+
 function splitFrontmatter(text: string): { data: Record<string, unknown>; body: string } {
   const m = FM.exec(text);
   if (!m) throw new Error("no YAML frontmatter");
-  const data = (yaml.load(m[1] ?? "") ?? {}) as Record<string, unknown>;
+  const raw = m[1] ?? "";
+  if (YAML_GRAPH.test(raw)) {
+    throw new Error(
+      "frontmatter uses a YAML anchor, alias, or explicit tag; a record is a "
+      + "flat structure and declines all three (ERF-66)",
+    );
+  }
+  const data = (yaml.load(raw, YAML_OPTS) ?? {}) as Record<string, unknown>;
   return { data, body: (m[2] ?? "").trim() };
 }
 
@@ -164,7 +184,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
   /** id -> record type, so a collision across types is caught too. */
   const seenIds = new Map<string, string>();
 
-  const manifest = yaml.load(readFileSync(join(dir, "corpus.yaml"), "utf8")) as CorpusManifest;
+  const manifest = yaml.load(readFileSync(join(dir, "corpus.yaml"), "utf8"), YAML_OPTS) as CorpusManifest;
   for (const f of ["id", "title", "spec_version", "classification"]) {
     if (!(manifest as unknown as Record<string, unknown>)[f]) {
       findings.push({
@@ -282,7 +302,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
   const captures = new Map<string, CaptureEntry>();
   const capPath = join(dir, "captures.yaml");
   if (existsSync(capPath)) {
-    const doc = yaml.load(readFileSync(capPath, "utf8")) as { captures?: Record<string, CaptureEntry> };
+    const doc = yaml.load(readFileSync(capPath, "utf8"), YAML_OPTS) as { captures?: Record<string, CaptureEntry> };
     for (const [k, v] of Object.entries(doc?.captures ?? {})) captures.set(k, v);
   }
 

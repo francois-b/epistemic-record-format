@@ -377,6 +377,14 @@ evidence about today's page rather than about what was read.
   and `licence-unverified` (redistribution rights could not be established,
   and unverified is not permission). The vocabulary is provisional and grows
   by a demonstrated instance rather than by anticipation.
+- **ERF-68** An entry whose capture ships SHOULD name the licence that
+  permits it, as an SPDX licence identifier where the licence has one, with
+  the licence's plain name alongside because an identifier does not explain
+  itself. An identifier matches or it does not; two captures under
+  nominally the same licence, described in prose, match only by eye. Where
+  no identifier applies, prose alone is correct: SPDX names a licence and
+  never the judgment about whether redistribution is permitted, which stays
+  `ERF-5`'s closed vocabulary and this format's own call.
 
 ### 4.2 The atom
 
@@ -1004,6 +1012,26 @@ checks the relations no type can see.
   and the grouping carries no meaning, because each record states its own
   `type` and `corpus` (`ERF-54`). A conforming store MUST round-trip
   records through this form without loss.
+- **ERF-65** Frontmatter MUST parse under YAML 1.2 using the **JSON
+  schema**, the narrowest of the three the specification defines. Under it
+  only `null`, the literals `true` and `false`, and JSON's own number
+  grammar resolve to non-string scalars; everything else stays a string.
+  The looser Core schema resolves a date-shaped scalar to a date, which is
+  how an unquoted `timestamp` became a date object and made a claim's
+  computed disposition depend on how a weekday name sorts. A producer
+  SHOULD quote a timestamp regardless, so that a reader on a looser schema
+  still receives a string.
+- **ERF-66** A record's frontmatter MUST NOT contain a duplicate key, an
+  anchor, an alias, or an explicit tag. YAML permits all four and leaves a
+  processor's response to duplicates at its own discretion, so two
+  conforming parsers may legally disagree about the same file. A record is
+  a flat structure and needs none of them; declining them removes the
+  disagreement rather than adjudicating it.
+- **ERF-67** A record body MUST be valid CommonMark, and a file MUST be
+  UTF-8 encoded with LF line endings and no byte-order mark. Markdown
+  without a named dialect is not a format, which is the gap CommonMark was
+  written to close, and an unstated encoding is a verbatim check waiting to
+  fail on a byte nobody chose.
 - **ERF-54** Records MUST self-describe: `type` and `corpus` are written
   on every record of every type, and no meaning lives in a path.
 - **ERF-55** Empty lists MUST be omitted: a field's absence means none.
@@ -1039,11 +1067,10 @@ checks the relations no type can see.
   is worse than refusing it, because the failure is silent: fields shift
   meaning and nothing in the file announces the mismatch. Migrations
   between majors are explicit.
-- **ERF-61** A MAJOR increment MUST mean a change that makes a
-  conforming corpus of the previous major unreadable, rather than merely
-  under-interpreted. A MINOR increment adds or refines what an older
-  consumer can safely ignore. The distinction is what `ERF-60` hangs on:
-  without it, "unsupported version" has no agreed consequence.
+- **ERF-61** `spec_version` MUST follow Semantic Versioning 2.0.0. One
+  thing is specific to this format and is what `ERF-60` hangs on: a MAJOR
+  increment means a change that makes a conforming corpus of the previous
+  major *unreadable*, rather than merely under-interpreted.
 
 ## 8. Storage
 
@@ -1123,6 +1150,10 @@ below that threshold.
 - RFC 3339, *Date and Time on the Internet: Timestamps*
 - YAML 1.2: yaml.org/spec/1.2.2
 - RFC 2119 and RFC 8174 (BCP 14), requirement key words
+- CommonMark 0.31.2: spec.commonmark.org
+- Semantic Versioning 2.0.0: semver.org
+- RFC 3629, *UTF-8, a transformation format of ISO 10646* (STD 63)
+- SPDX License List: spdx.org/licenses
 
 ### Informative
 
@@ -1134,5 +1165,16 @@ below that threshold.
 - Wikidata data model, Help:Ranking, and property P2241: wikidata.org
 - Guru card verification: getguru.com/product/verification
 - Nygard, *Documenting Architecture Decisions* (2011); MADR: adr.github.io
+- BCP 47 (RFC 5646), language tags. No record carries a language today;
+  if one ever does, its value is a BCP 47 tag. Advisory, because a field
+  with no forcing instance is not admitted.
+- Traffic Light Protocol 2.0: first.org/tlp. A sensible default
+  classification vocabulary for a deployment with no reason to invent
+  one, though its rungs describe who may receive a document rather than
+  which corpus may cite which, so `ERF-64` recommends and never requires
+  it.
+- `text/markdown` (RFC 7763) describes a record body. This format
+  registers no media type of its own; registration serves
+  content negotiation at a scale it has not reached.
 - CiTO, the Citation Typing Ontology: purl.org/spar/cito
 - scite Smart Citations: scite.ai

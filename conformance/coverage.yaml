@@ -149,3 +149,11 @@ requirements:
     untestable-by-design: a permission, satisfiable by any substrate
   ERF-64:
     uncovered: no fixture omits the registry's ordered classification levels
+  ERF-65:
+    uncovered: no fixture carries frontmatter that parses differently under YAML 1.1 and 1.2
+  ERF-66:
+    uncovered: no fixture carries a duplicate key, an alias, or an explicit tag
+  ERF-67:
+    uncovered: no fixture carries a body that is not valid CommonMark, or a non-UTF-8 file
+  ERF-68:
+    uncovered: no fixture ships a capture without an SPDX identifier
