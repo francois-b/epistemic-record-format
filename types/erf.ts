@@ -20,14 +20,14 @@
 /** Corpus prefix plus sequence, e.g. "kwg-117". Never renamed, never reused. */
 export type AtomId = string;
 
-/** Unique across the realm's corpora; encodes no location (ERF-4.11).
+/** Unique across the realm's corpora; encodes no location (ERF-36).
  *  Across realms, identity is the pair of realm and id. */
 export type ClaimId = string;
 
-/** Same realm namespace; slug SHOULD end with the conducted date (ERF-4.29). */
+/** Same realm namespace; slug SHOULD end with the conducted date (ERF-28). */
 export type SurveyId = string;
 
-/** A registered corpus id, per the corpus registry (ERF-8.3). */
+/** A registered corpus id, per the corpus registry (ERF-64). */
 export type CorpusId = string;
 
 /** A recorded topic-family name. */
@@ -56,7 +56,7 @@ export type Stance         = "for" | "against" | "withdrawn";
 export type Relation       = "supports" | "assumes" | "decomposes-into"
                            | "conflicts-with";
 /** How much weight the attester's word carries for the fact the finding
- *  conveys; two inputs, the weaker governing (ERF-4.8a, ERF-4.8b). */
+ *  conveys; two inputs, the weaker governing (ERF-9, ERF-10). */
 export type SourceQuality  = "high" | "medium" | "low";
 
 // ---------------------------------------------------------------------------
@@ -69,23 +69,23 @@ export interface ActorStamp {
   by: Actor;
 }
 
-/** One line of the append-only doxastic ledger (ERF-4.14, ERF-4.15). */
+/** One line of the append-only doxastic ledger (ERF-19, ERF-21). */
 export interface StandingEntry {
   /** RFC 3339 with time of day; same-day entries must order. */
   timestamp: string;
   stance: Stance;
-  /** Only people take stances (ERF-4.15). */
+  /** Only people take stances (ERF-21). */
   by: `human:${string}`;
   /** Required; an entry without a reason is a toggle, not a judgment. */
   why: string;
-  /** What the ruler faced at ruling time, by id (ERF-4.14a). */
+  /** What the ruler faced at ruling time, by id (ERF-20). */
   evidence_at_stance?: {
     atoms_for: AtomId[];
     atoms_against: AtomId[];
   };
 }
 
-/** One search act within a survey (ERF-4.27, ERF-4.28). Named for what a
+/** One search act within a survey (ERF-26, ERF-27). Named for what a
  *  line of `searches` records: an act, conducted once. */
 export interface SearchAct {
   /** The concrete instrument, named: which search engine, which database,
@@ -97,14 +97,14 @@ export interface SearchAct {
    *  inspection depth. */
   scope?: string;
   /** Yield as the instrument reported it; text, because reported precision
-   *  varies by instrument (ERF-4.28). */
+   *  varies by instrument (ERF-27). */
   hits_reported: string;
   /** When this act ran, for a survey spanning sittings; defaults to the
    *  survey's `conducted` timestamp. */
   timestamp?: string;
 }
 
-/** One recorded audit judgment (ERF-4.9, section 4.4). */
+/** One recorded audit judgment (ERF-11, section 4.4). */
 export interface AuditEntry {
   /** The model that rendered the verdict; read together with `protocol`. */
   auditor: string;
@@ -124,15 +124,15 @@ export interface Atom {
   /** Corpus prefix + number, e.g. kwg-117. */
   id: AtomId;
   type: "atom";
-  /** Confidentiality tier (ERF-7.2). */
+  /** Confidentiality tier (ERF-54). */
   corpus: CorpusId;
-  /** One sentence: what the quote shows (ERF-4.6). */
+  /** One sentence: what the quote shows; audited per ERF-11. */
   finding: string;
-  /** Verbatim from the capture; `[...]` marks elision (ERF-4.5). */
+  /** Verbatim from the capture; `[...]` marks elision (ERF-6). */
   quote: string;
-  /** Human-readable citation; never contains a URL (ERF-4.7). */
+  /** Human-readable citation; never contains a URL (ERF-7). */
   citation_text: string;
-  /** Canonical when present; `citation_text` renders from it (ERF-4.8). */
+  /** Canonical when present; `citation_text` renders from it (ERF-8). */
   citation?: CSL;
   /** The locator actually retrieved; absent for received files. */
   fetched_url?: string;
@@ -143,19 +143,19 @@ export interface Atom {
   limitations?: string;
   created: ActorStamp;
   last_modified?: ActorStamp;
-  /** Judgment verdicts, recorded per auditor (ERF-4.9). */
+  /** Judgment verdicts, recorded per auditor (ERF-11). */
   finding_audit: AuditEntry[];
 }
 
 /** A statement that can be true or false, one a person could stand behind
  *  or dispute (section 4.3). */
 export interface Claim {
-  /** Unique across the realm's corpora (ERF-4.11). */
+  /** Unique across the realm's corpora (ERF-36). */
   id: ClaimId;
   type: "claim";
-  /** Confidentiality tier; mutable where identity is not (ERF-4.12). */
+  /** Confidentiality tier; mutable where identity is not (ERF-17). */
   corpus: CorpusId;
-  /** THE claim statement (normative, ERF-4.13). */
+  /** THE claim statement (normative, ERF-18). */
   title: string;
   epistemic_kind: EpistemicKind;
   created: ActorStamp;
@@ -170,9 +170,9 @@ export interface Claim {
    *  Absence is evidenced by surveys; presence by atoms. */
   surveys?: SurveyId[];
   /** Typed relations to other claims, claim-to-claim only
-   *  (section 5, ERF-6.6, ERF-6.7). */
+   *  (section 5, ERF-43, ERF-44). */
   edges: { to: ClaimId; relation: Relation }[];
-  /** Append-only; per-person; humans only (ERF-4.14, ERF-4.15). */
+  /** Append-only; per-person; humans only (ERF-19, ERF-21). */
   standings: StandingEntry[];
   /** Does the evidence carry the claim (section 4.4). */
   evidence_audit: AuditEntry[];
@@ -186,7 +186,7 @@ export interface Claim {
  *  polarity: the same record backs an absence, sparseness, or density
  *  reading; the citing claim decides the use. */
 export interface Survey {
-  /** Unique in the realm; SHOULD end with the conducted date (ERF-4.29). */
+  /** Unique in the realm; SHOULD end with the conducted date (ERF-28). */
   id: SurveyId;
   type: "survey";
   corpus: CorpusId;
@@ -195,14 +195,14 @@ export interface Survey {
   /** When, and which actor, conducted the search. Machine actors are legal
    *  here: searching is machine work; judgment stays on the citing claim. */
   conducted: ActorStamp;
-  /** The acts, one or more, each self-contained (ERF-4.27). */
+  /** The acts, one or more, each self-contained (ERF-26). */
   searches: SearchAct[];
   /** The curated subset worth recording; entries mint atoms when a hit
-   *  deserves quoting (ERF-4.28). */
+   *  deserves quoting (ERF-27). */
   notable_results: { what: string; note: string; atoms?: AtomId[] }[];
   /** What the acts did not cover and how deeply hits were inspected;
    *  SHOULD when cited for absence or sparseness; correctly absent for a
-   *  complete search of a closed corpus (ERF-4.30). */
+   *  complete search of a closed corpus (ERF-29). */
   limitations?: string;
   /** The predecessor record when the same sought is searched again. */
   prior_survey?: SurveyId;
@@ -214,8 +214,8 @@ export interface Survey {
 // the file, and the two differ on purpose.
 //
 // List-typed fields are required here because a loaded record always has
-// them. In a file they are omitted when empty (ERF-7.4), and a reader
-// materializes an omitted list as an empty one (ERF-7.4a). An omitted list
+// them. In a file they are omitted when empty (ERF-55), and a reader
+// materializes an omitted list as an empty one (ERF-56). An omitted list
 // means none, never unknown. This includes `finding_audit`: an atom nobody
 // has audited yet is a complete record whose audit list is empty, not a
 // malformed one.

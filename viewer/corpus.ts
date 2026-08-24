@@ -30,7 +30,7 @@ export interface Narrative {
   slug: string;
   title: string;
   body: string;
-  /** `ERF-4.25` bindings: claims plus the anchor words. */
+  /** `ERF-31` bindings: claims plus the anchor words. */
   bindings: { claims: string[]; anchor: string; boundAt?: string; index: number }[];
 }
 
@@ -67,7 +67,7 @@ function listDir(dir: string, ext = ".md"): string[] {
 }
 
 /**
- * `ERF-7.4` requires empty lists to be omitted on the wire, while the model
+ * `ERF-55` requires empty lists to be omitted on the wire, while the model
  * types them as total. Every loader therefore has to materialize them, and
  * this is the one place that happens.
  */
@@ -78,8 +78,8 @@ function arr<T>(v: unknown): T[] {
 /**
  * Fields whose absence is a genuine defect.
  *
- * List-typed fields are deliberately NOT checked here. `ERF-7.4` omits an
- * empty list from the file and `ERF-7.4a` has the reader materialize it, so
+ * List-typed fields are deliberately NOT checked here. `ERF-55` omits an
+ * empty list from the file and `ERF-56` has the reader materialize it, so
  * an omitted list is a complete record rather than a partial one. Checking
  * them here was this viewer applying the file rule to the in-memory type,
  * which is what produced 28 spurious divergences and, in the reporting, the

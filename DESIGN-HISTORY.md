@@ -343,6 +343,8 @@ updates is worse than none, because it reads as complete.
 | A failed audit recorded as a verdict (`PARSE_ERROR`) | 2026-08-23 | An audit that produced nothing is an audit that did not happen. Tool failure is not a judgment. |
 | Optional capture unwrapping | 2026-08-23 | Measured: the same corpus failed at 19% without it and 9% with it, so an optional step decided one verdict in ten. Made mandatory instead. |
 | An enumerated list of substantive fields for `last_modified` | 2026-08-23 | A list that must move in lockstep with the schema, and lockstep failed three times in two days. |
+| Numbered requirements for authoring judgment | 2026-08-23 | Section 4 held 52 requirements and 18 of 85 were checked by anything, so most of the document's normative weight was advice wearing MUST. Promises about what a record means stay numbered; advice about writing a good one became prose. Section 4 fell to 34. |
+| Section-shaped requirement ids | 2026-08-23 | The scheme rotted as it always does: sections moved, ids could not, and the correspondence broke in three places. Flattened to a flat sequence before publication, the last moment it was free. |
 
 ### Deferred, each with the trigger that would revive it
 
@@ -365,3 +367,218 @@ updates is worse than none, because it reads as complete.
 | Media-type extraction profiles for capture text | The first capture that is not text or markdown. |
 | A machine-readable audit policy schema | A second corpus with a genuinely different audit bar. |
 | The question record type's return | Questions that need a lifecycle, meaning someone actually marking one answered rather than just minting the claim that settles it. |
+
+## Part IV — What the specification shed, and where its ids went
+
+### The 2026-08-23 flatten
+
+Requirement ids were `ERF-<section>.<sequence>` with letter suffixes for
+insertions. The scheme rotted in the way that scheme always rots: sections
+moved and ids could not follow, so section 4's numbers ran backwards once,
+one base appeared in the order `c, d, a, e, f, b, g`, and two ids were
+retired silently. Ids are declared stable only once published, so the last
+free moment to fix it was before the first publication, and it was taken.
+
+Ids are now a flat sequence carrying no meaning beyond identity. A number
+no longer claims to say where a requirement lives, so no future section
+move can make one wrong.
+
+Historical documents (this file's register, the changelog, the adversarial
+review, the practice's own method notes) cite the old ids and are not
+rewritten: they describe what was true when written. This table is what
+makes them readable.
+
+| Old | New | Note |
+|:--|:--|:--|
+| `ERF-4.1` | `ERF-1` | |
+| `ERF-4.3` | `ERF-2` | |
+| `ERF-4.4` | `ERF-3` | |
+| `ERF-4.4a` | `ERF-4` | |
+| `ERF-4.4b` | `ERF-5` | |
+| `ERF-4.5` | `ERF-6` | |
+| `ERF-4.7` | `ERF-7` | |
+| `ERF-4.8` | `ERF-8` | |
+| `ERF-4.8a` | `ERF-9` | |
+| `ERF-4.8b` | `ERF-10` | |
+| `ERF-4.9` | `ERF-11` | |
+| `ERF-4.9a` | `ERF-12` | |
+| `ERF-4.10a` | `ERF-13` | |
+| `ERF-4.10b` | `ERF-14` | |
+| `ERF-4.11a` | `ERF-15` | |
+| `ERF-4.11b` | `ERF-16` | |
+| `ERF-4.12` | `ERF-17` | |
+| `ERF-4.13` | `ERF-18` | |
+| `ERF-4.14` | `ERF-19` | |
+| `ERF-4.14a` | `ERF-20` | |
+| `ERF-4.15` | `ERF-21` | |
+| `ERF-4.16` | `ERF-22` | |
+| `ERF-4.17` | `ERF-23` | |
+| `ERF-4.19` | `ERF-24` | |
+| `ERF-4.21a` | `ERF-25` | |
+| `ERF-4.27` | `ERF-26` | |
+| `ERF-4.28` | `ERF-27` | |
+| `ERF-4.29` | `ERF-28` | |
+| `ERF-4.30` | `ERF-29` | |
+| `ERF-4.24` | `ERF-30` | |
+| `ERF-4.25` | `ERF-31` | |
+| `ERF-4.26c` | `ERF-32` | |
+| `ERF-4.26a` | `ERF-33` | |
+| `ERF-4.26b` | `ERF-34` | |
+| `ERF-6.1` | `ERF-35` | |
+| `ERF-6.2` | `ERF-36` | |
+| `ERF-6.2a` | `ERF-37` | |
+| `ERF-6.2b` | `ERF-38` | |
+| `ERF-6.3` | `ERF-39` | |
+| `ERF-6.4` | `ERF-40` | |
+| `ERF-6.5` | `ERF-41` | |
+| `ERF-6.5a` | `ERF-42` | |
+| `ERF-6.6` | `ERF-43` | |
+| `ERF-6.7` | `ERF-44` | |
+| `ERF-6.8` | `ERF-45` | |
+| `ERF-6.9` | `ERF-46` | |
+| `ERF-6.10` | `ERF-47` | |
+| `ERF-6.10a` | `ERF-48` | |
+| `ERF-6.11` | `ERF-49` | |
+| `ERF-6.12` | `ERF-50` | |
+| `ERF-6.12a` | `ERF-51` | |
+| `ERF-6.12b` | `ERF-52` | |
+| `ERF-7.1` | `ERF-53` | |
+| `ERF-7.2` | `ERF-54` | |
+| `ERF-7.4` | `ERF-55` | |
+| `ERF-7.4a` | `ERF-56` | |
+| `ERF-7.4b` | `ERF-57` | |
+| `ERF-7.5` | `ERF-58` | |
+| `ERF-7.7` | `ERF-59` | |
+| `ERF-7.7a` | `ERF-60` | |
+| `ERF-7.7b` | `ERF-61` | |
+| `ERF-8.1` | `ERF-62` | |
+| `ERF-8.2` | `ERF-63` | |
+| `ERF-8.3` | `ERF-64` | |
+| `ERF-4.10` | cut | cut: prohibited a field that does not exist; producers already write only defined fields |
+| `ERF-4.11` | cut | merged into ERF-36 (id uniqueness, stated once) |
+| `ERF-4.13a` | cut | folded into 4.3's guidance prose (`short_name`) |
+| `ERF-4.13b` | cut | folded into 4.3's guidance prose (`families`) |
+| `ERF-4.13c` | cut | folded into 4.3's guidance prose (`semantic_query`) |
+| `ERF-4.14b` | cut | retired unused before the flatten |
+| `ERF-4.14c` | cut | retired unused before the flatten (the `cause` vocabulary) |
+| `ERF-4.14d` | cut | merged into ERF-20 (drift is not stored in `evidence_at_stance`) |
+| `ERF-4.18` | cut | folded into 4.3's guidance prose (what a bet's whys record) |
+| `ERF-4.2` | cut | folded into 4.1's guidance prose (capture when first read) |
+| `ERF-4.20` | cut | folded into 4.4's guidance prose (audit on change, not on a schedule) |
+| `ERF-4.21` | cut | cut: asked a verdict to name its basis atoms, and no field could hold it |
+| `ERF-4.21b` | cut | merged into ERF-25 (universal negatives cite surveys) |
+| `ERF-4.22` | cut | retired with the question record type |
+| `ERF-4.23` | cut | retired with the question record type |
+| `ERF-4.26` | cut | merged into ERF-32 (narrative bindings are checkable) |
+| `ERF-4.6` | cut | folded into 4.2's guidance prose (writing a finding well) |
+| `ERF-4.8c` | cut | folded into 4.2's guidance prose (hand-written citation form) |
+| `ERF-4.8d` | cut | cut: described a `locator` field that never existed in the model |
+| `ERF-4.8e` | cut | merged into ERF-9 (source_quality encodes one axis only) |
+| `ERF-4.8f` | cut | folded into 4.2's guidance prose (record the reason in `limitations`) |
+| `ERF-4.8g` | cut | merged into ERF-10 (the discourse case) |
+| `ERF-6.13` | cut | retired with the ship gate; v1 specifies no gates |
+| `ERF-6.14` | cut | retired as consumer mechanics; survives as advice in a note |
+| `ERF-6.8a` | cut | retired: v1 says nothing about presenting a claim to a reader who lacks the source |
+| `ERF-6.8b` | cut | merged into ERF-45 (the wall is evaluated against declared levels) |
+| `ERF-7.3` | cut | merged into ERF-53 (grouping carries no meaning) |
+| `ERF-7.6` | cut | merged into section 2's actor definition |
+
+### Guidance that governs whoever edits the specification
+
+These were section 3.2 of the specification until 2026-08-23. They bind the
+document's authors rather than an implementer building from it, which is
+why they moved here.
+
+1. Field names are `snake_case` in YAML and in the TypeScript interfaces
+   alike: serialization fidelity outranks TypeScript idiom, and every
+   example stays copy-pasteable between the spec and a file.
+2. Type aliases are PascalCase and self-sufficient out of context:
+   `EpistemicKind`, not `Kind`; `SourceQuality`, not `Quality`.
+   SCREAMING_SNAKE is not used; in TypeScript it denotes constant values.
+3. Types that populate an in-record list are suffixed `-Entry`
+   (`StandingEntry`, `AuditEntry`) or name the event one line records
+   (`SearchAct`): either way the name separates a record from a line
+   within one.
+4. The compound-reading test: every `field: TypeName` pair must read as
+   spoken English (`created: ActorStamp` passes; `last_modified: Provenance`
+   failed it and was renamed).
+5. One meaning per word, checked against the glossary at naming time. The
+   registered failure: the atom field once named `source` collided with the
+   glossary's source, the captured document, and became `citation_text`.
+
+### The personal corpus, and why the reference practice has none
+
+This was a section of the specification until 2026-08-23, consisting of one
+note and no requirement.
+
+Nothing stops a corpus from holding its author's own positions, a register
+in which the claims the owner currently stands on are that person's
+standing positions, and in which "conviction" and "insight" are readings
+rather than record types. Whether to keep one is a practice decision, not a
+requirement.
+
+The reference practice deliberately does not. Its author's positions live
+outside the format, in a separate writing system: 109 essays, each carrying
+a headline position, each revised about once a quarter, none of them leaned
+on as a premise by any claim in any corpus. Nothing in that population
+asked for backing, audits, or a ledger, and founding a register ahead of
+that demand would add machinery nothing uses. What would change it is an
+argument in a real claims tree resting on one of those positions. This is
+recorded rather than hidden: a format's credibility rests on its author
+saying which parts he runs.
+
+### More than one operator
+
+Two designs hold the boundary when corpora are shared, and both are
+recorded here rather than in the specification, because the mechanics they
+imply are deliberately unspecified until a second person exists in a
+corpus.
+
+Records meet by reference rather than by copy: a shared surface exposes
+records where they live, nothing is imported by default, and identity
+across realms is the pair of realm and id, so bare slugs never have to be
+unique between parties.
+
+Standings never travel: a disposition is computed inside one corpus from
+that corpus's own standings, and a foreign record's home standings are
+visible as attributed context that is never counted. That is the
+multi-operator form of "only a person takes a stance", and it is what keeps
+borrowed authority from crossing a shared boundary.
+
+The mechanics a second operator would need are an actor registry,
+provenance on a copied record, and a declared actor whose stance decides a
+contested claim. Quorum, voting, and merge resolution are out of scope
+permanently: contested already means current stances on both sides, and
+what a disagreement means is a judgment its owner makes, not one the format
+computes.
+
+### Retirements the specification used to narrate
+
+- **Two epistemic kinds.** "Inference" named how a claim was produced
+  rather than what would check it. "Preference" logged zero uses in 279
+  typed claims, and every taste decomposes: enforced taste is a commitment,
+  self-reported taste is an observation about oneself.
+- **Two relations.** `implies` was `assumes` written backwards; `refutes`
+  had zero uses because counter-evidence lives on the claim.
+- **Atom tags.** The field rotted measurably, 201 distinct values across
+  146 atoms, and was dropped; retrieval over finding, quote, and citation
+  covers the pulls it was serving.
+- **Dual-auditor confirmation inside the quality tiers.** Earlier
+  operational anchors baked audit state into `source_quality`; the
+  conflation was retired so that each axis is recorded in its own home and
+  composed at read time.
+- **`rejected` was added rather than removed**, on 2026-08-23, because the
+  disposition rule named four readings and left a legal input unnamed: a
+  claim whose current stances are all `against` matched none of them. The
+  vocabulary grew because a function was partial, not because a state was
+  wanted.
+- **The event-time key was once `on`.** `on` is a YAML 1.1 boolean, so the
+  key round-tripped as `True` through standard parsers. It was renamed
+  `timestamp` after the landmine fired.
+- **A batch-size stamp on standings** was considered and rejected: "batch"
+  has no enforceable boundary, and ruling mechanics do not belong in a
+  record format.
+- **A substrate revision identifier in a narrative binding** was considered
+  and declined, because it would have forced the format to define what a
+  revision is and how two compare, which is exactly what section 8 exists
+  to keep out.

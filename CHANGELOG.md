@@ -6,6 +6,52 @@ change lands here with a date.
 
 ## Unreleased
 
+### 2026-08-23 — the v1 pare-down
+
+The specification is cut to what an implementer needs. 1,306 lines to
+1,129; 85 requirements to 64; 22 non-normative notes to 9.
+
+**Section 4 regrained.** It held 52 of the 85 requirements and almost none
+of them were checked by anything, so most of the document's normative
+weight was authoring advice wearing MUST. Each record type now reads as
+one unit: what it is for, how to write one well as prose, then the
+numbered promises the format makes about it. A promise is a statement
+about what a record *means*; advice about writing a good one is no longer
+numbered. Section 4 fell to 34 requirements.
+
+**Requirement ids flattened.** `ERF-<section>.<sequence>` with letter
+suffixes became `ERF-1` through `ERF-64`, a flat sequence carrying no
+meaning beyond identity. The old scheme had already rotted: section 4's
+numbers ran backwards once, one base appeared in the order c, d, a, e, f,
+b, g, and two ids were retired silently. Ids are stable only once
+published, so this was the last free moment. The old-to-new mapping is in
+`DESIGN-HISTORY.md`, which is what keeps historical citations readable.
+
+**Three things that were broken.** The manifest's governing key was
+`schema_version` in one place and `spec_version` in four others, so a
+producer could not tell which to write; `spec_version` throughout now. A
+requirement described a `locator` field that never existed in the data
+model, and is cut. A requirement asked an audit verdict to name the atoms
+that carried the weight, which no field could hold and a strict producer
+could not satisfy, and is cut.
+
+**Vocabulary.** `canonical store` and `collection document` are gone as
+terms of art, the first said plainly in one rule and the second admitting
+outright that it carried no meaning. `substrate` is redefined without
+leaning on the term that left. `realm` is now mechanical, the set of
+corpora one corpus registry lists, which removes a circular definition.
+`binding` is `narrative binding` everywhere, because the short form reads
+as a programming term. Section 8 is renamed *Storage*: it was called a
+conformance class and is not one.
+
+**Notes.** History left the specification for the design history, which
+gained a fourth part holding it: the flatten's mapping table, the naming
+conventions that govern whoever edits the spec, the personal-corpus
+disclosure, the multi-operator sketch, and the retirements the spec used
+to narrate. Notes that help someone build, or that prevent a specific
+misreading, stayed.
+
+
 Everything below is pre-publication iteration. The format has not shipped a
 version yet, so these dated entries record how the design moved rather than
 what changed between releases; at first publication they become **v1.0** and

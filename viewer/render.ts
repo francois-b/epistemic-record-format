@@ -217,7 +217,7 @@ ${b.presentableAsBacked
   ? `<div class="okbox">Every atom this claim rests on can be opened here.</div>`
   : `<div class="warnbox"><b>Shown as a position, not as backed evidence.</b><br>${esc(b.note)}. The viewer will not present a claim as backed to a reader who cannot open the backing.</div>`}
 
-${unbacked(cl) ? `<div class="warnbox">Someone stands on this claim while it carries no evidence of the kind its epistemic kind owes (<span class="id">ERF-6.11</span>).</div>` : ""}
+${unbacked(cl) ? `<div class="warnbox">Someone stands on this claim while it carries no evidence of the kind its epistemic kind owes (<span class="id">ERF-49</span>).</div>` : ""}
 
 ${cl.atoms_for.length ? `<h3>Evidence for</h3><table><tr><th>Atom</th><th>Finding</th><th>Quality</th><th>Reader</th></tr>${cl.atoms_for.map(atomRow).join("")}</table>` : ""}
 ${cl.atoms_against.length ? `<h3>Evidence against</h3><table><tr><th>Atom</th><th>Finding</th><th>Quality</th><th>Reader</th></tr>${cl.atoms_against.map(atomRow).join("")}</table>` : ""}
@@ -267,7 +267,7 @@ ${a.finding_audit.length === 0
   : `<table><tr><th>Auditor</th><th>Verdict</th><th>When</th><th>Protocol</th></tr>${a.finding_audit.map((v) =>
       `<tr><td>${esc(v.auditor)}</td><td>${esc(v.verdict)}</td><td>${esc(v.timestamp)}</td><td><span class="id">${esc(v.protocol)}</span></td></tr>`).join("")}</table>
      <p class="sub">Verdicts under different protocol versions are not comparable as like for like, which is why the protocol travels with each one.</p>`}
-${staleAudits(a) ? `<div class="warnbox">A verdict here predates the last change to the atom (<span class="id">ERF-6.10</span>).</div>` : ""}
+${staleAudits(a) ? `<div class="warnbox">A verdict here predates the last change to the atom (<span class="id">ERF-47</span>).</div>` : ""}
 
 <h3>Claims resting on this atom</h3>
 ${users.length === 0
@@ -381,6 +381,6 @@ ${c.findings.length === 0
   ? `<p class="sub">None. Every record carries the fields the data model requires.</p>`
   : `<table><tr><th>Record</th><th>Field</th><th>Detail</th></tr>${c.findings.map((f) =>
       `<tr><td><span class="id">${esc(f.record)}</span></td><td><span class="id">${esc(f.field)}</span></td><td>${esc(f.detail)}</td></tr>`).join("")}</table>
-     <p class="sub">Most of these are the serialization rule meeting the type: <span class="id">ERF-7.4</span> requires empty lists to be omitted, while the model types them as always present. A loader materializes them; a reader should know that is happening.</p>`}`;
+     <p class="sub">Most of these are the serialization rule meeting the type: <span class="id">ERF-55</span> requires empty lists to be omitted, while the model types them as always present. A loader materializes them; a reader should know that is happening.</p>`}`;
   return page("Corpus health", body, c.manifest.title);
 }

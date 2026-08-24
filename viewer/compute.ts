@@ -9,7 +9,7 @@ import type { LoadedCorpus } from "./corpus.ts";
 export type Disposition =
   | "proposal" | "active" | "contested" | "rejected" | "retired";
 
-/** Each person's newest stance, which is what `ERF-6.5` reads. */
+/** Each person's newest stance, which is what `ERF-41` reads. */
 export function currentStances(standings: StandingEntry[]): StandingEntry[] {
   const newest = new Map<string, StandingEntry>();
   for (const s of standings) {
@@ -27,7 +27,7 @@ export interface DispositionReading {
 }
 
 /**
- * `ERF-6.5`. No standings is a proposal. Otherwise discard withdrawn
+ * `ERF-41`. No standings is a proposal. Otherwise discard withdrawn
  * stances, since withdrawal is exit rather than opposition, and read what
  * remains: nothing is retired, all `for` is active, all `against` is
  * rejected, a mix is contested. Total over every input, and no tie-break.
@@ -77,7 +77,7 @@ export function disposition(claim: Claim): DispositionReading {
  * Whether a reader can resolve an atom's backing: in a published corpus,
  * whether the captured copy travelled with the records.
  *
- * This is the viewer's own choice, not a rule of the format. `ERF-6.8a`
+ * This is the viewer's own choice, not a rule of the format.
  * once required it and was retired on 2026-08-23, because v1 says nothing
  * about how a claim is presented to a reader without the sources. Showing
  * the gap is still the honest thing for a reader to see, so the reference
@@ -119,7 +119,7 @@ export function backing(claim: Claim, c: LoadedCorpus): BackingReading {
 }
 
 /**
- * The normalization of `ERF-6.12a`, in the specified order.
+ * The normalization of `ERF-51`, in the specified order.
  *
  * Case is deliberately NOT folded: case is part of a verbatim quote, and
  * folding it lets a mis-cased quote pass a check whose whole job is fidelity.
@@ -148,7 +148,7 @@ export function quoteCheck(atom: Atom, captureText: string | null): QuoteCheck {
     return { state: "uncheckable", detail: "the captured copy is not present, so the check cannot run here" };
   }
   const hay = normalizeForCheck(captureText);
-  // `ERF-6.12b`: only [...] elides. Bare ... and … are literal source text.
+  // `ERF-52`: only [...] elides. Bare ... and … are literal source text.
   const parts = atom.quote.split("[...]").map(normalizeForCheck).filter(Boolean);
   if (parts.length === 0) {
     return { state: "fail", detail: "the quote is nothing but elisions, so it checks nothing" };
@@ -162,14 +162,14 @@ export function quoteCheck(atom: Atom, captureText: string | null): QuoteCheck {
   return { state: "pass", detail: "the normalized quote occurs in the capture" };
 }
 
-/** `ERF-6.10`: a verdict older than the last change to what it judged. */
+/** `ERF-47`: a verdict older than the last change to what it judged. */
 export function staleAudits(atom: Atom): boolean {
   const changed = atom.last_modified?.timestamp;
   if (!changed || atom.finding_audit.length === 0) return false;
   return atom.finding_audit.some((a) => String(a.timestamp) < String(changed));
 }
 
-/** `ERF-6.11`: the computed warning a render shows. */
+/** `ERF-49`: the computed warning a render shows. */
 export function unbacked(claim: Claim): boolean {
   const stood = currentStances(claim.standings).length > 0;
   if (!stood) return false;
@@ -180,7 +180,7 @@ export function unbacked(claim: Claim): boolean {
   return false;
 }
 
-/** `ERF-6.1`: every reference resolves. */
+/** `ERF-35`: every reference resolves. */
 export function danglingRefs(c: LoadedCorpus): string[] {
   const out: string[] = [];
   const has = (id: string) => c.claims.has(id) || c.surveys.has(id);
