@@ -1,8 +1,12 @@
 /**
- * HTML rendering. Self-contained output: inline CSS, no external requests,
- * no scripts. The visual language follows the author's published documents
- * (Literata for prose, Inter for apparatus, monospace for identifiers).
+ * HTML rendering. Self-contained output: one shared stylesheet carrying its
+ * own embedded faces, no external requests, no scripts. The visual language
+ * follows the author's published documents (Literata for prose, Inter for
+ * apparatus, DejaVu Sans Mono for identifiers and the epistemic apparatus).
  */
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Atom, Claim, Survey } from "../types/erf.ts";
 import type { LoadedCorpus, Narrative } from "./corpus.ts";
 import { bindingRe } from "./corpus.ts";
@@ -16,41 +20,70 @@ export const CSS = `
 :root { --ink:#1a1a1a; --muted:#5a5550; --mutedlt:#a5a09a; --rule:#d8d3cc;
   --rulelt:#eae6e0; --accent:#1a3a6e; --highlight:#fcf6ec; --codebg:#fefcf8;
   --paper:#ffffff; --warn:#8a4b1e; --good:#1f5c3d;
-  --base:16.5px; --measure:calc(42 * var(--base)); --gutter:calc(1.4 * var(--base)); }
+  --serif:Literata, Georgia, 'Iowan Old Style', serif;
+  --sans:Inter, -apple-system, 'Helvetica Neue', sans-serif;
+  --mono:'DejaVu Sans Mono', Menlo, ui-monospace, monospace;
+  /* The column in absolute terms. An em max-width resolves against the
+     element's OWN font-size, so main and footer cannot share one em value:
+     the 12px footer would compute narrower than the 16.5px main and sit
+     visibly inset. */
+  --base:16.5px; --measure:calc(39 * var(--base)); --gutter:calc(1.4 * var(--base)); }
 * { box-sizing:border-box; }
 body { margin:0; background:var(--paper); color:var(--ink); font-size:var(--base);
-  font-family: Literata, Georgia, 'Iowan Old Style', serif; line-height:1.55; }
-.topbar { font-family: Inter, -apple-system, 'Helvetica Neue', sans-serif;
-  font-size:11.5px; color:var(--muted); border-bottom:1px solid var(--rule);
-  padding:7px 20px; background:var(--paper); position:sticky; top:0; z-index:2; }
+  font-family:var(--serif); line-height:1.5; -webkit-font-smoothing:antialiased; }
+.topbar { font-family:var(--sans); font-size:11.5px; color:var(--muted);
+  border-bottom:1px solid var(--rule); padding:7px 20px; background:var(--paper);
+  position:sticky; top:0; z-index:2; }
 .topbar a { color:var(--muted); margin-right:1.1em; }
 .topbar a:hover { color:var(--accent); }
-main { max-width:var(--measure); margin:0 auto; padding:2.4em var(--gutter) 4em; }
+main { max-width:var(--measure); margin:0 auto; padding:2.6em var(--gutter) 4em; }
 footer { max-width:var(--measure); margin:0 auto; padding:1.1em var(--gutter) 2.5em;
   color:var(--muted); font-size:12px; border-top:1px solid var(--rulelt);
-  font-family: Inter, -apple-system, sans-serif; }
+  font-family:var(--sans); }
 a { color:var(--accent); text-decoration:none; }
 a:hover { text-decoration:underline; }
-h1 { font-size:1.55em; font-weight:700; margin:0 0 .35em; line-height:1.25; }
-h2 { font-size:1.16em; font-weight:700; color:var(--accent); margin:2.4em 0 .9em;
-  padding-top:.9em; border-top:1px solid var(--rule); }
-h3 { font-family: Inter, -apple-system, sans-serif; font-size:.9em;
-  text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:2em 0 .8em; }
-.sub { font-family: Inter, -apple-system, sans-serif; font-size:.82em;
-  color:var(--muted); margin:0 0 1.8em; }
-.id { font-family: Menlo, ui-monospace, monospace; font-size:.78em; color:var(--muted); }
-.chips { font-family: Inter, -apple-system, sans-serif; font-size:.76em;
-  color:var(--muted); margin:.5em 0 1.4em; }
-.chip { display:inline-block; border:1px solid var(--rule); border-radius:2px;
-  padding:1px 7px; margin:0 .35em .35em 0; background:var(--codebg); }
-.chip.d-active { border-color:var(--good); color:var(--good); }
-.chip.d-contested { border-color:var(--warn); color:var(--warn); }
-.chip.d-proposal { border-color:var(--mutedlt); }
-.chip.d-retired { color:var(--mutedlt); }
-.chip.d-rejected { border-color:var(--warn); color:var(--warn); background:#fdf7f2; }
+h1 { font-size:1.65em; font-weight:700; margin:0 0 .3em; line-height:1.2;
+  letter-spacing:-0.01em; }
+h2 { font-size:1.34em; font-weight:700; color:var(--accent); margin:2.9em 0 1em;
+  padding-top:1.1em; border-top:1px solid var(--rule); letter-spacing:-0.01em; }
+h3 { font-family:var(--sans); font-size:.95em; font-weight:700;
+  text-transform:uppercase; letter-spacing:.085em; color:var(--ink); margin:2.5em 0 1em; }
+.sub { font-family:var(--sans); font-size:.82em; color:var(--muted); margin:0 0 1.8em; }
+.id { font-family:var(--mono); font-size:.78em; color:var(--muted); }
+
+/* The epistemic apparatus is set as small mono text, never as bordered
+   boxes: a box reads as a control the reader could press, and it competes
+   with the claim for the eye. The apparatus should recede and the claim
+   should lead, so a disposition and a kind sit on one quiet line under the
+   title, colored only where the reading is not the neutral one. */
+.tags { font-family:var(--mono); font-size:.735em; color:var(--muted);
+  margin:.3em 0 0; line-height:1.55; }
+.tags.head { margin:.5em 0 1.7em; }
+.sep { color:var(--mutedlt); padding:0 .42em; }
+.t { font-family:var(--mono); font-size:.735em; color:var(--muted); }
+.t.d-active { color:var(--good); }
+.t.d-contested, .t.d-rejected, .t.gap { color:var(--warn); }
+.t.d-proposal, .t.d-retired { color:var(--mutedlt); }
+
+/* A claim row is a hit target and a link anchor, so it says so on hover and
+   announces itself when a fragment link lands on it. The left border is
+   transparent until then, which keeps the resting page free of rules the
+   reader has to look past. */
+ul.claims { list-style:none; padding-left:0; margin:1.2em 0 0; }
+li.claim { padding:.5em .6em .55em .7em; margin-left:-.75em;
+  border-left:3px solid transparent; border-radius:2px;
+  border-bottom:1px solid var(--rulelt); }
+li.claim:hover { background:var(--codebg); }
+li.claim:target { background:var(--highlight); border-left-color:var(--rule); }
+/* inline-block makes the title atomic for line breaking, so a trailing tag
+   cluster wraps as a unit instead of pushing the title's last word down. */
+li.claim a.head { color:var(--ink); font-weight:700; display:inline-block;
+  max-width:100%; vertical-align:top; }
+li.claim a.head:hover { color:var(--accent); }
+
 .because { background:var(--highlight); border-left:2px solid var(--rule);
   padding:.7em 1em; margin:.2em 0 1.6em; font-size:.9em; }
-.because b { font-family: Inter, sans-serif; font-size:.85em; text-transform:uppercase;
+.because b { font-family:var(--sans); font-size:.85em; text-transform:uppercase;
   letter-spacing:.05em; color:var(--muted); display:block; margin-bottom:.3em; }
 .warnbox { border-left:2px solid var(--warn); background:#fdf7f2; padding:.7em 1em;
   margin:1.2em 0; font-size:.9em; color:var(--warn); }
@@ -59,27 +92,59 @@ h3 { font-family: Inter, -apple-system, sans-serif; font-size:.9em;
 blockquote.q { margin:.6em 0 1.2em; padding:.7em 1em; background:var(--codebg);
   border-left:2px solid var(--accent); font-size:.95em; }
 table { border-collapse:collapse; width:100%; font-size:.86em;
-  font-family: Inter, -apple-system, sans-serif; margin:.6em 0 1.6em; }
+  font-family:var(--sans); margin:.6em 0 1.6em; }
 th, td { text-align:left; padding:.42em .6em; border-bottom:1px solid var(--rulelt);
   vertical-align:top; }
-th { font-weight:600; color:var(--muted); border-bottom:1px solid var(--rule); }
+th { font-weight:700; color:var(--muted); border-bottom:1px solid var(--rule); }
 ul.plain { list-style:none; padding-left:0; }
-ul.plain li { padding:.3em 0; border-bottom:1px solid var(--rulelt); }
+ul.plain li { padding:.4em 0; border-bottom:1px solid var(--rulelt); }
 .ledger { font-size:.9em; }
 .ledger .row { border-left:2px solid var(--rule); padding:.5em .9em; margin:.5em 0;
   background:var(--codebg); }
-.ledger .meta { font-family: Menlo, ui-monospace, monospace; font-size:.78em;
-  color:var(--muted); }
+.ledger .meta { font-family:var(--mono); font-size:.78em; color:var(--muted); }
 .bind { background:var(--highlight); border-bottom:1px dotted var(--accent);
   padding:0 .12em; }
-.bindnote { font-family: Inter, sans-serif; font-size:.72em; color:var(--muted);
+.bindnote { font-family:var(--sans); font-size:.72em; color:var(--muted);
   display:block; margin:.2em 0 1.1em; }
 mark { background:#fff2b8; padding:0 .1em; }
-pre.capture { white-space:pre-wrap; font-family: Menlo, ui-monospace, monospace;
+pre.capture { white-space:pre-wrap; font-family:var(--mono);
   font-size:.78em; line-height:1.6; background:var(--codebg); padding:1em;
   border:1px solid var(--rulelt); overflow-x:auto; }
 p { margin:0 0 1em; }
+@media (max-width: 560px) { li.claim { margin-left:0; } }
 `;
+
+/**
+ * The eight faces the pages actually use, base64'd into the stylesheet.
+ *
+ * An @font-face family beats a same-named installed font, so every device
+ * renders the same page and none of them fetches anything: a rendered
+ * corpus is a directory a reader can open offline or hand to someone else.
+ * Provenance and licences are in `fonts/README.md`.
+ */
+const FACES: [string, number, string, string][] = [
+  ["Literata", 400, "normal", "literata-400.woff2"],
+  ["Literata", 400, "italic", "literata-400-italic.woff2"],
+  ["Literata", 700, "normal", "literata-700.woff2"],
+  ["Inter", 400, "normal", "inter-400.woff2"],
+  ["Inter", 400, "italic", "inter-400-italic.woff2"],
+  ["Inter", 700, "normal", "inter-700.woff2"],
+  ["DejaVu Sans Mono", 400, "normal", "dejavu-sans-mono-400.woff2"],
+  ["DejaVu Sans Mono", 400, "italic", "dejavu-sans-mono-400-italic.woff2"],
+];
+
+function fontFaceCss(): string {
+  const dir = join(dirname(fileURLToPath(import.meta.url)), "fonts");
+  return FACES.map(([fam, weight, style, file]) => {
+    const b64 = readFileSync(join(dir, file)).toString("base64");
+    return `@font-face { font-family:'${fam}'; font-style:${style};`
+      + ` font-weight:${weight}; font-display:block;`
+      + ` src:url(data:font/woff2;base64,${b64}) format('woff2'); }`;
+  }).join("\n");
+}
+
+/** The whole stylesheet: embedded faces, then the rules. */
+export const stylesheet = (): string => fontFaceCss() + "\n" + CSS;
 
 const esc = (s: unknown): string =>
   String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c] as string));
@@ -89,7 +154,7 @@ function page(title: string, bodyHtml: string, manifestTitle: string): string {
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
-<style>${CSS}</style></head>
+<link rel="stylesheet" href="assets/erf.css"></head>
 <body>
 <nav class="topbar"><a href="index.html">${esc(manifestTitle)}</a><a href="health.html">health</a></nav>
 <main>${bodyHtml}</main>
@@ -142,13 +207,12 @@ conforms to ERF ${esc(c.manifest.spec_version)}</p>
 </table>
 
 <h2>Claims</h2>
-<ul class="plain">${[...c.claims.values()].map((cl) => {
+<ul class="claims">${[...c.claims.values()].map((cl) => {
   const d = disposition(cl);
   const b = backing(cl, c);
-  return `<li><a href="claim-${esc(cl.id)}.html">${esc(cl.title)}</a><br>
-  <span class="chip d-${d.disposition}">${d.disposition}</span>
-  <span class="chip">${esc(cl.epistemic_kind)}</span>
-  ${b.presentableAsBacked ? "" : `<span class="chip">backing not resolvable</span>`}</li>`;
+  return `<li class="claim" id="${esc(cl.id)}"><a class="head" href="claim-${esc(cl.id)}.html">${esc(cl.title)}</a>
+  <div class="tags"><span class="t d-${d.disposition}">${d.disposition}</span><span class="sep">&middot;</span><span class="t">${esc(cl.epistemic_kind)}</span>${
+    b.presentableAsBacked ? "" : `<span class="sep">&middot;</span><span class="t gap">backing not resolvable</span>`}</div></li>`;
 }).join("")}</ul>
 
 <h2>Surveys</h2>
@@ -222,10 +286,8 @@ export function renderClaim(cl: Claim, c: LoadedCorpus): string {
   const body = `
 <h1>${esc(cl.title)}</h1>
 <p class="sub"><span class="id">${esc(cl.id)}</span> &middot; claim &middot; ${esc(cl.epistemic_kind)}</p>
-<div class="chips">
-  <span class="chip d-${d.disposition}">${d.disposition}</span>
-  ${cl.families.map((f) => `<span class="chip">${esc(f)}</span>`).join("")}
-</div>
+<div class="tags head"><span class="t d-${d.disposition}">${d.disposition}</span>${
+  cl.families.map((f) => `<span class="sep">&middot;</span><span class="t">${esc(f)}</span>`).join("")}</div>
 
 <div class="because"><b>Why this disposition</b>${esc(d.because)}</div>
 
@@ -425,7 +487,7 @@ export function renderHealth(c: LoadedCorpus, captureText: (id: string) => strin
 <p class="sub">Every line below is computed from the records at render time. None of it is stored, and none of it is a judgment: these are the questions a validator can answer mechanically.</p>
 
 <h2>Claims carrying no evidence</h2>
-${list(noBacking.map((cl) => `<a href="claim-${esc(cl.id)}.html">${esc(cl.title)}</a> <span class="chip">${esc(cl.epistemic_kind)}</span>`))}
+${list(noBacking.map((cl) => `<a href="claim-${esc(cl.id)}.html">${esc(cl.title)}</a> <span class="t">${esc(cl.epistemic_kind)}</span>`))}
 
 <h2>Atoms nothing cites</h2>
 ${list(orphanAtoms.map((a) => `<a href="atom-${esc(a.id)}.html"><span class="id">${esc(a.id)}</span></a> ${esc(a.finding.slice(0, 110))}&hellip;`))}
@@ -447,7 +509,7 @@ ${list(c.narratives.flatMap((n) => n.bindings.map((b) => {
   const st = bindingStaleness(b.boundAt, b.claims, c);
   return st.state === "current" ? null
     : `<a href="narrative-${esc(n.slug)}.html">${esc(n.title)}</a>
-       <span class="chip">${esc(st.state)}</span> ${esc(b.claims.join(" "))} &mdash; ${esc(st.why)}`;
+       <span class="t gap">${esc(st.state)}</span> ${esc(b.claims.join(" "))} &mdash; ${esc(st.why)}`;
 }).filter((x): x is string => x !== null)))}
 
 <h2>Records that do not match the normative model</h2>

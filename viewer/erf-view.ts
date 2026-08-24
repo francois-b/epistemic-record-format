@@ -6,7 +6,8 @@
  *
  * The reference consumer. It reads only the textual form the specification
  * defines, computes every derived reading at render time, and writes
- * self-contained HTML with no external requests.
+ * self-contained HTML with no external requests: the stylesheet it writes
+ * beside the pages carries its own font faces as data URIs.
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -14,7 +15,7 @@ import { loadCorpus } from "./corpus.ts";
 import { claimsUsingAtom } from "./compute.ts";
 import {
   renderAtom, renderCapture, renderClaim, renderHealth, renderIndex,
-  renderNarrative, renderSurvey,
+  renderNarrative, renderSurvey, stylesheet,
 } from "./render.ts";
 
 function main(argv: string[]): number {
@@ -31,6 +32,11 @@ function main(argv: string[]): number {
 
   const c = loadCorpus(corpusDir);
   mkdirSync(outDir, { recursive: true });
+  // One stylesheet for the whole render, with the faces inside it: inlining
+  // 240KB of embedded fonts into every page would multiply by the page count
+  // for no gain, and a shared file is still a same-directory read.
+  mkdirSync(join(outDir, "assets"), { recursive: true });
+  writeFileSync(join(outDir, "assets", "erf.css"), stylesheet(), "utf8");
 
   const captureText = (atomId: string): string | null => {
     const cap = c.captures.get(atomId);
