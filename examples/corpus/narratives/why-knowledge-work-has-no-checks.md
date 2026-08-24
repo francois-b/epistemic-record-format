@@ -27,7 +27,7 @@ reference infrastructure they buy, individual professionals have no
 compounding store of their own work product. Arguments, analyses, and
 hard-won knowledge accumulate in mail, in drafts, and in memory, and each
 new matter starts closer to zero than it should.
-<!-- claims: lawyers-lack-personal-compounding-km "no compounding store of their own work product" bound-at=2026-08-23 -->
+<!-- claims: lawyers-lack-personal-compounding-km "compounding store of their own work product" bound-at=2026-08-23 -->
 
 ## Why the discipline never grew
 
@@ -55,7 +55,7 @@ today, in several products, at low cost per call. But every shipped
 implementation runs once: per answer, per request, or on demand when
 somebody opens a review. None of them runs as a standing check over a
 document that keeps growing.
-<!-- claims: no-continuous-claim-check "runs as a standing check over a document" bound-at=2026-08-23 -->
+<!-- claims: no-continuous-claim-check "document that keeps growing" bound-at=2026-08-23 -->
 
 That is a universal negative, and universal negatives are the hardest
 statements to back. An atom can only ever say what some source did say, so
@@ -85,7 +85,7 @@ until somebody counted. Counting is the whole idea.
 Provenance, meanwhile, was standardized a decade ago and is not in dispute.
 The W3C model describes a thing's history as entities, activities, and
 agents, and defines attribution as ascribing an entity to an agent.
-<!-- claims: prov-models-entities-activities-agents "entities, activities, and agents" bound-at=2026-08-23 -->
+<!-- claims: prov-models-entities-activities-agents "defines attribution as ascribing an entity to an agent" bound-at=2026-08-23 -->
 
 Read those definitions and notice what they are about: who did what to a
 thing, and who is answerable for it. None of them is about whether a

@@ -112,10 +112,16 @@ function requireFields(
 ): void {
   for (const f of fields) {
     if (data[f] === undefined || data[f] === null || data[f] === "") {
+      // `type` and `corpus` are the only required fields carrying a numbered
+      // requirement; the rest are required by the normative data model in
+      // section 3, which binds on its own without an ERF id.
+      const cite = f === "type" || f === "corpus"
+        ? "every record self-describes (ERF-54)"
+        : "required by the normative data model (section 3)";
       findings.push({
         record: id,
         field: f,
-        detail: "required by the data model, absent in the record",
+        detail: `absent in the record; ${cite}`,
       });
     }
   }
