@@ -256,10 +256,12 @@ the content of the document is extraneous to diplomatics." **InterPARES**
 (Duranti, UBC, 1998-) is the closest institutional match anywhere in
 this scan: its Authenticity Task Force splits authenticity into
 identity and integrity, and its benchmark/baseline requirements draw
-exactly the presumption-versus-gate line ERF draws with `ERF-6.13` — eight
-cumulative, partial-credit requirements building a working presumption
-against three that must ALL be met before a certified copy may issue.
-No other territory surveyed supplied a tested precedent for that split.
+exactly the presumption-versus-gate line ERF's ship gate once drew (a
+pre-publication requirement retired on 2026-08-23 when v1 shed policies) —
+eight cumulative, partial-credit requirements building a working
+presumption against three that must ALL be met before a certified copy may
+issue. No other territory surveyed supplied a tested precedent for that
+split, and it remains the design to reach for if a gate ever returns.
 **MacNeil** (2001, after Duranti) names the split ERF performs but never
 names: reliability (truth-value as a statement, judged by the maker's
 proximity to the facts) against authenticity (truth-value as an
@@ -319,6 +321,9 @@ updates is worse than none, because it reads as complete.
 
 | Decision | Ruled | Why |
 |:--|:--|:--|
+| Redistribution rules for captures | 2026-08-24 | Operator ruling: what data travels is outside the spec; the format records the licence judgment (`ERF-5`, `ERF-68`) and rules on nothing. The security section's blanket MUST NOT was rewritten as licence-conditional description. |
+| Title/body agreement as a numbered requirement (`ERF-46`) | 2026-08-24 | Three of the six real corpus claims open in other words than their titles, and whether an opening in other words states the same claim is a reading. Extends the 2026-08-23 ruling that authoring judgment is not numbered; folded into `ERF-18`'s guidance. Id retired. |
+| A survey record forbidden to change at all | 2026-08-24 | The immutability that matters is the conducted acts and their yields; a corpus transfer, a body note, or an atom link landing in `notable_results` are record-keeping, now stamped by `last_modified` like every other record. From the 2026-08-24 external review. |
 | A narrative required to be two documents | 2026-08-23 | A claims-tree is a doc-class artifact of one practice, not something the format needs. A narrative carrying bindings already points at its claims, and requiring a companion document is the format reaching into use. `ERF-30` retired. |
 | A caveat field on records that have a body | 2026-08-23 | A record with a body carries its caveats there. `limitations` stays on the atom alone, which has no body and for which it is the only prose; the survey's copy was the same content in two places, and a claim never needed one. |
 | Policies of any kind in the format | 2026-08-23 | v1 specifies records and the bindings between them; what anyone does with a corpus is the consumer's. Supersedes the earlier ruling that made the ship gate an invariant, and takes the audit policy, its aliases (audit intensity, verification bars), and the manifest's policy block with it. |
@@ -427,7 +432,7 @@ makes them readable.
 | `ERF-6.6` | `ERF-43` | |
 | `ERF-6.7` | `ERF-44` | |
 | `ERF-6.8` | `ERF-45` | |
-| `ERF-6.9` | `ERF-46` | |
+| `ERF-6.9` | `ERF-46` | retired 2026-08-24: authoring judgment, folded into ERF-18's guidance |
 | `ERF-6.10` | `ERF-47` | |
 | `ERF-6.10a` | `ERF-48` | |
 | `ERF-6.11` | `ERF-49` | |
@@ -497,6 +502,17 @@ why they moved here.
 5. One meaning per word, checked against the glossary at naming time. The
    registered failure: the atom field once named `source` collided with the
    glossary's source, the captured document, and became `citation_text`.
+6. The specification amends itself by its own discipline: a field is
+   admitted only on a forcing instance (a real corpus demanding it), a
+   vocabulary value only when it carries a distinct contract, and every
+   retirement is recorded with the measurement that decided it.
+7. A decision that closes a proposal, whether declining it or deferring it
+   behind a trigger, is recorded in the register above in the same commit
+   that implements it. A register nobody updates reads as complete, and is
+   worse than none.
+8. Every change lands in `CHANGELOG.md` with a date. (These last three
+   were the specification's change-control bullets until 2026-08-24; they
+   bind its editors, not an implementer, which is why they live here.)
 
 ### The personal corpus, and why the reference practice has none
 

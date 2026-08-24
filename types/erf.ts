@@ -1,6 +1,6 @@
 /**
  * The Epistemic Record Format (ERF): normative data model.
- * v1.0, 2026-08-23. Draft; not yet published.
+ * v1.0, 2026-08-24. Draft; not yet published.
  *
  * This file is the normative data model of the specification (SPEC.md,
  * section 3, which carries an inline mirror of it; where the two differ,
@@ -108,7 +108,9 @@ export interface SearchAct {
 
 /** One recorded audit judgment (ERF-11, section 4.4). */
 export interface AuditEntry {
-  /** The model that rendered the verdict; read together with `protocol`. */
+  /** A bare model or tool identifier, read together with `protocol`.
+   *  Deliberately not an `Actor`: an audit entry names the instrument
+   *  that rendered a verdict, not a role in the practice (ERF-11). */
   auditor: string;
   verdict: "SUPPORTED" | "PARTIAL" | "UNSUPPORTED";
   timestamp: string;
@@ -206,8 +208,53 @@ export interface Survey {
   notable_results: { what: string; note: string; atoms?: AtomId[] }[];
   /** The predecessor record when the same sought is searched again. */
   prior_survey?: SurveyId;
+  /** Record-keeping edits only (a transfer, a body note, an atom link
+   *  landing in `notable_results`); the conducted acts never change
+   *  (ERF-28, ERF-48). */
+  last_modified?: ActorStamp;
   /** The search narrated: method, yield, and reading. */
   body: string;
+}
+
+// ---------------------------------------------------------------------------
+// Corpus artifacts (not records): the manifest, the registry entry, and one
+// entry of the capture mapping (ERF-3, ERF-4, ERF-5, ERF-59, ERF-64).
+// ---------------------------------------------------------------------------
+
+/** The corpus manifest (ERF-59). Where it and the registry disagree about
+ *  `classification`, the registry governs. */
+export interface CorpusManifest {
+  id: CorpusId;
+  title: string;
+  /** SemVer (ERF-61). */
+  spec_version: string;
+  /** A member of the registry's declared, ordered levels (ERF-64). */
+  classification: string;
+  owner?: Actor;
+}
+
+/** One row of the deployment's corpus registry (ERF-64). */
+export interface RegistryEntry {
+  id: CorpusId;
+  /** Where the authoritative copy lives (ERF-62). */
+  home: string;
+  classification: string;
+  purpose: string;
+}
+
+/** One row of the per-corpus capture mapping (ERF-3, ERF-4, ERF-5). */
+export interface CaptureEntry {
+  status: "shipped" | "not-redistributable" | "licence-unverified";
+  /** Relative to the mapping file; null when the capture does not ship. */
+  path: string | null;
+  /** REQUIRED when `status` is not `shipped` (ERF-5). */
+  reason?: string;
+  /** SPDX identifier where one applies (ERF-68). */
+  licence?: string;
+  /** The licence's plain name, since an identifier does not explain itself. */
+  licence_name?: string;
+  /** Human-readable note on what the capture is. */
+  source?: string;
 }
 
 // This file describes a record IN MEMORY. The serialization rules describe

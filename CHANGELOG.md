@@ -6,6 +6,80 @@ are never reused, and every change lands here with a date.
 
 ## Unreleased
 
+### 2026-08-24 — two reviews adjudicated: eighteen external findings, fourteen internal
+
+A cross-vendor adversarial review (GPT-5.6 sol) and an internal pass ran
+against `c648804`; both are archived verbatim with per-finding rulings in
+`reviews/`, a new top-level home for disposition-of-comments records. The
+external reviewer was handed the decision register and re-raised nothing
+already ruled — the register working as designed. Every accepted finding
+below is implemented in the commits carrying this entry.
+
+**Serialization made total (`ERF-53`).** The canonical interchange form is
+one record per file, frontmatter plus body, the atom's body empty; a store
+may group records or hold bodies as fields provided lossless round-trip.
+The section 4.2 atom example is now a conforming record (it lacked `type`
+and `corpus` and its citation block violated `ERF-8`; `publisher-place`
+and `chapter-number` added).
+
+**Surveys can be kept (`ERF-28`).** Immutability now binds what cannot
+have been otherwise, the conducted acts and their yields; a transfer, a
+body note, or an atom link landing in `notable_results` stamps a new
+`last_modified` like every other record.
+
+**Captures ship on their licences.** Operator ruling: what data travels is
+outside the spec. The security section's blanket MUST NOT is now
+licence-conditional description; `ERF-5` records the withholding judgment,
+`ERF-68` names the licence when a capture ships.
+
+**Arguments know their premises (`ERF-24`, `ERF-43`, `ERF-49`).** A
+premise arrives from either side of the graph: the argument's outgoing
+`assumes` edges, or another claim's `supports` edge pointing at it. The
+closure is directed accordingly; the retired-leaf condition became a
+validator flag (a legal withdrawal elsewhere cannot retroactively make a
+corpus non-conforming); the unbacked warning consults both sides.
+
+**Ordering is honest about precision (`ERF-47`, `ERF-48`).** A staleness
+comparison the stamps' precision cannot order (bare date against same-day
+instant) resolves to stale; equal bare dates read as current; `ERF-48`
+says what "later" means at date precision. `ERF-19`'s argument, applied to
+the rest of the format.
+
+**The corpus artifacts have shapes.** `CorpusManifest`, `RegistryEntry`,
+and `CaptureEntry` join the normative model; the registry governs where it
+and a manifest disagree about classification (`ERF-59`); the conformance
+classes now bind them (Corpus) and every machine-checkable MUST
+(Validator).
+
+**`ERF-46` is retired**, folded into `ERF-18`'s guidance. Three of the six
+real corpus claims open in other words than their titles; whether an
+opening in other words states the same claim is a reading, and the
+2026-08-23 ruling already held that authoring judgment is not numbered.
+The id is not reused.
+
+**Smaller closures:** references resolve in the realm namespace, stated
+once (`ERF-35`); a corpus transfer is never recorded as a standing entry,
+which would move the disposition as a side effect (`ERF-17`); binding ids
+got a lexical grammar (`ERF-31`); MAJOR means unreadable *or read with
+changed meaning* (`ERF-61`); the `high` source-quality anchor is
+disclosure under accountability, removing its overlap with vendor
+self-claims (`ERF-9`); `auditor` is a bare instrument id, deliberately not
+an `Actor` (`ERF-11`); the audit lists are append-only like standings
+(`ERF-40`); the date-coercion war story is correctly blamed on YAML 1.1
+legacy defaults, not the 1.2 Core schema (`ERF-65`); the conformance case
+files are normative for normalization's exact behavior (`ERF-51`); the
+change-control bullets that bind editors moved to the design history; the
+3.1 field tables became a compact field-to-requirement index.
+
+**The satellites were swept.** Pre-flatten ids, the retired survey
+`limitations` field, a Questions row surviving the type's cut, wrong
+counts, a stale normalization disclaimer in the viewer README, and four
+atoms violating the actor convention — all corrected, and the conformance
+suite now validates the shipped examples and greps the repository for
+pre-flatten ids, so the drift class fails a run instead of waiting for the
+next reviewer. Requirement coverage rose from 25 to 41 of 65, with
+thirteen new invalid fixtures and four new suites.
+
 ### 2026-08-23 — three rulings: standing precision, ERF-30 cut, normalization order
 
 **A standing carries a full RFC 3339 instant** (`ERF-19`), with a time and an

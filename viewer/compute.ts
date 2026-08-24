@@ -221,11 +221,30 @@ export function quoteCheck(atom: Atom, captureText: string | null): QuoteCheck {
   return { state: "pass", detail: "the normalized quote occurs in the capture" };
 }
 
+/**
+ * `ERF-47`'s ordering, precision included: is `judged` stale against
+ * `changed`? An earlier day is stale outright. Within one day, equal
+ * precision reads as current (the re-audit that follows an edit lands on
+ * the same day), while mixed precision cannot be ordered and resolves to
+ * stale: a check that cannot tell says look, never rest.
+ */
+export function staleAgainst(judged: unknown, changed: unknown): boolean {
+  const j = String(judged ?? "");
+  const c = String(changed ?? "");
+  const jDay = j.slice(0, 10);
+  const cDay = c.slice(0, 10);
+  if (jDay !== cDay) return jDay < cDay;
+  const jFull = j.length > 10;
+  const cFull = c.length > 10;
+  if (jFull && cFull) return instant(judged) < instant(changed);
+  return jFull !== cFull; // mixed precision on one day: unorderable, so stale
+}
+
 /** `ERF-47`: a verdict older than the last change to what it judged. */
 export function staleAudits(atom: Atom): boolean {
   const changed = atom.last_modified?.timestamp;
   if (!changed || atom.finding_audit.length === 0) return false;
-  return atom.finding_audit.some((a) => String(a.timestamp) < String(changed));
+  return atom.finding_audit.some((a) => staleAgainst(a.timestamp, changed));
 }
 
 /**
@@ -237,7 +256,7 @@ export function staleEvidenceAudit(claim: Claim): boolean {
   const changed = claim.last_modified?.timestamp;
   const audits = claim.evidence_audit ?? [];
   if (!changed || audits.length === 0) return false;
-  return audits.some((a) => String(a.timestamp) < String(changed));
+  return audits.some((a) => staleAgainst(a.timestamp, changed));
 }
 
 export type BindingStaleness = "current" | "stale" | "indeterminate";
@@ -261,7 +280,7 @@ export function bindingStaleness(
   }
   const moved = claimIds.filter((id) => {
     const m = c.claims.get(id)?.last_modified?.timestamp;
-    return m !== undefined && String(m) > String(boundAt);
+    return m !== undefined && staleAgainst(boundAt, m);
   });
   return moved.length
     ? { state: "stale", why: `changed after this passage was bound to it: ${moved.join(", ")}` }
@@ -288,14 +307,26 @@ export function conflictsFor(claimId: string, c: LoadedCorpus): string[] {
   return [...out];
 }
 
-/** `ERF-49`: the computed warning a render shows. */
-export function unbacked(claim: Claim): boolean {
+/** `ERF-49`: the computed warning a render shows. An argument's premises
+ *  arrive from both sides of the graph (`ERF-24`): its own outgoing
+ *  `assumes` edges, and other claims' `supports` edges pointing at it, so
+ *  both are consulted before calling it unbacked. */
+export function unbacked(claim: Claim, c?: LoadedCorpus): boolean {
   const stood = currentStances(claim.standings).length > 0;
   if (!stood) return false;
   if (claim.epistemic_kind === "observation") {
     return claim.atoms_for.length === 0 && (claim.surveys?.length ?? 0) === 0;
   }
-  if (claim.epistemic_kind === "argument") return claim.edges.length === 0;
+  if (claim.epistemic_kind === "argument") {
+    const assumes = claim.edges.some((e) => e.relation === "assumes");
+    if (assumes) return false;
+    if (!c) return claim.edges.length === 0;
+    for (const [id, other] of c.claims) {
+      if (id === claim.id) continue;
+      if (other.edges.some((e) => e.relation === "supports" && e.to === claim.id)) return false;
+    }
+    return true;
+  }
   return false;
 }
 

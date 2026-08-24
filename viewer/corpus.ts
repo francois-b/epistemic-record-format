@@ -10,20 +10,15 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, basename } from "node:path";
 import yaml from "js-yaml";
-import type { Atom, Claim, Survey } from "../types/erf.ts";
+import type { Atom, Claim, Survey, CaptureEntry, CorpusManifest } from "../types/erf.ts";
+
+export type { CaptureEntry, CorpusManifest };
 
 /** A place where the corpus and the normative model disagree. */
 export interface ConformanceFinding {
   record: string;
   field: string;
   detail: string;
-}
-
-export interface CaptureEntry {
-  status: string;
-  path: string | null;
-  source?: string;
-  reason?: string;
 }
 
 export interface Narrative {
@@ -50,14 +45,6 @@ export function bindingRe(): RegExp {
   return /<!--\s*claims:\s*([^"]+?)\s*"([^"]*)"(?:\s+bound-at=(\d{4}-\d{2}-\d{2}))?\s*-->/g;
 }
 
-export interface CorpusManifest {
-  id: string;
-  title: string;
-  spec_version: string;
-  classification: string;
-  owner?: string;
-}
-
 export interface LoadedCorpus {
   manifest: CorpusManifest;
   atoms: Map<string, Atom>;
@@ -76,7 +63,8 @@ const VERDICTS = new Set(["SUPPORTED", "PARTIAL", "UNSUPPORTED"]);
 /**
  * `ERF-65`, `ERF-66`. The JSON schema is the narrowest YAML 1.2 defines:
  * only null, true, false, and JSON's number grammar leave string-land, so a
- * date-shaped scalar stays a string. The Core schema resolves it to a date,
+ * date-shaped scalar stays a string. Legacy defaults (YAML 1.1's timestamp
+ * type, still in many libraries' default schema) resolve it to a date,
  * which is how an unquoted timestamp once made a claim's disposition depend
  * on how a weekday name sorts. `json: false` keeps js-yaml throwing on a
  * duplicate key rather than taking the last one.
@@ -148,6 +136,110 @@ function requireFields(
 }
 
 /**
+ * The defined field roster per record type (section 3). `ERF-55`: a
+ * producer MUST NOT originate a field the declared version does not
+ * define, so an unknown key is a producer error, reported here and still
+ * preserved in the loaded record (`ERF-57`): strict producers, tolerant
+ * consumers, and this loader plays both roles.
+ */
+export const KNOWN_FIELDS: Record<string, Set<string>> = {
+  atom: new Set(["id", "type", "corpus", "finding", "quote", "citation_text",
+    "citation", "fetched_url", "source_quality", "as_of_date", "limitations",
+    "created", "last_modified", "finding_audit"]),
+  claim: new Set(["id", "type", "corpus", "title", "epistemic_kind", "created",
+    "last_modified", "short_name", "families", "atoms_for", "atoms_against",
+    "surveys", "edges", "standings", "evidence_audit", "semantic_query"]),
+  survey: new Set(["id", "type", "corpus", "title", "conducted", "searches",
+    "notable_results", "prior_survey", "last_modified"]),
+};
+
+/** Keys whose presence means a specific prohibited thing, cited with the
+ *  rule that prohibits it rather than the generic unknown-key rule. */
+const PROHIBITED_KEYS: Record<string, Record<string, string>> = {
+  claim: {
+    disposition: "a claim MUST NOT store a state field; the disposition is computed (ERF-22)",
+    state: "a claim MUST NOT store a state field; the disposition is computed (ERF-22)",
+    status: "a claim MUST NOT store a state field; the disposition is computed (ERF-22)",
+  },
+  atom: {
+    quote_check: "the mechanical check is recomputable and MUST NOT be stored (ERF-11)",
+    mechanical_check: "the mechanical check is recomputable and MUST NOT be stored (ERF-11)",
+  },
+};
+
+function checkKnownFields(
+  data: Record<string, unknown>,
+  id: string,
+  kind: string,
+  findings: ConformanceFinding[],
+): void {
+  const known = KNOWN_FIELDS[kind];
+  if (!known) return;
+  for (const key of Object.keys(data)) {
+    if (known.has(key)) continue;
+    const special = PROHIBITED_KEYS[kind]?.[key];
+    findings.push({
+      record: id,
+      field: key,
+      detail: special
+        ? `${special}; also an unknown key under the declared version (ERF-55). `
+          + `Preserved as opaque data (ERF-57).`
+        : `unknown key: a producer MUST NOT originate a field the declared `
+          + `spec_version does not define (ERF-55). Preserved as opaque data `
+          + `(ERF-57).`,
+    });
+  }
+}
+
+/** `ERF-7`: a citation identifies a work; a locator retrieves one copy. */
+function checkCitationText(data: Record<string, unknown>, id: string, findings: ConformanceFinding[]): void {
+  const ct = String(data["citation_text"] ?? "");
+  if (/[a-z][a-z0-9+.-]*:\/\//i.test(ct) || /\bwww\./i.test(ct)) {
+    findings.push({
+      record: id,
+      field: "citation_text",
+      detail: "contains a URL; citation_text MUST NOT (ERF-7). The retrieved "
+        + "locator is fetched_url; a web-native work's identity is citation.URL.",
+    });
+  }
+}
+
+/** `ERF-15`: references are bare ids and MUST NOT encode location. */
+function checkBareIds(refs: string[], id: string, field: string, findings: ConformanceFinding[]): void {
+  for (const r of refs) {
+    if (/[\\/]|\.md$/i.test(r)) {
+      findings.push({
+        record: id,
+        field,
+        detail: `"${r}" encodes a location; references MUST be bare ids (ERF-15)`,
+      });
+    }
+  }
+}
+
+/** Day-level instant for stamp ordering; NaN-safe. */
+function dayOf(v: unknown): string {
+  return String(v ?? "").slice(0, 10);
+}
+
+/** `ERF-48`, the statically checkable half: last_modified never precedes
+ *  created. Same-day is legal at date precision, which a bare date cannot
+ *  order within. */
+function checkStampOrder(data: Record<string, unknown>, id: string, findings: ConformanceFinding[]): void {
+  const created = (data["created"] as { timestamp?: unknown } | undefined)?.timestamp;
+  const modified = (data["last_modified"] as { timestamp?: unknown } | undefined)?.timestamp;
+  if (!created || !modified) return;
+  if (dayOf(modified) < dayOf(created)) {
+    findings.push({
+      record: id,
+      field: "last_modified",
+      detail: `${dayOf(modified)} precedes created ${dayOf(created)}; a change `
+        + `MUST set last_modified later than created (ERF-48)`,
+    });
+  }
+}
+
+/**
  * `ERF-36` and `ERF-38`: an id is unique across every record type in the
  * realm, and a duplicate is rejected rather than absorbed.
  *
@@ -194,13 +286,61 @@ export function loadCorpus(dir: string): LoadedCorpus {
       });
     }
   }
+  // `ERF-60`: refuse an unsupported major version openly, never by guessing.
+  // This loader implements spec_version major 1; the finding is the refusal
+  // said out loud, and the records are still preserved rather than dropped.
+  const major = String(manifest?.spec_version ?? "").split(".")[0];
+  if (manifest?.spec_version && major !== "1") {
+    findings.push({
+      record: "corpus.yaml",
+      field: "spec_version",
+      detail: `${manifest.spec_version} has major version ${major}; this consumer `
+        + `supports major 1 and refuses openly rather than reading fields whose `
+        + `meaning may have moved (ERF-60)`,
+    });
+  }
+
+  /** Read one record file: frontmatter split plus the file-level checks a
+   *  parse failure or byte defect surfaces (`ERF-66`, `ERF-67`). Returns
+   *  null when the file cannot be split, with the finding recorded. */
+  function readRecord(path: string, name: string): { data: Record<string, unknown>; body: string } | null {
+    const raw = readFileSync(path, "utf8");
+    if (raw.charCodeAt(0) === 0xfeff) {
+      findings.push({
+        record: name,
+        field: "(file)",
+        detail: "begins with a byte-order mark; a record file is UTF-8 with "
+          + "no BOM (ERF-67)",
+      });
+    }
+    try {
+      return splitFrontmatter(raw.charCodeAt(0) === 0xfeff ? raw.slice(1) : raw);
+    } catch (e) {
+      const msg = String(e instanceof Error ? e.message : e);
+      findings.push({
+        record: name,
+        field: "(frontmatter)",
+        // js-yaml under `json: false` throws on a duplicate key; the graph
+        // guard above throws on anchors, aliases, and tags. Both are ERF-66.
+        detail: /duplicated mapping key/i.test(msg) || /ERF-66/.test(msg)
+          ? `${msg} (ERF-66)`
+          : msg,
+      });
+      return null;
+    }
+  }
 
   // ---- atoms -------------------------------------------------------------
   const atoms = new Map<string, Atom>();
   for (const f of listDir(join(dir, "atoms"))) {
-    const { data } = splitFrontmatter(readFileSync(join(dir, "atoms", f), "utf8"));
+    const rec = readRecord(join(dir, "atoms", f), basename(f, ".md"));
+    if (!rec) continue;
+    const { data } = rec;
     const id = String(data["id"] ?? basename(f, ".md"));
     requireFields(data, id, ["id", "type", "corpus", "finding", "quote", "citation_text", "source_quality", "created"], findings);
+    checkKnownFields(data, id, "atom", findings);
+    checkCitationText(data, id, findings);
+    checkStampOrder(data, id, findings);
     const fa = arr<{ verdict?: unknown }>(data["finding_audit"]);
     // `ERF-12`: the verdict union is compile-time only, and YAML is cast
     // straight through, so a non-verdict loads as a verdict unless checked
@@ -227,9 +367,17 @@ export function loadCorpus(dir: string): LoadedCorpus {
   const claims = new Map<string, Claim>();
   for (const f of listDir(join(dir, "claims"))) {
     const raw = readFileSync(join(dir, "claims", f), "utf8");
-    const { data, body } = splitFrontmatter(raw);
+    const rec = readRecord(join(dir, "claims", f), basename(f, ".md"));
+    if (!rec) continue;
+    const { data, body } = rec;
     const id = String(data["id"] ?? basename(f, ".md"));
     requireFields(data, id, ["id", "type", "corpus", "title", "epistemic_kind", "created"], findings);
+    checkKnownFields(data, id, "claim", findings);
+    checkStampOrder(data, id, findings);
+    checkBareIds(arr<string>(data["atoms_for"]), id, "atoms_for", findings);
+    checkBareIds(arr<string>(data["atoms_against"]), id, "atoms_against", findings);
+    checkBareIds(arr<string>(data["surveys"]), id, "surveys", findings);
+    checkBareIds(arr<{ to?: string }>(data["edges"]).map((e) => String(e?.to ?? "")), id, "edges", findings);
     // `ERF-19`: a standing carries a full RFC 3339 instant, never a bare
     // date, because this is the only ordered ledger in the format. Read from
     // the RAW frontmatter: YAML coerces both forms to a Date, so the parsed
@@ -262,9 +410,13 @@ export function loadCorpus(dir: string): LoadedCorpus {
   // ---- surveys -----------------------------------------------------------
   const surveys = new Map<string, Survey>();
   for (const f of listDir(join(dir, "surveys"))) {
-    const { data, body } = splitFrontmatter(readFileSync(join(dir, "surveys", f), "utf8"));
+    const rec = readRecord(join(dir, "surveys", f), basename(f, ".md"));
+    if (!rec) continue;
+    const { data, body } = rec;
     const id = String(data["id"] ?? basename(f, ".md"));
     requireFields(data, id, ["id", "type", "corpus", "title", "conducted"], findings);
+    checkKnownFields(data, id, "survey", findings);
+    checkStampOrder(data, id, findings);
     setUnique(surveys, id, {
       ...(data as unknown as Survey),
       id,
@@ -296,6 +448,58 @@ export function loadCorpus(dir: string): LoadedCorpus {
       body,
       bindings,
     });
+  }
+
+  // ---- edge structure ----------------------------------------------------
+  // `ERF-43`: no self-edges; `assumes` and `decomposes-into` admit no
+  // cycles. `ERF-44`: a conflicts-with pair is stored once, on one side.
+  for (const [id, cl] of claims) {
+    for (const e of cl.edges) {
+      if (e.to === id) {
+        findings.push({
+          record: id,
+          field: "edges",
+          detail: `self-edge (${e.relation}); self-edges MUST NOT exist (ERF-43)`,
+        });
+      }
+      if (e.relation === "conflicts-with") {
+        const other = claims.get(e.to);
+        const reciprocal = other?.edges.some((b) => b.relation === "conflicts-with" && b.to === id);
+        // Report once per pair, on the lexicographically later id, so the
+        // finding is deterministic and single.
+        if (reciprocal && id > e.to) {
+          findings.push({
+            record: id,
+            field: "edges",
+            detail: `conflicts-with ${e.to} is stored on both sides; the pair `
+              + `is stored once and the reciprocal derived (ERF-44)`,
+          });
+        }
+      }
+    }
+  }
+  {
+    const acyclic = new Set(["assumes", "decomposes-into"]);
+    const state = new Map<string, 0 | 1 | 2>(); // 1 = on stack, 2 = done
+    const visit = (id: string, path: string[]): void => {
+      if (state.get(id) === 2) return;
+      if (state.get(id) === 1) {
+        const cycle = [...path.slice(path.indexOf(id)), id];
+        findings.push({
+          record: id,
+          field: "edges",
+          detail: `cycle through ${cycle.join(" -> ")}; assumes and `
+            + `decomposes-into MUST admit no cycles (ERF-43)`,
+        });
+        return;
+      }
+      state.set(id, 1);
+      for (const e of claims.get(id)?.edges ?? []) {
+        if (acyclic.has(e.relation) && claims.has(e.to)) visit(e.to, [...path, id]);
+      }
+      state.set(id, 2);
+    };
+    for (const id of claims.keys()) visit(id, []);
   }
 
   // ---- captures ----------------------------------------------------------

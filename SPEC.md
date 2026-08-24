@@ -3,7 +3,7 @@ title: "The Epistemic Record Format"
 subtitle: "Specification: the record types, the data model, and the invariants, stated so an implementer can build to them or diff an existing system against them."
 spec_version: 1.0
 status: draft
-last_updated: 2026-08-23
+last_updated: 2026-08-24
 generated: 2026-08-22
 model: claude-fable-5
 ---
@@ -43,7 +43,9 @@ Conformance is claimed per class, not against the whole document:
 - Record: a single atom, claim, or survey. Binds the data model
   (section 3) and its record type's requirements (section 4).
 - Corpus: a collection of records under one corpus-registry entry. Binds the
-  invariants (section 6) and `ERF-62` and `ERF-64`.
+  invariants (section 6) and the corpus artifacts: the manifest
+  (`ERF-59`), the authoritative home (`ERF-62`), the registry entry
+  (`ERF-64`), and the capture mapping (`ERF-3`, `ERF-4`, `ERF-5`).
 - Producer: a tool or process that writes records. Binds the serialization
   rules (section 7) and the producer SHOULDs of section 4 (for example
   `ERF-20`). Producers are strict: they write only defined fields,
@@ -53,7 +55,10 @@ Conformance is claimed per class, not against the whole document:
   it cannot interpret. It reads what it understands and preserves the rest
   as opaque data, reporting what it did not recognize (the same stance the
   Open Knowledge Format takes).
-- Validator: a tool that checks. Binds section 6 in full.
+- Validator: a tool that checks. Binds every machine-checkable MUST that
+  applies to the input it accepts: section 6 in full, the serialization
+  rules of section 7, and the corpus artifacts named under the Corpus
+  class.
 
 Strict producers, tolerant consumers: divergence is caught by validators
 and surfaced, never by consumers refusing to read.
@@ -81,7 +86,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 shown here.
 
 - *record*: one atom, claim, or survey. Structured fields plus
-  one body text.
+  one body text, which for an atom is empty (section 4.2).
 - *corpus*: a body of work owning records; a research program, an
   engagement, a venture, or the personal corpus. The unit of
   confidentiality, which is what the classification wall (`ERF-45`) is
@@ -192,10 +197,38 @@ interface Survey {
   corpus: CorpusId;
   title: string;               // what the survey sought
   conducted: ActorStamp;       // machine actors legal; judgment stays on claims
-  searches: SearchAct[];
+  searches: SearchAct[];       // immutable once conducted (ERF-28)
   notable_results: { what: string; note: string; atoms?: AtomId[] }[];
   prior_survey?: SurveyId;     // re-run linkage
+  last_modified?: ActorStamp;  // record-keeping edits only; the acts never change
   body: string;
+}
+
+// Corpus artifacts (not records): the manifest, the registry entry, and
+// one entry of the capture mapping (ERF-3, ERF-4, ERF-5, ERF-59, ERF-64).
+
+interface CorpusManifest {
+  id: CorpusId;
+  title: string;
+  spec_version: string;        // SemVer (ERF-61)
+  classification: string;      // a member of the registry's declared levels
+  owner?: Actor;
+}
+
+interface RegistryEntry {                    // one row of the corpus registry
+  id: CorpusId;
+  home: string;                // where the authoritative copy lives
+  classification: string;
+  purpose: string;
+}
+
+interface CaptureEntry {                     // one row of the capture mapping
+  status: "shipped" | "not-redistributable" | "licence-unverified";
+  path: string | null;         // relative to the mapping file; null when absent
+  reason?: string;             // REQUIRED when status is not `shipped` (ERF-5)
+  licence?: string;            // SPDX identifier where one applies (ERF-68)
+  licence_name?: string;       // the licence's plain name
+  source?: string;             // human-readable note on what the capture is
 }
 ```
 
@@ -206,127 +239,52 @@ happened, a `last_modified` means an edit happened.
 
 ### 3.1 Field reference
 
-One row per field, grouped by record type: the field name, its type, who
-writes it, when it is written, and the requirement ids that constrain it.
-Definitions live with the requirements; this table is the index into them.
-"Tool" means a producer acting under the machine role; "either" means a
-tool usually drafts and a human may author or repair.
+An index from field to the requirements that constrain it, by record
+type. Definitions live with the requirements; a field marked *guidance*
+is bound by the data model alone, with advice in the section named.
 
-#### Atom
+| Atom field | Constrained by |
+|:--|:--|
+| `id` | `ERF-13` |
+| `type`, `corpus` | `ERF-54` |
+| `finding`, `finding_audit` | `ERF-11`, `ERF-12`; guidance in 4.2 |
+| `quote` | `ERF-6`, `ERF-52` |
+| `citation_text`, `citation`, `fetched_url` | `ERF-7`, `ERF-8` |
+| `source_quality` | `ERF-9`, `ERF-10` |
+| `as_of_date`, `limitations` | `ERF-14` |
+| `created`, `last_modified` | `ERF-47`, `ERF-48`, `ERF-58` |
 
-::: {.cols widths="20 18 22 22 18"}
+| Claim field | Constrained by |
+|:--|:--|
+| `id` | `ERF-36` |
+| `type` | `ERF-54` |
+| `corpus` | `ERF-17` |
+| `title`, `body` | `ERF-18` |
+| `epistemic_kind` | `ERF-24`, `ERF-49` |
+| `atoms_for`, `atoms_against` | `ERF-23` |
+| `surveys` | `ERF-25` |
+| `edges` | `ERF-43`, `ERF-44` |
+| `standings` | `ERF-19`, `ERF-20`, `ERF-21`, `ERF-39`, `ERF-40` |
+| `evidence_audit` | `ERF-24`; guidance in 4.4 |
+| `created`, `last_modified` | `ERF-47`, `ERF-48`, `ERF-58` |
+| `short_name`, `families`, `semantic_query` | guidance in 4.3 |
 
-| Field | Type | Writer | When | Requirements |
-|:-------------------|:-----------------|:---------------------|:---------------------|:-----------------|
-| `id` | AtomId | tool | at mint | `ERF-13` |
-| `type` | the literal `atom` | tool | at mint | `ERF-54` |
-| `corpus` | CorpusId | tool | at mint, on transfer | `ERF-54` |
-| `finding` | string | tool drafts, human repairs | at mint, at re-audit | `ERF-11`, guidance in 4.2 |
-| `quote` | string | tool | at mint | `ERF-6` |
-| `citation_text` | string | tool | at mint, regenerated from `citation` | `ERF-7`, `ERF-8` |
-| `citation` | CSL, optional | tool | at mint or ship-time upgrade | `ERF-8` |
-| `fetched_url` | string, optional | tool | at capture | `ERF-7` |
-| `source_quality` | SourceQuality | either | at mint | `ERF-9`, `ERF-10` |
-| `as_of_date` | date, optional | either | at mint | `ERF-14` |
-| `limitations` | string, optional | either | at mint, when a caveat emerges | `ERF-14` |
-| `created` | ActorStamp | tool | at creation | `ERF-58` |
-| `last_modified` | ActorStamp, optional | tool | at a later substantive edit | `ERF-47` |
-| `finding_audit` | AuditEntry list | tool | after each audit run | `ERF-11` |
-
-:::
-
-#### Claim
-
-::: {.cols widths="20 18 22 22 18"}
-
-| Field | Type | Writer | When | Requirements |
-|:-------------------|:-----------------|:---------------------|:---------------------|:-----------------|
-| `id` | ClaimId | either | at mint | `ERF-36` |
-| `type` | the literal `claim` | tool | at mint | `ERF-54` |
-| `corpus` | CorpusId | tool writes, human directs | at mint, on promotion or transfer | `ERF-17` |
-| `title` | string | human owns, machine may draft | at mint, when reviewing renders | `ERF-18`, `ERF-46` |
-| `epistemic_kind` | EpistemicKind | either | at mint, refined at cut entry | `ERF-24`, `ERF-49` |
-| `created` | ActorStamp | tool | at creation | `ERF-58` |
-| `last_modified` | ActorStamp, optional | tool | at a later substantive edit | `ERF-47` |
-| `short_name` | string, optional | human | at cut entry | guidance in 4.3 |
-| `families` | FamilyName list | tool proposes, human rules | at mint, at reconciliation | guidance in 4.3 |
-| `atoms_for` | AtomId list | tool proposes, human admits | as evidence lands | `ERF-23` |
-| `atoms_against` | AtomId list | tool proposes, human admits | as evidence lands | `ERF-23` |
-| `surveys` | SurveyId list, optional | tool proposes, human admits | as coverage lands | `ERF-25` |
-| `edges` | Edge list, claim-to-claim | tool proposes, human rules | at composition and challenge | `ERF-43`, `ERF-44` |
-| `standings` | StandingEntry list | tool writes, humans in `by` | at each stance | `ERF-19`, `ERF-21` |
-| `evidence_audit` | AuditEntry list | tool | change-triggered | `ERF-24`, guidance in 4.4 |
-| `semantic_query` | string, optional | tool drafts | at mint or at need | guidance in 4.3 |
-| `body` | string | human | freely | `ERF-18`, `ERF-46` |
-
-:::
-
-#### Survey
-
-::: {.cols widths="20 18 22 22 18"}
-
-| Field | Type | Writer | When | Requirements |
-|:-------------------|:-----------------|:---------------------|:---------------------|:-----------------|
-| `id` | SurveyId | tool | at mint | `ERF-28`, `ERF-36` |
-| `type` | the literal `survey` | tool | at mint | `ERF-54` |
-| `corpus` | CorpusId | tool writes, human directs | at mint, on transfer | `ERF-17` |
-| `title` | string | either | at mint | `ERF-28` |
-| `conducted` | ActorStamp | tool | at the search | `ERF-28` |
-| `searches` | SearchAct list | tool | at the search | `ERF-26`, `ERF-27` |
-| `notable_results` | list of `{what, note, atoms?}` | either | at the search, as atoms mint | `ERF-27` |
-| `prior_survey` | SurveyId, optional | tool | at a re-run | `ERF-28` |
-| `body` | string | either | freely | `ERF-28` |
-
-:::
-
-#### Search act
-
-::: {.cols widths="20 18 22 22 18"}
-
-| Field | Type | Writer | When | Requirements |
-|:-------------------|:-----------------|:---------------------|:---------------------|:-----------------|
-| `tool` | string | tool | at the act | `ERF-26` |
-| `query` | string | tool | at the act | `ERF-26` |
-| `scope` | string, optional | tool | at the act | `ERF-26` |
-| `hits_reported` | string | tool | at the act | `ERF-27` |
-| `timestamp` | RFC 3339, optional | tool | at the act | `ERF-28` |
-
-:::
-
-#### Standing entry
-
-::: {.cols widths="20 18 22 22 18"}
-
-| Field | Type | Writer | When | Requirements |
-|:-------------------|:-----------------|:---------------------|:---------------------|:-----------------|
-| `timestamp` | RFC 3339 with time | tool | at the stance | `ERF-19`, `ERF-58` |
-| `stance` | Stance | human decides, tool writes | at the stance | `ERF-19` |
-| `by` | `human:<id>` | tool writes, names the person | at the stance | `ERF-21`, `ERF-39` |
-| `why` | string | human | at the stance | `ERF-19`, `ERF-39` |
-| `evidence_at_stance` | id sets, optional | tool, a SHOULD | at the stance | `ERF-20` |
-
-:::
-
-#### Audit entry
-
-::: {.cols widths="20 18 22 22 18"}
-
-| Field | Type | Writer | When | Requirements |
-|:-------------------|:-----------------|:---------------------|:---------------------|:-----------------|
-| `auditor` | string | tool | at the run | `ERF-11` |
-| `verdict` | SUPPORTED, PARTIAL, or UNSUPPORTED | the auditor | at the run | `ERF-11` |
-| `timestamp` | RFC 3339 | tool | at the run | `ERF-58` |
-| `protocol` | string | tool | at the run | `ERF-11` |
-
-:::
+| Survey field | Constrained by |
+|:--|:--|
+| `id`, `title`, `conducted`, `prior_survey`, `body` | `ERF-28` |
+| `type` | `ERF-54` |
+| `corpus` | `ERF-17` |
+| `searches` (each act's `tool`, `query`, `scope`, `hits_reported`, `timestamp`) | `ERF-26`, `ERF-27`, `ERF-28` |
+| `notable_results` | `ERF-27` |
+| `last_modified` | `ERF-28`, `ERF-48` |
 
 How records are found: atoms are retrieved by embedding `finding` and
 `quote`. The finding is written to be checkable away from its source,
 which makes it the intended embedding target (this retrieval path is what
 replaced atom tags). Claims are retrieved by `semantic_query`. The
-mint-time evidence sweep runs a claim's `semantic_query` against the atom
-index and the source and library indexes, in both directions: candidates
-for `atoms_for` and `atoms_against` alike.
+mint-time evidence sweep runs a claim's `semantic_query` against the
+deployment's atom and source indexes in both directions: candidates for
+`atoms_for` and `atoms_against` alike.
 
 ### 3.2 Naming
 
@@ -365,14 +323,15 @@ evidence about today's page rather than about what was read.
   never an overwrite. A web page is mutable: its capture MUST be dated.
 - **ERF-3** The capture's location MUST be recorded in a per-corpus
   mapping from atom id to capture, not on the atom. The fetch date lives
-  with the capture.
+  with the capture. The mapping is a YAML document under the rules of
+  section 7, each entry following the `CaptureEntry` shape of section 3.
 - **ERF-4** Every atom MUST have an entry in that mapping. An entry
   either gives the capture's path or records that no capture is held and
   why. Absence MUST be explicit: a mapping is checkable only when it is
   complete, because a validator can tell a recorded absence from an
   omission and cannot tell an omission from an oversight.
-- **ERF-5** An entry recording an absence MUST carry a reason from a
-  closed set and a human-readable note. The set in use is
+- **ERF-5** An entry recording an absence MUST carry a `status` from a
+  closed set and a human-readable `reason`. The set in use is
   `not-redistributable` (a licence permits reading but not republication)
   and `licence-unverified` (redistribution rights could not be established,
   and unverified is not permission). The vocabulary is provisional and grows
@@ -391,29 +350,38 @@ evidence about today's page rather than about what was read.
 One piece of evidence: a verbatim quote, a finding, and the trail.
 
 ```yaml
-- id: kwg-117
-  finding: "Pacioli's 1494 treatise states the double-entry rule
-    explicitly: every ledger entry is made twice, once as a debit
-    and once as a credit."
-  quote: "All entries made in the ledger have to be double entries --
-    that is, if you make one creditor, you must make some one debtor."
-  citation_text: "Luca Pacioli, Particularis de Computis et Scripturis
-    (Venice, 1494), ch. 36, trans. Geijsbeek 1914"
-  citation:
-    type: book
-    author: [{family: Pacioli, given: Luca}]
-    title: "Particularis de Computis et Scripturis"
-    issued: 1494
-    translator: [{family: Geijsbeek, given: John B.}]
-  fetched_url: "https://archive.org/details/ancientdoubleent00geij"
-  source_quality: high
-  created: {timestamp: 2026-07-19, by: "agent/claude-fable-5"}
-  finding_audit:
-    - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: 2026-07-19,
-       protocol: finding-audit-v2}
-    - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: 2026-07-19,
-       protocol: finding-audit-v2}
+---
+id: kwg-117
+type: atom
+corpus: knowledge-work-governance
+finding: "Pacioli's 1494 treatise states the double-entry rule
+  explicitly: every ledger entry is made twice, once as a debit
+  and once as a credit."
+quote: "All entries made in the ledger have to be double entries --
+  that is, if you make one creditor, you must make some one debtor."
+citation_text: "Luca Pacioli, Particularis de Computis et Scripturis
+  (Venice, 1494), ch. 36, trans. Geijsbeek 1914"
+citation:
+  type: book
+  author: [{family: Pacioli, given: Luca}]
+  title: "Particularis de Computis et Scripturis"
+  publisher-place: Venice
+  issued: 1494
+  chapter-number: 36
+  translator: [{family: Geijsbeek, given: John B.}]
+fetched_url: "https://archive.org/details/ancientdoubleent00geij"
+source_quality: high
+created: {timestamp: 2026-07-19, by: "agent/claude-fable-5"}
+finding_audit:
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: 2026-07-19,
+     protocol: finding-audit-v2}
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: 2026-07-19,
+     protocol: finding-audit-v2}
+---
 ```
+
+The closing `---` ends the record: an atom's body is empty, so its file is
+frontmatter and nothing else (`ERF-53`).
 
 **Writing one well.** The schema checks structure; it cannot check craft.
 A good finding is one sentence a stranger could check: it states what the
@@ -463,15 +431,11 @@ only prose.
   wanting one combined trust signal computes it from the three at read
   time.
 
-::: {.cols widths="14,86"}
-
 | Value | The attester and the chain |
 |:---------|:-------------------------------------------------------------|
-| `high` | Direct and accountable: a regulator or court filing, an organization's disclosure about itself, a named study reporting its own data, a captured primary. |
-| `medium` | An identifiable intermediary reporting someone else's fact, or a first party with an interest in the answer: trade press, an analyst note, a vendor's claim about its own product, a one-hop relay. |
+| `high` | Direct and accountable: a regulator or court filing, an organization's disclosure made under legal or regulatory accountability, a named study reporting its own data, a captured primary. |
+| `medium` | An identifiable intermediary reporting someone else's fact, or a first party with an interest in the answer: trade press, an analyst note, a vendor's claim about its own product, a one-hop relay. The same organization can attest at both grades: its audited filing is accountable, its marketing page is interested. |
 | `low` | An unaccountable or unidentifiable attester, or a chain not yet pulled to primary: a forum comment, an aggregator citing an unnamed original. |
-
-:::
 
 - **ERF-10** The grade MUST be assessed against the substance the finding
   conveys, not against the bare fact that someone uttered it. Reported
@@ -490,7 +454,10 @@ only prose.
   it. Verdicts rendered under different protocol versions MUST NOT be read
   as like for like, which is why the protocol travels with the verdict and
   why an auditor's identity, a hosted model id whose weights drift under a
-  stable name, is recorded beside it.
+  stable name, is recorded beside it. The `auditor` is a bare model or tool
+  identifier (`deepseek-v4-pro`), deliberately not an `Actor`: an audit
+  entry names the instrument that rendered a verdict, not a role in the
+  practice, and it is read together with its `protocol`.
 - **ERF-12** A verdict MUST be exactly one of `SUPPORTED`, `PARTIAL`, or
   `UNSUPPORTED`. A failed, unparseable, or abandoned audit MUST NOT be
   written as a verdict: an audit that produced nothing is an audit that did
@@ -575,10 +542,15 @@ prose: does the recorded why survive the evidence on record?
   bare ids are not promised to be unique between two parties' realms.
 - **ERF-17** `corpus` MUST be written on every claim and MUST name a
   registered corpus. Changing it is a promotion or transfer; the change
-  SHOULD be accompanied by a standing entry recording why.
+  stamps `last_modified` (`ERF-48`) and its reason belongs in the working
+  notes. It MUST NOT be recorded as a standing entry: the ledger holds
+  stances on the claim, and a bookkeeping note written as one would move
+  the computed disposition (`ERF-41`) as a side effect.
 - **ERF-18** `title` MUST state the claim; it is the normative statement.
-  The body SHOULD open by restating it; the validator compares the two
-  (`ERF-46`). Beyond that restatement the body is the one
+  The body SHOULD open by restating it, and keeping the restatement
+  verbatim is what makes later drift visible to a reader; whether an
+  opening in other words still states the same claim is a reading, so no
+  rule numbers it. Beyond that restatement the body is the one
   operator-authored text on the record, and carries the working notes.
 - **ERF-19** `standings` is append-only: entries MUST NOT be edited or
   deleted; a correction is a new entry. Each entry MUST carry a
@@ -627,10 +599,16 @@ cited atom modified, the statement edited. Staleness is computed
 - **ERF-24** The backing audit MUST ask the question the epistemic kind
   sets, because the kind is the backing contract. For an `observation`: do
   the `atoms_for`, each already checked at the atom level, jointly entail
-  the statement, and do the `atoms_against` undermine it? For an
-  `argument`: granting the claims its edges name, does the conclusion
-  follow? `bet` and `commitment` owe no backing, so they have nothing to
-  audit; auditability is computable from the kind.
+  the statement, and do the `atoms_against` undermine it? Where the
+  observation's backing includes `surveys`, the audit judges the reading
+  as scoped (`ERF-25`): does the recorded coverage carry what the claim
+  takes from it? For an `argument`: granting its premises, does the
+  conclusion follow? An argument's premises are the targets of its own
+  outgoing `assumes` edges together with the claims that carry `supports`
+  edges pointing at it; `conflicts-with` and `decomposes-into` name
+  tension and structure, never premises. `bet` and `commitment` owe no
+  backing, so they have nothing to audit; auditability is computable from
+  the kind.
 - **ERF-25** A universal negative, a claim of the form "no shipped tool
   does X", MUST be audited as scoped rather than as proved. No set of atoms
   proves such a claim: the atoms evidence the coverage of a survey, not the
@@ -708,13 +686,18 @@ correctly has nothing to state.
   give. `notable_results` is the curated subset worth keeping, near-misses
   with why they fall short and exemplars with why they matter; entries mint
   atoms when a hit deserves quoting, and the full yield stays in the acts.
-- **ERF-28** A survey MUST be an immutable record of a conducted search:
-  a re-run of the same sought is a new record, SHOULD name its predecessor
-  in `prior_survey`, and its id SHOULD end with the conducted date. The
-  `title` MUST state what was sought. An individual act MAY carry its own
-  `timestamp` where a survey spans sittings; absent one, an act inherits
-  the survey's `conducted` timestamp. Staleness of a claim's survey backing
-  is computed from `conducted` timestamps, never stored.
+- **ERF-28** What a survey conducted is immutable: `searches` and each
+  act's reported yield MUST NOT change after the fact, because a search
+  already run cannot have run differently. A re-run of the same sought is
+  a new record, SHOULD name its predecessor in `prior_survey`, and its id
+  SHOULD end with the conducted date. Record-keeping around the acts may
+  still move (a corpus transfer, a body note added, a `notable_results`
+  entry gaining its `atoms` once a hit is minted), and any such edit
+  stamps `last_modified` (`ERF-48`). The `title` MUST state what was
+  sought. An individual act MAY carry its own `timestamp` where a survey
+  spans sittings; absent one, an act inherits the survey's `conducted`
+  timestamp. Staleness of a claim's survey backing is computed from
+  `conducted` timestamps, never stored.
 > *Note (non-normative):* the weight of an empty search is the relation
 > between the universe searched and the universe the claim is about. A
 > world-claim over the world's indexes (web, preprint servers, patent
@@ -758,7 +741,7 @@ narrative-binding ::= "<!--" ws* "claims:" ws+ ids ws+ anchor
                       [ws+ "bound-at=" date] ws* "-->"
 date     ::= YYYY "-" MM "-" DD
 ids      ::= id (ws+ id)*
-id       ::= a record id, matching the corpus's id grammar
+id       ::= one or more characters, none of them whitespace or '"'
 anchor   ::= '"' text '"'
 ```
 
@@ -802,9 +785,10 @@ mean:
 Epistemic kinds answer one question: what would check this claim?
 
 - `observation`: data or research settles it; owes atoms.
-- `argument`: reasoning settles it; owes edges to the claims it follows
-  from. Its structure is the graph: premises are claims of any kind;
-  chains terminate per `ERF-43`.
+- `argument`: reasoning settles it; owes premises, which arrive on the
+  graph from both sides: the targets of its own `assumes` edges, and the
+  claims carrying `supports` edges that point at it (`ERF-24`). Premises
+  are claims of any kind; chains terminate per `ERF-43`.
 - `bet`: relied on, not established; the world will settle it.
 - `commitment`: chosen conduct, will be enforced; the author's decision
   is the backing.
@@ -842,9 +826,11 @@ are not a stored vocabulary; see `ERF-41`.
 All machine-checkable. Types express what types can express; the validator
 checks the relations no type can see.
 
-- **ERF-35** Every reference MUST resolve: atoms in their corpora, claims
-  and surveys in the realm namespace; `atoms_for`, `atoms_against`,
-  `edges.to`, and `surveys` name existing records.
+- **ERF-35** Every reference MUST resolve in the realm namespace:
+  `atoms_for`, `atoms_against`, `edges.to`, and `surveys` name existing
+  records. Ids are realm-unique (`ERF-36`), so one lookup serves every
+  record type; which corpus may cite which is the wall's question
+  (`ERF-45`), not resolution's.
 - **ERF-36** Every record id MUST be unique across every corpus in the
   realm, regardless of record type: one atom, claim, or survey may hold a
   given id, and no second record of any type may repeat it.
@@ -860,6 +846,9 @@ checks the relations no type can see.
   non-empty `why`.
 - **ERF-40** Standings MUST be append-only; an edit or deletion of an
   existing entry is a violation, verified against the substrate's history.
+  The audit lists (`finding_audit`, `evidence_audit`) are append-only in
+  the same sense, which is why `ERF-48` can exempt appends to all three
+  from re-stamping.
 - **ERF-41** Disposition MUST be computed, never stored, from the current
   stances alone, meaning each person's newest entry. With no standings at
   all the disposition is `proposal`. Otherwise discard every current stance
@@ -877,9 +866,15 @@ checks the relations no type can see.
   every current holder has left. Both are terminal readings and neither is
   a deletion; a consumer presenting them identically MUST say which it
   means.
-- **ERF-43** An argument's transitive `assumes` and `supports` closure
-  MUST terminate in non-argument leaves, none of them retired. Self-edges MUST NOT exist; `assumes` and `decomposes-into` MUST
-  admit no cycles.
+- **ERF-43** An argument's premise closure, followed transitively (its
+  outgoing `assumes` edges and the incoming `supports` edges of other
+  claims, per `ERF-24`), MUST terminate in non-argument leaves. Self-edges
+  MUST NOT exist; `assumes` and `decomposes-into` MUST admit no cycles. A
+  validator MUST flag a closure that terminates in a leaf whose disposition
+  is `retired`: a flag rather than a violation, like `ERF-49`, because a
+  withdrawal elsewhere can create the condition without any edit to the
+  argument, and an act the format permits cannot retroactively make a
+  corpus non-conforming.
 - **ERF-44** `conflicts-with` MUST be stored once per pair.
 - **ERF-45** A record MUST NOT reference a record whose classification is
   narrower than its own, in edges or in evidence. A narrower corpus MAY
@@ -909,13 +904,21 @@ checks the relations no type can see.
 > offered so a PROV consumer can read these records; adopting PROV itself
 > would add an RDF model and remove nothing.
 
-- **ERF-46** `title` and the body's opening statement MUST agree.
 - **ERF-47** Staleness MUST be computed, never stored: a
   `finding_audit`, `evidence_audit`, or narrative binding older than the last change
-  to what it judged is flagged stale.
+  to what it judged is flagged stale. Where the two stamps differ in
+  precision and the coarser one cannot order them (a bare date against a
+  full instant on the same day), the comparison MUST resolve to stale: a
+  check that cannot tell says look, never rest. Two bare dates that are
+  equal read as current, because the re-audit that follows an edit lands
+  on the same day.
 - **ERF-48** Any change to a record MUST set `last_modified` to a
   timestamp later than its `created` and later than any prior
-  `last_modified`. The one exception: appending to an append-only list
+  `last_modified`. At date precision "later" admits the same day, because
+  a bare date cannot order within one; a producer stamping a second edit
+  on the same day SHOULD write a full instant, which is what makes the
+  ordering it owes recoverable. The one exception: appending to an
+  append-only list
   (`standings`, `finding_audit`, `evidence_audit`) MUST NOT advance it, or
   every audit and every stance would invalidate itself at the moment it was
   recorded. A record never edited since minting correctly carries no
@@ -929,7 +932,9 @@ checks the relations no type can see.
 
 - **ERF-49** A validator MUST flag as unbacked an `observation` someone
   stands on with empty `atoms_for` and empty `surveys`, and such an
-  `argument` with no edges (the computed warning a render shows).
+  `argument` with no premises, meaning no outgoing `assumes` edge and no
+  incoming `supports` edge (`ERF-24`). The computed warning a render
+  shows.
 - **ERF-50** The mechanical quote check (the normalized quote occurs in
   the capture) MUST be re-runnable by anyone holding the corpus and its
   captures; it MUST run as a gate at minting and after any transform that
@@ -957,11 +962,10 @@ checks the relations no type can see.
   lets a mis-cased quote pass a check whose whole job is fidelity.
 
   Steps 1 through 11 above run AFTER the markup-unwrapping steps below,
-  which are equally mandatory. Unwrapping was optional until 2026-08-23 and
-  is not any longer: measured over one corpus, running the sequence without
-  it moved the failure rate from 9% to 19%, so an optional step decided the
-  verdict on roughly one atom in ten and two conforming tools could disagree
-  about the same quote. The unwrapping steps, in order, before step 1:
+  which are equally mandatory: measured over one corpus, running the
+  sequence without them moved the failure rate from 9% to 19%, so an
+  optional unwrapping decided the verdict on roughly one atom in ten. The
+  unwrapping steps, in order, before step 1:
 
   - a. Markdown link syntax reduces to its link text.
   - b. Attribute blobs in braces are removed.
@@ -981,7 +985,11 @@ checks the relations no type can see.
   specifying one per media type is the successor design, deferred until the
   first capture that is not text. A validator facing a capture whose format
   it cannot convert MUST report the check as unavailable rather than pass or
-  fail it.
+  fail it. The prose above names each transformation; the conformance case
+  files (`conformance/cases/normalization.txt` and
+  `conformance/cases/quote-check.yaml`, this repository) are normative for
+  its exact behavior: where a reading of the prose and a case disagree, the
+  case governs, and a conforming implementation reproduces every pair.
 - **ERF-52** Only the exact marker `[...]` MUST be treated as an
   omission, and it is the only wildcard. A bare `...` and a bare `…` are literal source
   characters and MUST be matched literally (`ERF-6`). The quote MUST be
@@ -993,19 +1001,13 @@ checks the relations no type can see.
   spans is unbounded by design: an elision marker is the author's assertion
   that they removed material, and whether the removal misleads is a
   judgment for the audit, not a distance a validator can measure.
-> *Note (non-normative):* on enforcing uniqueness. Detection is mechanical
-> and belongs to the validator; prevention at mint belongs to the producer;
-> concurrent minting is addressed by neither. Two writers, or two git
-> branches, can each mint the same next sequence number and merge without
-> conflict, because the additions touch different lines of different files.
-> This cannot bite a single sequential writer, which is the reference
-> practice, and it becomes real with a second person minting into a shared
-> corpus, the same trigger that holds the multi-operator mechanics. The
-> structural answer, when it stops being hypothetical, is content-addressed
-> identity in the nanopublication Trusty URI shape, already deferred behind
-> corpus sharing: an id derived from a record's content cannot collide by
-> construction, which dissolves the problem rather than detecting it
-> afterwards.
+> *Note (non-normative):* on enforcing uniqueness. Detection belongs to the
+> validator, prevention at mint to the producer, and concurrent minting to
+> neither: two writers, or two git branches, can mint the same next number
+> and merge without conflict. That cannot bite a single sequential writer,
+> which is the reference practice; the structural answer when a second
+> writer arrives, content-addressed identity in the Trusty URI shape, is
+> deferred behind that trigger in `BACKLOG.md`.
 
 > *Note (non-normative):* a `retired` disposition MUST NOT be read as
 > "shown false". Withdrawals on record split three ways. Some absorb a
@@ -1025,21 +1027,25 @@ checks the relations no type can see.
 
 ## 7. Serialization
 
-- **ERF-53** The canonical interchange form MUST be the textual record:
-  YAML frontmatter plus markdown body for every record type. Records of one
-  type MAY be grouped in one file or written one per file; both round-trip,
-  and the grouping carries no meaning, because each record states its own
-  `type` and `corpus` (`ERF-54`). A conforming store MUST round-trip
-  records through this form without loss.
+- **ERF-53** The canonical interchange form MUST be one record per file:
+  YAML frontmatter plus markdown body, for every record type. An atom's
+  body is empty, so its file is frontmatter alone; the shape is still
+  frontmatter plus body, not a bare YAML document. A store MAY hold
+  records any other way it likes, body as one more field, many records in
+  one collection document, rows in a database, provided every record
+  round-trips through the interchange form without loss; how records are
+  grouped in a store carries no meaning, because each record states its
+  own `type` and `corpus` (`ERF-54`).
 - **ERF-65** Frontmatter MUST parse under YAML 1.2 using the **JSON
   schema**, the narrowest of the three the specification defines. Under it
   only `null`, the literals `true` and `false`, and JSON's own number
   grammar resolve to non-string scalars; everything else stays a string.
-  The looser Core schema resolves a date-shaped scalar to a date, which is
-  how an unquoted `timestamp` became a date object and made a claim's
-  computed disposition depend on how a weekday name sorts. A producer
-  SHOULD quote a timestamp regardless, so that a reader on a looser schema
-  still receives a string.
+  The hazard being excluded is a legacy default: YAML 1.1 defines a
+  timestamp type, and common libraries keep it in their default schema, so
+  an unquoted `timestamp` became a date object and made a claim's computed
+  disposition depend on how a weekday name sorts. A producer SHOULD quote
+  a timestamp regardless, so that a reader on a legacy schema still
+  receives a string.
 - **ERF-66** A record's frontmatter MUST NOT contain a duplicate key, an
   anchor, an alias, or an explicit tag. YAML permits all four and leaves a
   processor's response to duplicates at its own discretion, so two
@@ -1071,11 +1077,15 @@ checks the relations no type can see.
   detection to the validator; a consumer that refuses what it does not
   recognize breaks forward compatibility for everything downstream of it.
 - **ERF-58** The event-time key MUST be `timestamp`, everywhere.
-- **ERF-59** A corpus MUST carry a manifest. It MUST declare `id` (the
-  corpus id), `title` (for a person), `spec_version` (the version its
-  records conform to), and `classification` (the confidentiality tier the
-  corpus registry records). It MAY name an `owner`, the actor
-  responsible for the corpus. It declares no bars or gates: v1 specifies
+- **ERF-59** A corpus MUST carry a manifest, a YAML document under this
+  section's rules following the `CorpusManifest` shape of section 3. It
+  MUST declare `id` (the corpus id), `title` (for a person),
+  `spec_version` (the version its records conform to), and
+  `classification` (the confidentiality tier the corpus registry records).
+  It MAY name an `owner`, the actor responsible for the corpus. Where the
+  manifest and the registry disagree about a corpus's classification, the
+  registry governs and a validator MUST flag the disagreement: one wall,
+  one authority. The manifest declares no bars or gates: v1 specifies
   what records mean and how references resolve, and leaves use to the
   consumer.
 - **ERF-60** A consumer MAY refuse a corpus whose MAJOR `spec_version` it
@@ -1088,8 +1098,13 @@ checks the relations no type can see.
   between majors are explicit.
 - **ERF-61** `spec_version` MUST follow Semantic Versioning 2.0.0. One
   thing is specific to this format and is what `ERF-60` hangs on: a MAJOR
-  increment means a change that makes a conforming corpus of the previous
-  major *unreadable*, rather than merely under-interpreted.
+  increment means a backward-incompatible change, one under which records
+  of the previous major are unreadable *or read with changed meaning*. The
+  second clause is the one that matters, because it is the silent case
+  `ERF-60`'s refusal exists for: a field that stays parseable while its
+  semantics move announces nothing. A MINOR increment is a
+  backward-compatible addition, under-interpreted by an older reader but
+  never misread.
 
 ## 8. Storage
 
@@ -1112,19 +1127,14 @@ checks the relations no type can see.
 - The `spec_version` on a corpus manifest (`ERF-59`) governs the semantics
   of that corpus's records; migrations between versions are explicit, never
   inferred from field absence.
-- The specification amends itself by its own discipline: a field is
-  admitted only on a forcing instance (a real corpus demanding it), a
-  vocabulary value only when it carries a distinct contract, and every
-  retirement is recorded with the measurement that decided it.
 - Requirement ids are a flat sequence and carry no meaning beyond identity:
   a number does not say which section a requirement lives in, so moving a
   section can never make an id wrong. Ids are stable once published.
   Insertions append; retired ids are never reused and are never refilled.
-- A decision that closes a proposal, whether declining it or deferring it
-  behind a trigger, is recorded in the design history's register in the
-  same commit that implements it. A register nobody updates reads as
-  complete, and is worse than none.
-- Every change lands in `CHANGELOG.md` with a date.
+- The discipline the specification's own editors work under (forcing
+  instances, the decision register, the changelog) is stated in
+  `DESIGN-HISTORY.md`; it binds whoever amends this document, not an
+  implementer reading it.
 ## Related formats (non-normative)
 
 A five-territory survey of adjacent formats, with what each does and what
@@ -1145,11 +1155,14 @@ below that threshold.
   reverse is permitted). A compiled public document leaning on
   confidential material is a leak at build time; the validator's wall
   check (section 6) exists for this.
-- Captures do not travel. Captured copies of sources are, in general,
-  copyrighted third-party works. They MUST NOT be redistributed with a
-  shared or published corpus. The honest scope of re-checkability is
-  therefore per-holder, not per-corpus: anyone holding the corpus *and
-  its captures* can re-run the mechanical check; a recipient of the
+- Captures travel only where their licences permit. Captured copies of
+  sources are, in general, copyrighted third-party works; whether a given
+  capture ships with a shared or published corpus is a licence and
+  deployment question the format records rather than rules on. The capture
+  mapping holds the judgment either way: a shipped capture names its
+  licence (`ERF-68`), a withheld one records the reason (`ERF-5`). The
+  honest scope of re-checkability follows: anyone holding the corpus *and
+  a capture* can re-run that atom's mechanical check; a recipient of the
   records alone holds citations and fetch locators, not proof.
 - Standings are personal data. The ledger is, by design, a dated record
   of named people's positions with their reasons. Taking a stance is

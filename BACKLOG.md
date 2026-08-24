@@ -31,4 +31,5 @@ Decisions already taken against something are not here. Those live in
 | A relation for near-identical claims | Two parties holding the same proposition at a shared boundary. |
 | Media-type extraction profiles for capture text | The first capture that is not text or markdown. |
 | A machine-readable audit policy schema | A second corpus with a genuinely different audit bar. |
+| A full normalization grammar in prose (exact regex/pseudocode for the unwrapping steps) | A second implementation that matches every conformance case yet disagrees with the reference on an uncased input. |
 | The question record type's return | Questions that need a lifecycle, meaning someone actually marking one answered rather than just minting the claim that settles it. |
