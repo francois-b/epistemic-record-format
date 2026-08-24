@@ -1,0 +1,6 @@
+requirement: ERF-60
+record: corpus.yaml
+field: spec_version
+because: >
+  Reading a corpus under the wrong major version fails silently, so a
+  consumer refuses openly and says so.

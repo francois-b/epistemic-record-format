@@ -1,0 +1,6 @@
+requirement: ERF-43
+record: fx-a
+field: edges
+because: >
+  assumes and decomposes-into MUST admit no cycles; a circular premise chain
+  never terminates in a leaf.

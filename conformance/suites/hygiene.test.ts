@@ -1,0 +1,72 @@
+/**
+ * Repository hygiene: the checks that keep the satellites honest.
+ *
+ * The 2026-08-23 flatten replaced section-shaped requirement ids (section
+ * dot sequence) with a flat sequence, and the 2026-08-24 review found the old
+ * ids still living in the examples, the viewer README, and the corpus
+ * files: rulings had landed in SPEC.md without being swept through what
+ * ships beside it. Both checks here exist so that class of drift fails a
+ * run instead of waiting for the next reviewer.
+ */
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync, readdirSync, statSync } from "node:fs";
+import { join, relative } from "node:path";
+import yaml from "js-yaml";
+import { loadCorpus, KNOWN_FIELDS } from "../../viewer/corpus.ts";
+import { REPO } from "../paths.ts";
+
+/** Historical documents cite old ids on purpose; everything else may not. */
+const HISTORY = new Set(["DESIGN-HISTORY.md", "CHANGELOG.md"]);
+const SKIP_DIRS = new Set(["node_modules", ".git", "site"]);
+
+function* walk(dir: string): Generator<string> {
+  for (const name of readdirSync(dir)) {
+    if (SKIP_DIRS.has(name)) continue;
+    const p = join(dir, name);
+    if (statSync(p).isDirectory()) yield* walk(p);
+    else if (/\.(md|ts|yaml|yml)$/.test(name)) yield p;
+  }
+}
+
+test("no pre-flatten requirement id survives outside the history documents", () => {
+  const offenders: string[] = [];
+  for (const p of walk(REPO)) {
+    const rel = relative(REPO, p);
+    if (HISTORY.has(rel) || rel.startsWith("reviews/")) continue;
+    const text = readFileSync(p, "utf8");
+    const m = text.match(/ERF-\d+\.\d+[a-z]?/);
+    if (m) offenders.push(`${rel}: ${m[0]}`);
+  }
+  assert.deepEqual(offenders, [],
+    `pre-flatten ids in shipped files (cite the flat ids or move the text to a history doc): ${offenders.join(", ")}`);
+});
+
+test("the example corpus loads with no conformance finding", () => {
+  const c = loadCorpus(join(REPO, "examples", "corpus"));
+  assert.deepEqual(c.findings, [],
+    `the shipped example corpus must be conforming: ${JSON.stringify(c.findings, null, 2)}`);
+});
+
+test("every standalone example carries only defined fields and legal values", () => {
+  const dir = join(REPO, "examples");
+  const VERDICTS = new Set(["SUPPORTED", "PARTIAL", "UNSUPPORTED"]);
+  for (const name of readdirSync(dir).filter((f) => f.endsWith(".yaml"))) {
+    const doc = yaml.load(readFileSync(join(dir, name), "utf8"), { schema: yaml.JSON_SCHEMA }) as Record<string, unknown>;
+    const kind = String(doc["type"]);
+    const known = KNOWN_FIELDS[kind];
+    assert.ok(known, `${name}: type "${kind}" is not a record type`);
+    for (const key of Object.keys(doc)) {
+      // `body` is legal here: a standalone YAML example is the store form,
+      // where the body is one more field (ERF-53).
+      if (key === "body") continue;
+      assert.ok(known.has(key), `${name}: "${key}" is not a defined ${kind} field (ERF-55)`);
+    }
+    const audits = (doc["finding_audit"] ?? doc["evidence_audit"] ?? []) as { verdict?: unknown }[];
+    for (const a of audits) {
+      assert.ok(VERDICTS.has(String(a?.verdict)), `${name}: verdict ${String(a?.verdict)} (ERF-12)`);
+    }
+    const ct = String(doc["citation_text"] ?? "");
+    assert.ok(!/:\/\//.test(ct), `${name}: citation_text carries a URL (ERF-7)`);
+  }
+});

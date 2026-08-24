@@ -1,0 +1,6 @@
+requirement: ERF-44
+record: fx-b
+field: edges
+because: >
+  conflicts-with is stored once per pair, the reciprocal derived; storing
+  both sides lets the two drift apart.

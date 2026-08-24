@@ -1,0 +1,6 @@
+requirement: ERF-7
+record: fx-001
+field: citation_text
+because: >
+  A citation identifies a work; a locator retrieves one copy. The retrieved
+  locator is fetched_url, never part of citation_text.

@@ -1,0 +1,6 @@
+requirement: ERF-55
+record: fx-001
+field: confidence
+because: >
+  A producer MUST NOT originate a field the declared spec_version does not
+  define; the consumer preserves it and the validator reports it.

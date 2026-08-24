@@ -1,0 +1,6 @@
+requirement: ERF-11
+record: fx-001
+field: quote_check
+because: >
+  The mechanical check is recomputable by anyone holding the corpus and its
+  captures, so its result MUST NOT be stored.

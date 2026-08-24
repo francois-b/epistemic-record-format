@@ -1,0 +1,6 @@
+requirement: ERF-15
+record: fx-claim
+field: atoms_for
+because: >
+  References are bare ids and MUST NOT encode location; a moved record would
+  break every path-shaped reference.

@@ -7,7 +7,7 @@
 #                          in the format)
 #
 # A requirement with neither tests nor a reason is a hole in this file, and
-# the runner fails on one. ERF-29 is retired and must not appear.
+# the runner fails on one. ERF-29 and ERF-46 are retired and must not appear.
 
 requirements:
   ERF-1:
@@ -25,7 +25,7 @@ requirements:
   ERF-6:
     tests: [quote-check]
   ERF-7:
-    uncovered: no fixture asserts that citation_text rejects a URL
+    tests: [fixtures/invalid/citation-text-carries-url, hygiene]
   ERF-8:
     untestable-by-design: whether a rendered citation carries everything its structured form holds is a judgment about bibliographic completeness
   ERF-9:
@@ -33,7 +33,7 @@ requirements:
   ERF-10:
     untestable-by-design: whether a finding's subject is discourse itself is a reading of the finding
   ERF-11:
-    uncovered: no fixture asserts that a stored mechanical result is rejected as an unknown key
+    tests: [fixtures/invalid/stored-mechanical-result]
   ERF-12:
     tests: [fixtures/invalid/parse-error-as-verdict]
   ERF-13:
@@ -41,7 +41,7 @@ requirements:
   ERF-14:
     untestable-by-design: whether a fact is dated or timeless is an authoring judgment
   ERF-15:
-    uncovered: no fixture asserts a reference carrying a path is rejected
+    tests: [fixtures/invalid/reference-encodes-location]
   ERF-16:
     untestable-by-design: no multi-realm implementation exists to test against
   ERF-17:
@@ -60,7 +60,7 @@ requirements:
     tests: [disposition]
     note: covered mechanically by ERF-39; the prohibition on machine stances has no fixture
   ERF-22:
-    uncovered: no fixture asserts a stored state field is rejected
+    tests: [fixtures/invalid/stored-state-field]
   ERF-23:
     untestable-by-design: modelling counter-evidence as a rival claim is a shape the format asks an author not to build
   ERF-24:
@@ -77,7 +77,8 @@ requirements:
     tests: [output]
     note: the binding grammar, exercised through the shared bindingRe
   ERF-32:
-    uncovered: bindingStaleness has no unit case; the indeterminate branch is the one that matters
+    tests: [staleness]
+    note: the indeterminate branch, the mixed-precision day, and both plain orders
   ERF-33:
     tests: [output]
   ERF-34:
@@ -100,22 +101,25 @@ requirements:
   ERF-42:
     tests: [disposition, output]
   ERF-43:
-    uncovered: no fixture builds an argument closure that fails to terminate
+    tests: [fixtures/invalid/self-edge, fixtures/invalid/assumes-cycle]
+    note: the retired-leaf flag has no case yet; it needs a standing to retire a leaf
   ERF-44:
-    uncovered: >
-      no fixture stores a conflicts-with pair twice, and none asserts a
-      consumer reads both directions; this is the defect that prompted the
-      conformance trace
+    tests: [fixtures/invalid/conflicts-stored-twice]
+    note: >
+      the storage half; that a consumer reads both directions is exercised
+      through conflictsFor in the rendered output
   ERF-45:
     uncovered: no fixture crosses the classification wall
-  ERF-46:
-    uncovered: no fixture puts a title and an opening statement out of agreement
   ERF-47:
-    uncovered: staleness is computed by staleAudits and staleEvidenceAudit; neither has a case
+    tests: [staleness]
   ERF-48:
-    uncovered: no fixture asserts last_modified advances on a substantive edit
+    tests: [fixtures/invalid/last-modified-precedes-created]
+    note: >
+      the statically checkable half; that a stamp advances on each edit is a
+      property of history a loaded corpus does not carry
   ERF-49:
-    uncovered: no fixture stands on an observation with no evidence
+    tests: [computed]
+    note: both kinds, and the ERF-24 premise direction for arguments
   ERF-50:
     tests: [quote-check, output]
   ERF-51:
@@ -128,19 +132,19 @@ requirements:
   ERF-54:
     tests: [fixtures/valid/minimal]
   ERF-55:
-    uncovered: no fixture originates a field the declared version does not define
+    tests: [fixtures/invalid/unknown-field-originated, hygiene]
   ERF-56:
     tests: [fixtures/valid/minimal]
     note: the fixture omits empty lists and loads complete
   ERF-57:
-    uncovered: no fixture carries an unknown field to assert a consumer preserves rather than refuses it
+    tests: [serialization]
   ERF-58:
     tests: [disposition]
     note: every case uses the timestamp key
   ERF-59:
     tests: [fixtures/invalid/manifest-missing-field]
   ERF-60:
-    uncovered: no fixture declares an unsupported major version
+    tests: [fixtures/invalid/unsupported-major-version]
   ERF-61:
     untestable-by-design: what a major increment means is a rule about future changes, not about any corpus
   ERF-62:
@@ -150,10 +154,15 @@ requirements:
   ERF-64:
     uncovered: no fixture omits the registry's ordered classification levels
   ERF-65:
-    uncovered: no fixture carries frontmatter that parses differently under YAML 1.1 and 1.2
+    tests: [serialization]
+    note: asserts a date-shaped scalar loads as a string, not a date object
   ERF-66:
-    uncovered: no fixture carries a duplicate key, an alias, or an explicit tag
+    tests: [fixtures/invalid/frontmatter-duplicate-key, fixtures/invalid/frontmatter-anchor]
   ERF-67:
-    uncovered: no fixture carries a body that is not valid CommonMark, or a non-UTF-8 file
+    tests: [fixtures/invalid/bom-file]
+    note: >
+      the byte-order-mark half; CommonMark defines a parse for any text, so
+      no body can fail to be CommonMark, and encodings beyond the BOM are
+      not yet probed
   ERF-68:
     uncovered: no fixture ships a capture without an SPDX identifier

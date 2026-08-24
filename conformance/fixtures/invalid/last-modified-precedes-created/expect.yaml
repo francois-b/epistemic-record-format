@@ -1,0 +1,6 @@
+requirement: ERF-48
+record: fx-001
+field: last_modified
+because: >
+  Any change sets last_modified later than created; a stamp that precedes
+  the mint is not a history.

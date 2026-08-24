@@ -9,8 +9,11 @@ npx tsx conformance/run.ts     # or: cd conformance && npm test
 The runner executes every case and then prints a coverage line:
 
 ```
-63 requirements: 24 covered, 18 untestable by design, 21 uncovered
+65 requirements: 41 covered, 18 untestable by design, 6 uncovered
 ```
+
+(The numbers move as the specification and the suite do; the line above is
+what a run printed on 2026-08-24, not a promise.)
 
 ## Why it exists
 
@@ -53,8 +56,14 @@ conformance/
   fixtures/
     valid/             corpora that must load with no finding
     invalid/           corpora that must be rejected, each with expect.yaml
-  suites/*.test.ts     the assertions, by requirement group
+  suites/*.test.ts     the assertions, by requirement group; hygiene.test.ts
+                       also validates the shipped examples and greps the
+                       repository for pre-flatten requirement ids
 ```
+
+The case files under `cases/` are normative for the normalization and
+quote-check behavior (`ERF-51`): where a reading of the specification's
+prose and a case disagree, the case governs.
 
 `cases/` holds data, `suites/` holds assertions. The split is deliberate:
 the case files are the part another implementation can consume directly,

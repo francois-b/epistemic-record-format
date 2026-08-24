@@ -1,0 +1,6 @@
+requirement: ERF-67
+record: fx-001
+field: (file)
+because: >
+  A record file is UTF-8 with LF line endings and no byte-order mark; an
+  unstated encoding is a verbatim check waiting to fail.

@@ -1,0 +1,6 @@
+requirement: ERF-22
+record: fx-claim
+field: status
+because: >
+  A claim MUST NOT store a state field: the disposition is computed from the
+  standings, never written down.

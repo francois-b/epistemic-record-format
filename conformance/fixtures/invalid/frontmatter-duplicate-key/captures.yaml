@@ -1,0 +1,5 @@
+captures:
+  fx-001:
+    status: not-redistributable
+    path: null
+    reason: "Fixture; no capture ships."

@@ -1,0 +1,5 @@
+requirement: ERF-43
+record: fx-claim
+field: edges
+because: >
+  Self-edges MUST NOT exist; a claim cannot be its own premise.
