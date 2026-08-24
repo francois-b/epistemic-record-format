@@ -1,0 +1,7 @@
+requirement: ERF-12
+record: fx-001
+field: finding_audit.verdict
+because: >
+  An audit that produced nothing is an audit that did not happen. Recording a
+  tool failure in the field that holds a judgment makes the two
+  indistinguishable to everything downstream.

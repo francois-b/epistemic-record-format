@@ -1,0 +1,9 @@
+name: only each persons newest entry counts
+requirement: ERF-41
+note: >
+  Standings are append-only (ERF-19), so a change of mind is a new entry and
+  the earlier one stays on the record without counting.
+standings:
+  - {timestamp: "2026-08-20T09:00:00Z", stance: against, by: "human:fbouet", why: "unconvinced initially"}
+  - {timestamp: "2026-08-23T09:00:00Z", stance: for, by: "human:fbouet", why: "the second survey settled it"}
+expect: active

@@ -1,0 +1,6 @@
+name: one person holding both positions over time is not a contest
+requirement: ERF-41
+standings:
+  - {timestamp: "2026-08-20T09:00:00Z", stance: for, by: "human:ana", why: "looked right"}
+  - {timestamp: "2026-08-23T09:00:00Z", stance: against, by: "human:ana", why: "the capture does not say this"}
+expect: rejected

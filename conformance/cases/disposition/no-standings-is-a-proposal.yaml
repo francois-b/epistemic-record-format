@@ -1,0 +1,8 @@
+name: no standings at all reads as a proposal
+requirement: ERF-41
+note: >
+  Minting is not a standing (ERF-22). A claim nobody has taken a position on
+  is a proposal, and the format never infers a position from how good the
+  evidence looks.
+standings: []
+expect: proposal

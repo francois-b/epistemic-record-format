@@ -1,0 +1,9 @@
+name: for and against together read as contested
+requirement: ERF-41
+note: >
+  Contested is terminal. No stance outranks another and the format supplies
+  no tie-break (the owner tie-break was removed 2026-08-23).
+standings:
+  - {timestamp: "2026-08-22T09:00:00Z", stance: for, by: "human:fbouet", why: "the survey supports it"}
+  - {timestamp: "2026-08-23T09:00:00Z", stance: against, by: "human:ana", why: "the survey did not cover the relevant market"}
+expect: contested

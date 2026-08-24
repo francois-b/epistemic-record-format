@@ -1,0 +1,6 @@
+name: every current stance for reads as active
+requirement: ERF-41
+standings:
+  - {timestamp: "2026-08-22T09:00:00Z", stance: for, by: "human:fbouet", why: "holds after review"}
+  - {timestamp: "2026-08-22T11:00:00Z", stance: for, by: "human:ana", why: "independently checked"}
+expect: active

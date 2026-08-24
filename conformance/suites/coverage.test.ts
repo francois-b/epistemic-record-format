@@ -1,0 +1,59 @@
+/**
+ * The coverage map must describe the specification as it actually is.
+ *
+ * Two ways this file rots: a requirement is added and nobody maps it, or a
+ * requirement is retired and its row lingers. Both make the summary line
+ * lie, and a coverage number that lies is worse than none.
+ */
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import yaml from "js-yaml";
+import { join } from "node:path";
+import { ROOT, SPEC } from "../paths.ts";
+
+export interface CoverageEntry {
+  tests?: string[];
+  "untestable-by-design"?: string;
+  uncovered?: string;
+  note?: string;
+}
+
+export function specRequirements(): string[] {
+  const text = readFileSync(SPEC, "utf8");
+  return [...text.matchAll(/^- \*\*(ERF-\d+)\*\*/gm)].map((m) => m[1]!);
+}
+
+export function coverage(): Record<string, CoverageEntry> {
+  const doc = yaml.load(readFileSync(join(ROOT, "coverage.yaml"), "utf8")) as
+    { requirements: Record<string, CoverageEntry> };
+  return doc.requirements;
+}
+
+test("every requirement in the spec has a coverage row", () => {
+  const missing = specRequirements().filter((id) => !(id in coverage()));
+  assert.deepEqual(missing, [], `unmapped requirements: ${missing.join(", ")}`);
+});
+
+test("every coverage row names a requirement the spec still has", () => {
+  const ids = new Set(specRequirements());
+  const stale = Object.keys(coverage()).filter((id) => !ids.has(id));
+  assert.deepEqual(stale, [], `rows for requirements the spec no longer has: ${stale.join(", ")}`);
+});
+
+test("a retired id is not silently refilled", () => {
+  // ERF-29 was the survey `limitations` requirement, retired 2026-08-23.
+  // Retired ids are never reused, so its reappearance would mean the
+  // numbering discipline has broken rather than that a rule came back.
+  assert.ok(!specRequirements().includes("ERF-29"), "ERF-29 is retired and must not reappear");
+  assert.ok(!("ERF-29" in coverage()), "coverage names a retired requirement");
+});
+
+test("every row states exactly one of tests, untestable-by-design, or uncovered", () => {
+  for (const [id, e] of Object.entries(coverage())) {
+    const stated = [e.tests?.length ? "tests" : null,
+      e["untestable-by-design"] ? "untestable" : null,
+      e.uncovered ? "uncovered" : null].filter(Boolean);
+    assert.equal(stated.length, 1, `${id} states ${stated.length} states: ${stated.join(", ")}`);
+  }
+});

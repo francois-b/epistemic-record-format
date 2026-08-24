@@ -1,0 +1,157 @@
+# Which test defends which requirement.
+#
+# Three states, and the third is the point of the file:
+#   tests:                 one or more cases assert this requirement
+#   untestable-by-design:  it constrains authoring judgment no tool can reach
+#   uncovered:             it should be tested and is not (a to-do, not a gap
+#                          in the format)
+#
+# A requirement with neither tests nor a reason is a hole in this file, and
+# the runner fails on one. ERF-29 is retired and must not appear.
+
+requirements:
+  ERF-1:
+    tests: [quote-check]
+    note: the uncheckable case asserts a check never runs without a capture
+  ERF-2:
+    untestable-by-design: how a capture is made and dated is a producer practice, not a property of a loaded record
+  ERF-3:
+    tests: [fixtures/valid/minimal]
+    note: the mapping lives beside the corpus, never on the atom
+  ERF-4:
+    tests: [fixtures/invalid/atom-absent-from-mapping]
+  ERF-5:
+    tests: [fixtures/invalid/absence-without-reason]
+  ERF-6:
+    tests: [quote-check]
+  ERF-7:
+    uncovered: no fixture asserts that citation_text rejects a URL
+  ERF-8:
+    untestable-by-design: whether a rendered citation carries everything its structured form holds is a judgment about bibliographic completeness
+  ERF-9:
+    untestable-by-design: which of two inputs governs a source's grade is an assessment, not a computation
+  ERF-10:
+    untestable-by-design: whether a finding's subject is discourse itself is a reading of the finding
+  ERF-11:
+    uncovered: no fixture asserts that a stored mechanical result is rejected as an unknown key
+  ERF-12:
+    tests: [fixtures/invalid/parse-error-as-verdict]
+  ERF-13:
+    untestable-by-design: permanence is a property of history, invisible in any single state
+  ERF-14:
+    untestable-by-design: whether a fact is dated or timeless is an authoring judgment
+  ERF-15:
+    uncovered: no fixture asserts a reference carrying a path is rejected
+  ERF-16:
+    untestable-by-design: no multi-realm implementation exists to test against
+  ERF-17:
+    tests: [fixtures/valid/minimal]
+    note: the loader requires corpus on every record
+  ERF-18:
+    untestable-by-design: that a title states the claim is the authoring act itself; the mechanical half is ERF-46
+  ERF-19:
+    uncovered: >
+      the append-only and non-empty-why halves are covered by ERF-39 and
+      ERF-40; timestamp precision is not, and is an open decision: a date-only
+      entry and a full timestamp on the same day sort by lexical accident
+  ERF-20:
+    untestable-by-design: a SHOULD on producer behaviour, and the field's absence is legal
+  ERF-21:
+    tests: [disposition]
+    note: covered mechanically by ERF-39; the prohibition on machine stances has no fixture
+  ERF-22:
+    uncovered: no fixture asserts a stored state field is rejected
+  ERF-23:
+    untestable-by-design: modelling counter-evidence as a rival claim is a shape the format asks an author not to build
+  ERF-24:
+    untestable-by-design: whether atoms jointly entail a statement is the audit judgment itself
+  ERF-25:
+    untestable-by-design: whether a claim is a universal negative is a reading of the claim
+  ERF-26:
+    uncovered: no fixture asserts a search act naming a category rather than an instrument
+  ERF-27:
+    uncovered: no fixture asserts hits_reported rejects invented precision
+  ERF-28:
+    uncovered: no fixture covers survey immutability or the title stating what was sought
+  ERF-30:
+    uncovered: >
+      OPEN CONFLICT, not a to-do: the requirement says a narrative comprises
+      prose plus a claims-tree document, and examples/corpus has no
+      claims-tree, so either the example is non-conforming or the requirement
+      overreaches. Ruling pending; no test until it is settled
+  ERF-31:
+    tests: [output]
+    note: the binding grammar, exercised through the shared bindingRe
+  ERF-32:
+    uncovered: bindingStaleness has no unit case; the indeterminate branch is the one that matters
+  ERF-33:
+    tests: [output]
+  ERF-34:
+    untestable-by-design: that a narrative is a document rather than a record is a modelling rule with no runtime surface
+  ERF-35:
+    tests: [fixtures/valid/minimal]
+    note: the loader reports dangling references
+  ERF-36:
+    tests: [fixtures/invalid/duplicate-id-across-types]
+  ERF-37:
+    untestable-by-design: a producer obligation whose mechanism the format declines to specify
+  ERF-38:
+    tests: [fixtures/invalid/duplicate-id-across-types]
+  ERF-39:
+    tests: [fixtures/valid/minimal]
+  ERF-40:
+    untestable-by-design: verified against substrate history, which a loaded corpus does not carry
+  ERF-41:
+    tests: [disposition]
+  ERF-42:
+    tests: [disposition, output]
+  ERF-43:
+    uncovered: no fixture builds an argument closure that fails to terminate
+  ERF-44:
+    uncovered: >
+      no fixture stores a conflicts-with pair twice, and none asserts a
+      consumer reads both directions; this is the defect that prompted the
+      conformance trace
+  ERF-45:
+    uncovered: no fixture crosses the classification wall
+  ERF-46:
+    uncovered: no fixture puts a title and an opening statement out of agreement
+  ERF-47:
+    uncovered: staleness is computed by staleAudits and staleEvidenceAudit; neither has a case
+  ERF-48:
+    uncovered: no fixture asserts last_modified advances on a substantive edit
+  ERF-49:
+    uncovered: no fixture stands on an observation with no evidence
+  ERF-50:
+    tests: [quote-check, output]
+  ERF-51:
+    tests: [normalization, quote-check]
+  ERF-52:
+    tests: [quote-check]
+  ERF-53:
+    tests: [fixtures/valid/minimal]
+    note: the fixture round-trips through frontmatter plus body
+  ERF-54:
+    tests: [fixtures/valid/minimal]
+  ERF-55:
+    uncovered: no fixture originates a field the declared version does not define
+  ERF-56:
+    tests: [fixtures/valid/minimal]
+    note: the fixture omits empty lists and loads complete
+  ERF-57:
+    uncovered: no fixture carries an unknown field to assert a consumer preserves rather than refuses it
+  ERF-58:
+    tests: [disposition]
+    note: every case uses the timestamp key
+  ERF-59:
+    tests: [fixtures/invalid/manifest-missing-field]
+  ERF-60:
+    uncovered: no fixture declares an unsupported major version
+  ERF-61:
+    untestable-by-design: what a major increment means is a rule about future changes, not about any corpus
+  ERF-62:
+    untestable-by-design: which store is authoritative is a deployment fact
+  ERF-63:
+    untestable-by-design: a permission, satisfiable by any substrate
+  ERF-64:
+    uncovered: no fixture omits the registry's ordered classification levels

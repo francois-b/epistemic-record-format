@@ -1,0 +1,10 @@
+name: a withdrawal beside a for does not make a contest
+requirement: ERF-41
+note: >
+  Wrong until 2026-08-23, when the rule read one for plus one withdrawn as
+  disagreement and reported a contest nobody was having. Withdrawn stances
+  are discarded before the reading is taken.
+standings:
+  - {timestamp: "2026-08-22T09:00:00Z", stance: for, by: "human:fbouet", why: "holds"}
+  - {timestamp: "2026-08-23T09:00:00Z", stance: withdrawn, by: "human:ana", why: "leaving this one to others"}
+expect: active

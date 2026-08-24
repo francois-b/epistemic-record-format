@@ -1,0 +1,7 @@
+requirement: ERF-59
+record: corpus.yaml
+field: spec_version
+because: >
+  A consumer decides whether it can read a corpus from its declared version.
+  Without one it cannot refuse safely, and reading under the wrong major is
+  worse than refusing because the failure is silent.

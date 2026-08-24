@@ -1,0 +1,93 @@
+# ERF-50 and ERF-52: the mechanical quote check.
+#
+# Each case gives a quote, a capture, and the expected verdict. The check
+# splits the quote on `[...]` BEFORE normalizing, normalizes each span, and
+# requires every non-empty span to occur in the normalized capture in order
+# and without overlap.
+#
+# A failing case is a finding about the implementation. Do not edit an
+# expectation to make a test pass.
+
+cases:
+  - name: a verbatim quote occurs in its capture
+    requirement: ERF-50
+    quote: "An entity is a physical, digital, conceptual, or other kind of thing."
+    capture: "Preamble. An entity is a physical, digital, conceptual, or other kind of thing. More text follows."
+    expect: pass
+
+  - name: a quote the capture does not contain fails
+    requirement: ERF-50
+    quote: "the study found no effect"
+    capture: "the study found a small positive effect in the treated group"
+    expect: fail
+
+  - name: an elision marker spans omitted material
+    requirement: ERF-52
+    quote: "The study found [...] no effect on retention."
+    capture: "The study found, after controlling for tenure and role, no effect on retention."
+    expect: pass
+
+  - name: spans must occur in order
+    requirement: ERF-52
+    note: >
+      Both spans are present in the capture but in the opposite order, so the
+      quote misrepresents the source's sequence and must fail.
+    quote: "no effect on retention [...] The study found"
+    capture: "The study found, after controls, no effect on retention."
+    expect: fail
+
+  - name: spans must not overlap
+    requirement: ERF-52
+    note: >
+      The second span can only be satisfied by re-reading text the first span
+      already consumed, which would let one occurrence stand for two.
+    quote: "the same words [...] the same words"
+    capture: "prefix the same words suffix"
+    expect: fail
+
+  - name: a bare ellipsis is literal, not a wildcard
+    requirement: ERF-52
+    note: >
+      Reserved for dots the source itself contains (ERF-6). Treating it as a
+      wildcard let a quote pass against text the source never carried, which
+      is the defect this case defends against.
+    quote: "Wait... what?"
+    capture: "Wait, despite the warning, what?"
+    expect: fail
+
+  - name: a bare ellipsis matches when the source really has one
+    requirement: ERF-52
+    quote: "Wait... what?"
+    capture: "He paused. Wait... what? Then he continued."
+    expect: pass
+
+  - name: a quote of nothing but elisions fails rather than trivially passing
+    requirement: ERF-52
+    quote: "[...]"
+    capture: "any capture at all"
+    expect: fail
+
+  - name: a quote passes only after normalization
+    requirement: ERF-51
+    note: >
+      The capture carries markdown link syntax and an export artifact space
+      before the full stop. Without the mandatory unwrapping steps this fails,
+      which is precisely the divergence that made unwrapping mandatory.
+    quote: "The reported total was 17."
+    capture: "> The [reported total](https://ex.test/data) was 17 ."
+    expect: pass
+
+  - name: case is not folded
+    requirement: ERF-51
+    note: >
+      Folding case would let a mis-cased quote pass a check whose whole job
+      is fidelity.
+    quote: "the study found"
+    capture: "The Study Found no effect"
+    expect: fail
+
+  - name: a missing capture is uncheckable, neither pass nor fail
+    requirement: ERF-51
+    quote: "anything"
+    capture: null
+    expect: uncheckable

@@ -1,0 +1,9 @@
+name: unanimous opposition reads as rejected
+requirement: ERF-41
+note: >
+  The rule was partial until 2026-08-23: a claim whose current stances were
+  all against matched no branch and had no defined reading, so two validators
+  could legitimately disagree about the central computed value.
+standings:
+  - {timestamp: "2026-08-23T10:00:00Z", stance: against, by: "human:ana", why: "the cited data contradicts the statement"}
+expect: rejected

@@ -1,0 +1,94 @@
+# ERF-51 normalization conformance cases.
+#
+# Format, after the model of Unicode's NormalizationTest.txt: one case per
+# line, RAW <TAB> EXPECTED. Blank lines and lines opening with # are ignored.
+# \n in either column means a newline, \t a tab; nothing else is escaped.
+#
+# The sequence is six unwrapping steps (a-f) followed by ten normalization
+# steps (1-10), applied identically to a quote and to a capture. Case is
+# never folded.
+#
+# A failing line is a finding about the implementation, not a licence to
+# edit the expectation. See README.md.
+
+# --- a. markdown link syntax reduces to its link text ---------------------
+The [reported total](https://ex.test/data) was 17.	The reported total was 17.
+[a](b) and [c](d)	a and c
+[](https://ex.test/x) empty text	empty text
+
+# --- b. attribute blobs in braces are removed ------------------------------
+heading {#anchor .cls} text	heading text
+a {} b	a b
+
+# --- c. parenthesized link targets are removed -----------------------------
+see (https://ex.test/x) here	see here
+protocol relative (//ex.test/y) here	protocol relative here
+fragment (#section-2) here	fragment here
+root relative (/docs/page) here	root relative here
+
+# --- d. blockquote markers at line start, with one following space ---------
+> quoted line	quoted line
+>no space after marker	no space after marker
+line one\n> line two	line one line two
+
+# --- e. brackets, straight double quotes, and symbols ----------------------
+[bracketed]	bracketed
+"straight quoted"	straight quoted
+Acme(R) and (TM) and (C)	Acme(R) and (TM) and (C)
+caret ^ and backslash \	caret and backslash
+
+# --- f. a space before punctuation is an export artifact -------------------
+word , next	word, next
+end of sentence .	end of sentence.
+colon : here	colon: here
+
+# --- 1. Unicode NFKC --------------------------------------------------------
+ﬁnal ligature	final ligature
+①	1
+
+# --- 2. soft hyphens --------------------------------------------------------
+soft­hyphen	softhyphen
+
+# --- 3. typographic single quotes fold to ' --------------------------------
+it’s a quote	it's a quote
+‘single’	'single'
+
+# --- 4. typographic double quotes fold to " --------------------------------
+# NOTE: step e removes the STRAIGHT double quote and runs BEFORE step 4, so a
+# curly pair survives e and is then folded into straight quotes that nothing
+# removes. Two spellings of one quotation therefore normalize differently.
+# This case records the implementation's actual behaviour so the divergence
+# is visible rather than assumed; see the finding in the suite report.
+“curly”	"curly"
+
+# --- 5. dash variants fold to - ---------------------------------------------
+en–dash	en-dash
+em—dash	em-dash
+minus−sign	minus-sign
+
+# --- 6. words broken across lines ------------------------------------------
+inter-\nnational	international
+hyphen-\n   indented	hyphenindented
+
+# --- 7. runs of two or more hyphens collapse to one ------------------------
+a--b	a-b
+a-----b	a-b
+
+# --- 8. emphasis and code markers are removed ------------------------------
+*bold* and _under_ and `code`	bold and under and code
+
+# --- 9. dash spacing is unified --------------------------------------------
+a - b	a-b
+a  -  b	a-b
+
+# --- 10. whitespace runs collapse, then trim -------------------------------
+  lots   of    space  	lots of space
+line\nbreak	line break
+
+# --- case MUST NOT be folded ------------------------------------------------
+The Study Found	The Study Found
+MiXeD CaSe	MiXeD CaSe
+
+# --- combinations, closer to real capture text ------------------------------
+> The [study](https://ex.test/s) found *no* effect .	The study found no effect.
+“Nested [link](https://ex.test/l) inside a quote”	"Nested link inside a quote"
