@@ -1,4 +1,4 @@
-# The example corpus manifest (ERF-7.7, ERF-8.3).
+# The example corpus manifest (ERF-59, ERF-64).
 #
 # One corpus-registry entry, written out on its own because this corpus
 # travels alone. In a deployment with several corpora these fields are rows

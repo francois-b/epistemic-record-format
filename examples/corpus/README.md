@@ -1,6 +1,6 @@
 # The ERF example corpus
 
-Fifteen records that exercise every record type the format defines, so that
+Eighteen records and a narrative that exercise every record type the format defines, so that
 a reader can see the machine working rather than infer it from the
 specification.
 
@@ -16,12 +16,16 @@ unchanged.
 Three things were changed in the copying, and nothing else:
 
 1. `corpus` is rewritten to this corpus's id, because these records now
-   live here. Membership is mutable by design (`ERF-4.12`); identity is not,
+   live here. Membership is mutable by design (`ERF-17`); identity is not,
    so the ids are as they were.
 2. Working-note paragraphs that referred to the author's own sessions,
    pilots, and internal documents were dropped. They were about the
    practice, not about the evidence.
-3. Nothing else. No record was invented, padded, tidied, or improved.
+3. Actor ids were normalized to the specification's convention
+   (`agent/claude-fable-5` where an early record wrote the bare model
+   name), because the examples must conform to the document they
+   demonstrate.
+4. Nothing else. No record was invented, padded, tidied, or improved.
 
 A corpus that demonstrates a format for recording evidence honestly should
 not itself be a fabrication, so it is not one.
@@ -30,12 +34,11 @@ not itself be a fabrication, so it is not one.
 
 | Type | Count | What is worth looking at |
 |:--|:--|:--|
-| Atoms | 5 | Two have no audit verdicts, which the health view flags |
-| Claims | 5 | All five compute to `proposal`: nobody has stood on them |
-| Questions | 1 | Carries no evidence, by rule (`ERF-4.22`) |
+| Atoms | 9 | Two have no audit verdicts, which the health view flags |
+| Claims | 6 | All six compute to `proposal`: nobody has stood on them |
 | Surveys | 3 | One finds nothing, one finds plenty, one is conclusive |
 | Narratives | 1 | Written for this corpus, with bindings into the claims |
-| Captures | 0 | See below, and it matters |
+| Captures | 4 | Four of the nine atoms ship theirs; see below |
 
 The three surveys are the clearest single illustration of a design decision.
 A survey is neutral as to polarity: `continuous-claim-check-tools-2026-08-19`

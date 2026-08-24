@@ -1,8 +1,8 @@
 # A standalone atom record (SPEC.md, section 4.2) with a book source and
 # a structured CSL `citation` block; `atom-web.yaml` shows the web-native
 # case. Every atom carries its own `type` and `corpus`, in a collection
-# document or standalone alike: a record extracted from a file is complete
-# without it (ERF-7.2, ERF-7.3).
+# document or standalone alike: a record extracted from a store is complete
+# without it (ERF-53, ERF-54).
 type: atom
 corpus: knowledge-work-governance
 id: kwg-117

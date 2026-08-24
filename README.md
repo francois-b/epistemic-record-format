@@ -8,8 +8,8 @@ This is version 1.0 (draft, August 2026), extracted from a working practice
 rather than designed in advance: roughly 740 audited atoms and 300 claims
 across seven corpora preceded the specification, and a pilot
 ran the records on a third-party substrate before it was written.
-Requirement ids are stable from this version on: insertions take letter
-suffixes, and a retired id is never reused. Feedback is invited; the
+Requirement ids are a flat sequence, stable from this version on:
+insertions append, and a retired id is never reused. Feedback is invited; the
 intended reading is implementation, or a requirement-by-requirement diff
 against an existing system.
 
@@ -42,8 +42,8 @@ its source. Nobody has stood behind the statement yet, so the `standings`
 ledger is empty and omitted, and the claim is a proposal. A standing, when
 one comes, is an append-only entry naming the person, the date, the
 stance, and the reason; nobody's position is a stored status, and the
-claim's disposition (proposal, active, contested, retired) is computed
-from the ledger, never written down.
+claim's disposition (proposal, active, contested, rejected, retired) is
+computed from the ledger, never written down.
 
 One more record type covers what atoms cannot: a **survey** records
 search acts and their yield (which instruments, which queries, what came
@@ -54,7 +54,7 @@ Absence is evidenced by surveys; presence by atoms.
 ## Seeing it work
 
 [`examples/corpus/`](examples/corpus/) is a small corpus of real records,
-copied unchanged from a working practice: five atoms, five claims, three
+copied from a working practice: nine atoms, six claims, three
 surveys, and a narrative whose passages bind to the claims they rest on. [`viewer/`](viewer/) renders it to static HTML.
 
 ```
@@ -64,12 +64,16 @@ npx tsx erf-view.ts ../examples/corpus -o ../examples/site
 
 Two things in that corpus are worth knowing before you look. Every claim
 computes to `proposal`, because nobody has stood behind any of them and the
-format never infers a position from the strength of the evidence. And none
-of the captured copies could be republished, mostly for copyright reasons,
-so the quote check cannot run there. The viewer says so on every claim
-rather than presenting an unresolvable backing as backing. That is the
-viewer's own choice, not a rule of the format, which says nothing about
-presentation. The demonstration is weaker for it and honest about why.
+format never infers a position from the strength of the evidence. And the
+captures are mixed on purpose: four of the nine atoms ship their captured
+copy (two W3C documents, whose licence permits it) and the quote check runs
+for them; the other five quote sources whose licences do not permit
+republication, so their checks cannot run here, and the viewer says so on
+every claim leaning on one rather than presenting an unresolvable backing
+as backing. That is the viewer's own choice, not a rule of the format,
+which says nothing about presentation. It is also what the format looks
+like in the ordinary case, where some evidence can be republished and some
+cannot.
 
 ## Documents
 
@@ -77,9 +81,11 @@ presentation. The demonstration is weaker for it and honest about why.
 |---|---|
 | [`SPEC.md`](SPEC.md) | The specification: record types, numbered requirements (RFC 2119), vocabularies, invariants, serialization. |
 | [`types/erf.ts`](types/erf.ts) | The normative data model as a compiling TypeScript file; `SPEC.md` carries an inline mirror. |
-| [`DESIGN-HISTORY.md`](DESIGN-HISTORY.md) | Non-normative companion: how the format got this way (the subtraction ledger, the reversals) and the prior-art survey. |
-- `BACKLOG.md` — what the format does not yet do, each item with the event that would revive it.
+| [`DESIGN-HISTORY.md`](DESIGN-HISTORY.md) | Non-normative companion: how the format got this way (the subtraction ledger, the reversals, the decision register) and the prior-art survey. |
+| [`BACKLOG.md`](BACKLOG.md) | What the format does not yet do, each item with the event that would revive it. |
 | [`CHANGELOG.md`](CHANGELOG.md) | Change history, newest first. |
+| [`reviews/`](reviews/) | Adversarial review passes, archived verbatim with per-finding adjudications: a disposition of comments, with LLMs among the reviewers. |
+| [`conformance/`](conformance/) | The conformance suite: cases, fixtures, and a coverage map from every requirement to what defends it. |
 | [`examples/`](examples/) | Single-record examples as standalone YAML, plus [`examples/corpus/`](examples/corpus/), a small complete corpus of real records exercising every record type, and [`examples/site/`](examples/site/), that corpus rendered. |
 | [`viewer/`](viewer/) | `erf-view`, the reference consumer: a TypeScript static-site generator that imports the normative model and computes every derived reading from the specification text. |
 | [`tools/lint-spec-style.py`](tools/lint-spec-style.py) | The style lint the spec itself is held to (requirement-block shape, note form, no em dashes in prose). Run: `python3 tools/lint-spec-style.py`. |

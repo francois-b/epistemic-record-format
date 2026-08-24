@@ -1,7 +1,7 @@
 # A standalone atom record (SPEC.md, section 4.2) with a web-native
 # source: `fetched_url` records where the capture was taken (here a
 # stable arXiv address), while `citation_text` stays a human-readable
-# citation and is never a URL (ERF-4.5). The backslash in the quote is
+# citation and is never a URL (ERF-7). The backslash in the quote is
 # verbatim from the source abstract; capture fidelity beats cleanup.
 type: atom
 corpus: knowledge-work-governance

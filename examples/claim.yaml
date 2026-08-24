@@ -1,9 +1,9 @@
-# A claim record (SPEC.md, section 4.3), shown as one YAML document with
-# the body as a field. The canonical textual interchange form is YAML
-# frontmatter plus a markdown body (ERF-7.1); in a database the body is
-# one more field, as here. This claim ships as a proposal: nobody has
+# A claim record (SPEC.md, section 4.3), shown in the store form: one
+# YAML document with the body as a field. The canonical interchange form
+# is one record per file, YAML frontmatter plus a markdown body (ERF-53);
+# a store may hold the body as one more field, as here. This claim ships as a proposal: nobody has
 # stood behind it yet, so `standings` is an empty ledger and is omitted
-# rather than written empty (ERF-7.4); dispositions are computed from
+# rather than written empty (ERF-55); dispositions are computed from
 # the ledger, never stored. Empty `edges` and `atoms_against` are
 # omitted for the same reason.
 type: claim

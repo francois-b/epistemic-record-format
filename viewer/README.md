@@ -37,22 +37,22 @@ of whether the rules are implementable as written.
 
 | Reading | Rule |
 |:--|:--|
-| Disposition, with an explanation | `ERF-6.5` |
+| Disposition, with an explanation | `ERF-41` |
 | Whether a reader can resolve a claim's backing | the viewer's own choice |
-| The mechanical quote check | `ERF-6.12` |
-| Stale verdicts | `ERF-6.10` |
-| The unbacked warning | `ERF-6.11` |
-| References that do not resolve | `ERF-6.1` |
+| The mechanical quote check | `ERF-50`, `ERF-51`, `ERF-52` |
+| Stale verdicts and stale narrative bindings | `ERF-47`, `ERF-32` |
+| The unbacked warning | `ERF-49` |
+| References that do not resolve | `ERF-35` |
 
-## One thing the specification does not define
+## Normalization is the specification's, exactly
 
-`ERF-6.12` requires that "the normalized quote occurs in the capture" but
-does not define the normalization. This tool applies Unicode NFKC, collapses
-whitespace, folds typographic quotes and dashes to ASCII, lowercases, and
-treats the `[...]` elision marker of `ERF-4.5` as a wildcard between
-segments. That is one defensible reading and not a conformance target: two
-conforming tools could disagree about the same quote today, which is a gap
-worth closing in the specification rather than in this file.
+An earlier version of this file reported that the specification did not
+define the quote-check normalization, and this tool improvised one (it
+even lowercased, which the specification now forbids). That gap is closed:
+`ERF-51` defines the ordered sequence, unwrapping steps included, this
+tool implements it verbatim in `compute.ts`, and the conformance suite's
+case files are normative for its exact behavior. `[...]` elision handling
+is `ERF-52`, split before normalizing.
 
 ## Views
 
@@ -69,7 +69,7 @@ worth closing in the specification rather than in this file.
   from the normative model
 
 One reading in that table is not a rule of the format. Showing whether a
-reader can resolve a claim's backing was `ERF-6.8a` until 2026-08-23,
+reader can resolve a claim's backing was a numbered requirement until 2026-08-23,
 when it was retired: v1 says nothing about how a claim is presented to
 someone without the sources. The viewer keeps doing it because it is the
 honest thing for a reader to see, which makes it a demonstration of a

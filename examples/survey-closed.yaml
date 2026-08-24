@@ -1,7 +1,7 @@
-# A survey record (SPEC.md, section 4.6) over a CLOSED corpus: the
+# A survey record (SPEC.md, section 4.5) over a CLOSED corpus: the
 # searched universe is the claim's universe and the probes are complete
-# over it, so absence is conclusive and `limitations` is correctly absent
-# (there are no coverage bounds to state; ERF-4.30). A real record from a
+# over it, so absence is conclusive and the body correctly states no
+# coverage bounds (a complete search of a closed corpus has none). A real record from a
 # working corpus: the probes measure the corpus's own retired `granted`
 # field, so the format's subtraction ledger cites a record instead of
 # asserting a measurement in prose.
