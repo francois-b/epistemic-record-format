@@ -6,6 +6,50 @@ are never reused, and every change lands here with a date.
 
 ## Unreleased
 
+### 2026-08-24 — an audit of the satellites: five fixes, no spec change
+
+An audit of `types/erf.ts`, `viewer/`, and `examples/corpus/` against the
+specification. The model and the viewer passed: the section 3 inline mirror
+is field-for-field identical to the file across all fifteen declarations,
+every type the viewer declares locally is a derived reading or a loader
+shape the model correctly does not define, and the committed render matched
+a fresh run. Five fixes in the corpus and the suite, none of them touching
+a requirement.
+
+**`spec_version` is a quoted SemVer string (`ERF-61`).** The example
+manifest and every fixture declared `spec_version: 1.0`, which is not
+Semantic Versioning and, under the YAML 1.2 JSON schema that `ERF-65`
+mandates, loads as the number 1 where the model types the field `string`.
+The viewer's major-version check survived by accident and the minor version
+was silently destroyed, which is exactly the information `ERF-60`'s
+minor-version rule reads. The rendered corpus page said "conforms to ERF 1"
+and now says "conforms to ERF 1.0.0". Twenty files, `"1.0.0"` throughout
+and `"2.0.0"` in the unsupported-major fixture.
+
+**The example captures carry no SPDX identifier, correctly (`ERF-68`).**
+The four shipped captures paired `licence: W3C-20150513` with
+`licence_name: "W3C Document License 2023"`, which are two different
+licences: SPDX's `W3C-20150513` is the *Software* Notice and Document
+License of 2015, and SPDX has no identifier for the W3C Document License at
+all (verified against the published list). The capture headers invoke the
+2023 document licence, so the identifier was simply wrong. It is removed
+and the plain name kept, which is what `ERF-68` prescribes where no
+identifier applies.
+
+**`licence_note` is gone (`ERF-55`).** The mapping originated a field
+`CaptureEntry` does not define, and neither the viewer's unknown-field
+check nor the suite reached capture entries to catch it. Its content was
+licence terms and a note on shared captures, both of which now sit in the
+file's comment header where they explain without pretending to be data.
+
+**The retired-id guard covers `ERF-30`.** It checked `ERF-29` and `ERF-46`
+but not `ERF-30`, retired the same week, so a refilled `ERF-30` would have
+passed the suite.
+
+**A coverage note stopped citing a retired id as live.** `ERF-18`'s row
+said "the mechanical half is `ERF-46`" after `ERF-46` was retired into that
+very guidance; the guard test reads row keys, not note prose.
+
 ### 2026-08-24 — two reviews adjudicated: eighteen external findings, fourteen internal
 
 A cross-vendor adversarial review (GPT-5.6 sol) and an internal pass ran

@@ -7,7 +7,21 @@
 #
 # `licence` names the SPDX identifier where a capture ships (`ERF-68`);
 # `licence_name` keeps the human form, since an SPDX id is not
-# self-explaining.
+# self-explaining. These four captures carry no `licence`: they ship under
+# the W3C Document License 2023, which has no SPDX identifier (SPDX lists
+# only the three W3C *Software* licences, the newest being W3C-20150513,
+# "W3C Software Notice and Document License (2015-05-13)", which is a
+# different licence). `ERF-68` covers exactly this case: where no identifier
+# applies, prose alone is correct.
+#
+# That licence permits copying and distributing a W3C document, or portions
+# of it, in any medium and for any purpose, provided the original link, the
+# copyright notice, and the document's status accompany the copy. Each
+# capture carries all three in its own header, which is where a reader
+# checks them.
+#
+# Two atoms may share one capture, as ex-001/ex-002 and ex-003/ex-004 do: a
+# capture is a copy of a source, not a copy per atom.
 #
 # `path` is relative to this file. `status: shipped` means the copy is in
 # this repository and the quote check runs. Any other status means the
@@ -52,32 +66,22 @@ captures:
     status: shipped
     path: captures/w3c-prov-dm-2013-entities-activities.txt
     source: "W3C, PROV-DM: The PROV Data Model (Recommendation, 30 April 2013)"
-    licence: W3C-20150513
     licence_name: "W3C Document License 2023"
-    licence_note: "Permits copying and distributing a W3C document or
-      portions of it, in any medium, for any purpose, provided the original
-      link, the copyright notice, and the document's status accompany the
-      copy. The capture carries all three."
 
   ex-002:
     status: shipped
     path: captures/w3c-prov-dm-2013-entities-activities.txt
     source: "W3C, PROV-DM: The PROV Data Model (Recommendation, 30 April 2013)"
-    licence: W3C-20150513
     licence_name: "W3C Document License 2023"
-    licence_note: "Two atoms share one capture, which is ordinary: a capture
-      is a copy of a source, not a copy per atom."
 
   ex-003:
     status: shipped
     path: captures/w3c-prov-o-2013-agents-attribution.txt
     source: "W3C, PROV-O: The PROV Ontology (Recommendation, 30 April 2013)"
-    licence: W3C-20150513
     licence_name: "W3C Document License 2023"
 
   ex-004:
     status: shipped
     path: captures/w3c-prov-o-2013-agents-attribution.txt
     source: "W3C, PROV-O: The PROV Ontology (Recommendation, 30 April 2013)"
-    licence: W3C-20150513
     licence_name: "W3C Document License 2023"

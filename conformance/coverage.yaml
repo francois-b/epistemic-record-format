@@ -48,7 +48,7 @@ requirements:
     tests: [fixtures/valid/minimal]
     note: the loader requires corpus on every record
   ERF-18:
-    untestable-by-design: that a title states the claim is the authoring act itself; the mechanical half is ERF-46
+    untestable-by-design: that a title states the claim is the authoring act itself; the mechanical half was ERF-46, retired 2026-08-24 into this guidance
   ERF-19:
     tests: [fixtures/invalid/standing-bare-date]
     note: >

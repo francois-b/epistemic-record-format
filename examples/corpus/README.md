@@ -34,7 +34,7 @@ not itself be a fabrication, so it is not one.
 
 | Type | Count | What is worth looking at |
 |:--|:--|:--|
-| Atoms | 9 | Two have no audit verdicts, which the health view flags |
+| Atoms | 9 | Six have no audit verdicts, which the health view flags |
 | Claims | 6 | All six compute to `proposal`: nobody has stood on them |
 | Surveys | 3 | One finds nothing, one finds plenty, one is conclusive |
 | Narratives | 1 | Written for this corpus, with bindings into the claims |

@@ -1,4 +1,4 @@
 id: fixture-minimal
 title: "Minimal valid corpus"
-spec_version: 1.0
+spec_version: "1.0.0"
 classification: public

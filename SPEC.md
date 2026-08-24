@@ -1,7 +1,7 @@
 ---
 title: "The Epistemic Record Format"
 subtitle: "Specification: the record types, the data model, and the invariants, stated so an implementer can build to them or diff an existing system against them."
-spec_version: 1.0
+spec_version: "1.0.0"
 status: draft
 last_updated: 2026-08-24
 generated: 2026-08-22
