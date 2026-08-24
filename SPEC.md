@@ -793,13 +793,14 @@ the prose keeps saying what it said.
   markdown pipeline:
 
 ```markdown
-<!-- claims: no-continuous-claim-check "no test that runs on claims" -->
+<!-- claims: no-continuous-claim-check "no test that runs on claims" bound-at=2026-08-23 -->
 ```
 
   The grammar, which is the smallest one that covers real usage:
 
 ```
-binding  ::= "<!--" ws* "claims:" ws+ ids ws+ anchor ws* "-->"
+binding  ::= "<!--" ws* "claims:" ws+ ids ws+ anchor [ws+ "bound-at=" date] ws* "-->"
+date     ::= YYYY "-" MM "-" DD
 ids      ::= id (ws+ id)*
 id       ::= a record id, matching the corpus's id grammar
 anchor   ::= '"' text '"'
@@ -814,6 +815,20 @@ anchor   ::= '"' text '"'
 - **ERF-4.26** Bindings MUST be checkable: a validator flags a passage
   whose claims changed since the binding was made, and a reader can walk
   from a sentence to the claims, atoms, quotes, and sources beneath it.
+- **ERF-4.26c** A binding MUST record `bound-at`, the date it was made, in
+  the marker itself. A binding is stale when the claim it names carries a
+  `last_modified` later than that date, which is a complete mechanical test
+  using only fields the format already defines. A binding without
+  `bound-at` MUST be reported as staleness `indeterminate`, never as
+  current: a validator that cannot tell must say so rather than reassure.
+
+> *Note (non-normative):* on `ERF-4.26c`. This detects that the claim moved,
+> not what moved, so a typo fix in a body flags its bindings. That is the
+> same over-stamping accepted in `ERF-6.10a`, and it errs toward telling a
+> reader to look. The alternative considered and declined was recording a
+> substrate revision identifier in the binding, which would have required
+> the format to define what a revision is and how two compare, and section 8
+> exists precisely to keep substrate concepts out of the record.
 - **ERF-4.26a** A consumer encountering a binding whose id resolves to no
   record MUST report it and MUST NOT drop it silently. A narrative claiming
   support from a record that does not exist is a defect in the narrative,

@@ -20,14 +20,14 @@ same set of problems: production outrunning verification, reviewers
 becoming the bottleneck, and context degrading as documents grow. None of
 the three cites the others, and none connects the complaint to the
 governance traditions that have handled it before.
-<!-- claims: three-vocabularies-zero-synthesis "three communities independently coined names" -->
+<!-- claims: three-vocabularies-zero-synthesis "three communities independently coined names" bound-at=2026-08-23 -->
 
 Underneath the naming, the practical situation is unglamorous. Outside the
 reference infrastructure they buy, individual professionals have no
 compounding store of their own work product. Arguments, analyses, and
 hard-won knowledge accumulate in mail, in drafts, and in memory, and each
 new matter starts closer to zero than it should.
-<!-- claims: lawyers-lack-personal-compounding-km "no compounding store of their own work product" -->
+<!-- claims: lawyers-lack-personal-compounding-km "no compounding store of their own work product" bound-at=2026-08-23 -->
 
 ## Why the discipline never grew
 
@@ -39,7 +39,7 @@ reviewable as a delta. The test runner made correctness machine-checkable.
 The parser made style enforceable without an argument. Each discipline is a
 social practice wrapped around a primitive, and knowledge work never grew
 the equivalent practices because it never grew the equivalent primitives.
-<!-- claims: discipline-needs-primitives "wrapped around a primitive" -->
+<!-- claims: discipline-needs-primitives "wrapped around a primitive" bound-at=2026-08-23 -->
 
 That claim is an argument rather than an observation, which in this format
 means something specific: it owes reasoning rather than evidence, and what
@@ -55,7 +55,7 @@ today, in several products, at low cost per call. But every shipped
 implementation runs once: per answer, per request, or on demand when
 somebody opens a review. None of them runs as a standing check over a
 document that keeps growing.
-<!-- claims: no-continuous-claim-check "runs as a standing check over a document" -->
+<!-- claims: no-continuous-claim-check "runs as a standing check over a document" bound-at=2026-08-23 -->
 
 That is a universal negative, and universal negatives are the hardest
 statements to back. An atom can only ever say what some source did say, so
@@ -73,7 +73,7 @@ expensive citation systems that mark whether a case still stands. Measured
 against each other, they disagree substantially, and the vendor defense
 when the disagreement was published was that no objectively correct
 interpretation exists.
-<!-- claims: citators-disagree-on-negative-treatment "disagree substantially" -->
+<!-- claims: citators-disagree-on-negative-treatment "disagree substantially" bound-at=2026-08-23 -->
 
 The point is not that the citators are bad. It is that a mature, staffed,
 well-funded verification apparatus, measured, turns out to disagree with
@@ -85,7 +85,7 @@ until somebody counted. Counting is the whole idea.
 Provenance, meanwhile, was standardized a decade ago and is not in dispute.
 The W3C model describes a thing's history as entities, activities, and
 agents, and defines attribution as ascribing an entity to an agent.
-<!-- claims: prov-models-entities-activities-agents "entities, activities, and agents" -->
+<!-- claims: prov-models-entities-activities-agents "entities, activities, and agents" bound-at=2026-08-23 -->
 
 Read those definitions and notice what they are about: who did what to a
 thing, and who is answerable for it. None of them is about whether a

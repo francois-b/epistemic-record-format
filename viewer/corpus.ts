@@ -31,7 +31,7 @@ export interface Narrative {
   title: string;
   body: string;
   /** `ERF-4.25` bindings: claims plus the anchor words. */
-  bindings: { claims: string[]; anchor: string; index: number }[];
+  bindings: { claims: string[]; anchor: string; boundAt?: string; index: number }[];
 }
 
 export interface CorpusManifest {
@@ -160,12 +160,13 @@ export function loadCorpus(dir: string): LoadedCorpus {
     const raw = readFileSync(join(dir, "narratives", f), "utf8");
     const { data, body } = splitFrontmatter(raw);
     const bindings: Narrative["bindings"] = [];
-    const re = /<!--\s*claims:\s*([^"]+?)\s*"([^"]*)"\s*-->/g;
+    const re = /<!--\s*claims:\s*([^"]+?)\s*"([^"]*)"(?:\s+bound-at=(\d{4}-\d{2}-\d{2}))?\s*-->/g;
     let m: RegExpExecArray | null;
     while ((m = re.exec(body)) !== null) {
       bindings.push({
         claims: (m[1] ?? "").trim().split(/\s+/).filter(Boolean),
         anchor: m[2] ?? "",
+        boundAt: m[3],
         index: m.index,
       });
     }
