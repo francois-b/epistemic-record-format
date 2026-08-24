@@ -77,17 +77,22 @@ export function disposition(claim: Claim): DispositionReading {
  * Whether a reader can resolve an atom's backing: in a published corpus,
  * whether the captured copy travelled with the records.
  *
- * This is the viewer's own choice, not a rule of the format.
- * once required it and was retired on 2026-08-23, because v1 says nothing
- * about how a claim is presented to a reader without the sources. Showing
+ * This is the viewer's own choice and no requirement asks for it. A rule
+ * once did, and it was retired on 2026-08-23 when v1 stopped saying anything
+ * about how a claim is presented to a reader who lacks the sources. Showing
  * the gap is still the honest thing for a reader to see, so the reference
- * consumer keeps doing it.
+ * consumer keeps doing it, and demonstrating more than the format demands is
+ * a better example than compliance would be.
  */
 export function resolvable(atomId: string, c: LoadedCorpus): { ok: boolean; why: string } {
   const cap = c.captures.get(atomId);
-  if (!cap) return { ok: false, why: "no capture recorded for this atom" };
+  // `ERF-4` exists so these two are distinguishable. An atom with no entry
+  // is a defect in the mapping; an atom with a recorded absence is a corpus
+  // saying, deliberately, that this capture could not travel. Reporting both
+  // as "no capture recorded" collapsed the distinction the rule was for.
+  if (!cap) return { ok: false, why: "no entry in the capture mapping, which is a defect in the mapping rather than a statement about this atom (ERF-4)" };
   if (cap.status === "shipped" && cap.path) return { ok: true, why: "captured copy travels with the corpus" };
-  return { ok: false, why: cap.reason ?? `capture status: ${cap.status}` };
+  return { ok: false, why: cap.reason ?? `capture recorded as absent, status: ${cap.status}` };
 }
 
 export interface BackingReading {
@@ -119,7 +124,17 @@ export function backing(claim: Claim, c: LoadedCorpus): BackingReading {
 }
 
 /**
- * The normalization of `ERF-51`, in the specified order.
+ * The normalization of `ERF-51`, in the specified order: the six
+ * markup-unwrapping steps a to f, then the ten-step sequence.
+ *
+ * Both halves are mandatory. Unwrapping was optional until 2026-08-23, and
+ * the measurement that made it mandatory is the reason to implement it here:
+ * over one corpus, running the sequence without it moved the failure rate
+ * from 9% to 19%, so the optional step decided the verdict on roughly one
+ * atom in ten. This viewer implemented steps 1 to 10 only, which meant the
+ * reference consumer computed verdicts under exactly the configuration the
+ * specification says produces divergent answers, and printed them to a
+ * reader as "Quote check passes".
  *
  * Case is deliberately NOT folded: case is part of a verbatim quote, and
  * folding it lets a mis-cased quote pass a check whose whole job is fidelity.
@@ -128,15 +143,40 @@ export function backing(claim: Claim, c: LoadedCorpus): BackingReading {
  */
 export function normalizeForCheck(s: string): string {
   return s
+    // a. Markdown link syntax reduces to its link text.
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    // b. Attribute blobs in braces are removed.
+    .replace(/\{[^}]*\}/g, "")
+    // c. Parenthesized link targets: absolute, protocol-relative,
+    //    root-relative, fragment-only.
+    .replace(/\((?:https?:)?\/\/[^)]*\)/g, "")
+    .replace(/\(#[^)]*\)/g, "")
+    .replace(/\(\/[^)]*\)/g, "")
+    // d. Blockquote markers at the start of a line, with one following space.
+    .replace(/^[ \t]*>[ ]?/gm, "")
+    // e. Square brackets, straight double quotes, and \u00AE \u2122 \u00A9 ^ \.
+    .replace(/[[\]"\u00AE\u2122\u00A9^\\]/g, "")
+    // f. A space before , . ; : ! ? \u2014 a document-export artifact.
+    .replace(/ ([,.;:!?])/g, "$1")
+    // 1. Unicode NFKC.
     .normalize("NFKC")
+    // 2. Soft hyphens.
     .replace(/\u00AD/g, "")
+    // 3. Typographic single quotes.
     .replace(/[\u2018\u2019\u201B]/g, "'")
+    // 4. Typographic double quotes.
     .replace(/[\u201C\u201D\u201F]/g, '"')
+    // 5. Dash variants.
     .replace(/[\u2010-\u2015\u2212]/g, "-")
+    // 6. Words broken across lines.
     .replace(/-\n\s*/g, "")
+    // 7. Runs of two or more hyphens.
     .replace(/-{2,}/g, "-")
+    // 8. Emphasis and code markers.
     .replace(/[*_`]/g, "")
+    // 9. Dash spacing.
     .replace(/\s*-\s*/g, "-")
+    // 10. Whitespace runs, then trim.
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -167,6 +207,66 @@ export function staleAudits(atom: Atom): boolean {
   const changed = atom.last_modified?.timestamp;
   if (!changed || atom.finding_audit.length === 0) return false;
   return atom.finding_audit.some((a) => String(a.timestamp) < String(changed));
+}
+
+/**
+ * `ERF-47`, the claim half. The requirement names three things whose
+ * staleness is computed and only the atom's finding audit was covered, so a
+ * stale backing audit read as current.
+ */
+export function staleEvidenceAudit(claim: Claim): boolean {
+  const changed = claim.last_modified?.timestamp;
+  const audits = claim.evidence_audit ?? [];
+  if (!changed || audits.length === 0) return false;
+  return audits.some((a) => String(a.timestamp) < String(changed));
+}
+
+export type BindingStaleness = "current" | "stale" | "indeterminate";
+
+/**
+ * `ERF-32`. A binding is stale when the claim it names was modified after
+ * the binding was made. Without `bound-at` the answer is `indeterminate`,
+ * which the requirement demands explicitly: a validator that cannot tell
+ * must say so rather than reassure. Every legacy binding is in that state.
+ */
+export function bindingStaleness(
+  boundAt: string | undefined,
+  claimIds: string[],
+  c: LoadedCorpus,
+): { state: BindingStaleness; why: string } {
+  if (!boundAt) {
+    return {
+      state: "indeterminate",
+      why: "the binding records no bound-at date, so whether the claim moved under it cannot be determined",
+    };
+  }
+  const moved = claimIds.filter((id) => {
+    const m = c.claims.get(id)?.last_modified?.timestamp;
+    return m !== undefined && String(m) > String(boundAt);
+  });
+  return moved.length
+    ? { state: "stale", why: `changed after this passage was bound to it: ${moved.join(", ")}` }
+    : { state: "current", why: `no claim here has changed since ${boundAt}` };
+}
+
+/**
+ * `ERF-44`: the pair is stored once, on either side, so a claim's conflicts
+ * are its own outbound edges plus the inbound ones other claims declare. A
+ * consumer reading only outbound edges shows an incomplete conflict set,
+ * which is what this viewer did.
+ */
+export function conflictsFor(claimId: string, c: LoadedCorpus): string[] {
+  const out = new Set<string>();
+  for (const e of c.claims.get(claimId)?.edges ?? []) {
+    if (e.relation === "conflicts-with") out.add(e.to);
+  }
+  for (const [id, cl] of c.claims) {
+    if (id === claimId) continue;
+    for (const e of cl.edges) {
+      if (e.relation === "conflicts-with" && e.to === claimId) out.add(id);
+    }
+  }
+  return [...out];
 }
 
 /** `ERF-49`: the computed warning a render shows. */

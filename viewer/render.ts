@@ -5,9 +5,11 @@
  */
 import type { Atom, Claim, Survey } from "../types/erf.ts";
 import type { LoadedCorpus, Narrative } from "./corpus.ts";
+import { bindingRe } from "./corpus.ts";
 import {
-  backing, claimsUsingAtom, danglingRefs, disposition,
-  quoteCheck, resolvable, staleAudits, unbacked,
+  backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,
+  disposition, normalizeForCheck, quoteCheck, resolvable, staleAudits,
+  staleEvidenceAudit, unbacked,
 } from "./compute.ts";
 
 export const CSS = `
@@ -45,6 +47,7 @@ h3 { font-family: Inter, -apple-system, sans-serif; font-size:.9em;
 .chip.d-contested { border-color:var(--warn); color:var(--warn); }
 .chip.d-proposal { border-color:var(--mutedlt); }
 .chip.d-retired { color:var(--mutedlt); }
+.chip.d-rejected { border-color:var(--warn); color:var(--warn); background:#fdf7f2; }
 .because { background:var(--highlight); border-left:2px solid var(--rule);
   padding:.7em 1em; margin:.2em 0 1.6em; font-size:.9em; }
 .because b { font-family: Inter, sans-serif; font-size:.85em; text-transform:uppercase;
@@ -172,19 +175,33 @@ export function renderNarrative(n: Narrative, c: LoadedCorpus): string {
       text = text.replace(b.anchor, OPEN + b.anchor + CLOSE);
     }
   }
-  text = text.replace(/<!--\s*claims:\s*([^"]+?)\s*"([^"]*)"\s*-->/g,
-    (_m, ids: string) => "@@NOTE@@" + ids.trim().split(/\s+/).filter(Boolean).join(" ") + "@@ENDNOTE@@");
+  // One grammar, defined once in corpus.ts. Implementing it twice is what
+  // let the parser gain `bound-at` while this copy did not, after which every
+  // binding stopped matching here and leaked into the page as raw markup.
+  const stale = new Map<string, { state: string; why: string }>();
+  text = text.replace(bindingRe(), (_m, ids: string, _anchor: string, boundAt?: string) => {
+    const list = ids.trim().split(/\s+/).filter(Boolean);
+    const key = list.join(" ");
+    stale.set(key, bindingStaleness(boundAt, list, c));
+    return "@@NOTE@@" + key + "@@ENDNOTE@@";
+  });
 
   let html = md(text);
   html = html
     .split(OPEN).join('<span class="bind">')
     .split(CLOSE).join("</span>")
     .replace(/@@NOTE@@([^@]*)@@ENDNOTE@@/g, (_m, ids: string) => {
-      const links = ids.trim().split(/\s+/).filter(Boolean).map((id) =>
+      const list = ids.trim().split(/\s+/).filter(Boolean);
+      // `ERF-33`: an unresolvable binding is reported, never dropped.
+      const links = list.map((id) =>
         c.claims.has(id)
           ? '<a href="claim-' + esc(id) + '.html">' + esc(id) + "</a>"
-          : '<span class="id">' + esc(id) + " (not in this corpus)</span>").join(", ");
-      return '<span class="bindnote">rests on ' + links + "</span>";
+          : '<span class="id">' + esc(id) + " (does not resolve in this corpus)</span>").join(", ");
+      const st = stale.get(list.join(" "));
+      const note = st && st.state !== "current"
+        ? ` &middot; binding ${esc(st.state)}: ${esc(st.why)}`
+        : "";
+      return '<span class="bindnote">rests on ' + links + note + "</span>";
     });
   const body = `<p class="sub">Narrative &middot; highlighted passages carry a binding to a claim</p>${html}`;
   return page(n.title, body, c.manifest.title);
@@ -227,6 +244,20 @@ ${(cl.surveys?.length ?? 0) ? `<h3>Coverage</h3><ul class="plain">${(cl.surveys 
 }).join("")}</ul>` : ""}
 ${cl.edges.length ? `<h3>Relations</h3><ul class="plain">${cl.edges.map((e) =>
   `<li><span class="id">${esc(e.relation)}</span> &rarr; <a href="claim-${esc(e.to)}.html">${esc(c.claims.get(e.to)?.title ?? e.to)}</a></li>`).join("")}</ul>` : ""}
+${(() => {
+  // `ERF-44`: the pair is stored once on either side, so the inbound half
+  // belongs here too. Rendering only outbound edges showed an incomplete
+  // conflict set, and which half a reader saw depended on which claim the
+  // author happened to write it on.
+  const inbound = conflictsFor(cl.id, c).filter((id) =>
+    !cl.edges.some((e) => e.relation === "conflicts-with" && e.to === id));
+  return inbound.length
+    ? `<h3>Conflicts declared elsewhere</h3><ul class="plain">${inbound.map((id) =>
+        `<li><a href="claim-${esc(id)}.html">${esc(c.claims.get(id)?.title ?? id)}</a>
+         <span class="id">stored on that claim</span></li>`).join("")}</ul>`
+    : "";
+})()}
+${staleEvidenceAudit(cl) ? `<div class="warnbox">A backing verdict on this claim predates its last change (<span class="id">ERF-47</span>).</div>` : ""}
 
 <h3>Standings</h3>
 ${cl.standings.length === 0
@@ -277,18 +308,58 @@ ${cap ? `<p class="sub">Capture status: <span class="id">${esc(cap.status)}</spa
   return page(a.id, body, c.manifest.title);
 }
 
+/**
+ * Find the raw span to highlight, in a way that can never mark the wrong text.
+ *
+ * Two attempts, both of which yield an exact span in the raw capture. First a
+ * literal match, which covers most quotes. Then a whitespace-flexible match,
+ * which covers the common case where the capture wraps a line in the middle of
+ * the quoted sentence. Nothing else is attempted: mapping a fully normalized
+ * offset back through sixteen substitutions was tried and marked the wrong
+ * span, since the normalized length of a raw prefix is not monotonic enough at
+ * the edges to binary-search. When neither attempt lands, the page says so.
+ *
+ * The check is the authority on whether the quote is present; this only
+ * decides whether the page can point at it.
+ */
+function locateForHighlight(raw: string, seg: string): [number, number] | null {
+  const literal = raw.indexOf(seg);
+  if (literal >= 0) return [literal, literal + seg.length];
+
+  const flexible = new RegExp(
+    seg.trim().split(/\s+/).map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("\\s+"),
+  );
+  const m = flexible.exec(raw);
+  return m ? [m.index, m.index + m[0].length] : null;
+}
+
 // -------------------------------------------------------------- capture
 export function renderCapture(a: Atom, c: LoadedCorpus, captureText: string | null): string {
   const chk = quoteCheck(a, captureText);
   const cap = c.captures.get(a.id);
   let shown = "";
+  let highlightNote = "";
   if (captureText !== null) {
-    // Highlight the first quote segment where it occurs, on the raw text.
-    const seg = a.quote.split(/\[\.\.\.\]/)[0]?.trim() ?? "";
-    const at = captureText.indexOf(seg);
-    shown = at >= 0
-      ? esc(captureText.slice(0, at)) + "<mark>" + esc(seg) + "</mark>" + esc(captureText.slice(at + seg.length))
-      : esc(captureText);
+    // The highlight and the check used to disagree by construction: the check
+    // compares normalized text, the highlight searched raw text, so a quote
+    // passing only after normalization showed a green box and no highlight
+    // with no explanation. The search is still on raw text, because only a raw
+    // match can mark a span honestly, but a miss is now stated rather than
+    // left as a silent absence.
+    const seg = (a.quote.split("[...]")[0] ?? "").trim();
+    const span = seg ? locateForHighlight(captureText, seg) : null;
+    if (span) {
+      shown = esc(captureText.slice(0, span[0])) + "<mark>"
+        + esc(captureText.slice(span[0], span[1])) + "</mark>"
+        + esc(captureText.slice(span[1]));
+    } else {
+      shown = esc(captureText);
+      if (chk.state === "pass") {
+        highlightNote = "The check passes on normalized text, but the quote does "
+          + "not appear literally in the raw capture, so there is no span to mark. "
+          + "The check is the authority here; the highlight is a convenience.";
+      }
+    }
   }
   const body = `
 <h1>Capture for <span class="id">${esc(a.id)}</span></h1>
@@ -302,6 +373,7 @@ ${chk.state === "uncheckable" ? `<div class="warnbox"><b>The check cannot run he
 <h3>The quote</h3>
 <blockquote class="q">${esc(a.quote.trim())}</blockquote>
 
+${highlightNote ? `<p class="sub">${esc(highlightNote)}</p>` : ""}
 ${captureText !== null
   ? `<h3>The captured copy</h3><pre class="capture">${shown}</pre>`
   : ""}
@@ -369,6 +441,14 @@ ${list(uncheckable.map((x) => `<a href="capture-${esc(x.a.id)}.html"><span class
 
 <h2>References that do not resolve</h2>
 ${list(dangling.map(esc))}
+
+<h2>Narrative bindings whose freshness cannot be told</h2>
+${list(c.narratives.flatMap((n) => n.bindings.map((b) => {
+  const st = bindingStaleness(b.boundAt, b.claims, c);
+  return st.state === "current" ? null
+    : `<a href="narrative-${esc(n.slug)}.html">${esc(n.title)}</a>
+       <span class="chip">${esc(st.state)}</span> ${esc(b.claims.join(" "))} &mdash; ${esc(st.why)}`;
+}).filter((x): x is string => x !== null)))}
 
 <h2>Records that do not match the normative model</h2>
 ${c.findings.length === 0

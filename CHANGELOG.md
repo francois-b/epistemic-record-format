@@ -6,6 +6,54 @@ are never reused, and every change lands here with a date.
 
 ## Unreleased
 
+### 2026-08-23 — the reference consumer is made to obey the specification
+
+A conformance trace over all 63 requirements asked, for each one, whether
+any code actually implements it. Two earlier passes had not: the spec audit
+asked whether a requirement should stay, and the external review asked
+whether requirements contradicted each other. Neither opened the viewer.
+
+The trace found 24 gaps, of which these mattered most, all now fixed.
+
+**Every narrative binding rendered as raw markup.** The grammar was
+implemented twice, and only the parser gained `bound-at`. The renderer's
+copy matched nothing, so six escaped HTML comments were visible in the
+published page and no "rests on" link rendered at all, in direct violation
+of `ERF-33`. There is now one grammar, defined once and imported.
+
+**The reference consumer did not implement its own mandatory
+normalization.** `ERF-51` makes six unwrapping steps equally mandatory and
+carries the measurement that made them so, and the viewer implemented none
+of them, computing verdicts under exactly the configuration the
+specification says diverges and printing them as "Quote check passes". All
+six are implemented in the specified order.
+
+**The highlight and the check disagreed by construction**: the check
+compared normalized text while the highlight searched raw text, so a quote
+passing only after normalization showed a green box and no highlight, with
+no explanation. The highlight now tries a literal then a whitespace-flexible
+match, both exact in the raw text, and says so plainly when neither lands.
+
+**Duplicate ids were undetected and destructive.** A `Map.set` on an
+existing key discarded the first record silently, so a duplicated atom id
+made one atom vanish and redirected every claim citing it. The loader now
+reports and keeps the first. The [private-repo alias] validator checked claims only, leaving
+741 atom ids and every survey unguarded; it now covers all three types.
+
+**A non-verdict could load as a verdict**, since the union is compile-time
+only and YAML is cast straight through. `ERF-12`'s three values are checked
+at load, which is the failure that put 32 `PARSE_ERROR` values in a real
+corpus.
+
+Also: the capture mapping is checked for completeness, so an omission is
+distinguishable from a recorded absence, which is what `ERF-4` is for;
+`ERF-47` staleness extends to a claim's evidence audit; `ERF-32` binding
+staleness is computed and surfaced, reporting `indeterminate` where
+`bound-at` is absent rather than reassuring; a claim's conflicts now include
+the half stored on the other side of the pair, per `ERF-44`; the manifest's
+four required fields are validated; and `rejected` claims render styled.
+
+
 ### 2026-08-23 — a survey states its coverage bounds in its body
 
 `limitations` leaves the survey record and stays on the atom, and the

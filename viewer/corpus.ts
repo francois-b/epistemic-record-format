@@ -34,6 +34,22 @@ export interface Narrative {
   bindings: { claims: string[]; anchor: string; boundAt?: string; index: number }[];
 }
 
+/**
+ * The narrative-binding grammar of `ERF-31`, in one place.
+ *
+ * Groups: 1 the ids, 2 the anchor, 3 the optional `bound-at` date.
+ *
+ * This is a function rather than a constant because a `/g` regex carries
+ * `lastIndex` between uses, so sharing one object across call sites makes
+ * matches disappear intermittently. It exists at all because the grammar was
+ * implemented twice: the parser here gained `bound-at` and the renderer's copy
+ * did not, so every binding in the corpus stopped matching there and six raw
+ * comments leaked into the page. One grammar, one definition.
+ */
+export function bindingRe(): RegExp {
+  return /<!--\s*claims:\s*([^"]+?)\s*"([^"]*)"(?:\s+bound-at=(\d{4}-\d{2}-\d{2}))?\s*-->/g;
+}
+
 export interface CorpusManifest {
   id: string;
   title: string;
@@ -53,6 +69,9 @@ export interface LoadedCorpus {
 }
 
 const FM = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;
+
+/** `ERF-12`: the three verdicts, and nothing else. A tool failure is not one. */
+const VERDICTS = new Set(["SUPPORTED", "PARTIAL", "UNSUPPORTED"]);
 
 function splitFrontmatter(text: string): { data: Record<string, unknown>; body: string } {
   const m = FM.exec(text);
@@ -102,10 +121,53 @@ function requireFields(
   }
 }
 
+/**
+ * `ERF-36` and `ERF-38`: an id is unique across every record type in the
+ * realm, and a duplicate is rejected rather than absorbed.
+ *
+ * A `Map.set` on an existing key silently discards the first record, so a
+ * duplicated atom id would make one atom vanish and every claim citing it
+ * resolve to the survivor. This reports instead, and keeps the record that
+ * loaded first so the loss is visible rather than arbitrary.
+ */
+function setUnique<T>(
+  m: Map<string, T>,
+  id: string,
+  value: T,
+  seen: Map<string, string>,
+  kind: string,
+  findings: ConformanceFinding[],
+): void {
+  const prior = seen.get(id);
+  if (prior !== undefined) {
+    findings.push({
+      record: id,
+      field: "id",
+      detail: `duplicate id: already used by an existing ${prior} record, `
+        + `repeated by a ${kind} record. Ids are unique across every record `
+        + `type in a realm (ERF-36); the later record is not loaded.`,
+    });
+    return;
+  }
+  seen.set(id, kind);
+  m.set(id, value);
+}
+
 export function loadCorpus(dir: string): LoadedCorpus {
   const findings: ConformanceFinding[] = [];
+  /** id -> record type, so a collision across types is caught too. */
+  const seenIds = new Map<string, string>();
 
   const manifest = yaml.load(readFileSync(join(dir, "corpus.yaml"), "utf8")) as CorpusManifest;
+  for (const f of ["id", "title", "spec_version", "classification"]) {
+    if (!(manifest as unknown as Record<string, unknown>)[f]) {
+      findings.push({
+        record: "corpus.yaml",
+        field: f,
+        detail: "the manifest MUST declare this field (ERF-59)",
+      });
+    }
+  }
 
   // ---- atoms -------------------------------------------------------------
   const atoms = new Map<string, Atom>();
@@ -113,11 +175,26 @@ export function loadCorpus(dir: string): LoadedCorpus {
     const { data } = splitFrontmatter(readFileSync(join(dir, "atoms", f), "utf8"));
     const id = String(data["id"] ?? basename(f, ".md"));
     requireFields(data, id, ["id", "type", "corpus", "finding", "quote", "citation_text", "source_quality", "created"], findings);
-    atoms.set(id, {
+    const fa = arr<{ verdict?: unknown }>(data["finding_audit"]);
+    // `ERF-12`: the verdict union is compile-time only, and YAML is cast
+    // straight through, so a non-verdict loads as a verdict unless checked
+    // here. The [private-repo alias] corpus carried 32 `PARSE_ERROR` values until they were
+    // removed, which is exactly the failure this guards.
+    for (const v of fa) {
+      if (!VERDICTS.has(String(v?.verdict))) {
+        findings.push({
+          record: id,
+          field: "finding_audit.verdict",
+          detail: `${String(v?.verdict)} is not one of ${[...VERDICTS].join(", ")}; `
+            + `a failed audit is not a verdict (ERF-12)`,
+        });
+      }
+    }
+    setUnique(atoms, id, {
       ...(data as unknown as Atom),
       id,
-      finding_audit: arr(data["finding_audit"]),
-    });
+      finding_audit: fa as Atom["finding_audit"],
+    }, seenIds, "atom", findings);
   }
 
   // ---- claims ------------------------------------------------------------
@@ -126,7 +203,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
     const { data, body } = splitFrontmatter(readFileSync(join(dir, "claims", f), "utf8"));
     const id = String(data["id"] ?? basename(f, ".md"));
     requireFields(data, id, ["id", "type", "corpus", "title", "epistemic_kind", "created"], findings);
-    claims.set(id, {
+    setUnique(claims, id, {
       ...(data as unknown as Claim),
       id,
       families: arr(data["families"]),
@@ -136,7 +213,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
       standings: arr(data["standings"]),
       evidence_audit: arr(data["evidence_audit"]),
       body,
-    });
+    }, seenIds, "claim", findings);
   }
 
   // ---- surveys -----------------------------------------------------------
@@ -145,13 +222,13 @@ export function loadCorpus(dir: string): LoadedCorpus {
     const { data, body } = splitFrontmatter(readFileSync(join(dir, "surveys", f), "utf8"));
     const id = String(data["id"] ?? basename(f, ".md"));
     requireFields(data, id, ["id", "type", "corpus", "title", "conducted"], findings);
-    surveys.set(id, {
+    setUnique(surveys, id, {
       ...(data as unknown as Survey),
       id,
       searches: arr(data["searches"]),
       notable_results: arr(data["notable_results"]),
       body,
-    });
+    }, seenIds, "survey", findings);
   }
 
   // ---- narratives --------------------------------------------------------
@@ -160,7 +237,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
     const raw = readFileSync(join(dir, "narratives", f), "utf8");
     const { data, body } = splitFrontmatter(raw);
     const bindings: Narrative["bindings"] = [];
-    const re = /<!--\s*claims:\s*([^"]+?)\s*"([^"]*)"(?:\s+bound-at=(\d{4}-\d{2}-\d{2}))?\s*-->/g;
+    const re = bindingRe();
     let m: RegExpExecArray | null;
     while ((m = re.exec(body)) !== null) {
       bindings.push({
@@ -184,6 +261,28 @@ export function loadCorpus(dir: string): LoadedCorpus {
   if (existsSync(capPath)) {
     const doc = yaml.load(readFileSync(capPath, "utf8")) as { captures?: Record<string, CaptureEntry> };
     for (const [k, v] of Object.entries(doc?.captures ?? {})) captures.set(k, v);
+  }
+
+  // `ERF-4`: every atom has an entry, and an absence is recorded explicitly.
+  // The rule exists so a validator can tell a recorded absence from an
+  // omission, which is the distinction `resolvable` could not previously make.
+  for (const id of atoms.keys()) {
+    const cap = captures.get(id);
+    if (!cap) {
+      findings.push({
+        record: id,
+        field: "captures.yaml",
+        detail: "no entry in the capture mapping. Every atom MUST have one, "
+          + "giving a path or an explicit absence with a reason (ERF-4), so "
+          + "that an omission is distinguishable from a recorded absence.",
+      });
+    } else if (cap.status !== "shipped" && !cap.reason) {
+      findings.push({
+        record: id,
+        field: "captures.yaml",
+        detail: `capture status ${cap.status} carries no reason (ERF-5)`,
+      });
+    }
   }
 
   return { manifest, atoms, claims, surveys, narratives, captures, findings };
