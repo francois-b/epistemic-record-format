@@ -319,6 +319,7 @@ updates is worse than none, because it reads as complete.
 
 | Decision | Ruled | Why |
 |:--|:--|:--|
+| A caveat field on records that have a body | 2026-08-23 | A record with a body carries its caveats there. `limitations` stays on the atom alone, which has no body and for which it is the only prose; the survey's copy was the same content in two places, and a claim never needed one. |
 | Policies of any kind in the format | 2026-08-23 | v1 specifies records and the bindings between them; what anyone does with a corpus is the consumer's. Supersedes the earlier ruling that made the ship gate an invariant, and takes the audit policy, its aliases (audit intensity, verification bars), and the manifest's policy block with it. |
 | Presentation rules for readers without the sources (`ERF-6.8a`) | 2026-08-23 | How a claim is shown to someone who cannot open its backing is presentation, and presentation is the consumer's. The reference viewer still shows the gap, as its own choice. |
 | Degrees of belief on claims (probabilities, confidence scores) | design period | Invites false precision and averaging over judgments that were never commensurable. |

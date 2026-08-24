@@ -35,13 +35,6 @@ notable_results:
       Precedent Treatment Classification (arXiv, 2026)"
     note: "The line is active in the LLM era: precedent-treatment
       classification is now an LLM benchmark task."
-limitations: |
-  The private-library act bears only on that library's holdings; its yield
-  (passages tracing to one already-captured study) carries no weight for
-  the state of the published literature and is recorded as color, not
-  coverage. Web probes inspected as returned, one results page each;
-  law-review databases (HeinOnline, SSRN) and non-English scholarship not
-  searched directly.
 ---
 
 Empirical studies measuring agreement between legal citators on negative
@@ -51,3 +44,10 @@ through Hellyer 2018 to a 2026 LLM benchmark), with the definitive study
 already captured in this corpus. The survey backs a density reading: this
 ground is studied, and claims about citator disagreement rest on a real
 literature, not a single stray source.
+
+**Coverage bounds.** The private-library act bears only on that library's
+holdings; its yield (passages tracing to one already-captured study) carries
+no weight for the state of the published literature and is recorded as
+color, not coverage. Web probes inspected as returned, one results page
+each; law-review databases (HeinOnline, SSRN) and non-English scholarship
+not searched directly.

@@ -194,7 +194,6 @@ interface Survey {
   conducted: ActorStamp;       // machine actors legal; judgment stays on claims
   searches: SearchAct[];
   notable_results: { what: string; note: string; atoms?: AtomId[] }[];
-  limitations?: string;        // SHOULD when cited for absence (ERF-29)
   prior_survey?: SurveyId;     // re-run linkage
   body: string;
 }
@@ -253,7 +252,7 @@ tool usually drafts and a human may author or repair.
 | `families` | FamilyName list | tool proposes, human rules | at mint, at reconciliation | guidance in 4.3 |
 | `atoms_for` | AtomId list | tool proposes, human admits | as evidence lands | `ERF-23` |
 | `atoms_against` | AtomId list | tool proposes, human admits | as evidence lands | `ERF-23` |
-| `surveys` | SurveyId list, optional | tool proposes, human admits | as coverage lands | `ERF-25`, `ERF-29` |
+| `surveys` | SurveyId list, optional | tool proposes, human admits | as coverage lands | `ERF-25` |
 | `edges` | Edge list, claim-to-claim | tool proposes, human rules | at composition and challenge | `ERF-43`, `ERF-44` |
 | `standings` | StandingEntry list | tool writes, humans in `by` | at each stance | `ERF-19`, `ERF-21` |
 | `evidence_audit` | AuditEntry list | tool | change-triggered | `ERF-24`, guidance in 4.4 |
@@ -275,7 +274,6 @@ tool usually drafts and a human may author or repair.
 | `conducted` | ActorStamp | tool | at the search | `ERF-28` |
 | `searches` | SearchAct list | tool | at the search | `ERF-26`, `ERF-27` |
 | `notable_results` | list of `{what, note, atoms?}` | either | at the search, as atoms mint | `ERF-27` |
-| `limitations` | string, optional | either | at the search | `ERF-29` |
 | `prior_survey` | SurveyId, optional | tool | at a re-run | `ERF-28` |
 | `body` | string | either | freely | `ERF-28` |
 
@@ -426,6 +424,12 @@ The caveat field is named `limitations` rather than "warrant" deliberately:
 in Toulmin's vocabulary a warrant is the licence from evidence to claim,
 the opposite role, and the borrowed name guaranteed misreading by trained
 readers.
+
+Only the atom has this field, and the asymmetry is the rule rather than an
+oversight: **a record with a body carries its caveats there.** Claims and
+surveys have bodies and use them. The atom has none, so `limitations` is
+not a caveat slot bolted onto prose that already exists, it is the atom's
+only prose.
 
 - **ERF-6** The `quote` MUST be verbatim from the capture. An omission
   inside a quote MUST be written `[...]`; bare `...` is reserved for dots
@@ -670,10 +674,11 @@ notable_results:
 **Writing one well.** How often a fruitful survey is re-run is a question
 for whoever runs the practice, not for the format. Describe the search in
 the body: what you were after, what surprised you, what you would search
-differently next time. Keep `limitations` for the coverage bounds
-themselves, because that is the field a reader or a validator looks in when
-weighing an absence claim, and bounds buried in narrative prose cannot be
-found by anything.
+differently next time. A survey cited for an absence or a sparseness
+reading should close by stating its coverage bounds, what the acts did not
+cover and how deeply hits were inspected, because that is what a reader
+weighs when an absence is doing work. A complete search of a closed corpus
+correctly has nothing to state.
 
 - **ERF-26** Each search act MUST name its concrete instrument in `tool`
   and its `query` in that instrument's own terms: a search string, a
@@ -695,18 +700,13 @@ found by anything.
   `timestamp` where a survey spans sittings; absent one, an act inherits
   the survey's `conducted` timestamp. Staleness of a claim's survey backing
   is computed from `conducted` timestamps, never stored.
-- **ERF-29** A survey cited by a claim asserting absence or sparseness
-  SHOULD carry `limitations`: what the acts did not cover and how deeply
-  hits were inspected. A complete search of a closed corpus correctly
-  carries none.
-
 > *Note (non-normative):* the weight of an empty search is the relation
 > between the universe searched and the universe the claim is about. A
 > world-claim over the world's indexes (web, preprint servers, patent
 > databases): absence is real, defeasible, decaying evidence. A world-claim
 > over a private sample (a curated thousand-volume library): absence is
 > nearly no evidence; the sample says something about its curation, nothing
-> about the world; record such an act as color, in `limitations`. A
+> about the world; say so in the body when recording such an act. A
 > closed-corpus claim with a complete search of that corpus: absence is
 > conclusive, and there are no limitations to state. The same relation, read
 > from the other side, is why `conducted` admits machine actors: searching

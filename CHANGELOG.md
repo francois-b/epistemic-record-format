@@ -6,6 +6,22 @@ change lands here with a date.
 
 ## Unreleased
 
+### 2026-08-23 — a survey states its coverage bounds in its body
+
+`limitations` leaves the survey record and stays on the atom, and the
+asymmetry becomes a stated rule: **a record with a body carries its caveats
+there.** Claims and surveys have bodies and use them. The atom has none, so
+its `limitations` is not a caveat slot bolted onto existing prose, it is the
+atom's only prose. A survey carrying both a body and a caveat field was
+saying the same thing in two places.
+
+`ERF-29` is retired and its id is not reused. The substance survives as
+guidance in the survey section: a survey cited for an absence or a
+sparseness reading should close by stating what its acts did not cover and
+how deeply hits were inspected, and a complete search of a closed corpus
+correctly has nothing to state. The three surveys in the reference practice
+and the example corpus had their bounds folded into their bodies verbatim.
+
 ### 2026-08-23 — the v1 pare-down
 
 The specification is cut to what an implementer needs. 1,306 lines to

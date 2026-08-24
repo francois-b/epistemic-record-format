@@ -42,8 +42,8 @@ documentation mention, a prose rationale, or ordinary English rather than
 a field use; the eight atom registries (741 atoms) contain the word
 nowhere.
 
-No limitations are recorded, and correctly none exist: the searched
-universe is the claim's universe (the registered corpora themselves), and
-the probes are complete over it. Absence here is conclusive, not
+**Coverage bounds.** None exist, and correctly so: the searched universe is
+the claim's universe (the registered corpora themselves), and the probes are
+complete over it. Absence here is conclusive, not
 defeasible. Anyone holding the corpus can re-run the three probes and
 falsify this record.

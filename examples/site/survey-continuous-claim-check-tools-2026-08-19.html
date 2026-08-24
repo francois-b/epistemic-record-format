@@ -83,18 +83,9 @@ p { margin:0 0 1em; }
 <h3>Notable results</h3>
 <ul class="plain"><li><b>Google Vertex Check Grounding API</b><br>Cleanest per-claim entailment with a support score; explicitly per-request, no persistence across calls.</li><li><b>Clearbrief Cite Check Report</b><br>Capture plus semantic quote-support scoring plus an audit-trail artifact; runs on demand at review time, not as the document grows.</li><li><b>RAGAS faithfulness (with Vectara HHEM, Patronus Lynx)</b><br>Per-response claim decomposition checked against retrieved context; the one-shot evaluation pattern, category-wide.<br><a href="atom-kwg-146.html"><span class="id">kwg-146</span></a></li><li><b>ChangeDetection.io</b><br>Genuinely continuous, but watches source drift, not claim validity: continuity without entailment.</li></ul>
 
-<h3>Limitations</h3>
-<p>Territory covered by the two earlier scans (2026-06-22 memory axis,
-2026-07-02 grounding axis) was deliberately skipped: FActScore family,
-Citations API, PaperQA2, Scite/Elicit/Consensus, legal misgrounding.
-English-language sources; capabilities read from vendor documentation and
-marketing, not trials; several primary pages 403'd or unread and are
-flagged UNVERIFIED in the scan. Per-query yields were mostly not
-recorded: the hit counts above are tools-graded counts, not search-result
-counts, and only two null queries survive verbatim.</p>
-
 <h2>The record</h2>
-<p>Shipped tools running claim-against-source checks continuously over maintained documents: sought and not found. Four parallel research passes graded ~95 tools and standards against five epistemic capacities; the entailment mechanism is mature and cheap, and every shipped implementation found runs once per answer, per request, or on demand at review time. None runs as a standing lint over a document that keeps growing.</p></main>
+<p>Shipped tools running claim-against-source checks continuously over maintained documents: sought and not found. Four parallel research passes graded ~95 tools and standards against five epistemic capacities; the entailment mechanism is mature and cheap, and every shipped implementation found runs once per answer, per request, or on demand at review time. None runs as a standing lint over a document that keeps growing.</p>
+<p>**Coverage bounds.** Territory covered by the two earlier scans (2026-06-22 memory axis, 2026-07-02 grounding axis) was deliberately skipped: FActScore family, Citations API, PaperQA2, Scite/Elicit/Consensus, legal misgrounding. English-language sources; capabilities read from vendor documentation and marketing, not trials; several primary pages 403'd or unread and are flagged UNVERIFIED in the scan. Per-query yields were mostly not recorded: the hit counts above are tools-graded counts, not search-result counts, and only two null queries survive verbatim.</p></main>
 <footer>Rendered by <span class="id">erf-view</span>, the reference consumer for the
 Epistemic Record Format. Every reading on these pages is computed from the records at
 render time and stored nowhere.</footer>

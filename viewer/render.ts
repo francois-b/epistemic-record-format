@@ -151,8 +151,7 @@ conforms to ERF ${esc(c.manifest.spec_version)}</p>
 <h2>Surveys</h2>
 <ul class="plain">${[...c.surveys.values()].map((s) =>
   `<li><a href="survey-${esc(s.id)}.html">${esc(s.title)}</a><br>
-   <span class="id">${s.searches.length} search acts &middot; ${s.notable_results.length} notable results${
-     s.limitations ? "" : " &middot; no limitations recorded"}</span></li>`).join("")}</ul>
+   <span class="id">${s.searches.length} search acts &middot; ${s.notable_results.length} notable results</span></li>`).join("")}</ul>
 
 
 <h2>Atoms</h2>
@@ -224,7 +223,7 @@ ${cl.atoms_against.length ? `<h3>Evidence against</h3><table><tr><th>Atom</th><t
 ${(cl.surveys?.length ?? 0) ? `<h3>Coverage</h3><ul class="plain">${(cl.surveys ?? []).map((s) => {
   const sv = c.surveys.get(s);
   return `<li><a href="survey-${esc(s)}.html">${esc(sv?.title ?? s)}</a><br>
-    <span class="id">${sv?.limitations ? "limitations recorded" : "no limitations recorded"}</span></li>`;
+    <span class="id">${sv?.searches.length ?? 0} search acts</span></li>`;
 }).join("")}</ul>` : ""}
 ${cl.edges.length ? `<h3>Relations</h3><ul class="plain">${cl.edges.map((e) =>
   `<li><span class="id">${esc(e.relation)}</span> &rarr; <a href="claim-${esc(e.to)}.html">${esc(c.claims.get(e.to)?.title ?? e.to)}</a></li>`).join("")}</ul>` : ""}
@@ -327,11 +326,6 @@ ${s.notable_results.length === 0
   : `<ul class="plain">${s.notable_results.map((n) =>
       `<li><b>${esc(n.what)}</b><br>${esc(n.note)}${
         (n.atoms ?? []).length ? `<br>${(n.atoms ?? []).map((a) => `<a href="atom-${esc(a)}.html"><span class="id">${esc(a)}</span></a>`).join(" ")}` : ""}</li>`).join("")}</ul>`}
-
-<h3>Limitations</h3>
-${s.limitations
-  ? `<p>${esc(s.limitations.trim())}</p>`
-  : `<div class="okbox">None recorded, and none exist. When the universe searched is the universe the claim is about, and the search is complete over it, absence is conclusive rather than defeasible.</div>`}
 
 <h2>The record</h2>
 ${md(s.body)}`;

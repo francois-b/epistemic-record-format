@@ -44,15 +44,6 @@ notable_results:
   - what: "ChangeDetection.io"
     note: "Genuinely continuous, but watches source drift, not claim
       validity: continuity without entailment."
-limitations: |
-  Territory covered by the two earlier scans (2026-06-22 memory axis,
-  2026-07-02 grounding axis) was deliberately skipped: FActScore family,
-  Citations API, PaperQA2, Scite/Elicit/Consensus, legal misgrounding.
-  English-language sources; capabilities read from vendor documentation and
-  marketing, not trials; several primary pages 403'd or unread and are
-  flagged UNVERIFIED in the scan. Per-query yields were mostly not
-  recorded: the hit counts above are tools-graded counts, not search-result
-  counts, and only two null queries survive verbatim.
 ---
 
 Shipped tools running claim-against-source checks continuously over
@@ -61,3 +52,12 @@ graded ~95 tools and standards against five epistemic capacities; the
 entailment mechanism is mature and cheap, and every shipped implementation
 found runs once per answer, per request, or on demand at review time.
 None runs as a standing lint over a document that keeps growing.
+
+**Coverage bounds.** Territory covered by the two earlier scans (2026-06-22
+memory axis, 2026-07-02 grounding axis) was deliberately skipped: FActScore
+family, Citations API, PaperQA2, Scite/Elicit/Consensus, legal misgrounding.
+English-language sources; capabilities read from vendor documentation and
+marketing, not trials; several primary pages 403'd or unread and are flagged
+UNVERIFIED in the scan. Per-query yields were mostly not recorded: the hit
+counts above are tools-graded counts, not search-result counts, and only two
+null queries survive verbatim.

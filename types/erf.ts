@@ -139,7 +139,9 @@ export interface Atom {
   source_quality: SourceQuality;
   /** The date the FACT is true of, distinct from when it was recorded. */
   as_of_date?: string;
-  /** Recorded caveat about the evidence. */
+  /** Recorded caveat about the evidence. The atom alone carries this:
+   *  a record with a body puts its caveats there, and the atom has
+   *  none, so this is its only prose. */
   limitations?: string;
   created: ActorStamp;
   last_modified?: ActorStamp;
@@ -200,10 +202,6 @@ export interface Survey {
   /** The curated subset worth recording; entries mint atoms when a hit
    *  deserves quoting (ERF-27). */
   notable_results: { what: string; note: string; atoms?: AtomId[] }[];
-  /** What the acts did not cover and how deeply hits were inspected;
-   *  SHOULD when cited for absence or sparseness; correctly absent for a
-   *  complete search of a closed corpus (ERF-29). */
-  limitations?: string;
   /** The predecessor record when the same sought is searched again. */
   prior_survey?: SurveyId;
   /** The search narrated: method, yield, and reading. */
