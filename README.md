@@ -78,6 +78,7 @@ presentation. The demonstration is weaker for it and honest about why.
 | [`SPEC.md`](SPEC.md) | The specification: record types, numbered requirements (RFC 2119), vocabularies, invariants, serialization. |
 | [`types/erf.ts`](types/erf.ts) | The normative data model as a compiling TypeScript file; `SPEC.md` carries an inline mirror. |
 | [`DESIGN-HISTORY.md`](DESIGN-HISTORY.md) | Non-normative companion: how the format got this way (the subtraction ledger, the reversals) and the prior-art survey. |
+- `BACKLOG.md` — what the format does not yet do, each item with the event that would revive it.
 | [`CHANGELOG.md`](CHANGELOG.md) | Change history, newest first. |
 | [`examples/`](examples/) | Single-record examples as standalone YAML, plus [`examples/corpus/`](examples/corpus/), a small complete corpus of real records exercising every record type, and [`examples/site/`](examples/site/), that corpus rendered. |
 | [`viewer/`](viewer/) | `erf-view`, the reference consumer: a TypeScript static-site generator that imports the normative model and computes every derived reading from the specification text. |

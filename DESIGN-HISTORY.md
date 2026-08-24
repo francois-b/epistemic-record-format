@@ -346,27 +346,11 @@ updates is worse than none, because it reads as complete.
 | Numbered requirements for authoring judgment | 2026-08-23 | Section 4 held 52 requirements and 18 of 85 were checked by anything, so most of the document's normative weight was advice wearing MUST. Promises about what a record means stay numbered; advice about writing a good one became prose. Section 4 fell to 34. |
 | Section-shaped requirement ids | 2026-08-23 | The scheme rotted as it always does: sections moved, ids could not, and the correspondence broke in three places. Flattened to a flat sequence before publication, the last moment it was free. |
 
-### Deferred, each with the trigger that would revive it
+### Deferred
 
-| Deferred | Trigger |
-|:--|:--|
-| Non-text evidence payloads (measurement, table, image) | The first non-text atom in real work. |
-| Per-attachment evidence roles | The first atom that must sit in both evidence lists at once. |
-| Atom lifecycle (`withdrawn`, `superseded_by`) | The first bad atom found after citation. Also where an undercutting defeater would be expressed. |
-| A capture manifest with content-hash identity | A captures reorganization, a same-URL revision collision, or any corpus sharing. |
-| Content-addressed record ids | A second writer minting into a shared corpus, where check-before-write cannot prevent a collision. |
-| A families registry (definitions, rename history) | The first family split or rename that matters to an existing document. |
-| An actor registry | A second human in a corpus. |
-| Import provenance on copied records, and a declared deciding actor | A second human in a corpus. |
-| Declared perishability (`stale_after`) | A report that needs it. |
-| Structured bet settlement | Calibration across many settled bets. |
-| Inference grouping (joint premises) | A lint or a cold reader miscounting a joint premise set. |
-| A counter-survey mirror | The first survey that must stand against a claim rather than back one. |
-| A typed cause on withdrawals | Something that must filter withdrawals by reason. Its vocabulary would then be derived from accumulated reasons. |
-| A relation for near-identical claims | Two parties holding the same proposition at a shared boundary. |
-| Media-type extraction profiles for capture text | The first capture that is not text or markdown. |
-| A machine-readable audit policy schema | A second corpus with a genuinely different audit bar. |
-| The question record type's return | Questions that need a lifecycle, meaning someone actually marking one answered rather than just minting the claim that settles it. |
+Deferred items and their triggers live in `BACKLOG.md`. They are a queue
+rather than a record: an item leaves that file when its trigger fires, which
+is the opposite lifecycle to everything else in this document.
 
 ## Part IV — What the specification shed, and where its ids went
 
