@@ -205,7 +205,7 @@ fn kind_of(dep: &Deployment, id: &str) -> Option<&'static str> {
 
 fn check_references(dep: &Deployment, rep: &mut Report) {
     // ERF-35: every reference resolves within the deployment.
-    let mut check = |rep: &mut Report, owner: &str, field: &str, file: &Path, target: &str, want: &'static str| {
+    let check = |rep: &mut Report, owner: &str, field: &str, file: &Path, target: &str, want: &'static str| {
         match kind_of(dep, target) {
             None => rep.violation("ERF-35", owner, field, file, 0,
                 format!("`{target}` resolves to no record in the deployment")),

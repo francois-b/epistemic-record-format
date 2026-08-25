@@ -2,3 +2,9 @@ node_modules/
 package-lock.json
 *.tsbuildinfo
 .DS_Store
+# Build artifacts from the independent trials: their sources are kept, their
+# outputs are not. Swept in once by an over-broad `git add -A` (2026-08-25).
+target/
+reviews/**/out/
+reviews/**/__pycache__/
+*.db

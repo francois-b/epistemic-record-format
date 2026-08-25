@@ -1,6 +1,6 @@
 diff -ru -x captures tests/corpus-hostile/relational-hostile/corpus.yaml out/hostile-regen/relational-hostile/corpus.yaml
 --- tests/corpus-hostile/relational-hostile/corpus.yaml	2026-08-25 11:05:16
-+++ out/hostile-regen/relational-hostile/corpus.yaml	2026-08-25 11:09:56
++++ out/hostile-regen/relational-hostile/corpus.yaml	2026-08-25 11:19:33
 @@ -1,5 +1,4 @@
 -# a corpus declaration may carry comments; nothing forbids them
 -spec_version: 0.9.0
@@ -11,7 +11,7 @@ diff -ru -x captures tests/corpus-hostile/relational-hostile/corpus.yaml out/hos
  owner: process:trial-harness
 diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-001.md out/hostile-regen/relational-hostile/records/h-001.md
 --- tests/corpus-hostile/relational-hostile/records/h-001.md	2026-08-25 11:05:16
-+++ out/hostile-regen/relational-hostile/records/h-001.md	2026-08-25 11:09:56
++++ out/hostile-regen/relational-hostile/records/h-001.md	2026-08-25 11:19:33
 @@ -1,16 +1,12 @@
  ---
 +id: h-001
@@ -36,7 +36,7 @@ diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-001.md ou
  ---
 diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-002.md out/hostile-regen/relational-hostile/records/h-002.md
 --- tests/corpus-hostile/relational-hostile/records/h-002.md	2026-08-25 11:05:16
-+++ out/hostile-regen/relational-hostile/records/h-002.md	2026-08-25 11:09:56
++++ out/hostile-regen/relational-hostile/records/h-002.md	2026-08-25 11:19:33
 @@ -2,17 +2,17 @@
  id: h-002
  type: atom
@@ -66,7 +66,7 @@ diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-002.md ou
  ---
 diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-003.md out/hostile-regen/relational-hostile/records/h-003.md
 --- tests/corpus-hostile/relational-hostile/records/h-003.md	2026-08-25 11:05:16
-+++ out/hostile-regen/relational-hostile/records/h-003.md	2026-08-25 11:09:56
++++ out/hostile-regen/relational-hostile/records/h-003.md	2026-08-25 11:19:33
 @@ -2,12 +2,10 @@
  id: h-003
  type: atom
@@ -85,7 +85,7 @@ diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-003.md ou
 -and nothing else, so a conforming store has nowhere to put these bytes.
 diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-claim.md out/hostile-regen/relational-hostile/records/h-claim.md
 --- tests/corpus-hostile/relational-hostile/records/h-claim.md	2026-08-25 11:05:16
-+++ out/hostile-regen/relational-hostile/records/h-claim.md	2026-08-25 11:09:56
++++ out/hostile-regen/relational-hostile/records/h-claim.md	2026-08-25 11:19:33
 @@ -1,19 +1,16 @@
  ---
  id: style-does-not-change-the-record
@@ -113,7 +113,7 @@ diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-claim.md 
  Two files that parse to the same mapping and the same body carry the same record, whatever their serialization style.
 diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-survey.md out/hostile-regen/relational-hostile/records/h-survey.md
 --- tests/corpus-hostile/relational-hostile/records/h-survey.md	2026-08-25 11:09:29
-+++ out/hostile-regen/relational-hostile/records/h-survey.md	2026-08-25 11:09:56
++++ out/hostile-regen/relational-hostile/records/h-survey.md	2026-08-25 11:19:33
 @@ -2,12 +2,17 @@
  id: hostile-styles-2026-08-24
  type: survey
@@ -139,7 +139,7 @@ diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-survey.md
  Enumerated by hand while writing the hostile corpus.
 diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-unknown-type.md out/hostile-regen/relational-hostile/records/h-unknown-type.md
 --- tests/corpus-hostile/relational-hostile/records/h-unknown-type.md	2026-08-25 11:05:16
-+++ out/hostile-regen/relational-hostile/records/h-unknown-type.md	2026-08-25 11:09:56
++++ out/hostile-regen/relational-hostile/records/h-unknown-type.md	2026-08-25 11:19:33
 @@ -2,8 +2,10 @@
  id: h-hypothesis-001
  type: hypothesis
@@ -155,7 +155,7 @@ diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-unknown-t
  The body of a record whose type this consumer does not know.
 diff -ru -x captures tests/corpus-hostile/relational-hostile/sources.yaml out/hostile-regen/relational-hostile/sources.yaml
 --- tests/corpus-hostile/relational-hostile/sources.yaml	2026-08-25 11:05:16
-+++ out/hostile-regen/relational-hostile/sources.yaml	2026-08-25 11:09:56
++++ out/hostile-regen/relational-hostile/sources.yaml	2026-08-25 11:19:33
 @@ -1,8 +1,8 @@
  sources:
    hostile-fixture:

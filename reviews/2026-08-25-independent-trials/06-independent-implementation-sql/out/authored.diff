@@ -1,6 +1,6 @@
 diff -ru -x captures tests/corpus-authored/relational-trial/corpus.yaml out/authored-regen/relational-trial/corpus.yaml
 --- tests/corpus-authored/relational-trial/corpus.yaml	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/corpus.yaml	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/corpus.yaml	2026-08-25 11:19:30
 @@ -2,4 +2,4 @@
  title: "SQL trial fixture corpus: expressing ERF as a relational schema"
  spec_version: 0.9.0
@@ -9,7 +9,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/corpus.yaml out/auth
 +owner: human:trial-operator
 diff -ru -x captures tests/corpus-authored/relational-trial/narratives/trial-note.md out/authored-regen/relational-trial/narratives/trial-note.md
 --- tests/corpus-authored/relational-trial/narratives/trial-note.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/narratives/trial-note.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/narratives/trial-note.md	2026-08-25 11:19:30
 @@ -1,5 +1,5 @@
  ---
 -title: "A note on what the schema forced"
@@ -19,7 +19,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/narratives/trial-not
  ---
 diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-001.md out/authored-regen/relational-trial/records/atoms/rt-001.md
 --- tests/corpus-authored/relational-trial/records/atoms/rt-001.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/atoms/rt-001.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/atoms/rt-001.md	2026-08-25 11:19:30
 @@ -2,11 +2,11 @@
  id: rt-001
  type: atom
@@ -36,7 +36,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-001
    - {auditor: fixture-auditor-b, verdict: SUPPORTED, timestamp: "2026-08-20", protocol: finding-audit-v2}
 diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-002.md out/authored-regen/relational-trial/records/atoms/rt-002.md
 --- tests/corpus-authored/relational-trial/records/atoms/rt-002.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/atoms/rt-002.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/atoms/rt-002.md	2026-08-25 11:19:30
 @@ -6,7 +6,7 @@
  quote: "An append-only ledger is not a property of a table; it is a property of the statements a writer is allowed to issue against that table. Enforcement is therefore procedural: the table must refuse UPDATE and DELETE outright."
  source: fixture-constraint-kinds
@@ -48,7 +48,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-002
  ---
 diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-003.md out/authored-regen/relational-trial/records/atoms/rt-003.md
 --- tests/corpus-authored/relational-trial/records/atoms/rt-003.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/atoms/rt-003.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/atoms/rt-003.md	2026-08-25 11:19:30
 @@ -6,7 +6,7 @@
  quote: "Where an invariant is expressed as a key, the store loses the ability to hold a violating instance at all, and a validator built over that store can never report the violation it was written to detect."
  source: fixture-constraint-kinds
@@ -60,7 +60,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-003
    - {auditor: fixture-auditor-a, verdict: PARTIAL, timestamp: "2026-08-20", protocol: finding-audit-v2}
 diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-004.md out/authored-regen/relational-trial/records/atoms/rt-004.md
 --- tests/corpus-authored/relational-trial/records/atoms/rt-004.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/atoms/rt-004.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/atoms/rt-004.md	2026-08-25 11:19:30
 @@ -7,7 +7,7 @@
  source: fixture-interchange-notes
  source_quality: medium
@@ -72,7 +72,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-004
  ---
 diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-005.md out/authored-regen/relational-trial/records/atoms/rt-005.md
 --- tests/corpus-authored/relational-trial/records/atoms/rt-005.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/atoms/rt-005.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/atoms/rt-005.md	2026-08-25 11:19:30
 @@ -7,5 +7,5 @@
  source: fixture-interchange-notes
  source_quality: medium
@@ -82,7 +82,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-005
  ---
 diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-006.md out/authored-regen/relational-trial/records/atoms/rt-006.md
 --- tests/corpus-authored/relational-trial/records/atoms/rt-006.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/atoms/rt-006.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/atoms/rt-006.md	2026-08-25 11:19:30
 @@ -2,12 +2,12 @@
  id: rt-006
  type: atom
@@ -100,7 +100,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-006
  ---
 diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-007.md out/authored-regen/relational-trial/records/atoms/rt-007.md
 --- tests/corpus-authored/relational-trial/records/atoms/rt-007.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/atoms/rt-007.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/atoms/rt-007.md	2026-08-25 11:19:30
 @@ -3,11 +3,11 @@
  type: atom
  corpus: relational-trial
@@ -117,7 +117,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-007
  ---
 diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-008.md out/authored-regen/relational-trial/records/atoms/rt-008.md
 --- tests/corpus-authored/relational-trial/records/atoms/rt-008.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/atoms/rt-008.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/atoms/rt-008.md	2026-08-25 11:19:30
 @@ -3,9 +3,9 @@
  type: atom
  corpus: relational-trial
@@ -132,7 +132,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-008
  ---
 diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/append-only-needs-triggers.md out/authored-regen/relational-trial/records/claims/append-only-needs-triggers.md
 --- tests/corpus-authored/relational-trial/records/claims/append-only-needs-triggers.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/claims/append-only-needs-triggers.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/claims/append-only-needs-triggers.md	2026-08-25 11:19:30
 @@ -4,24 +4,24 @@
  corpus: relational-trial
  title: "An append-only rule can only be enforced in a relational store by refusing UPDATE and DELETE procedurally, never by a column type or a check"
@@ -164,7 +164,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/appen
  
 diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/keys-hide-violations.md out/authored-regen/relational-trial/records/claims/keys-hide-violations.md
 --- tests/corpus-authored/relational-trial/records/claims/keys-hide-violations.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/claims/keys-hide-violations.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/claims/keys-hide-violations.md	2026-08-25 11:19:30
 @@ -4,7 +4,7 @@
  corpus: relational-trial
  title: "Enforcing an invariant as a database key removes a validator's ability to report violations of it, because a violating corpus cannot be stored"
@@ -190,7 +190,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/keys-
  
 diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/losslessness-needs-an-equivalence.md out/authored-regen/relational-trial/records/claims/losslessness-needs-an-equivalence.md
 --- tests/corpus-authored/relational-trial/records/claims/losslessness-needs-an-equivalence.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/claims/losslessness-needs-an-equivalence.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/claims/losslessness-needs-an-equivalence.md	2026-08-25 11:19:30
 @@ -2,9 +2,9 @@
  id: losslessness-needs-an-equivalence
  type: claim
@@ -220,7 +220,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/lossl
  
 diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/mixed-precision-is-unorderable.md out/authored-regen/relational-trial/records/claims/mixed-precision-is-unorderable.md
 --- tests/corpus-authored/relational-trial/records/claims/mixed-precision-is-unorderable.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/claims/mixed-precision-is-unorderable.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/claims/mixed-precision-is-unorderable.md	2026-08-25 11:19:30
 @@ -4,16 +4,16 @@
  corpus: relational-trial
  title: "Two timestamps recorded at different precisions on the same day cannot be ordered, so a format that permits both must say which way the comparison fails"
@@ -243,7 +243,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/mixed
  
 diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/rejected-example.md out/authored-regen/relational-trial/records/claims/rejected-example.md
 --- tests/corpus-authored/relational-trial/records/claims/rejected-example.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/claims/rejected-example.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/claims/rejected-example.md	2026-08-25 11:19:30
 @@ -4,13 +4,13 @@
  corpus: relational-trial
  title: "A record's corpus membership can be recovered from the directory it sits in, so the corpus field is redundant"
@@ -262,7 +262,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/rejec
  x_trial_note: "kept deliberately unbacked on the for side, to exercise the ERF-49 flag"
 diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/retired-example.md out/authored-regen/relational-trial/records/claims/retired-example.md
 --- tests/corpus-authored/relational-trial/records/claims/retired-example.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/claims/retired-example.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/claims/retired-example.md	2026-08-25 11:19:30
 @@ -4,19 +4,19 @@
  corpus: relational-trial
  title: "A relational schema alone is sufficient to validate a conforming corpus, with no procedural checks required"
@@ -289,7 +289,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/retir
  
 diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/state-vs-transition.md out/authored-regen/relational-trial/records/claims/state-vs-transition.md
 --- tests/corpus-authored/relational-trial/records/claims/state-vs-transition.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/claims/state-vs-transition.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/claims/state-vs-transition.md	2026-08-25 11:19:30
 @@ -2,9 +2,9 @@
  id: constraints-cannot-see-transitions
  type: claim
@@ -319,7 +319,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/state
  
 diff -ru -x captures tests/corpus-authored/relational-trial/records/surveys/lossless-language-2026-08-22.md out/authored-regen/relational-trial/records/surveys/lossless-language-2026-08-22.md
 --- tests/corpus-authored/relational-trial/records/surveys/lossless-language-2026-08-22.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/surveys/lossless-language-2026-08-22.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/surveys/lossless-language-2026-08-22.md	2026-08-25 11:19:30
 @@ -2,15 +2,15 @@
  id: lossless-language-2026-08-22
  type: survey
@@ -342,7 +342,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/surveys/loss
  A first pass, superseded by `round-trip-equivalence-2026-08-24`.
 diff -ru -x captures tests/corpus-authored/relational-trial/records/surveys/round-trip-equivalence-2026-08-24.md out/authored-regen/relational-trial/records/surveys/round-trip-equivalence-2026-08-24.md
 --- tests/corpus-authored/relational-trial/records/surveys/round-trip-equivalence-2026-08-24.md	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/records/surveys/round-trip-equivalence-2026-08-24.md	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/records/surveys/round-trip-equivalence-2026-08-24.md	2026-08-25 11:19:30
 @@ -2,8 +2,8 @@
  id: round-trip-equivalence-2026-08-24
  type: survey
@@ -379,7 +379,7 @@ diff -ru -x captures tests/corpus-authored/relational-trial/records/surveys/roun
  ---
 diff -ru -x captures tests/corpus-authored/relational-trial/sources.yaml out/authored-regen/relational-trial/sources.yaml
 --- tests/corpus-authored/relational-trial/sources.yaml	2026-08-25 11:03:25
-+++ out/authored-regen/relational-trial/sources.yaml	2026-08-25 11:09:54
++++ out/authored-regen/relational-trial/sources.yaml	2026-08-25 11:19:30
 @@ -6,21 +6,21 @@
        author:
          - family: Fixture

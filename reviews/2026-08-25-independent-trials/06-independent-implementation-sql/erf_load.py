@@ -408,10 +408,10 @@ def main():
     # deployment be the unit of resolution rather than the file.
     con.execute("PRAGMA defer_foreign_keys = ON")
     con.execute("INSERT OR IGNORE INTO deployment(id) VALUES (?)", (args.deployment,))
-    for d in args.corpora:
-        load_corpus(con, diag, args.deployment, d)
-    diag.flush(con)
     try:
+        for d in args.corpora:
+            load_corpus(con, diag, args.deployment, d)
+        diag.flush(con)
         con.commit()
     except sqlite3.IntegrityError as exc:
         # [ERF-35][ERF-36][ERF-38] the invariants are keys and foreign keys, so
