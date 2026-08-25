@@ -14,7 +14,7 @@ makes two implementations silently disagree is not.
 
 ## Blocking
 
-Two of the four are done, kept here with what was decided: a list that
+Three of the four are done, kept here with what was decided: a list that
 deletes what it settled stops being a record of the decision.
 
 **1. ~~There is no licence.~~ Done 2026-08-25.** CC BY 4.0 for the prose,
@@ -29,10 +29,11 @@ hands, none of them the raiser's. The observation's second half, about a
 validator cascading rather than reporting the file it could not read, was
 split out as `F-006` rather than folded in.
 
-**3. The changelog has no released section.** Everything sits under
-`## Unreleased`. Publishing means cutting `## 0.9.0 — 2026-08-__` and
-stating the version discipline the format commits to from here: requirement
-ids stable, retired ids never reused, insertions append.
+**3. ~~The changelog has no released section.~~ Done 2026-08-25.** Cut as
+`## 0.9.0 — 2026-08-25`, with the version discipline stated from here on and
+the two numbers a reader should have: sixty-six requirements with seven
+uncovered, and sixteen open backlog entries. Everything since the `type`
+widening was unlogged and now has an entry.
 
 **4. There is no git remote.** The repository has never been pushed. The
 author creates the public repository and pushes; nothing in this repository
@@ -86,7 +87,7 @@ that other people's implementations become that evidence.
 2. ~~Choose the licence.~~ Done.
 3. Add the spec-to-types gate; settle `F-004`; normalize the example actor ids.
 4. Rewrite the README's Status section around what the trials found (see below).
-5. Cut `## 0.9.0` in the changelog with the date.
+5. ~~Cut `## 0.9.0` in the changelog.~~ Done.
 6. Tag `v0.9.0`. Create the public repository. Push.
 
 ## One note on the Status section

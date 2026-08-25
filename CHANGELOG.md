@@ -6,6 +6,118 @@ are never reused, and every change lands here with a date.
 
 ## Unreleased
 
+*Nothing yet.*
+
+## 0.9.0 — 2026-08-25
+
+The first published version. From here requirement ids are stable: a new
+requirement takes the next unused number, ids carry no positional meaning,
+retired ids are never reused, and every change lands in this file with a
+date. Breaking changes to a numbered requirement wait for a major version;
+clarifications that do not change what conforms may land in a patch.
+
+Sixty-six requirements, seven of them with no conformance fixture and named
+as such by the coverage line on every run. Sixteen open backlog entries at
+P2 and P3, each with a priority, a basis, and a verification by a hand that
+did not raise it. Both numbers are published rather than hidden: this is a
+draft meant to be implemented against and argued with, and what is known to
+be unresolved is part of what it says.
+
+### 2026-08-25 — six trials against the prose alone, and the queue they left
+
+Six independent trials ran against `SPEC.md` and nothing else: no reference
+implementation, no fixtures, no example corpus. Three built working
+validators by hand in Python, Rust and SQL; two authored corpora from
+scratch, one of them 71 sources, 151 atoms and 53 claims; one wrote
+adversarial fixtures. They found two defects in the reference
+implementation within the hour, including an `ERF-19` check that matched
+flow-style YAML only and had been hiding a bug in the format's own fixture.
+Their twenty-four findings became a governed backlog with a priority, a
+basis, and a verification record on every entry.
+
+**Discovery is by content, and `type` is on every file (`ERF-54`).** The
+rule covered records; it now covers the declaration, the source list and
+narratives too, so no meaning lives in a path and any substrate's export is
+readable. Proven by scrambling the example corpus, declaration renamed and
+atoms buried two directories deep, and loading it identically.
+
+**`as_of_date` states what the source pinned, no more (`ERF-14`).** A year,
+a year and month, or a full date, never precision the source did not give.
+A conforming validator had been rejecting the specification's own example
+corpus, and two authors had recorded incompatible period conventions.
+
+**A reference asserting *now* must resolve; one recording *then* is
+flagged (`ERF-35`).** Stated as a principle rather than a longer list.
+`evidence_at_stance` is on the historical side by construction: once atom
+lifecycle exists, a hard resolution rule would let one withdrawal
+retroactively break every standing that ever faced that atom, which is the
+failure `ERF-43` already reasons about.
+
+**A flag is not a violation**, said once in section 2 rather than a sixth
+time in a requirement. Flags exist because these conditions arise with no
+edit to the record carrying them: stranded evidence (`ERF-35`), an aged
+binding (`ERF-32`), a hollowed argument (`ERF-43`). A corpus carrying flags
+and no violations conforms, and a consumer may neither present a flag as
+failure nor hide one.
+
+**The premise closure excludes its own root (`ERF-43`).** A premise-less
+argument therefore satisfies the rule vacuously and is `ERF-49`'s flag;
+reading the root into its own closure made one record both conforming and
+not. Nothing had ever enforced the closure rule at all.
+
+**The narrative binding is closed and made visible (`ERF-31`).**
+`bound-at` is required rather than optional, which exposed that a required
+part made a binding *invisible* rather than invalid: a comment failing the
+grammar is indistinguishable from any other HTML comment, so its claims
+vanished silently. The grammar therefore gains the recognition rule it
+never had. The anchor now folds under `ERF-51`, the same test as the quote
+check, because this format answers *does this string occur in that text*
+exactly once; it carries the escapes `\"` and `\\`, because a passage whose
+own words are quoted otherwise has no anchor at all; and a validator MUST
+flag an anchor that stops occurring, which is what three silent breakages
+across two trials were waiting for.
+
+**A narrative's frontmatter is typed (`ERF-34`).** `title` a string,
+`corpus` a corpus id, `created` the `{timestamp, by}` stamp everything else
+carries. One field name with two shapes is how an implementer is made to
+guess.
+
+**`ERF-55`'s omit rule governs lists.** An optional mapping present and
+empty asserts existence and MUST be written: absent `evidence_at_stance`
+means the ruler stamped nothing, present and empty means the ruler stamped
+and faced nothing, and `ERF-20` calls the second unrecoverable.
+
+**The source list's top level is exactly `type` and `sources` (`ERF-3`).**
+The earlier wording named both keys without saying which contained which,
+and an independent implementation read the entries as further top-level
+keys. The result was 151 correct atoms reported as naming sources that do
+not exist. This was the first demonstrated interoperability break between
+two implementations of the format.
+
+**The quote check ran on the authored corpora for the first time.** Both
+had gone dark under the `ERF-54` widening and the source rework, their
+source lists unread. Migrated, 156 of 160 quotes now check. All four
+failures are real transcription divergences and none is a normalization
+gap: two are a space before a semicolon that an 1853 scan preserves and an
+author tidied away, one is editorial brackets marking a reconstruction
+silently dropped, one is a curly apostrophe written over the source's
+ASCII. That is the cut to `ERF-51` doing what it was cut to do.
+
+**Three gates that reported on what they did not read.** The loader skipped
+unrecognized files in silence, so a widening that orphaned two source lists
+surfaced as 151 accusations against the atoms; it now reports them.
+`SPEC.md` and `types/erf.ts` disagreed on field names for a day, the source
+rename having reached the model, the loader, the viewer and the fixtures and
+stopped short of the specification. And `backlog-index.py` hand-rolled a
+frontmatter parser, so four entries were invalid YAML without the tool whose
+job is to catch that noticing. All three fixed; the pattern is recorded as
+`F-005` and `F-006`.
+
+**A licence, at last.** CC BY 4.0 for the specification and prose,
+Apache-2.0 for the reference implementation and tooling. An implementation
+is not a derivative work of the specification, and nothing in either licence
+reaches the corpora anyone builds.
+
 ### 2026-08-25 — the pipeline is named, and the capture becomes normalized text
 
 The word "capture" is retired. Web archiving already uses it for the raw
