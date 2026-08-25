@@ -109,7 +109,6 @@ Verified accurate, ordered by priority. The specification is wrong, unclear, or 
 
 | id | priority | | basis | verification |
 |---|---|---|---|---|
-| [`B-23`](B-23-the-corpus-has-no-stated-shape-on-disk.md) | **P1** | The corpus has no stated shape on disk | `demonstrated` | `accurate` |
 | [`B-24`](B-24-as-of-date-has-neither-a-stated-format-nor-stated-semantic.md) | **P1** | `as_of_date` has neither a stated format nor stated semantics | `demonstrated` | `accurate` |
 | [`B-28`](B-28-erf-35s-scope-is-ambiguous.md) | **P1** | `ERF-35`'s scope is ambiguous | `reported` | `accurate` |
 | [`B-29`](B-29-erf-32-requires-what-the-erf-31-grammar-makes-optional.md) | **P1** | `ERF-32` requires what the `ERF-31` grammar makes optional | `reported` | `accurate` |

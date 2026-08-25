@@ -207,11 +207,17 @@ interface Survey {
 // atom that quotes it.
 
 interface CorpusDeclaration {
+  type: "corpus";              // how a consumer finds it (ERF-54)
   id: CorpusId;
   title: string;
   spec_version: string;        // SemVer (ERF-61)
   classification?: string;     // opaque label; the format does not read it
   owner?: Actor;
+}
+
+interface SourceList {                       // the document holding them
+  type: "sources";             // how a consumer finds it (ERF-54)
+  sources: Record<SourceId, Source>;
 }
 
 interface Source {                           // one entry of the source list
@@ -386,9 +392,9 @@ is evidence about today's page rather than about what was read.
   bytes. A source whose raw file is mutable at its location, a web page
   above all, MUST record `received.on`, the date it arrived, because
   otherwise nothing says which version was read.
-- **ERF-3** A corpus MUST keep a source list: one entry per work,
-  following the `Source` shape of section 3, keyed by a source id unique
-  within the corpus. A source's citation, locator, and normalized text live
+- **ERF-3** A corpus MUST keep a source list: a document carrying
+  `type: sources`, one entry per work following the `Source` shape of
+  section 3, keyed by a source id unique within the corpus. A source's citation, locator, and normalized text live
   on the source, not on the atom. How the list is stored is the substrate's
   business, like everything else (section 8); its interchange form is a
   YAML document under the rules of section 7.
@@ -901,8 +907,9 @@ anchor   ::= '"' text '"'
   in the narrative, and hiding it turns a broken citation into a confident
   sentence. A consumer MUST NOT invent a record to satisfy the reference.
 - **ERF-34** A narrative MUST NOT be modelled as a record: it is a
-  document. It carries frontmatter with `title`, `corpus`, and `created`,
-  and its narrative bindings are the only structured content in it. It has
+  document. It carries frontmatter with `type: narrative`, which is how a consumer
+  finds it (`ERF-54`), plus `title`, `corpus`, and `created`, and its
+  narrative bindings are the only structured content in it. It has
   no evidence, no standings, and no disposition, which is precisely why it
   is not a record: nothing about it is adjudicated, and a person disputes
   the claims it binds to rather than the prose. It therefore has no
@@ -1168,8 +1175,24 @@ checks the relations no type can see.
   without a named dialect is not a format, which is the gap CommonMark was
   written to close, and an unstated encoding is a verbatim check waiting to
   fail on a byte nobody chose.
-- **ERF-54** Records MUST self-describe: `type` and `corpus` are written
-  on every record of every type, and no meaning lives in a path.
+- **ERF-54** Every file a corpus holds MUST self-describe, and no meaning
+  lives in a path. `type` names what the file holds and is written on all of
+  them: `atom`, `claim` and `survey` are the record types, and `corpus`,
+  `sources` and `narrative` name the declaration, the source list and a
+  narrative, none of which are records. `corpus` is written on every record
+  in addition, naming the body of work it belongs to.
+
+  A consumer therefore discovers a corpus by reading, never by guessing at
+  filenames or directories: it walks what it was given, reads each file's
+  `type`, and dispatches on it. A file carrying no `type` is not part of the
+  corpus; a consumer MUST ignore it and MUST report that it did (`ERF-57`).
+  Exactly one file in a corpus MUST carry `type: corpus`, and a validator
+  MUST reject a corpus carrying two, because a corpus that declares itself
+  twice cannot say which declaration governs.
+
+  This is what keeps the format out of a substrate's business. A store may
+  arrange its files however it likes, or hold no files at all; what travels
+  is a set of self-describing documents, and where they sit carries nothing.
 - **ERF-55** Empty lists MUST be omitted: a field's absence means none.
   A producer MUST NOT originate a field the declared `spec_version` does
   not define, outside the extension namespace of `ERF-72`. An unknown key
@@ -1204,7 +1227,8 @@ checks the relations no type can see.
 - **ERF-58** The event-time key MUST be `timestamp`, everywhere.
 - **ERF-59** A corpus MUST carry a declaration, a YAML document under
   this section's rules following the `CorpusDeclaration` shape of section
-  3. It MUST declare `id` (the corpus id), `title` (for a person), and
+  3. It MUST declare `type: corpus`, which is how a consumer finds it
+  (`ERF-54`), `id` (the corpus id), `title` (for a person), and
   `spec_version` (the version its records conform to). It MAY name an
   `owner`, the actor responsible for the corpus, and MAY carry a
   `classification`, an opaque label this version records and does not

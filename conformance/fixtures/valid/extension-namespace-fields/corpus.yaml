@@ -1,3 +1,4 @@
+type: corpus
 id: erfx-v2
 title: "Fixture: extension namespace on every structure"
 spec_version: "0.9.0"

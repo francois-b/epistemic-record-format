@@ -1,3 +1,4 @@
+type: corpus
 id: erfx-i04
 title: "Fixture: two claims assume each other"
 spec_version: "0.9.0"

@@ -1,3 +1,4 @@
+type: corpus
 id: fixture-broken
 title: "Manifest with no spec_version"
 classification: public

@@ -1,0 +1,10 @@
+requirement: ERF-54
+record: (corpus)
+field: (layout)
+because: >
+  Discovery is by content, never by filename or directory. This is the
+  example corpus with every convention broken: the declaration is
+  whatever.yaml, the source list is refs.yml, the atoms are two levels
+  down in deep/nested/, and the narrative sits loose in deep/. It MUST
+  load identically to the corpus it was copied from, because every file
+  says what it is and where a file sits carries nothing.

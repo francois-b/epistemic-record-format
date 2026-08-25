@@ -1,3 +1,4 @@
+type: corpus
 id: erfx-i12
 title: "Fixture: record file carries a BOM and CRLF line endings"
 spec_version: "0.9.0"

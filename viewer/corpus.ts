@@ -98,6 +98,42 @@ function splitFrontmatter(text: string): { data: Record<string, unknown>; body: 
 export const shipsWithCorpus = (src: { status: string } | undefined): boolean =>
   src?.status === "shipped" || src?.status === "shipped-as-quotation";
 
+/**
+ * `ERF-54`: discovery is by content, never by filename or directory. Walk
+ * everything, read each file's `type`, dispatch on it. A file with no
+ * `type` is not part of the corpus: ignored, and reported (`ERF-57`).
+ *
+ * This is what keeps the format out of a substrate's business. A store
+ * arranges its files however it likes; what travels is a set of
+ * self-describing documents, and where they sit carries nothing.
+ */
+function walkFiles(dir: string): string[] {
+  const out: string[] = [];
+  const visit = (d: string) => {
+    if (!existsSync(d)) return;
+    for (const e of readdirSync(d, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      if (e.name.startsWith(".")) continue;
+      const p = join(d, e.name);
+      if (e.isDirectory()) visit(p);
+      else if (/\.(md|markdown|ya?ml)$/i.test(e.name)) out.push(p);
+    }
+  };
+  visit(dir);
+  return out;
+}
+
+/** The `type` a file declares, or null if it declares none. */
+function fileType(path: string): string | null {
+  try {
+    const raw = readFileSync(path, "utf8");
+    const text = raw.charCodeAt(0) === 0xfeff ? raw.slice(1) : raw;
+    const fm = /\.ya?ml$/i.test(path) ? text : (FM.exec(text)?.[1] ?? "");
+    const m = /^type:\s*["']?([a-z-]+)["']?\s*$/m.exec(fm);
+    return m?.[1] ?? null;
+  } catch { return null; }
+}
+
+
 function listDir(dir: string, ext = ".md"): string[] {
   if (!existsSync(dir)) return [];
   return readdirSync(dir).filter((f) => f.endsWith(ext)).sort();
@@ -289,11 +325,25 @@ export function loadCorpus(dir: string): LoadedCorpus {
   /** id -> record type, so a collision across types is caught too. */
   const seenIds = new Map<string, string>();
 
-  const manifest = yaml.load(readFileSync(join(dir, "corpus.yaml"), "utf8"), YAML_OPTS) as CorpusDeclaration;
+  // `ERF-54`: find the declaration by what it says it is.
+  const files = walkFiles(dir);
+  const typed = new Map<string, string>();
+  for (const f of files) { const t = fileType(f); if (t) typed.set(f, t); }
+  const declarations = [...typed].filter(([, t]) => t === "corpus").map(([f]) => f);
+  if (declarations.length > 1) {
+    findings.push({
+      record: "(corpus)", field: "type",
+      detail: `${declarations.length} files declare type: corpus; exactly one MUST (ERF-54)`,
+    });
+  }
+  const declPath = declarations[0] ?? join(dir, "corpus.yaml");
+  const manifest = (existsSync(declPath)
+    ? yaml.load(readFileSync(declPath, "utf8"), YAML_OPTS)
+    : {}) as CorpusDeclaration;
   for (const f of ["id", "title", "spec_version"]) {
     if (!(manifest as unknown as Record<string, unknown>)[f]) {
       findings.push({
-        record: "corpus.yaml",
+        record: "(declaration)",
         field: f,
         detail: "the manifest MUST declare this field (ERF-59)",
       });
@@ -305,7 +355,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
   const major = String(manifest?.spec_version ?? "").split(".")[0];
   if (manifest?.spec_version && major !== "0") {
     findings.push({
-      record: "corpus.yaml",
+      record: "(declaration)",
       field: "spec_version",
       detail: `${manifest.spec_version} has major version ${major}; this consumer `
         + `supports major 0 and refuses openly rather than reading fields whose `
@@ -345,8 +395,9 @@ export function loadCorpus(dir: string): LoadedCorpus {
 
   // ---- atoms -------------------------------------------------------------
   const atoms = new Map<string, Atom>();
-  for (const f of listDir(join(dir, "atoms"))) {
-    const rec = readRecord(join(dir, "atoms", f), basename(f, ".md"));
+  for (const [f, t] of typed) {
+    if (t !== "atom") continue;
+    const rec = readRecord(f, basename(f, ".md"));
     if (!rec) continue;
     const { data } = rec;
     const id = String(data["id"] ?? basename(f, ".md"));
@@ -377,9 +428,10 @@ export function loadCorpus(dir: string): LoadedCorpus {
 
   // ---- claims ------------------------------------------------------------
   const claims = new Map<string, Claim>();
-  for (const f of listDir(join(dir, "claims"))) {
-    const raw = readFileSync(join(dir, "claims", f), "utf8");
-    const rec = readRecord(join(dir, "claims", f), basename(f, ".md"));
+  for (const [f, t] of typed) {
+    if (t !== "claim") continue;
+    const raw = readFileSync(f, "utf8");
+    const rec = readRecord(f, basename(f, ".md"));
     if (!rec) continue;
     const { data, body } = rec;
     const id = String(data["id"] ?? basename(f, ".md"));
@@ -423,8 +475,9 @@ export function loadCorpus(dir: string): LoadedCorpus {
 
   // ---- surveys -----------------------------------------------------------
   const surveys = new Map<string, Survey>();
-  for (const f of listDir(join(dir, "surveys"))) {
-    const rec = readRecord(join(dir, "surveys", f), basename(f, ".md"));
+  for (const [f, t] of typed) {
+    if (t !== "survey") continue;
+    const rec = readRecord(f, basename(f, ".md"));
     if (!rec) continue;
     const { data, body } = rec;
     const id = String(data["id"] ?? basename(f, ".md"));
@@ -442,8 +495,9 @@ export function loadCorpus(dir: string): LoadedCorpus {
 
   // ---- narratives --------------------------------------------------------
   const narratives: Narrative[] = [];
-  for (const f of listDir(join(dir, "narratives"))) {
-    const raw = readFileSync(join(dir, "narratives", f), "utf8");
+  for (const [f, t] of typed) {
+    if (t !== "narrative") continue;
+    const raw = readFileSync(f, "utf8");
     const { data, body } = splitFrontmatter(raw);
     const bindings: Narrative["bindings"] = [];
     const re = bindingRe();
@@ -521,9 +575,9 @@ export function loadCorpus(dir: string): LoadedCorpus {
   // key here, shared by every atom that quotes it, carrying the work's
   // citation, locator, and capture in one place.
   const sources = new Map<string, Source>();
-  const srcPath = join(dir, "sources.yaml");
-  if (existsSync(srcPath)) {
-    const doc = yaml.load(readFileSync(srcPath, "utf8"), YAML_OPTS) as { sources?: Record<string, Source> };
+  for (const [f, t] of typed) {
+    if (t !== "sources") continue;
+    const doc = yaml.load(readFileSync(f, "utf8"), YAML_OPTS) as { sources?: Record<string, Source> };
     for (const [k, v] of Object.entries(doc?.sources ?? {})) sources.set(k, v);
   }
 

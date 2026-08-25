@@ -1,5 +1,5 @@
 requirement: ERF-59
-record: corpus.yaml
+record: (declaration)
 field: spec_version
 because: >
   A consumer decides whether it can read a corpus from its declared version.

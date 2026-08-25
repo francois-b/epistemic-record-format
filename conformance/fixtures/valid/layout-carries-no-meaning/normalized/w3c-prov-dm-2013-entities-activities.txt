@@ -1,0 +1,23 @@
+Excerpt captured 2026-08-23 from a W3C Recommendation.
+
+Source document: PROV-DM: The PROV Data Model
+Original: http://www.w3.org/TR/2013/REC-prov-dm-20130430/
+Latest published version: http://www.w3.org/TR/prov-dm/
+Status: W3C Recommendation, 30 April 2013
+
+Copyright (c) 2011-2013 W3C (R) (MIT, ERCIM, Keio, Beihang),
+All Rights Reserved.
+
+Redistributed under the W3C Document License:
+https://www.w3.org/copyright/document-license-2023/
+That license permits copying and distributing the contents of a W3C
+document, or portions thereof, in any medium and for any purpose, provided
+the original link, the copyright notice, and the document's status are
+included. No modification of the excerpted text has been made; the text
+below is a verbatim portion, with page furniture removed.
+
+--- begin excerpt ---
+An entity is a physical, digital, conceptual, or other kind of thing with some fixed aspects; entities may be real or imaginary.
+
+An activity is something that occurs over a period of time and acts upon or with entities; it may include consuming, processing, transforming, modifying, relocating, using, or generating entities.
+--- end excerpt ---

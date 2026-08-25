@@ -218,6 +218,9 @@ export interface Survey {
 
 /** The corpus declaration (ERF-59). */
 export interface CorpusDeclaration {
+  /** How a consumer finds this file: discovery is by content, never by
+   *  filename or directory (ERF-54). */
+  type: "corpus";
   id: CorpusId;
   title: string;
   /** SemVer (ERF-61). */
@@ -229,6 +232,12 @@ export interface CorpusDeclaration {
 
 /** A source's id: its key in the corpus's source list (ERF-3). */
 export type SourceId = string;
+
+export interface SourceList {
+  /** How a consumer finds this file (ERF-54). */
+  type: "sources";
+  sources: Record<SourceId, Source>;
+}
 
 export interface Source {
   /** Identifies the work; never contains a URL (ERF-7). */

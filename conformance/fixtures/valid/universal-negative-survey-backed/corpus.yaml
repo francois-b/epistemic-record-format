@@ -1,3 +1,4 @@
+type: corpus
 id: erfx-v5
 title: "Fixture: universal negative backed by a survey, no atoms_for"
 spec_version: "0.9.0"
