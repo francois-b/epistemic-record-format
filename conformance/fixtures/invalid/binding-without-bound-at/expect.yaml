@@ -1,0 +1,9 @@
+requirement: ERF-31
+record: fx-narrative
+field: bindings
+because: >
+  Every part of the binding grammar is required, `bound-at` included. The
+  point of the fixture is the failure mode rather than the omission: a
+  comment failing the grammar is indistinguishable from any other HTML
+  comment, so a consumer that merely skips it drops `fx-claim` out of the
+  narrative in silence. It MUST be recognized as a binding and reported.

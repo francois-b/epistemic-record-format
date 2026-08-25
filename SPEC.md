@@ -891,26 +891,40 @@ line, is a matter for whoever writes the narrative.
 
 ```
 narrative-binding ::= "<!--" ws* "claims:" ws+ ids ws+ anchor
-                      [ws+ "bound-at=" date] ws* "-->"
+                      ws+ "bound-at=" date ws* "-->"
 date     ::= YYYY "-" MM "-" DD
 ids      ::= id (ws+ id)*
 id       ::= one or more characters, none of them whitespace or '"'
 anchor   ::= '"' text '"'
 ```
 
-  Ids are separated by whitespace, never by commas, because a comma inside
-  an unquoted list invites a parser to guess. The anchor is REQUIRED and is
-  a verbatim substring of the passage: it is how software finds the spot
-  after the prose moves, and a narrative binding without one can only point
-  at a line number, which edits destroy.
+  Every part is required. Ids are separated by whitespace, never by commas,
+  because a comma inside an unquoted list invites a parser to guess. The
+  anchor is a verbatim substring of the passage: it is how software finds
+  the spot after the prose moves, and a narrative binding without one can
+  only point at a line number, which edits destroy. `bound-at` is the date
+  the binding was made, and `ERF-32` is what it is for.
 
-- **ERF-32** A narrative binding MUST record `bound-at`, the date it was
-  made, in the marker itself, and MUST be checkable: it is stale when the
-  claim it names carries a `last_modified` later than that date, a complete
-  mechanical test using only fields the format already defines. A narrative
-  binding without `bound-at` MUST be reported as staleness `indeterminate`,
-  never as current: a validator that cannot tell must say so rather than
-  reassure.
+  **A binding that does not match this grammar MUST be reported, never
+  skipped.** A comment opening `<!--` followed by `claims:` IS a narrative
+  binding: recognizing one and validating one are separate acts, and a
+  consumer performs them in that order. Without this rule a required part
+  does not make a binding invalid, it makes it invisible, because a comment
+  failing the grammar is indistinguishable from any other HTML comment and
+  the claims it named simply vanish from the narrative. That is `ERF-33`'s
+  failure moved down to the parse layer, and it is the same answer: a
+  broken citation reported is a defect, a broken citation hidden is a
+  confident sentence.
+
+- **ERF-32** A narrative binding MUST be checkable: it is stale when the
+  claim it names carries a `last_modified` later than the binding's
+  `bound-at`, a complete mechanical test using only fields the format
+  already defines. Where the comparison cannot be run, a consumer MUST show
+  the binding as staleness `indeterminate` and MUST NOT show it as current:
+  a check that cannot tell says look, never rest. A binding reported broken
+  under `ERF-31` is the ordinary case of this, and the two go together, one
+  saying the record is wrong and the other saying what the reader sees
+  meanwhile.
 - **ERF-33** A consumer encountering a narrative binding whose id
   resolves to no record MUST report it and MUST NOT drop it silently. A
   narrative claiming support from a record that does not exist is a defect

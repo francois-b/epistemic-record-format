@@ -42,7 +42,22 @@ export interface Narrative {
  * comments leaked into the page. One grammar, one definition.
  */
 export function bindingRe(): RegExp {
-  return /<!--\s*claims:\s*([^"]+?)\s*"([^"]*)"(?:\s+bound-at=(\d{4}-\d{2}-\d{2}))?\s*-->/g;
+  return /<!--\s*claims:\s*([^"]+?)\s*"([^"]*)"\s+bound-at=(\d{4}-\d{2}-\d{2})\s*-->/g;
+}
+
+/**
+ * `ERF-31`'s recognition rule: a comment opening `<!--` then `claims:` IS a
+ * narrative binding, whatever follows. Recognizing and validating are
+ * separate acts and happen in that order.
+ *
+ * Without this a required part of the grammar does not make a binding
+ * invalid, it makes it INVISIBLE: a comment failing the grammar cannot be
+ * told from any other HTML comment, so the claims it names silently vanish
+ * from the narrative. Ruled 2026-08-25 on making `bound-at` mandatory,
+ * which is what exposed that the anchor had had the same hole all along.
+ */
+export function bindingCandidateRe(): RegExp {
+  return /<!--\s*claims:[\s\S]*?-->/g;
 }
 
 export interface LoadedCorpus {
@@ -515,18 +530,32 @@ export function loadCorpus(dir: string): LoadedCorpus {
     const raw = readFileSync(f, "utf8");
     const { data, body } = splitFrontmatter(raw);
     const bindings: Narrative["bindings"] = [];
-    const re = bindingRe();
-    let m: RegExpExecArray | null;
-    while ((m = re.exec(body)) !== null) {
+    const slug = basename(f, ".md");
+    // Recognize first (`ERF-31`), then validate. A candidate that fails the
+    // grammar is reported, never skipped.
+    const cand = bindingCandidateRe();
+    let c: RegExpExecArray | null;
+    while ((c = cand.exec(body)) !== null) {
+      const strict = bindingRe();
+      const m = strict.exec(c[0]);
+      if (!m) {
+        findings.push({
+          record: slug,
+          field: "bindings",
+          detail: `a narrative binding does not match the grammar and names claims that `
+            + `would otherwise vanish from the narrative: ${c[0].slice(0, 90)} (ERF-31)`,
+        });
+        continue;
+      }
       bindings.push({
         claims: (m[1] ?? "").trim().split(/\s+/).filter(Boolean),
         anchor: m[2] ?? "",
         boundAt: m[3],
-        index: m.index,
+        index: c.index,
       });
     }
     narratives.push({
-      slug: basename(f, ".md"),
+      slug,
       title: String(data["title"] ?? basename(f, ".md")),
       body,
       bindings,

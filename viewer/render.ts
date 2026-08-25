@@ -9,7 +9,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Atom, Claim, Survey } from "../types/erf.ts";
 import type { LoadedCorpus, Narrative } from "./corpus.ts";
-import { bindingRe, shipsWithCorpus } from "./corpus.ts";
+import { bindingCandidateRe, bindingRe, shipsWithCorpus } from "./corpus.ts";
 import {
   backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,
   evidenceRefsFlagged,
@@ -107,6 +107,9 @@ ul.plain li { padding:.4em 0; border-bottom:1px solid var(--rulelt); }
   padding:0 .12em; }
 .bindnote { font-family:var(--sans); font-size:.72em; color:var(--muted);
   display:block; margin:.2em 0 1.1em; }
+.bind-broken { font-family:var(--mono); font-size:.72em; display:block;
+  margin:.2em 0 1.1em; padding:.4em .6em; border-left:3px solid #c0392b;
+  background:#fdf0ee; color:#7d2b21; }
 mark { background:#fff2b8; padding:0 .1em; }
 pre.capture { white-space:pre-wrap; font-family:var(--mono);
   font-size:.78em; line-height:1.6; background:var(--codebg); padding:1em;
@@ -243,11 +246,19 @@ export function renderNarrative(n: Narrative, c: LoadedCorpus): string {
   // One grammar, defined once in corpus.ts. Implementing it twice is what
   // let the parser gain `bound-at` while this copy did not, after which every
   // binding stopped matching here and leaked into the page as raw markup.
+  //
+  // `ERF-31`: recognize, then validate. Replacing on the strict grammar
+  // alone would leave a malformed binding in the page as an HTML comment,
+  // which is to say invisible, and the claims it names would vanish from
+  // the narrative silently. A candidate that fails the grammar is rendered
+  // as a broken binding instead.
   const stale = new Map<string, { state: string; why: string }>();
-  text = text.replace(bindingRe(), (_m, ids: string, _anchor: string, boundAt?: string) => {
-    const list = ids.trim().split(/\s+/).filter(Boolean);
+  text = text.replace(bindingCandidateRe(), (whole: string) => {
+    const m = bindingRe().exec(whole);
+    if (!m) return "@@BADNOTE@@" + whole.replace(/[@]/g, "") + "@@ENDBADNOTE@@";
+    const list = (m[1] ?? "").trim().split(/\s+/).filter(Boolean);
     const key = list.join(" ");
-    stale.set(key, bindingStaleness(boundAt, list, c));
+    stale.set(key, bindingStaleness(m[3], list, c));
     return "@@NOTE@@" + key + "@@ENDNOTE@@";
   });
 
@@ -255,6 +266,10 @@ export function renderNarrative(n: Narrative, c: LoadedCorpus): string {
   html = html
     .split(OPEN).join('<span class="bind">')
     .split(CLOSE).join("</span>")
+    .replace(/@@BADNOTE@@([\s\S]*?)@@ENDBADNOTE@@/g, (_m, raw: string) =>
+      '<span class="bind-broken">binding does not match the grammar of '
+      + '<span class="id">ERF-31</span>, so the claims it names are not bound: '
+      + esc(raw.trim()) + "</span>")
     .replace(/@@NOTE@@([^@]*)@@ENDNOTE@@/g, (_m, ids: string) => {
       const list = ids.trim().split(/\s+/).filter(Boolean);
       // `ERF-33`: an unresolvable binding is reported, never dropped.

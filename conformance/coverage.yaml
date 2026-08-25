@@ -82,8 +82,12 @@ requirements:
   ERF-28:
     uncovered: no fixture covers survey immutability or the title stating what was sought
   ERF-31:
-    tests: [output]
-    note: the binding grammar, exercised through the shared bindingRe
+    tests: [output, fixtures/invalid/binding-without-bound-at]
+    note: >
+      the binding grammar through the shared bindingRe, plus the recognition
+      rule: a candidate that fails the grammar is reported rather than
+      skipped, which is what stops a required part from making a binding
+      invisible instead of invalid
   ERF-32:
     tests: [staleness]
     note: the indeterminate branch, the mixed-precision day, and both plain orders
