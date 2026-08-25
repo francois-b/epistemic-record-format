@@ -7,6 +7,10 @@ priority_because: "Fable: the dangling clause has nothing to implement and no tw
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
 verifications:
+  - by: "claude-opus-5, independent verification of the nine"
+    on: 2026-08-25
+    verdict: accurate
+    note: "confirmed: ERF-47 enumerates three staleness readings and surveys are in none of them."
   - by: "raised by the verification pass itself"
     on: 2026-08-25
     verdict: unverified

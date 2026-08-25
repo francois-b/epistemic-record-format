@@ -7,6 +7,10 @@ priority_because: "Section 1 already binds the Record class to the data model, a
 basis: demonstrated
 raised: "trial 5 (Rust), 2026-08-25"
 verifications:
+  - by: "claude-opus-5, independent verification of the nine"
+    on: 2026-08-25
+    verdict: accurate
+    note: "confirmed: the Record class binds section 3 but no ERF number requires a field to be present, and the reference says so about itself in a comment."
   - by: "raised by the verification pass itself"
     on: 2026-08-25
     verdict: unverified

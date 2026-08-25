@@ -87,15 +87,19 @@ Raised but not yet checked by anyone other than whoever raised them. **Not ready
 
 | id | priority | | basis | verification |
 |---|---|---|---|---|
-| [`B-40`](B-40-erf-53s-round-trip-clause-has-no-definition-of-loss.md) | **P2** | `ERF-53`'s round-trip clause has no definition of loss | `demonstrated` | `unverified` |
-| [`B-41`](B-41-basic-rules-have-no-requirement-number-to-cite.md) | **P3** | Basic rules have no requirement number to cite | `demonstrated` | `unverified` |
-| [`B-42`](B-42-the-deployment-has-no-identity.md) | **P3** | The deployment has no identity | `demonstrated` | `unverified` |
-| [`B-43`](B-43-timestamps-the-type-says-instant-every-example-writes-a-ba.md) | **P2** | Timestamps: the type says instant, every example writes a bare date | `reported` | `unverified` |
-| [`B-44`](B-44-erf-2-requires-a-dated-capture-and-no-field-holds-the-date.md) | **P1** | `ERF-2` requires a dated capture and no field holds the date | `reported` | `unverified` |
-| [`B-45`](B-45-erf-28-asserts-a-computed-staleness-that-nothing-defines.md) | **P2** | `ERF-28` asserts a computed staleness that nothing defines | `reported` | `unverified` |
-| [`B-46`](B-46-an-atom-may-name-a-corpus-that-was-never-declared.md) | **P2** | An atom may name a corpus that was never declared | `reported` | `unverified` |
-| [`B-47`](B-47-the-serialization-rules-are-written-about-records-and-miss.md) | **P3** | The serialization rules are written about records and miss the other files | `reported` | `unverified` |
-| [`B-48`](B-48-the-validator-conformance-class-omits-section-4.md) | **P2** | The Validator conformance class omits section 4 | `reported` | `unverified` |
+| [`B-40`](B-40-erf-53s-round-trip-clause-has-no-definition-of-loss.md) | **P2** | `ERF-53`'s round-trip clause has no definition of loss | `demonstrated` | `accurate` · `unverified` ⚠ split |
+| [`B-41`](B-41-basic-rules-have-no-requirement-number-to-cite.md) | **P3** | Basic rules have no requirement number to cite | `demonstrated` | `accurate` · `unverified` ⚠ split |
+| [`B-42`](B-42-the-deployment-has-no-identity.md) | **P3** | The deployment has no identity | `demonstrated` | `duplicate` · `unverified` ⚠ split |
+| [`B-43`](B-43-timestamps-the-type-says-instant-every-example-writes-a-ba.md) | **P3** | Timestamps: the type says instant, every example writes a bare date | `reported` | `inaccurate` · `unverified` ⚠ split |
+| [`B-44`](B-44-erf-2-requires-a-dated-capture-and-no-field-holds-the-date.md) | **P1** | `ERF-2` requires a dated capture and no field holds the date | `demonstrated` | `accurate` · `unverified` ⚠ split |
+| [`B-45`](B-45-erf-28-asserts-a-computed-staleness-that-nothing-defines.md) | **P2** | `ERF-28` asserts a computed staleness that nothing defines | `reported` | `accurate` · `unverified` ⚠ split |
+| [`B-46`](B-46-an-atom-may-name-a-corpus-that-was-never-declared.md) | **P2** | An atom may name a corpus that was never declared | `reported` | `accurate` · `unverified` ⚠ split |
+| [`B-47`](B-47-the-serialization-rules-are-written-about-records-and-miss.md) | **P2** | The serialization rules are written about records and miss the other files | `reported` | `accurate` · `unverified` ⚠ split |
+| [`B-48`](B-48-the-validator-conformance-class-omits-section-4.md) | **P2** | The Validator conformance class omits section 4 | `reported` | `accurate` · `unverified` ⚠ split |
+| [`B-51`](B-51-erf-55s-omit-rule-stops-at-lists-and-an-empty-mapping-carries-meaning.md) | **P1** | `ERF-55`'s omit rule stops at lists, and one empty mapping carries meaning | `reported` | `unverified` |
+| [`B-52`](B-52-the-base-for-a-capture-path-is-stated-only-in-a-comment.md) | **P1** | The base for a capture `path` is stated only in a comment | `reported` | `unverified` |
+| [`B-53`](B-53-erf-67s-encoding-clause-does-not-clearly-reach-captures.md) | **P2** | `ERF-67`'s encoding clause does not clearly reach captures | `reported` | `unverified` |
+| [`B-54`](B-54-nothing-states-a-key-order-for-frontmatter.md) | **P3** | Nothing states a key order for frontmatter | `reported` | `unverified` |
 
 ## Defects awaiting a ruling
 
@@ -142,5 +146,5 @@ Verified accurate. The format does not do these yet; each names the event that w
 
 ---
 
-37 entries, 37 verifications: 28 accurate, 9 unverified.
+41 entries, 50 verifications: 35 accurate, 1 duplicate, 1 inaccurate, 13 unverified.
 Regenerate with `python3 tools/backlog-index.py`.

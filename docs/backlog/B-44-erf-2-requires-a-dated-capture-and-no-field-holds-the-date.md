@@ -4,9 +4,13 @@ kind: defect
 status: open
 priority: P1
 priority_because: "`ERF-2` states a MUST that no field in the `Source` shape can satisfy, so the fix adds a field and two conforming producers are already dating captures in incompatible places; provisional pending verification by someone other than the raiser."
-basis: reported
+basis: demonstrated
 raised: "backlog verification pass, 2026-08-25"
 verifications:
+  - by: "claude-opus-5, independent verification of the nine"
+    on: 2026-08-25
+    verdict: accurate
+    note: "confirmed against every field of Source and Fetched: nothing holds a capture date, and four conforming producers already write it in four different places."
   - by: "raised by the verification pass itself"
     on: 2026-08-25
     verdict: unverified

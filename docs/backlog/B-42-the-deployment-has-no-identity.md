@@ -8,6 +8,10 @@ priority_because: "Fable: the definitions already state the scope is implicit, a
 basis: demonstrated
 raised: "trial 6 (SQL), 2026-08-25"
 verifications:
+  - by: "claude-opus-5, independent verification of the nine"
+    on: 2026-08-25
+    verdict: duplicate
+    note: "duplicate of B-01: the Definitions already make the scope implicit and ERF-37 rules the store-key case the substrate's. Residue folded into B-01."
   - by: "raised by the verification pass itself"
     on: 2026-08-25
     verdict: unverified

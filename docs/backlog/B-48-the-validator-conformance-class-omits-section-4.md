@@ -7,6 +7,10 @@ priority_because: "Both reviewers: the class opens with every machine-checkable 
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
 verifications:
+  - by: "claude-opus-5, independent verification of the nine"
+    on: 2026-08-25
+    verdict: accurate
+    note: "confirmed: every sibling conformance class uses the same colon-then-list form exhaustively. ERF-6 dropped from its examples, since ERF-50 to 52 already sit in section 6."
   - by: "raised by the verification pass itself"
     on: 2026-08-25
     verdict: unverified

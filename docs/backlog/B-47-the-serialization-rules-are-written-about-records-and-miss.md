@@ -2,12 +2,15 @@
 id: B-47
 kind: defect
 status: open
-merge_into: B-36
-priority: P3
+priority: P2
 priority_because: "Verified against the spec: ERF-3 already puts the source list under section 7, so only the narrative file is unscoped. Fold into B-36."
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
 verifications:
+  - by: "claude-opus-5, independent verification of the nine"
+    on: 2026-08-25
+    verdict: accurate
+    note: "confirmed: the three serialization rules have three different subjects, and ERF-66 has the narrowest and most consequential. The merge into B-36 was misfiled and is removed."
   - by: "raised by the verification pass itself"
     on: 2026-08-25
     verdict: unverified

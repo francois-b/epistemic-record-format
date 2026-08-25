@@ -308,7 +308,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
       record: "corpus.yaml",
       field: "spec_version",
       detail: `${manifest.spec_version} has major version ${major}; this consumer `
-        + `supports major 1 and refuses openly rather than reading fields whose `
+        + `supports major 0 and refuses openly rather than reading fields whose `
         + `meaning may have moved (ERF-60)`,
     });
   }
