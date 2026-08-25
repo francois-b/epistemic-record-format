@@ -10,7 +10,11 @@ verifications:
   - by: "claude-opus-5, independent verification of the nine"
     on: 2026-08-25
     verdict: inaccurate
-    note: "the entry is wrong: types/erf.ts says "RFC 3339", not "instant", and ERF-19 states a bare date is correct where nothing is ordered. Both trials read it the same way; the divergence was on as_of_date, which is B-24."
+    note: >
+      the entry is wrong: types/erf.ts says "RFC 3339", not "instant",
+      and ERF-19 states a bare date is correct where nothing is ordered.
+      Both trials read it the same way; the divergence was on
+      as_of_date, which is B-24.
   - by: "raised by the verification pass itself"
     on: 2026-08-25
     verdict: unverified

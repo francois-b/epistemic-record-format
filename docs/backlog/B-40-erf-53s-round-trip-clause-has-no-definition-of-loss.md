@@ -10,7 +10,11 @@ verifications:
   - by: "claude-opus-5, independent verification of the nine"
     on: 2026-08-25
     verdict: accurate
-    note: "confirmed: "loss" appears twice in the spec and neither defines an equivalence; two numeric slips in the entry corrected. Interoperability is unaffected because the interchange form is what travels."
+    note: >
+      confirmed: "loss" appears twice in the spec and neither defines an
+      equivalence; two numeric slips in the entry corrected.
+      Interoperability is unaffected because the interchange form is
+      what travels.
   - by: "raised by the verification pass itself"
     on: 2026-08-25
     verdict: unverified

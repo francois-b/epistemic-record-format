@@ -4,7 +4,8 @@
 The index is derived, never edited by hand: an entry's frontmatter is the
 only place its state lives. Run after adding or changing an entry.
 """
-import re, sys, pathlib, collections
+import re
+import yaml, sys, pathlib, collections
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 ENTRIES = ROOT / "docs" / "backlog"
@@ -96,26 +97,29 @@ Decisions already taken against something are not here.
 """
 
 def frontmatter(text):
+    """
+    Parse an entry's frontmatter as YAML, which is what it is.
+
+    This was a hand-rolled line parser until 2026-08-25, when four entries
+    turned out to have been invalid YAML for a day: a note containing an
+    unescaped double quote inside a double-quoted scalar. The hand-rolled
+    parser read them without complaint, so the tool whose job is to fail on
+    a malformed entry could not see the malformation. A real parser is the
+    check.
+    """
     m = re.match(r"^---\n(.*?)\n---\n", text, re.S)
     if not m:
         return None
-    fm, cur = {}, None
-    for line in m.group(1).split("\n"):
-        if re.match(r"^\w[\w_]*:", line):
-            k, _, v = line.partition(":")
-            cur = k.strip()
-            fm[cur] = v.strip().strip('"') or {}
-        elif line.startswith("  - ") and cur:
-            fm.setdefault(cur, [])
-            if not isinstance(fm[cur], list): fm[cur] = []
-            k, _, v = line[4:].partition(":")
-            fm[cur].append({k.strip(): v.strip().strip('"')})
-        elif line.startswith("    ") and isinstance(fm.get(cur), list) and fm[cur]:
-            k, _, v = line.strip().partition(":")
-            fm[cur][-1][k.strip()] = v.strip().strip('"')
-        elif line.startswith("  ") and isinstance(fm.get(cur), dict):
-            k, _, v = line.strip().partition(":")
-            fm[cur][k.strip()] = v.strip().strip('"')
+    try:
+        fm = yaml.safe_load(m.group(1))
+    except yaml.YAMLError as e:
+        raise SystemExit(
+            f"frontmatter is not valid YAML: {str(e).splitlines()[0]}\n"
+            f"  (a double quote inside a double-quoted scalar is the usual cause; "
+            f"use a `>` block scalar instead)"
+        )
+    if not isinstance(fm, dict):
+        return None
     return fm
 
 def main():

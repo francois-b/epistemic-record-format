@@ -10,7 +10,10 @@ verifications:
   - by: "claude-opus-5, independent verification of the nine"
     on: 2026-08-25
     verdict: accurate
-    note: "confirmed, and strengthened: section 3.1 cites ERF-17 for surveys while ERF-17 says "every claim", so the index and the requirement already disagree."
+    note: >
+      confirmed, and strengthened: section 3.1 cites ERF-17 for surveys
+      while ERF-17 says "every claim", so the index and the requirement
+      already disagree.
   - by: "raised by the verification pass itself"
     on: 2026-08-25
     verdict: unverified

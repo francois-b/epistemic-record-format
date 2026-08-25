@@ -3,7 +3,9 @@ id: B-48
 kind: defect
 status: open
 priority: P2
-priority_because: "Both reviewers: the class opens with every machine-checkable MUST that applies, and ERF-50 to 52 sit in section 6; the fix is an "including"."
+priority_because: >
+  Both reviewers: the class opens with every machine-checkable MUST that
+  applies, and ERF-50 to 52 sit in section 6; the fix is an "including".
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
 verifications:
