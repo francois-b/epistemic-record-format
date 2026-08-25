@@ -6,11 +6,11 @@ priority: P1
 priority_because: "Every uniqueness and resolution rule scopes to a deployment that has no id, declaration, or file, so a travelling corpus cannot state the scope its ids were unique in and a recipient cannot tell a collision from a coincidence; provisional pending verification by someone other than the raiser."
 basis: demonstrated
 raised: "trial 6 (SQL), 2026-08-25"
-verified:
-  by: "raised by the verification pass itself"
-  on: 2026-08-25
-  verdict: unverified
-  note: "raised while verifying the queue; needs a check by someone who did not raise it"
+verifications:
+  - by: "raised by the verification pass itself"
+    on: 2026-08-25
+    verdict: unverified
+    note: "raised while verifying the queue; needs a check by someone who did not raise it"
 ---
 
 # B-42 · The deployment has no identity

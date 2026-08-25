@@ -6,10 +6,10 @@ priority: P2
 priority_because: "The fix is a clarifying note that binds no shape and changes no verdict, and the entry itself asks to wait for the SQL trial's wording."
 basis: reported
 raised: "trial 4 undecidable 5, 2026-08-25 (S8)"
-verified:
-  by: "agent/claude-opus-5, verification pass"
-  on: 2026-08-25
-  verdict: accurate
+verifications:
+  - by: "agent/claude-opus-5, verification pass"
+    on: 2026-08-25
+    verdict: accurate
 ---
 
 # B-31 · Append-only rules cannot be checked from a single corpus snapshot

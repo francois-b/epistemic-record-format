@@ -6,10 +6,10 @@ priority: trigger-driven
 priority_because: "A capability waiting on the first survey that must stand against a claim rather than back one."
 basis: anticipated
 raised: "design period"
-verified:
-  by: "agent/claude-opus-5, verification pass"
-  on: 2026-08-25
-  verdict: accurate
+verifications:
+  - by: "agent/claude-opus-5, verification pass"
+    on: 2026-08-25
+    verdict: accurate
 trigger: "The first survey that must stand against a claim rather than back one."
 ---
 

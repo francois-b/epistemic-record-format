@@ -6,10 +6,10 @@ priority: P1
 priority_because: "Two trials wrote different filenames for the declaration and the narratives directory and each produced a corpus the reference could not read, twice silently, which is interoperability failing on day one."
 basis: demonstrated
 raised: "trials 1, 2 and 4 independently, 2026-08-25 (S1, S14, S15)"
-verified:
-  by: "agent/claude-opus-5, verification pass"
-  on: 2026-08-25
-  verdict: accurate
+verifications:
+  - by: "agent/claude-opus-5, verification pass"
+    on: 2026-08-25
+    verdict: accurate
 ---
 
 # B-23 · The corpus has no stated shape on disk

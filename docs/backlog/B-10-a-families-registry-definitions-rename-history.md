@@ -6,10 +6,10 @@ priority: trigger-driven
 priority_because: "A capability waiting on the first family split or rename that matters to an existing document."
 basis: anticipated
 raised: "design period"
-verified:
-  by: "agent/claude-opus-5, verification pass"
-  on: 2026-08-25
-  verdict: accurate
+verifications:
+  - by: "agent/claude-opus-5, verification pass"
+    on: 2026-08-25
+    verdict: accurate
 trigger: "The first family split or rename that matters to an existing document."
 ---
 

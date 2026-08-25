@@ -6,11 +6,11 @@ priority: P3
 priority_because: "Verification found the entry inaccurate about which defects overlap it, so it needs disposal, its live subject already being carried by B-25 and B-26."
 basis: anticipated
 raised: "design period"
-verified:
-  by: "agent/claude-opus-5, verification pass"
-  on: 2026-08-25
-  verdict: inaccurate
-  note: "its note cites B-30, which is the flag collision; the normalization disagreements are B-25 and B-26"
+verifications:
+  - by: "agent/claude-opus-5, verification pass"
+    on: 2026-08-25
+    verdict: inaccurate
+    note: "its note cites B-30, which is the flag collision; the normalization disagreements are B-25 and B-26"
 trigger: "A second implementation that matches every conformance case yet disagrees with the reference on an uncased input."
 ---
 

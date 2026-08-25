@@ -6,10 +6,10 @@ priority: trigger-driven
 priority_because: "A capability waiting on its named trigger, two parties sharing records whose ids may collide, which has not fired; the part the specification already leans on is carried by B-42."
 basis: anticipated
 raised: "retired from v0.9 as `ERF-16` on 2026-08-24 with the realm concept"
-verified:
-  by: "agent/claude-opus-5, verification pass"
-  on: 2026-08-25
-  verdict: accurate
+verifications:
+  - by: "agent/claude-opus-5, verification pass"
+    on: 2026-08-25
+    verdict: accurate
 trigger: "Two parties sharing records whose ids may collide."
 ---
 

@@ -6,11 +6,11 @@ priority: P1
 priority_because: "`ERF-53` asserts a lossless round trip it never defines, three defensible equivalences give three different answers on one corpus, and a silent body discard is conforming today, so store-backed and file-backed implementations cannot exchange corpora reliably; provisional pending verification by someone other than the raiser."
 basis: demonstrated
 raised: "trial 6 (SQL), 2026-08-25"
-verified:
-  by: "raised by the verification pass itself"
-  on: 2026-08-25
-  verdict: unverified
-  note: "raised while verifying the queue; needs a check by someone who did not raise it"
+verifications:
+  - by: "raised by the verification pass itself"
+    on: 2026-08-25
+    verdict: unverified
+    note: "raised while verifying the queue; needs a check by someone who did not raise it"
 ---
 
 # B-40 · `ERF-53`'s round-trip clause has no definition of loss

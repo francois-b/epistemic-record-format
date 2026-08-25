@@ -6,10 +6,10 @@ priority: P1
 priority_because: "The specification contradicts itself, `bound-at` being a MUST in `ERF-32` and optional in the grammar beside it, so the same narrative binding is both conforming and not."
 basis: reported
 raised: "trial 1 ambiguity A1, 2026-08-25 (S4)"
-verified:
-  by: "agent/claude-opus-5, verification pass"
-  on: 2026-08-25
-  verdict: accurate
+verifications:
+  - by: "agent/claude-opus-5, verification pass"
+    on: 2026-08-25
+    verdict: accurate
 ---
 
 # B-29 · `ERF-32` requires what the `ERF-31` grammar makes optional

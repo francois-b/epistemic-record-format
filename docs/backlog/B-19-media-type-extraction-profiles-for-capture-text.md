@@ -6,11 +6,11 @@ priority: P3
 priority_because: "Verification found it stale, the 2026-08-24 `ERF-51` rewrite having given its trigger a defined outcome, so the entry needs disposal rather than a ruling."
 basis: anticipated
 raised: "design period"
-verified:
-  by: "agent/claude-opus-5, verification pass"
-  on: 2026-08-25
-  verdict: stale
-  note: "the 2026-08-24 ERF-51 rewrite gave the trigger event a defined outcome; the format took a position rather than deferring"
+verifications:
+  - by: "agent/claude-opus-5, verification pass"
+    on: 2026-08-25
+    verdict: stale
+    note: "the 2026-08-24 ERF-51 rewrite gave the trigger event a defined outcome; the format took a position rather than deferring"
 trigger: "The first capture that is not text or markdown."
 ---
 

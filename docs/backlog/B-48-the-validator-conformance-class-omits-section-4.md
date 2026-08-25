@@ -6,11 +6,11 @@ priority: P1
 priority_because: "The Validator class does not bind `ERF-6`, `ERF-12`, or `ERF-19`, so two conforming validators can differ on whether a quote is verbatim, and widening a conformance class after anyone claims it is a breaking change; provisional pending verification by someone other than the raiser."
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
-verified:
-  by: "raised by the verification pass itself"
-  on: 2026-08-25
-  verdict: unverified
-  note: "raised while verifying the queue; needs a check by someone who did not raise it"
+verifications:
+  - by: "raised by the verification pass itself"
+    on: 2026-08-25
+    verdict: unverified
+    note: "raised while verifying the queue; needs a check by someone who did not raise it"
 ---
 
 # B-48 · The Validator conformance class omits section 4

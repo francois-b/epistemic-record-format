@@ -6,11 +6,11 @@ priority: P1
 priority_because: "`ERF-2` states a MUST that no field in the `Source` shape can satisfy, so the fix adds a field and two conforming producers are already dating captures in incompatible places; provisional pending verification by someone other than the raiser."
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
-verified:
-  by: "raised by the verification pass itself"
-  on: 2026-08-25
-  verdict: unverified
-  note: "raised while verifying the queue; needs a check by someone who did not raise it"
+verifications:
+  - by: "raised by the verification pass itself"
+    on: 2026-08-25
+    verdict: unverified
+    note: "raised while verifying the queue; needs a check by someone who did not raise it"
 ---
 
 # B-44 · `ERF-2` requires a dated capture and no field holds the date

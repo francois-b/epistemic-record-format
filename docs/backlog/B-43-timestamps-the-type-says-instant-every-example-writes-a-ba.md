@@ -6,11 +6,11 @@ priority: P1
 priority_because: "The data model says instant, every example writes a bare date, two trials made different calls, and a strict reading makes a conforming validator reject the specification's own examples; provisional pending verification by someone other than the raiser."
 basis: reported
 raised: "trial 5 (Rust), 2026-08-25"
-verified:
-  by: "raised by the verification pass itself"
-  on: 2026-08-25
-  verdict: unverified
-  note: "raised while verifying the queue; needs a check by someone who did not raise it"
+verifications:
+  - by: "raised by the verification pass itself"
+    on: 2026-08-25
+    verdict: unverified
+    note: "raised while verifying the queue; needs a check by someone who did not raise it"
 ---
 
 # B-43 · Timestamps: the type says instant, every example writes a bare date

@@ -28,9 +28,13 @@ in this folder**; this page is generated from them by
   failed. `anticipated`: nobody has hit this, and it is the weakest basis
   there is.
 - **raised** — where it came from, specifically enough to go back to.
-- **verified** — who checked the description against the current
-  specification, when, and their verdict. An entry nobody has verified is
-  not ready to be decided.
+- **verifications** — a list, one entry per check: who, when, and their
+  verdict. A list rather than a field, for the reason the format itself
+  gives for `finding_audit`: a verdict is one instrument's reading, several
+  readings are worth more than one, and where they disagree the
+  disagreement is the finding. An entry nobody has verified is not ready to
+  be decided; an entry whose verifications split is a different and more
+  interesting problem.
 - **status** — `open` (verified accurate, awaiting trigger or ruling) or
   `contested` (verification disputes it: stale, inaccurate, duplicate, or
   already decided elsewhere). A contested entry is a decision about the
@@ -156,5 +160,5 @@ Verified accurate. The format does not do these yet; each names the event that w
 
 ---
 
-48 entries: 32 accurate, 2 already-closed, 1 duplicate, 3 inaccurate, 1 stale, 9 unverified.
+48 entries, 48 verifications: 32 accurate, 2 already-closed, 1 duplicate, 3 inaccurate, 1 stale, 9 unverified.
 Regenerate with `python3 tools/backlog-index.py`.

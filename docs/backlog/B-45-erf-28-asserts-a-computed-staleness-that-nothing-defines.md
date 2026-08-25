@@ -6,11 +6,11 @@ priority: P1
 priority_because: "`ERF-28` asserts a computed survey staleness that nothing in the format defines, which is the specification stating something about itself that is not true; provisional pending verification by someone other than the raiser."
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
-verified:
-  by: "raised by the verification pass itself"
-  on: 2026-08-25
-  verdict: unverified
-  note: "raised while verifying the queue; needs a check by someone who did not raise it"
+verifications:
+  - by: "raised by the verification pass itself"
+    on: 2026-08-25
+    verdict: unverified
+    note: "raised while verifying the queue; needs a check by someone who did not raise it"
 ---
 
 # B-45 · `ERF-28` asserts a computed staleness that nothing defines

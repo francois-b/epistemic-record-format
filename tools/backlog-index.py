@@ -40,9 +40,13 @@ in this folder**; this page is generated from them by
   failed. `anticipated`: nobody has hit this, and it is the weakest basis
   there is.
 - **raised** — where it came from, specifically enough to go back to.
-- **verified** — who checked the description against the current
-  specification, when, and their verdict. An entry nobody has verified is
-  not ready to be decided.
+- **verifications** — a list, one entry per check: who, when, and their
+  verdict. A list rather than a field, for the reason the format itself
+  gives for `finding_audit`: a verdict is one instrument's reading, several
+  readings are worth more than one, and where they disagree the
+  disagreement is the finding. An entry nobody has verified is not ready to
+  be decided; an entry whose verifications split is a different and more
+  interesting problem.
 - **status** — `open` (verified accurate, awaiting trigger or ruling) or
   `contested` (verification disputes it: stale, inaccurate, duplicate, or
   already decided elsewhere). A contested entry is a decision about the
@@ -101,6 +105,14 @@ def frontmatter(text):
             k, _, v = line.partition(":")
             cur = k.strip()
             fm[cur] = v.strip().strip('"') or {}
+        elif line.startswith("  - ") and cur:
+            fm.setdefault(cur, [])
+            if not isinstance(fm[cur], list): fm[cur] = []
+            k, _, v = line[4:].partition(":")
+            fm[cur].append({k.strip(): v.strip().strip('"')})
+        elif line.startswith("    ") and isinstance(fm.get(cur), list) and fm[cur]:
+            k, _, v = line.strip().partition(":")
+            fm[cur][-1][k.strip()] = v.strip().strip('"')
         elif line.startswith("  ") and isinstance(fm.get(cur), dict):
             k, _, v = line.strip().partition(":")
             fm[cur][k.strip()] = v.strip().strip('"')
@@ -114,13 +126,13 @@ def main():
             problems.append(f"{p.name}: no frontmatter")
             continue
         title = re.search(r"^# B-\d+ · (.+)$", p.read_text(), re.M)
-        for req in ("id", "kind", "status", "priority", "basis", "raised", "verified"):
+        for req in ("id", "kind", "status", "priority", "basis", "raised", "verifications"):
             if req not in fm:
                 problems.append(f"{p.name}: missing {req}")
         rows.append({"id": fm.get("id",""), "title": title.group(1) if title else p.stem,
                      "kind": fm.get("kind",""), "basis": fm.get("basis",""),
                      "status": fm.get("status",""), "priority": fm.get("priority",""),
-                     "verdict": (fm.get("verified") or {}).get("verdict",""),
+                     "verdicts": [v.get("verdict","") for v in (fm.get("verifications") or [])],
                      "file": p.name})
     if problems:
         print("\n".join(problems), file=sys.stderr)
@@ -132,21 +144,25 @@ def main():
         if not rs: return ""
         s = f"## {title}\n\n{note}\n\n| id | priority | | basis | verification |\n|---|---|---|---|---|\n"
         for r in rs:
-            s += f"| [`{r['id']}`]({r['file']}) | **{r['priority']}** | {r['title']} | `{r['basis']}` | `{r['verdict']}` |\n"
+            vs = r["verdicts"]
+            cell = " · ".join(f"`{v}`" for v in vs) if vs else "`none`"
+            if len(vs) > 1 and len(set(vs)) > 1: cell += " ⚠ split"
+            s += f"| [`{r['id']}`]({r['file']}) | **{r['priority']}** | {r['title']} | `{r['basis']}` | {cell} |\n"
         return s + "\n"
     out = head
     out += tbl("Contested", "Verification disputes these: stale, inaccurate, duplicated, or already ruled elsewhere. Each needs a decision about the **entry** before the format is touched.",
                [r for r in rows if r["status"] == "contested"])
     out += tbl("Unverified", "Raised but not yet checked by anyone other than whoever raised them. **Not ready to be decided.**",
-               [r for r in rows if r["verdict"] == "unverified"])
-    ready = [r for r in rows if r["kind"] == "defect" and r["status"] == "open" and r["verdict"] == "accurate"]
+               [r for r in rows if "unverified" in r["verdicts"]])
+    ready = [r for r in rows if r["kind"] == "defect" and r["status"] == "open" and r["verdicts"] and all(v == "accurate" for v in r["verdicts"])]
     order = {"P1": 0, "P2": 1, "P3": 2, "unassessed": 3}
     ready.sort(key=lambda r: (order.get(r["priority"], 9), int(r["id"].split("-")[1])))
     out += tbl("Defects awaiting a ruling", "Verified accurate, ordered by priority. The specification is wrong, unclear, or incomplete here.", ready)
     out += tbl("Capabilities awaiting a trigger", "Verified accurate. The format does not do these yet; each names the event that would revive it.",
-               [r for r in rows if r["kind"] == "capability" and r["status"] == "open" and r["verdict"] == "accurate"])
-    counts = collections.Counter(r["verdict"] for r in rows)
-    out += f"\n---\n\n{len(rows)} entries: " + ", ".join(f"{n} {v}" for v, n in sorted(counts.items())) + ".\nRegenerate with `python3 tools/backlog-index.py`.\n"
+               [r for r in rows if r["kind"] == "capability" and r["status"] == "open" and r["verdicts"] and all(v == "accurate" for v in r["verdicts"])])
+    counts = collections.Counter(v for r in rows for v in r["verdicts"])
+    total = sum(len(r["verdicts"]) for r in rows)
+    out += f"\n---\n\n{len(rows)} entries, {total} verifications: " + ", ".join(f"{n} {v}" for v, n in sorted(counts.items())) + ".\nRegenerate with `python3 tools/backlog-index.py`.\n"
     INDEX.write_text(out)
     print(f"index: {len(rows)} entries")
     return 0

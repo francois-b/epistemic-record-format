@@ -6,10 +6,10 @@ priority: P1
 priority_because: "Each case is a place where two conforming implementations normalize the same capture differently, and any correction to the sequence changes verdicts on already-minted atoms, so it is cheap now and a re-audit for every adopter later."
 basis: demonstrated
 raised: "trial 2 and capex batch 5, 2026-08-25 (S12)"
-verified:
-  by: "agent/claude-opus-5, verification pass"
-  on: 2026-08-25
-  verdict: accurate
+verifications:
+  - by: "agent/claude-opus-5, verification pass"
+    on: 2026-08-25
+    verdict: accurate
 ---
 
 # B-26 · Three normalization edge cases from real captures

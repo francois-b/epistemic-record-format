@@ -6,10 +6,10 @@ priority: P1
 priority_because: "The `<producer>/<version>` actor convention collapsed five authors of 151 records into one string, defeating the provenance the format exists to keep, and an identifier convention is the single most expensive thing to change after adoption."
 basis: demonstrated
 raised: "capex corpus, 151 records across five authors, 2026-08-25 (S16)"
-verified:
-  by: "agent/claude-opus-5, verification pass"
-  on: 2026-08-25
-  verdict: accurate
+verifications:
+  - by: "agent/claude-opus-5, verification pass"
+    on: 2026-08-25
+    verdict: accurate
 ---
 
 # B-37 · The actor grammar cannot distinguish two authors of the same model

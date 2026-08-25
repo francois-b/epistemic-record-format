@@ -6,11 +6,11 @@ priority: P2
 priority_because: "Requirement ids append by design, so numbering the data model's own obligations later is a non-breaking minor addition and no implementation behaves differently meanwhile; provisional pending verification by someone other than the raiser."
 basis: demonstrated
 raised: "trial 5 (Rust), 2026-08-25"
-verified:
-  by: "raised by the verification pass itself"
-  on: 2026-08-25
-  verdict: unverified
-  note: "raised while verifying the queue; needs a check by someone who did not raise it"
+verifications:
+  - by: "raised by the verification pass itself"
+    on: 2026-08-25
+    verdict: unverified
+    note: "raised while verifying the queue; needs a check by someone who did not raise it"
 ---
 
 # B-41 · Basic rules have no requirement number to cite

@@ -6,10 +6,10 @@ priority: trigger-driven
 priority_because: "A capability waiting on a tool that must discover corpora it was not pointed at, which nothing in the trial battery needed."
 basis: anticipated
 raised: "retired from v0.9 as `ERF-64` on 2026-08-24"
-verified:
-  by: "agent/claude-opus-5, verification pass"
-  on: 2026-08-25
-  verdict: accurate
+verifications:
+  - by: "agent/claude-opus-5, verification pass"
+    on: 2026-08-25
+    verdict: accurate
 trigger: "A tool that must discover corpora it was not pointed at."
 ---
 
