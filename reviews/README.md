@@ -19,4 +19,4 @@ reader can tell what was accepted from what was argued and declined.
 | Review | What it was |
 |---|---|
 | `2026-08-24-adversarial-reads` | Two readers, one cross-vendor and one internal, reading the frozen text for defects. Verbatim output with per-finding rulings. |
-| `2026-08-25-independent-trials` | Four trials that tested the document by building from it: an independent validator, two authoring trials at different scales, and an adversarial fixture set. Each ran with no access to this repository beyond `SPEC.md`. |
+| `2026-08-25-independent-trials` | Four trials that tested the document by building from it: an independent validator, two authoring trials at different scales, and an adversarial fixture set. Each ran behind a purity boundary: `SPEC.md`, its own raw materials, and, for the batched trials, the corpus built so far — never the fixtures, the viewer, the examples, or the specification's history. The friction logs also record where an agent's own house conventions, rather than the spec, settled a question. |

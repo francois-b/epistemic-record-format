@@ -79,8 +79,9 @@ model: claude-fable-5
   the essay's original publication venue or exact date from the hosted text or a quick search;
   internal evidence (references to "early 2000" as recent past) places composition ca.
   2000–2001. Recorded `citation_text` with an explicit "date unconfirmed" flag rather than
-  asserting a specific venue/date from memory ([house rule] discipline extended to this scout task
-  even though it targets the ERF spec, not the operator's own corpus) — a fact a future
+  asserting a specific venue/date from memory (the operating environment's provenance
+  discipline extended to this scout task even though it targets the ERF spec, not the
+  operator's own corpus) — a fact a future
   atom-minting pass should verify against a bibliographic database before treating any
   as-of-date claim as settled.
 

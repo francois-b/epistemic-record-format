@@ -12,7 +12,7 @@ searches:
   - tool: "WebSearch (Claude Code web search tool)"
     query: "Hellyer Taylor McKenzie citator comparison study Law Library Journal case validation"
     hits_reported: "9 results returned, all inspected"
-  - tool: "semantic_search ([private search tool]) over the private research library and public engagement index"
+  - tool: "semantic_search (local vector-index tool over a private research library)"
     query: "reliability of legal citators, disagreement between Shepard's and KeyCite on treatment classification"
     hits_reported: "15 passages returned; 7 on point, all tracing to sources already captured in this corpus"
 notable_results:

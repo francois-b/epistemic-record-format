@@ -89,17 +89,18 @@ analogy, and decomposition -- everything beyond the core 27 claims a prior autho
   contract-law sense (binding vs. non-binding commitment), matching the existing corpus's own
   usage (`rpo-growth-does-not-establish-monetizable-diversified-demand`'s working notes
   already quote Marcus calling the Oracle deal "apparently non-binding"). Read this as
-  distinct from [house rules] [house rule]'s "binding" watchword, which targets vague [private vault]
-  abstraction-speak in operator-facing prose, not a domain-standard contract term inside a
-  data corpus about financing structures. Renamed the PJM/hyperscaler power claim's title away
-  from "binding constraint" anyway, to a plainer "the constraint currently limiting the AI
-  buildout," since a cheap rewrite removed any ambiguity at zero cost.
+  distinct from a house style rule in the operating environment that flags "binding" as a
+  watchword for vague abstraction-speak in operator-facing prose, not a domain-standard
+  contract term inside a data corpus about financing structures. Renamed the PJM/hyperscaler
+  power claim's title away from "binding constraint" anyway, to a plainer "the constraint
+  currently limiting the AI buildout," since a cheap rewrite removed any ambiguity at zero
+  cost.
 
 - **Em dash convention followed the prior author's, not the literal Unicode character.** The
   existing 27 claims use `--` (double hyphen) rather than a true em dash character throughout
   their working notes. Matched that convention across all 26 new files, both for stylistic
-  consistency with the existing corpus and because [house rules] [house rule] bans em dashes in
-  running prose generally.
+  consistency with the existing corpus and because a house style rule in the operating
+  environment bans em dashes in running prose generally.
 
 - **Reused atoms heavily across new claims rather than treating each atom as
   single-use.** E.g. acx-53 (Doomberg, China competition) appears as atoms_against on two new

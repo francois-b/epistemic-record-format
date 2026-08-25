@@ -27,7 +27,7 @@ the discipline for one's own practice requires building primitives first —
 atoms/claims/juries/registries are exactly that.
 
 Provenance of the synthesis: produced 2026-07-22 by two adversarial rounds
-on the draft thesis thesis — the Sonnet steelman's narrowing ("tools
-exist, discipline doesn't") composed with the operator's opposing read
-("the tools are the wrong category; there are no primitives"). The two
+on an earlier draft thesis — an LLM's narrowing of it ("tools exist,
+discipline doesn't") composed with the author's opposing read ("the tools
+are the wrong category; there are no primitives"). The two
 findings are causally linked, not parallel.

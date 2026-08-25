@@ -29,15 +29,16 @@ An agent in any trials receives:
 - For batched trials, the corpus-so-far on disk, as any real author has.
 
 An agent never receives: the conversation history that produced the spec,
-the [private repo] repository's corpora, or another trial's output. Every trial
-keeps a **friction log**: each point where the agent guessed, re-read,
-or made a choice the spec did not settle, one dated line each. The
-friction log is a first-class deliverable, not a nicety.
+any corpus from the author's private working repository, or another
+trial's output. Every trial keeps a **friction log**: each point where the
+agent guessed, re-read, or made a choice the spec did not settle, one dated
+line each. The friction log is a first-class deliverable, not a nicety.
 
-Model policy: authoring and research trials run on Sonnet ([private repo]
-[house rule]; research-shaped work never inherits the session model), plain
-fetches on Haiku. The validator-build trials may run on a stronger model;
-diversity of model per trial is itself an independence axis.
+Model policy: authoring and research trials run on Sonnet (a standing
+convention of the operating environment: research-shaped work never
+inherits the session model), plain fetches on Haiku. The validator-build
+trials may run on a stronger model; diversity of model per trial is itself
+an independence axis.
 
 ## Trial 1 — independent validator build (implementability)
 
@@ -104,8 +105,8 @@ at volume (201 distinct tags across 146 atoms).
   with the same organization attesting at two grades); the honest
   licence mix (filings ship, almost everything else is excerpt-as-
   quotation or pointer-only); and by-product value: the corpus lands
-  inside the operator's [private thesis], so the test produces an
-  asset rather than homework.
+  inside a research interest the operator already holds, so the test
+  produces an asset rather than homework.
 
 **Scale targets (operator floor):**
 
@@ -143,11 +144,10 @@ stress the `ERF-52` uniqueness note defers behind exactly this trigger):
 
 **Decisions taken (operator may override):** audits on a ~30-atom subset
 only, the rest legally unaudited and shown as such by the health page;
-home is `03-authoring-trial-at-scale/corpus/` in this repository, migrating to the
-[private repo] later if it proves an asset (corpus directories
-are portable by design); tooling note for capture conversion, a pinned
-pymupdf4llm venv exists at the scratch directory but a fresh one is
-two commands.
+home is `03-authoring-trial-at-scale/corpus/` in this repository, and it may
+move elsewhere later if it proves an asset (corpus directories are portable
+by design); tooling note for capture conversion, a pinned pymupdf4llm
+virtualenv is two commands to create.
 
 **Cost, honestly:** the largest run of the project, on the order of
 10-15 sequential Sonnet agent runs with live web fetching, spread over

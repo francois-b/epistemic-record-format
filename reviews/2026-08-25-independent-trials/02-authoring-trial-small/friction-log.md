@@ -136,14 +136,15 @@ building. Every entry names the requirement id it turns on.
   differently; this corpus never makes that kind of finding.
 
 - 2026-08-25 -- Re-reading caught a reversed finding before it shipped
-  (not a spec-ambiguity entry, a plain fact-checking one, logged per
-  [house rule]/[house rule]). A first draft of `bjd-003`'s finding read Buffon's
-  polecat sentence as saying the American polecats' nature was inferior;
-  on a second, closer read the antecedent of "the nature of which" is the
-  single European kind just introduced, and the sentence is Buffon
-  conceding the American kind's superior nature. This flips which claim
-  the atom evidences (against `bjd-buffon-asserts-american-degeneracy`,
-  not for it). Caught before writing the claim files, not after.
+  (not a spec-ambiguity entry, a plain fact-checking one, logged per the
+  operating environment's verify-before-asserting discipline). A first
+  draft of `bjd-003`'s finding read Buffon's polecat sentence as saying
+  the American polecats' nature was inferior; on a second, closer read the
+  antecedent of "the nature of which" is the single European kind just
+  introduced, and the sentence is Buffon conceding the American kind's
+  superior nature. This flips which claim the atom evidences (against
+  `bjd-buffon-asserts-american-degeneracy`, not for it). Caught before
+  writing the claim files, not after.
 
 - 2026-08-25 -- ERF-71, digest coverage gap. `fetched.digest` is present
   for the two archive.org PDF sources (stable downloadable bytes, hashed
@@ -206,8 +207,9 @@ building. Every entry names the requirement id it turns on.
 - 2026-08-25 -- `owner`/`classification` on the corpus declaration are
   demonstration placeholders (`human:francois-bouet`, `public`) rather than
   a real accountable owner and confidentiality judgment; this corpus is a
-  stress-test exercise, not a live research program, and [house rule]'s public-
-  by-default convention was the readiest real-world analog to reach for.
+  stress-test exercise, not a live research program, and a public-by-default
+  convention in the operating environment was the readiest real-world analog
+  to reach for.
 
 - 2026-08-25 -- ERF-8, CSL strictness. The `citation` blocks in
   `sources.yaml` are CSL-flavored, not strictly valid CSL-JSON (e.g.

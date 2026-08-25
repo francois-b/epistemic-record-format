@@ -8,3 +8,11 @@ target/
 reviews/**/out/
 reviews/**/__pycache__/
 *.db
+
+# Compiled trial binaries and build logs. Trial SOURCE is committed when a
+# trial closes; its build output never is. Two 3.8 MB Go binaries were swept
+# in by `git add -A` on 2026-08-25 and caught before the commit landed, which
+# is the same mistake that put 59 MiB of Rust artifacts in this history.
+reviews/**/erfval
+reviews/**/erfval-bin
+reviews/**/.build-logs/

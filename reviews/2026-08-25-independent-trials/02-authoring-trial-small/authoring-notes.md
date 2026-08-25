@@ -103,11 +103,11 @@ dated, requirement-by-requirement log in `friction-log.md`.
   under operator direction.** This is the one place the spec's own
   descriptive framing ("authored by a person and never generated," section
   4.6's lead-in, non-binding per section 4's own preamble) sits in real
-  tension with how this repository's own practice actually works
-  (`[house rules]`'s [house rule]: Claude drafts, the operator gates and owns).
+  tension with how the operating environment's own practice actually works
+  (a house rule there: the agent drafts, the operator gates and owns).
   The spec gets to choose either stance -- narratives are strictly
   human-typed, full stop; or narratives may be LLM-drafted under an
-  operator's name, the way this repo already treats every other
+  operator's name, the way that environment already treats every other
   deliverable -- but section 4.6 currently reads as having picked the
   first stance in its prose while leaving it non-normative, which is the
   worst of both: strong enough to notice, not strong enough to bind. I

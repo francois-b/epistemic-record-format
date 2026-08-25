@@ -446,8 +446,9 @@ export function loadCorpus(dir: string): LoadedCorpus {
     const fa = arr<{ verdict?: unknown }>(data["finding_audit"]);
     // `ERF-12`: the verdict union is compile-time only, and YAML is cast
     // straight through, so a non-verdict loads as a verdict unless checked
-    // here. The [private-repo alias] corpus carried 32 `PARSE_ERROR` values until they were
-    // removed, which is exactly the failure this guards.
+    // here. The private corpus this format was extracted from carried 32
+    // `PARSE_ERROR` values until they were removed, which is exactly the
+    // failure this guards.
     for (const v of fa) {
       if (!VERDICTS.has(String(v?.verdict))) {
         findings.push({

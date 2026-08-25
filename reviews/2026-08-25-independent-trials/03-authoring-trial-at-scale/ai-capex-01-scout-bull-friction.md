@@ -70,16 +70,15 @@ per task instructions.
   independently checkable. Not this task's call to make, since atoms are
   out of scope, but recording the read here so it does not have to be
   re-derived.
-- 2026-08-24, [house rule]/[house rule] (repo house style, not an ERF requirement):
-  applied "load-bearing" ban and the em-dash-in-running-prose ban to this
-  task's own authored text (friction-log.md, source-notes.md, and the
-  prose fields in sources.yaml such as `licence_name`/`reason`). Did NOT
-  alter em dashes that occur inside verbatim `quote`-equivalent text
-  captured from a source (for example the Huang/Altman/Jassy quotes, or
-  Zuckerberg's letter): ERF-6 requires a quote to be verbatim from the
-  capture, and normalizing a source's own typographic choices out of the
-  captured text would be a fidelity violation, not a style fix. The house
-  rule binds this task's own voice, not the sources it is transcribing.
+- 2026-08-24, house style in the operating environment (not an ERF requirement): applied its
+  banned-phrase list and its em-dash-in-running-prose ban to this task's own authored text
+  (friction-log.md, source-notes.md, and the prose fields in sources.yaml such as
+  `licence_name`/`reason`). Did NOT alter em dashes that occur inside verbatim
+  `quote`-equivalent text captured from a source (for example the Huang/Altman/Jassy quotes,
+  or Zuckerberg's letter): ERF-6 requires a quote to be verbatim from the capture, and
+  normalizing a source's own typographic choices out of the captured text would be a
+  fidelity violation, not a style fix. The house rule binds this task's own voice, not the
+  sources it is transcribing.
 - 2026-08-24, task scope / SEC filing size: SEC 10-K/10-Q filings run
   several MB of HTML; captured only the capex/demand-relevant passages
   (risk factors, MD&A capex discussion, cash-flow-statement line items)

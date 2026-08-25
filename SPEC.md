@@ -820,24 +820,23 @@ source, and a found source is atom-shaped; that is why a claim carries one
 id: granted-flag-uses-2026-08-22
 type: survey
 corpus: knowledge-work-governance
-title: "Current uses of the granted field across the seven registered
-  corpora"
+title: "Current uses of the granted field across the registered corpora"
 conducted: {timestamp: 2026-08-22, by: "agent/claude-fable-5"}
 searches:
   - tool: "grep -rnE (BSD grep, macOS)"
     query: "^granted:|^  granted:"
-    scope: "all *.md under the seven registered corpus [private claims dir]/ homes;
-      305 claim and question files"
+    scope: "every claim and question file in a private working collection
+      of corpora"
     hits_reported: "0"
   - tool: "grep -rn (BSD grep, macOS)"
     query: "granted (word-level, --include=*.md)"
-    scope: "same seven [private claims dir]/ homes"
+    scope: "the same claim and question files"
     hits_reported: "4 lines in 3 files; none a field use"
 notable_results:
-  - what: "The claims-tree doc-class granted dimension"
-    note: "A render-layer field of one document class, documented in an
-      internal corpus; the word's nearest live relative, not a record
-      field."
+  - what: "A doc-class granted dimension in a corpus's own documentation"
+    note: "A render-layer field of one document class, described in that
+      corpus's own documentation; the word's nearest live relative, not a
+      record field."
 ---
 ```
 

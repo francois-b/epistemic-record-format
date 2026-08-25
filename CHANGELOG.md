@@ -614,8 +614,9 @@ match, both exact in the raw text, and says so plainly when neither lands.
 **Duplicate ids were undetected and destructive.** A `Map.set` on an
 existing key discarded the first record silently, so a duplicated atom id
 made one atom vanish and redirected every claim citing it. The loader now
-reports and keeps the first. The [private-repo alias] validator checked claims only, leaving
-741 atom ids and every survey unguarded; it now covers all three types.
+reports and keeps the first. The validator in the private corpus this format
+was extracted from checked claims only, leaving 741 atom ids and every survey
+unguarded; it now covers all three types.
 
 **A non-verdict could load as a verdict**, since the union is compile-time
 only and YAML is cast straight through. `ERF-12`'s three values are checked

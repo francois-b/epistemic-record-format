@@ -7,7 +7,7 @@ epistemic_kind: observation
 created: {timestamp: 2026-07-19, by: "agent/claude-fable-5"}
 ---
 
-The hypothesis (the author's founding question, 2026-07-19): outside reference
+The hypothesis (the corpus author's founding question, 2026-07-19): outside reference
 infrastructure (Westlaw, citators), the individual lawyer's own work product —
 arguments, discovery analysis, contract knowledge — accumulates in informal
 personal forms files, email folders, and memory, with no validity layer and no

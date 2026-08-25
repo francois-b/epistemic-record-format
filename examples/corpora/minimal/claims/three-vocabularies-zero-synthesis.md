@@ -10,18 +10,19 @@ created: {timestamp: 2026-07-22, by: "agent/claude-fable-5"}
 ---
 
 The claim: within roughly a year, three separate communities independently
-coined names for the pains this corpus catalogs — "workslop"
-(BetterUp × Stanford via HBR, Sept 2025; reached WEF; = production outruns
-judgment, E/A families) · "the verification bottleneck" (software
-engineering, Farley et al.; = [pain] stated verbatim) · "context rot"
-(Chroma, 2025; = [pain] with measurement). Meanwhile the institutions
+coined names for the same cluster of AI-era knowledge-work pains —
+"workslop" (BetterUp × Stanford via HBR, Sept 2025; reached WEF; =
+production outruns judgment) · "the verification bottleneck" (software
+engineering, Farley et al.; = checking output costs more than producing it,
+named in those words) · "context rot" (Chroma, 2025; = answer quality
+degrading as context grows, with measurement). Meanwhile the institutions
 holding the governance traditions (legal KM, NASA/nuclear/Army
 lessons-learned, APQC/KMWorld) discuss AI in platform-and-vendor terms, and
 the tools-for-thought community does not engage the institutional pains
 (provenance discipline, sign-off, audit). Nobody publicly connects the three
-vocabularies to each other or to the traditions; whole pain families
-(A provenance, G institutional memory, J control, K sign-off/agent
-authority) have no public video discourse at all.
+vocabularies to each other or to the traditions; whole pain families —
+provenance, institutional memory, control, sign-off and agent authority —
+have no public video discourse at all.
 
 Method strength: the emptiness survived two independent search strategies
 with disjoint vocabulary (pass 1 tradition terms, pass 2 pain terms,
@@ -32,14 +33,7 @@ Edge rationale: supports `lawyers-lack-personal-compounding-km` weakly at the
 market level — if no public synthesis exists anywhere, lawyers have nowhere
 to have learned one.
 
-Working notes (positioning): the gap is namable in the market's own emerging
-words — "workslop" [redacted], "verification bottleneck" opens
-engineering-leader doors; [redacted] with
-decades of prior art. Watch-fors: a credible voice (Every, a KM consultancy,
-a lab) connecting workslop → verification → architecture [redacted];
-"workslop" fading as a news cycle weakens the door-opener while the pain
-remains.
-
-Grounding status: argued from [private memo] (memo +
-addendum); zero atoms. Atomizable if promoted: the HBR workslop primary,
-WEF uptake, Farley talk, Chroma context-rot report.
+Grounding status: argued from an unpublished 2026-07-22 triage memo over a
+scan of public video discourse (memo and addendum); zero atoms. Atomizable
+if promoted: the HBR workslop primary, WEF uptake, Farley talk, Chroma
+context-rot report.
