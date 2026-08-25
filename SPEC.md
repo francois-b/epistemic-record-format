@@ -1,7 +1,7 @@
 ---
 title: "The Epistemic Record Format"
 subtitle: "Specification: the record types, the data model, and the invariants, stated so an implementer can build to them or diff an existing system against them."
-spec_version: "1.0.0"
+spec_version: "0.9.0"
 status: draft
 last_updated: 2026-08-24
 generated: 2026-08-22
@@ -10,7 +10,7 @@ model: claude-fable-5
 
 # The Epistemic Record Format
 
-Specification, v1.0 (draft). The abstract and status are in `README.md`;
+Specification, v0.9 (draft). The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way, and
 what the surrounding field holds, is the companion document
 `DESIGN-HISTORY.md`. The normative data model is the TypeScript file
@@ -90,6 +90,9 @@ shown here.
   engagement, a venture, or the personal corpus. Also the natural unit of
   confidentiality: which corpora may travel together, and which may cite
   which, are deployment policies this version records nothing about.
+- *source*: the work a quote came from, listed once per corpus with its
+  citation, locator, and capture (section 4.1). Not a record: nobody
+  asserts a source.
 - *capture*: the copy of a source saved when first read. Checks run
   against the capture, never the live web.
 - *attester*: whoever is speaking in a captured text: the person or body
@@ -119,7 +122,7 @@ shown here.
 The normative data model is the file `types/erf.ts`. The TypeScript below
 is an inline mirror of that file, kept in sync by hand; it omits the
 file's header comments and its identifier alias definitions (`AtomId`,
-`ClaimId`, `SurveyId`, `CorpusId`, `FamilyName`, `CSL`); where the two
+`ClaimId`, `SurveyId`, `SourceId`, `CorpusId`, `FamilyName`, `CSL`); where the two
 differ, the file governs. YAML examples elsewhere are informative.
 Object-shape unions are deliberately absent; the only unions are
 string-literal value sets.
@@ -159,7 +162,7 @@ interface Atom {
 interface Claim {
   id: ClaimId;                 // unique across the deployment's corpora
   type: "claim";
-  corpus: CorpusId;            // confidentiality tier; mutable
+  corpus: CorpusId;            // the corpus this record belongs to; mutable
   title: string;               // THE claim statement (normative)
   epistemic_kind: EpistemicKind;
   created: ActorStamp;
@@ -400,11 +403,11 @@ evidence about today's page rather than about what was read.
   never the judgment about whether redistribution is permitted, which stays
   `ERF-5`'s closed vocabulary and this format's own call. A capture may also
   ship under no licence at all, as a short quotation for verification and
-  comment; such an entry MUST say so in place of a licence rather than
-  leaving the permission unstated, because an absent licence field otherwise
-  reads as an oversight.
+  comment; such a source MUST carry the status `shipped-as-quotation`
+  rather than leaving the permission unstated, because an absent licence
+  field otherwise reads as an oversight rather than as a different basis.
 - **ERF-69** A capture MAY be an excerpt of its source rather than a whole
-  copy, and an excerpt capture MUST identify itself as one. It MUST contain
+  copy, and its source MUST then say so (`excerpt`). It MUST contain
   the quoted passage together with enough adjacent text for the passage's
   place in the source to be legible: a capture holding the quote alone
   proves nothing, because it is a copy of the thing it is meant to check.
@@ -412,13 +415,12 @@ evidence about today's page rather than about what was read.
   republication, and because a short quotation with attribution is available
   where republication of the work is not.
 - **ERF-70** Where a capture was produced by converting a source from
-  another format, the capture MUST record the converting tool and its exact
-  version, and that tool MUST be deterministic: the same tool at the same
+  another format, the source MUST record the converting tool and its exact
+  version (`converter`), and that tool MUST be deterministic: the same tool at the same
   version, given the same source bytes, produces the same text. A
   non-deterministic converter (one whose output varies with a model version
-  or with the machine it runs on) MAY be used, and the capture MUST then say
-  so, which marks that source's check as reproducible by no one but its
-  author. Naming the instrument rather than specifying the conversion is the
+  or with the machine it runs on) MAY be used, and the source MUST then say
+  so, which marks its check as reproducible by no one but its author. Naming the instrument rather than specifying the conversion is the
   same choice `ERF-26` makes for a search act, and for the same reason: no
   standard defines a faithful text projection of a PDF or a web page, and a
   named instrument is reproducible where an unnamed transformation is not.
@@ -621,7 +623,7 @@ prose: does the recorded why survive the evidence on record?
 - **ERF-15** References MUST be bare ids and MUST NOT encode location.
   A claim moved between corpora keeps its id, and no reference changes.
 - **ERF-17** `corpus` MUST be written on every claim and MUST name a
-  registered corpus. Changing it is a promotion or transfer; the change
+  declared corpus (`ERF-59`). Changing it is a promotion or transfer; the change
   stamps `last_modified` (`ERF-48`) and its reason belongs in the working
   notes. It MUST NOT be recorded as a standing entry: the ledger holds
   stances on the claim, and a bookkeeping note written as one would move
@@ -1053,7 +1055,7 @@ checks the relations no type can see.
   nondeterminism: the recognition ran once, before the artifact existed, and
   the digest of `ERF-71` pins its result, so reading that layer is as
   reproducible as reading any other text. Running recognition oneself is the
-  non-deterministic act, and it is the one `ERF-70` requires a capture to
+  non-deterministic act, and it is the one `ERF-70` requires a source to
   declare. Second, such layers are commonly spaced irregularly, and step 11
   is what absorbs that: the same passage that a plain substring search misses
   is found once normalized. The prose above names each transformation; the conformance case
@@ -1201,6 +1203,7 @@ checks the relations no type can see.
   attribution, and an edit history sufficient to verify `ERF-40`. Files
   in git are the reference implementation (history and diffing for free);
   a record's body is one more field in a database.
+
 ## Versioning and change control
 
 - The `spec_version` on a corpus declaration (`ERF-59`) governs the semantics
@@ -1214,6 +1217,7 @@ checks the relations no type can see.
   instances, the decision register, the changelog) is stated in
   `DESIGN-HISTORY.md`; it binds whoever amends this document, not an
   implementer reading it.
+
 ## Related formats (non-normative)
 
 A five-territory survey of adjacent formats, with what each does and what
@@ -1238,8 +1242,8 @@ below that threshold.
 - Captures travel only where their licences permit. Captured copies of
   sources are, in general, copyrighted third-party works; whether a given
   capture ships with a shared or published corpus is a licence and
-  deployment question the format records rather than rules on. The capture
-  source list holds the judgment either way: a shipped capture names its
+  deployment question the format records rather than rules on. The source
+  list holds the judgment either way: a shipped capture names its
   licence (`ERF-68`), a withheld one records the reason (`ERF-5`). The
   honest scope of re-checkability follows: anyone holding the corpus *and
   a capture* can re-run that atom's mechanical check; a recipient of the

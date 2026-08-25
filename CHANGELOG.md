@@ -6,6 +6,36 @@ are never reused, and every change lands here with a date.
 
 ## Unreleased
 
+### 2026-08-24 — v0.9, and a full staleness read
+
+The version drops from 1.0 to 0.9, by operator ruling: the specification
+is complete and internally verified, and 1.0 waits on stress testing in
+real use beyond its author's practice. Every declared `spec_version`
+moves to "0.9.0" (the example corpus, nineteen fixtures, the document's
+own frontmatter); the reference consumer now implements major 0; the
+unsupported-major fixture keeps its 2.0.0.
+
+The ruling came with a fair challenge: the day's type simplifications
+had not shrunk the document, so was anything stale? A front-to-back read
+found eight spots the vocabulary greps could not see, all fixed:
+`ERF-17` required a claim's corpus to be "registered" a day after the
+registry retired (now: declared, `ERF-59`); `ERF-68`'s quotation clause
+never received the `shipped-as-quotation` status name, an edit lost when
+a script aborted mid-run; `ERF-69` and `ERF-70` addressed their MUSTs to
+"the capture" though `excerpt` and `converter` live on the source since
+the flattening; the Claim mirror's `corpus` comment still said
+"confidentiality tier"; the mirror's omitted-alias list lacked
+`SourceId`; the security section carried a dangling "capture" from a
+partial replace; the definitions list defined capture, attester, and
+deployment but never source; and two headings lacked their blank line.
+On the length itself: the day netted +75 lines against a morning
+baseline of 1,212, decomposed as roughly +70 for the capture
+requirements and the rewritten ERF-51 note, -39 for the container
+pare-down (the cuts less ERF-72 and the expanded ERF-59), and +41 for
+the source artifact with its worked example. The types got simpler; the
+document grew because three requirements, one mechanism, and one example
+are new.
+
 ### 2026-08-24 — the source flattens to one shape
 
 Operator review of the day's additions found structure without data

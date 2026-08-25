@@ -300,10 +300,10 @@ export function loadCorpus(dir: string): LoadedCorpus {
     }
   }
   // `ERF-60`: refuse an unsupported major version openly, never by guessing.
-  // This loader implements spec_version major 1; the finding is the refusal
+  // This loader implements spec_version major 0; the finding is the refusal
   // said out loud, and the records are still preserved rather than dropped.
   const major = String(manifest?.spec_version ?? "").split(".")[0];
-  if (manifest?.spec_version && major !== "1") {
+  if (manifest?.spec_version && major !== "0") {
     findings.push({
       record: "corpus.yaml",
       field: "spec_version",
