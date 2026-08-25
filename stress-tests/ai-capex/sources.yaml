@@ -1,6 +1,6 @@
-# The ai-capex source list (ERF-3, ERF-4, ERF-5). Phase 1 of the v0.9
-# stress battery: bull half authored by lane 3a, bear half by lane 3b,
-# merged by the orchestrator. See stress-tests/stress-test-battery-v0.9.md.
+# The ai-capex source list (ERF-3, ERF-4, ERF-5). Bull half by lane 3a,
+# bear half by lane 3b, neutral/new dimensions (n-) by lane 3c; merged by
+# the orchestrator. See stress-tests/stress-test-battery-v0.9.md.
 
 sources:
   bear-academic-humlum-genai-labor-2025:
@@ -807,4 +807,467 @@ sources:
       digest: sha256:82be3a2d057631957f567168089b0a4899a1c8f354103bc92997e46375883843
       url: https://blog.samaltman.com/abundant-intelligence
     path: captures/bull-samaltman-abundant-intelligence.md
+    status: shipped-as-quotation
+  n-acemoglu-simple-macroeconomics-ai:
+    citation:
+      author:
+      - family: Acemoglu
+        given: Daron
+      container-title: NBER Working Paper Series, No. 32487
+      issued: 2024-05
+      title: The Simple Macroeconomics of AI
+      type: article-journal
+    citation_text: Daron Acemoglu, "The Simple Macroeconomics of AI" (NBER Working
+      Paper No. 32487, May 2024)
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt: true
+    fetched:
+      digest: sha256:ffb04f119539228da2db0699530425e56e815c890b6ebe7b5c932675e2eebdb0
+      url: https://www.nber.org/system/files/working_papers/w32487/w32487.pdf
+    path: captures/n-acemoglu-simple-macroeconomics-ai.md
+    status: shipped-as-quotation
+  n-asml-q2-2026-results:
+    citation:
+      container-title: SEC EDGAR (Form 6-K, Exhibit 99.1)
+      issued: '2026-07-15'
+      title: ASML reports €9.3 billion total net sales and €2.9 billion net income
+        in Q2 2026
+      type: article-newspaper
+    citation_text: ASML Holding N.V., "ASML reports €9.3 billion total net sales
+      and €2.9 billion net income in Q2 2026" (press release, 2026-07-15), Exhibit
+      99.1 to Form 6-K, SEC accession 0001628280-26-048235
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:71232ad9d36778a8fd45344c950aba28a45ef5993517b9634a2457fcb56e256c
+      url: https://www.sec.gov/Archives/edgar/data/937966/000162828026048235/pressreleasefinancialresul.htm
+    path: captures/n-asml-q2-2026-results.md
+    status: shipped-as-quotation
+  n-chen-abundant-intelligence-deficient-demand:
+    citation:
+      author:
+      - family: Chen
+        given: Xupeng
+      container-title: arXiv:2603.09209 [cs.AI]
+      issued: '2026-03-10'
+      title: 'Abundant Intelligence and Deficient Demand: A Macro-Financial Stress
+        Test of Rapid AI Adoption'
+      type: article
+    citation_text: 'Xupeng Chen, "Abundant Intelligence and Deficient Demand: A
+      Macro-Financial Stress Test of Rapid AI Adoption" (arXiv:2603.09209 [cs.AI],
+      submitted 2026-03-10)'
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt: true
+    fetched:
+      digest: sha256:fc15edd9add229fdf537b004877c32d14cf036a6cf2f5ee7a16df641dc2546ab
+      url: https://arxiv.org/pdf/2603.09209
+    path: captures/n-chen-abundant-intelligence-deficient-demand.md
+    status: shipped-as-quotation
+  n-constellation-crane-tmi-restart-2024:
+    citation:
+      container-title: SEC EDGAR (Form 8-K, Exhibit 99.2)
+      issued: '2024-09-20'
+      title: Crane Clean Energy Center – Meeting the Country’s Needs for Clean and
+        Reliable Generation
+      type: article-newspaper
+    citation_text: Constellation Energy Corporation / Constellation Energy Generation,
+      LLC, "Crane Clean Energy Center – Meeting the Country’s Needs for Clean and
+      Reliable Generation" (investor presentation, 2024-09-20), Exhibit 99.2 to
+      Form 8-K, SEC accession 0001868275-24-000058
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:096c080e496599ed19ad65b409123538d409e7bd07ca2a4b6adb7a98225dec7c
+      url: https://www.sec.gov/Archives/edgar/data/1868275/000186827524000058/ceg-202409208kexh992.htm
+    path: captures/n-constellation-crane-tmi-restart-2024.md
+    status: shipped-as-quotation
+  n-coreweave-ddtl4-8k-2026:
+    citation:
+      container-title: SEC EDGAR (Form 8-K, Exhibit 99.1)
+      issued: '2026-03-31'
+      title: CoreWeave Closes Landmark $8.5 Billion Financing Facility, Achieving
+        First Investment-Grade Rated GPU-Backed Financing
+      type: article-newspaper
+    citation_text: CoreWeave, Inc., "CoreWeave Closes Landmark $8.5 Billion Financing
+      Facility, Achieving First Investment-Grade Rated GPU-Backed Financing" (press
+      release, 2026-03-31), Exhibit 99.1 to Form 8-K, SEC accession 0001769628-26-000129
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:7d244dfa0d70095c752a266df461490ff8edb0e01248a74c3bb6c3b374791bd9
+      url: https://www.sec.gov/Archives/edgar/data/1769628/000176962826000129/ex991.htm
+    path: captures/n-coreweave-ddtl4-8k-2026.md
+    status: shipped-as-quotation
+  n-dominion-pjm-load-forecast-2026:
+    citation:
+      author:
+      - family: Blackwell
+        given: Stanley L.
+      container-title: PJM Interconnection, 2026 Load Forecast Report (Manual 19,
+        Attachment B documentation)
+      issued: '2026-01-06'
+      title: Dominion Energy Data Center Large Load Adjustment (letter to PJM Load
+        Analysis Team)
+      type: report
+    citation_text: 'Stanley L. Blackwell (Dominion Energy, Director – Data Center
+      Practice), letter to the PJM Load Analysis Team re: "Data Center Large Load
+      Adjustment" (2026-01-06), published as documentation supporting PJM''s 2026
+      load forecast'
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt: true
+    fetched:
+      digest: sha256:37b4eb05209983b7799e4b9d043a92f74fb207b4acd9c295c921df1d83486086
+      url: https://www.pjm.com/-/media/DotCom/planning/res-adeq/load-forecast/dominion-documentation.pdf
+    path: captures/n-dominion-pjm-load-forecast-2026.md
+    status: shipped-as-quotation
+  n-ercot-large-load-tac-report-2026:
+    citation:
+      container-title: ERCOT Large Load Integration Team
+      issued: '2026-03-12'
+      title: Large Load Interconnection Status Update (March TAC Report)
+      type: report
+    citation_text: 'ERCOT Large Load Integration Team, "Large Load Interconnection
+      Status Update" (March TAC Report, posted to ercot.com 2026-03-12); NOTE: several
+      chart labels inside the deck read "March 2025" rather than "March 2026" —
+      see friction-log'
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt: true
+    fetched:
+      digest: sha256:e152e34d90e3cc0fa46f1bbda9d54fac78e8b7dc37a5901ee625ad0b7923dee1
+      url: https://www.ercot.com/files/docs/2026/03/12/March-TAC-Report.pdf
+    path: captures/n-ercot-large-load-tac-report-2026.md
+    status: shipped-as-quotation
+  n-fortune-ai-debt-orgy-2026:
+    citation:
+      author:
+      - family: Ma
+        given: Jason
+      container-title: Fortune
+      issued: '2026-07-31'
+      title: After a nearly 1,000% surge, the AI debt orgy can’t last forever, while
+        hidden borrowing has exploded to $1.65 trillion
+      type: article-newspaper
+    citation_text: Jason Ma, "After a nearly 1,000% surge, the AI debt orgy can’t
+      last forever, while hidden borrowing has exploded to $1.65 trillion" (Fortune,
+      2026-07-31)
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:82d869be93d5714c66c9089c5e9ddf357d3e8688e33ead10c3e4ef5320a1d59a
+      url: https://fortune.com/2026/07/31/ai-debt-hypescalers-capex-capital-spending-hidden-borrowing-bond-issuance/
+    path: captures/n-fortune-ai-debt-orgy-2026.md
+    status: shipped-as-quotation
+  n-frb-feds-datacenter-investment-2025:
+    citation:
+      author:
+      - family: Brandsaas
+        given: Eirik Eylands
+      - family: Garcia
+        given: Daniel
+      - family: Kurtzman
+        given: Robert
+      - family: Nichols
+        given: Joseph
+      - family: Zytek
+        given: Adelia
+      container-title: Finance and Economics Discussion Series, Federal Reserve
+        Board, No. 2025-109
+      issued: '2025-12-17'
+      title: Estimating Aggregate Data Center Investment with Project-level Data
+      type: report
+    citation_text: Eirik Eylands Brandsaas, Daniel Garcia, Robert Kurtzman, Joseph
+      Nichols, and Adelia Zytek, "Estimating Aggregate Data Center Investment with
+      Project-level Data" (Finance and Economics Discussion Series 2025-109, Federal
+      Reserve Board, Washington, D.C., 2025-12-17)
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt: false
+    fetched:
+      digest: sha256:f996a356278dcdfa3c2b7561876147f09b95ddf3ee73f54109d6fa3873be7d53
+      url: https://www.federalreserve.gov/econres/feds/files/2025109pap.pdf
+    licence_name: U.S. Government Work, public domain under 17 U.S.C. §105 (Federal
+      Reserve Board of Governors is a federal agency; paper authored by Board staff
+      economists in the course of official duties, per author affiliation lines
+      "Division of Research & Statistics, Federal Reserve Board")
+    path: captures/n-frb-feds-datacenter-investment-2025.md
+    status: shipped
+  n-frb-notes-ai-buildout-2026:
+    citation:
+      author:
+      - family: Soto
+        given: Paul E.
+      - family: Thieu
+        given: Mason
+      - family: Allen
+        given: Jeffrey S.
+      container-title: FEDS Notes, Federal Reserve Board
+      issued: '2026-07-17'
+      title: 'The AI Buildout and the Economy: Publicly Available Data to Assess
+        AI''s Impact'
+      type: webpage
+    citation_text: 'Paul E. Soto, Mason Thieu, and Jeffrey S. Allen, "The AI Buildout
+      and the Economy: Publicly Available Data to Assess AI''s Impact" (FEDS Notes,
+      Federal Reserve Board, 2026-07-17)'
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: false
+    fetched:
+      digest: sha256:3abefbfc49c96092ad0a4fbb719e0b5a20627db5e574916fe44781f40061229b
+      url: https://www.federalreserve.gov/econres/notes/feds-notes/the-ai-buildout-and-the-economy-publicly-available-data-to-assess-ais-impact-20260717.html
+    licence_name: U.S. Government Work, public domain under 17 U.S.C. §105 (Federal
+      Reserve Board of Governors staff note)
+    path: captures/n-frb-notes-ai-buildout-2026.md
+    status: shipped
+  n-hogendorn-excessive-entry-telecom:
+    citation:
+      author:
+      - family: Hogendorn
+        given: Christiaan
+      container-title: Wesleyan University working paper (published in Telecommunications
+        Policy, 2011)
+      issued: '2007-06-13'
+      title: Excessive(?) Entry of National Telecom Networks, 1990–2001
+      type: article-journal
+    citation_text: Christiaan Hogendorn, "Excessive(?) Entry of National Telecom
+      Networks, 1990–2001" (Wesleyan University working paper, 2007-06-13; journal
+      version published in Telecommunications Policy, 2011)
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt: true
+    fetched:
+      digest: sha256:5e65b9c0deeb6493efccfc23141b42de6a146b75e7c937b31d412bc618c6a651
+      url: http://jwhitehorn.web.wesleyan.edu/Research/excessive.pdf
+    path: captures/n-hogendorn-excessive-entry-telecom.md
+    status: shipped-as-quotation
+  n-jll-na-datacenter-midyear-2026:
+    citation:
+      author:
+      - family: Batson
+        given: Andrew
+      - family: Davalos
+        given: Ben
+      container-title: JLL Insights
+      issued: '2026-08-11'
+      title: 'North America Data Center Report Midyear 2026: Navigating historic
+        growth and community acceptance'
+      type: report
+    citation_text: 'Andrew Batson and Ben Davalos, "North America Data Center Report
+      Midyear 2026: Navigating historic growth and community acceptance" (JLL Insights,
+      2026-08-11)'
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:bd6242cf7ad96abedc5127bb79c7a4888550275ee9529019fd9463b4a53d71a8
+      url: https://www.jll.com/en-us/insights/market-dynamics/north-america-data-centers
+    path: captures/n-jll-na-datacenter-midyear-2026.md
+    status: shipped-as-quotation
+  n-jones-ai-economic-future:
+    citation:
+      author:
+      - family: Jones
+        given: Charles I.
+      container-title: Stanford GSB and NBER (in preparation for the Journal of
+        Economic Perspectives); also NBER Working Paper No. 34779
+      issued: '2026-05-18'
+      title: AI and Our Economic Future
+      type: article-journal
+    citation_text: Charles I. Jones, "AI and Our Economic Future" (Stanford GSB
+      and NBER, version dated 2026-05-18; also circulated as NBER Working Paper
+      No. 34779)
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt: true
+    fetched:
+      digest: sha256:ca7887c25c89ada3b4c066eb2a44a01d2a1ee8797a84721335cb97766ff32576
+      url: https://web.stanford.edu/~chadj/AIandEconomicFuture.pdf
+    path: captures/n-jones-ai-economic-future.md
+    status: shipped-as-quotation
+  n-odlyzko-internet-time-myth:
+    citation:
+      author:
+      - family: Odlyzko
+        given: Andrew
+      container-title: AT&T Labs (author's University of Minnesota archive copy)
+      title: The Myth of Internet Time
+      type: article
+    citation_text: Andrew Odlyzko, "The Myth of Internet Time" (AT&T Labs; undated
+      essay, internal evidence — references to "early 2000" as recent past — places
+      composition ca. 2000–2001; exact original publication venue and date unconfirmed,
+      see friction-log), hosted on the author’s University of Minnesota archive
+    excerpt: true
+    fetched:
+      digest: sha256:4ba5a8404c17847dad8fd3348eef2c1d0c905a83284a3dc6bb2b0b56240948dc
+      url: https://www-users.cse.umn.edu/~odlyzko/doc/internet.time.myth.txt
+    path: captures/n-odlyzko-internet-time-myth.md
+    status: shipped-as-quotation
+  n-odlyzko-railway-mania-hallucinations:
+    citation:
+      author:
+      - family: Odlyzko
+        given: Andrew
+      container-title: School of Mathematics and Digital Technology Center, University
+        of Minnesota (also SSRN Working Paper, doi:10.2139/ssrn.1537338)
+      issued: '2010-01-15'
+      title: 'Collective Hallucinations and Inefficient Markets: The British Railway
+        Mania of the 1840s'
+      type: article
+    citation_text: 'Andrew Odlyzko, "Collective Hallucinations and Inefficient Markets:
+      The British Railway Mania of the 1840s" (preliminary version, 2010-01-15,
+      University of Minnesota; also SSRN Working Paper, doi:10.2139/ssrn.1537338)'
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt: true
+    fetched:
+      digest: sha256:77f6f51db1eb63b1f9573583fa1b338cc0944ef135dd71bee8fee7a80d87558a
+      url: https://www-users.cse.umn.edu/~odlyzko/doc/hallucinations.pdf
+    path: captures/n-odlyzko-railway-mania-hallucinations.md
+    status: shipped-as-quotation
+  n-pjm-2028-2029-capacity-auction:
+    citation:
+      container-title: PJM Interconnection Newsroom
+      issued: '2026-07-14'
+      title: PJM Capacity Auction Procures 138,318 MW of Generation Resources as
+        Work Continues To Address Growing Electricity Demand
+      type: webpage
+    citation_text: PJM Interconnection, "PJM Capacity Auction Procures 138,318 MW
+      of Generation Resources as Work Continues To Address Growing Electricity Demand"
+      (News Release, 2026-07-14), results of the 2028/2029 Base Residual Auction
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt: true
+    fetched:
+      digest: sha256:f19dee4a7028742594c6a2cb1884425d85a291e6b0a7e3c4a06f6e22497c2e26
+      url: https://www.pjm.com/-/media/DotCom/about-pjm/newsroom/2026-releases/20260714-pjm-capacity-auction-procures-138318-mw-of-generation-resources.pdf
+    path: captures/n-pjm-2028-2029-capacity-auction.md
+    status: shipped-as-quotation
+  n-samsung-q2-2026-results:
+    citation:
+      URL: https://news.samsung.com/global/samsung-electronics-announces-second-quarter-2026-results
+      container-title: Samsung Global Newsroom
+      issued: '2026-07-30'
+      title: Samsung Electronics Announces Second Quarter 2026 Results
+      type: webpage
+    citation_text: Samsung Electronics Co., Ltd., "Samsung Electronics Announces
+      Second Quarter 2026 Results" (Samsung Global Newsroom, 2026-07-30)
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:45c468447760c095b2bd2149fd13c1ddd878689b962a320adb8ca263c621fc64
+      url: https://news.samsung.com/global/samsung-electronics-announces-second-quarter-2026-results
+    path: captures/n-samsung-q2-2026-results.md
+    status: shipped-as-quotation
+  n-skhynix-q2-2026-results:
+    citation:
+      URL: https://news.skhynix.com/en/q2-2026-business-results/
+      container-title: SK hynix Newsroom
+      issued: '2026-07-29'
+      title: SK hynix Announces 2Q26 Financial Results
+      type: webpage
+    citation_text: SK hynix Inc., "SK hynix Announces 2Q26 Financial Results" (SK
+      hynix Newsroom, 2026-07-29)
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:1ebe2bfae67904e4455164da7a4794a5d9637bacae8b13317de8fae3ea7809be
+      url: https://news.skhynix.com/en/q2-2026-business-results/
+    path: captures/n-skhynix-q2-2026-results.md
+    status: shipped-as-quotation
+  n-softbank-openai-followon-2026:
+    citation:
+      container-title: SoftBank Group Corp. Press Releases
+      issued: '2026-02-27'
+      title: Announcement Regarding Follow-on Investments in OpenAI
+      type: webpage
+    citation_text: SoftBank Group Corp., "Announcement Regarding Follow-on Investments
+      in OpenAI" (press release, 2026-02-27)
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:82979a5184e0d4c947d2adc100c1449bfd1b9146a4dbcf88efc25a224d99b1b3
+      url: https://group.softbank/en/news/press/20260227
+    path: captures/n-softbank-openai-followon-2026.md
+    status: shipped-as-quotation
+  n-spglobal-datacenter-macro-needle:
+    citation:
+      container-title: S&P Global Press Releases
+      issued: '2025-11-04'
+      title: S&P Global Research Reveals Data Center Investments Moving The U.S.
+        Macro Needle
+      type: webpage
+    citation_text: S&P Global, "S&P Global Research Reveals Data Center Investments
+      Moving The U.S. Macro Needle" (press release, 2025-11-05)
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:01defd62ee0e43a526c4749d777cbf47b90a97076b21a68b7878898145d42b07
+      url: https://press.spglobal.com/2025-11-05-S-P-Global-Research-Reveals-Data-Center-Investments-Moving-The-U-S-Macro-Needle
+    path: captures/n-spglobal-datacenter-macro-needle.md
+    status: shipped-as-quotation
+  n-tsmc-q2-2026-earnings-release:
+    citation:
+      container-title: SEC EDGAR (Form 6-K, Exhibit 99.1)
+      issued: '2026-07-16'
+      title: TSMC Reports Second Quarter EPS of NT$27.25
+      type: article-newspaper
+    citation_text: Taiwan Semiconductor Manufacturing Company Limited, "TSMC Reports
+      Second Quarter EPS of NT$27.25" (press release, 2026-07-16), Exhibit 99.1
+      to Form 6-K, SEC accession 0001046179-26-000451
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:6e877956870c87d857d8af23144f35ddcbd3b569d464c962e7cf368c46860be3
+      url: https://www.sec.gov/Archives/edgar/data/1046179/000104617926000451/a2q26e_withguidancexfinal.htm
+    path: captures/n-tsmc-q2-2026-earnings-release.md
+    status: shipped-as-quotation
+  n-tsmc-q2-2026-presentation:
+    citation:
+      container-title: SEC EDGAR (Form 6-K, Exhibit 99.2)
+      issued: '2026-07-16'
+      title: 2026 Second Quarter Earnings Conference Presentation Material
+      type: article-newspaper
+    citation_text: Taiwan Semiconductor Manufacturing Company Limited, "2026 Second
+      Quarter Earnings Conference Presentation Material" (2026-07-16), Exhibit 99.2
+      to Form 6-K, SEC accession 0001046179-26-000451
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:939d51f10b81ee70e87864e3fa0f93b7eb0a9e4868d6a226b6bd284d407583af
+      url: https://www.sec.gov/Archives/edgar/data/1046179/000104617926000451/a2q26presentatione.htm
+    path: captures/n-tsmc-q2-2026-presentation.md
     status: shipped-as-quotation
