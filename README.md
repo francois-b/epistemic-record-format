@@ -97,6 +97,23 @@ checks it.
 | [`LAYOUT.md`](LAYOUT.md) | What lives where, and how a new kind of thing is admitted. |
 | [`tools/`](tools/) | The style lint the specification holds itself to. |
 
-## License
+## Licence
 
-To be chosen before publication.
+Two licences, because a specification and its implementation want different
+things.
+
+**The specification and prose** are under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): `SPEC.md`, this
+file, `CHANGELOG.md`, `LAYOUT.md`, `docs/`, `examples/`, `reviews/`, and the
+fixture corpora and case tables under `conformance/`. Full text in
+[`LICENSE`](LICENSE). Use it, quote it, implement it, fork it; attribution
+is the only condition. **An implementation is not a derivative work of the
+specification**, and nothing in the licence reaches the corpora you build
+with it: what you record is yours.
+
+**The reference implementation and tooling** are under
+[Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0): `viewer/`,
+`tools/`, `types/`, and the runner and suites under `conformance/`. Full
+text in [`LICENSE-CODE`](LICENSE-CODE). Apache rather than MIT for the
+explicit patent grant, which is worth having in code a second implementer is
+expected to read closely and copy from.
