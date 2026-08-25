@@ -18,10 +18,11 @@ clarifications that do not change what conforms may land in a patch.
 
 Sixty-six requirements, seven of them with no conformance fixture and named
 as such by the coverage line on every run. Sixteen open backlog entries at
-P2 and P3, each with a priority, a basis, and a verification by a hand that
-did not raise it. Both numbers are published rather than hidden: this is a
-draft meant to be implemented against and argued with, and what is known to
-be unresolved is part of what it says.
+P2 and P3, each with a priority and a basis; ten carry a verification by a
+hand that did not raise them, and six do not and say so in their own
+record. All three numbers are published rather than hidden: this is a draft
+meant to be implemented against and argued with, and what is known to be
+unresolved, unverified, or untested is part of what it says.
 
 ### 2026-08-25 — six trials against the prose alone, and the queue they left
 
