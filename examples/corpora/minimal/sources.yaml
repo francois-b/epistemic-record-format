@@ -55,7 +55,7 @@ sources:
       url: http://www.w3.org/TR/2013/REC-prov-dm-20130430/
     status: shipped-as-quotation
     normalized: normalized/w3c-prov-dm-2013-entities-activities.txt
-    excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}
+    excerpt: {timestamp: "2026-08-25", by: "agent/claude-fable-5"}
     licence_name: "W3C Document License 2023"
 
   w3c-prov-o-2013:
@@ -65,5 +65,5 @@ sources:
       url: http://www.w3.org/TR/2013/REC-prov-o-20130430/
     status: shipped-as-quotation
     normalized: normalized/w3c-prov-o-2013-agents-attribution.txt
-    excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}
+    excerpt: {timestamp: "2026-08-25", by: "agent/claude-fable-5"}
     licence_name: "W3C Document License 2023"

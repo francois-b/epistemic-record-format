@@ -287,15 +287,21 @@ export interface Received {
   path?: string;
   /** "sha256:<hex>", when the location serves stable bytes (ERF-71). */
   digest?: string;
-  /** The date it arrived. REQUIRED when the location is mutable (ERF-2). */
-  on?: string;
+  /** The date it arrived. REQUIRED when the location is mutable (ERF-2).
+   *  Named `timestamp` because `ERF-58` says the event-time key is
+   *  `timestamp` everywhere, and because YAML 1.1 resolves the bare key
+   *  `on` to the boolean true: a Python reader on either PyYAML loader
+   *  gets `{True: ...}` and cannot reach the field by name. This project
+   *  removed that landmine once already; see docs/history.md. */
+  timestamp?: string;
 }
 
-export interface Excerpt {
-  /** Who selected the passage. An LLM may; it is recorded like any actor. */
-  by: Actor;
-  on: string;
-}
+/**
+ * The one attributed step of the pipeline (ERF-69). It is an `ActorStamp`
+ * and not a shape of its own: who did it and when, which is what every
+ * other attributed act in this format records.
+ */
+export type Excerpt = ActorStamp;
 
 // This file describes a record IN MEMORY. The serialization rules describe
 // the file, and the two differ on purpose.

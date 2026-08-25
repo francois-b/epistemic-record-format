@@ -4,10 +4,10 @@ sources:
     citation_text: "Vendor X, Citation Resolution Benchmark Report, 2026"
     status: shipped-as-quotation
     normalized: normalized/vendor-benchmark-2026.md
-    excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}
+    excerpt: {timestamp: "2026-08-25", by: "agent/claude-fable-5"}
   independent-replication-2026:
     citation_text: "Independent Replication Group, Citation Resolution
       Replication Note, 2026"
     status: shipped-as-quotation
     normalized: normalized/independent-replication-2026.md
-    excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}
+    excerpt: {timestamp: "2026-08-25", by: "agent/claude-fable-5"}

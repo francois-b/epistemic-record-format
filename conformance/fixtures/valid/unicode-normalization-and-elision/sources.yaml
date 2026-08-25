@@ -4,10 +4,10 @@ sources:
     citation_text: "Supply Chain Oversight Committee, 2026 Annual Report"
     status: shipped-as-quotation
     normalized: normalized/committee-2026-report.md
-    excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}
+    excerpt: {timestamp: "2026-08-25", by: "agent/claude-fable-5"}
   ops-board-q4-memo:
     citation_text: "Operations Review Board, Q4 closing memo, internal"
     status: not-redistributable
     reason: "internal memo, no redistribution rights obtained"
     normalized: normalized/ops-board-q4-memo.md
-    excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}
+    excerpt: {timestamp: "2026-08-25", by: "agent/claude-fable-5"}

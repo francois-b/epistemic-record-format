@@ -5,4 +5,4 @@ sources:
     status: not-redistributable
     reason: "internal policy memo, not cleared for redistribution"
     normalized: normalized/policy-memo.md
-    excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}
+    excerpt: {timestamp: "2026-08-25", by: "agent/claude-fable-5"}

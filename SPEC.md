@@ -257,13 +257,11 @@ interface Received {                         // the raw file, as it arrived
   url?: string;                // where it came from, when it came from the web
   path?: string;               // where the corpus holds it, when it holds it
   digest?: string;             // "sha256:<hex>", when the bytes are stable
-  on?: string;                 // the date it was received (ERF-2)
+  timestamp?: string;          // the date it was received (ERF-2, ERF-58)
 }
 
-interface Excerpt {                          // the one attributed step (ERF-69)
-  by: Actor;                   // who selected the passage; an LLM may
-  on: string;                  // when
-}
+// Excerpt is an ActorStamp: the one attributed step of the pipeline
+// (ERF-69) records who selected the passage and when, like any other act.
 
 
 ```
@@ -317,10 +315,10 @@ is bound by the data model alone, with advice in the section named.
 | Source field (not a record) | Constrained by |
 |:--|:--|
 | `citation_text`, `citation` | `ERF-7`, `ERF-8` |
-| `received.url`, `received.path`, `received.digest`, `received.on` | `ERF-2`, `ERF-7`, `ERF-71` |
+| `received.url`, `received.path`, `received.digest`, `received.timestamp` | `ERF-2`, `ERF-7`, `ERF-71` |
 | `status`, `normalized`, `normalized_digest`, `reason` | `ERF-1`, `ERF-4`, `ERF-5`, `ERF-71` |
 | `licence`, `licence_name` | `ERF-68` |
-| `excerpt.by`, `excerpt.on` | `ERF-69` |
+| `excerpt.by`, `excerpt.timestamp` | `ERF-69` |
 | `extraction`, `normalization` | `ERF-70` |
 
 How records are found: atoms are retrieved by embedding `finding` and
@@ -378,13 +376,13 @@ sources:
       url: "https://archive.org/download/ancientdoubleent00geijuoft/ancientdoubleent00geijuoft.pdf"
       path: raw/pacioli-1494-geijsbeek.pdf
       digest: "sha256:05e58ce3f2589584d7d36446c46e2f74ab14f33ee6d1f0f20ef5e21c2aeaf2aa"
-      on: 2026-08-23
+      timestamp: 2026-08-23
     status: shipped-as-quotation
     normalized: normalized/pacioli-1494-geijsbeek.md
     normalized_digest: "sha256:1b9a0c47d3e8f5a2c6b4e09f7d132a8be5c40f6719d2ab83c5e7104f9a6d2b3e"
     extraction: "pymupdf4llm 0.3.4"
     normalization: "pandoc 3.1.11 --wrap=none"
-    excerpt: {by: "agent/claude-sonnet-5", on: 2026-08-23}
+    excerpt: {timestamp: 2026-08-23, by: "agent/claude-sonnet-5"}
 ```
 
 Where a source has no `citation` block, write `citation_text` as "Author,
@@ -407,7 +405,7 @@ is evidence about today's page rather than about what was read.
   where, in `received.path`; a corpus that does not holds `received.url` and
   `received.digest` instead, which is what lets a reader obtain the same
   bytes. A source whose raw file is mutable at its location, a web page
-  above all, MUST record `received.on`, the date it arrived, because
+  above all, MUST record `received.timestamp`, the date it arrived, because
   otherwise nothing says which version was read.
 - **ERF-3** A corpus MUST keep a source list: a document whose top level
   is a mapping of exactly two keys, `type` with the value `sources`, and

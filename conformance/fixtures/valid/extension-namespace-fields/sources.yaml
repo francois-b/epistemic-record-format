@@ -6,5 +6,5 @@ sources:
       url: "https://www.sec.gov/example/pubco-2026-10k.htm"
     status: shipped-as-quotation
     normalized: normalized/pubco-2026-filing.md
-    excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}
+    excerpt: {timestamp: "2026-08-25", by: "agent/claude-fable-5"}
     x_retrieval_batch: "edgar-2026-08-sweep"

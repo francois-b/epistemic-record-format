@@ -63,7 +63,7 @@ test("every standalone example carries only defined fields and legal values", ()
   const SOURCE_FIELDS = new Set(["id", "citation_text", "citation", "received",
     "status", "normalized", "normalized_digest", "reason", "licence",
     "licence_name", "excerpt", "extraction", "normalization"]);
-  const RECEIVED_FIELDS = new Set(["url", "path", "digest", "on"]);
+  const RECEIVED_FIELDS = new Set(["url", "path", "digest", "timestamp"]);
   for (const name of readdirSync(dir).filter((f) => f.endsWith(".yaml"))) {
     const doc = yaml.load(readFileSync(join(dir, name), "utf8"), { schema: yaml.JSON_SCHEMA }) as Record<string, unknown>;
     if (name.startsWith("source-")) {
