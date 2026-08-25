@@ -88,6 +88,16 @@ function splitFrontmatter(text: string): { data: Record<string, unknown>; body: 
   return { data, body: (m[2] ?? "").trim() };
 }
 
+/**
+ * A capture that ships, on either basis: under a licence (`shipped`) or as a
+ * short quotation under none (`shipped-as-quotation`). The two are separate
+ * statuses because the permission differs and `ERF-68` requires the entry to
+ * say which; nothing downstream of the permission cares, so every reader asks
+ * this question instead of comparing to a literal.
+ */
+export const shipsWithCorpus = (cap: { status: string } | undefined): boolean =>
+  cap?.status === "shipped" || cap?.status === "shipped-as-quotation";
+
 function listDir(dir: string, ext = ".md"): string[] {
   if (!existsSync(dir)) return [];
   return readdirSync(dir).filter((f) => f.endsWith(ext)).sort();
@@ -523,7 +533,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
           + "giving a path or an explicit absence with a reason (ERF-4), so "
           + "that an omission is distinguishable from a recorded absence.",
       });
-    } else if (cap.status !== "shipped" && !cap.reason) {
+    } else if (!shipsWithCorpus(cap) && !cap.reason) {
       findings.push({
         record: id,
         field: "captures.yaml",

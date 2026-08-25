@@ -223,12 +223,25 @@ interface RegistryEntry {                    // one row of the corpus registry
 }
 
 interface CaptureEntry {                     // one row of the capture mapping
-  status: "shipped" | "not-redistributable" | "licence-unverified";
+  status: "shipped"                          // under a licence (ERF-68)
+        | "shipped-as-quotation"             // under none (ERF-68, ERF-69)
+        | "not-redistributable"              // copyright forbids it (ERF-5)
+        | "access-restricted"                // an agreement forbids it (ERF-5)
+        | "licence-unverified";              // rights unestablished (ERF-5)
   path: string | null;         // relative to the mapping file; null when absent
-  reason?: string;             // REQUIRED when status is not `shipped` (ERF-5)
+  reason?: string;             // REQUIRED when no capture ships (ERF-5)
   licence?: string;            // SPDX identifier where one applies (ERF-68)
   licence_name?: string;       // the licence's plain name
+  excerpt?: boolean;           // a passage, not a whole copy (ERF-69)
+  converter?: Converter;       // absent when the source was already text (ERF-70)
+  source_locator?: string;     // immutable locator for the source (ERF-71)
+  source_digest?: string;      // "sha256:<hex>", algorithm named (ERF-71)
   source?: string;             // human-readable note on what the capture is
+}
+
+interface Converter {                        // how a source became this text
+  tool: string;                // the tool and its exact version, named
+  deterministic: boolean;      // same tool, same bytes, same text out (ERF-70)
 }
 ```
 
@@ -332,10 +345,16 @@ evidence about today's page rather than about what was read.
   omission and cannot tell an omission from an oversight.
 - **ERF-5** An entry recording an absence MUST carry a `status` from a
   closed set and a human-readable `reason`. The set in use is
-  `not-redistributable` (a licence permits reading but not republication)
-  and `licence-unverified` (redistribution rights could not be established,
-  and unverified is not permission). The vocabulary is provisional and grows
-  by a demonstrated instance rather than by anticipation.
+  `not-redistributable` (copyright permits reading but not republication),
+  `access-restricted` (an agreement accepted to obtain the source forbids
+  extraction or redistribution, independently of copyright), and
+  `licence-unverified` (redistribution rights could not be established, and
+  unverified is not permission). The first two are separated because they
+  fail differently: a copyright restriction leaves the quotation route of
+  `ERF-69` open, and a contractual one closes it, since a term of access is
+  not answered by the fact that a passage is short. The vocabulary is
+  provisional and grows by a demonstrated instance rather than by
+  anticipation.
 - **ERF-68** An entry whose capture ships SHOULD name the licence that
   permits it, as an SPDX licence identifier where the licence has one, with
   the licence's plain name alongside because an identifier does not explain
@@ -343,7 +362,38 @@ evidence about today's page rather than about what was read.
   nominally the same licence, described in prose, match only by eye. Where
   no identifier applies, prose alone is correct: SPDX names a licence and
   never the judgment about whether redistribution is permitted, which stays
-  `ERF-5`'s closed vocabulary and this format's own call.
+  `ERF-5`'s closed vocabulary and this format's own call. A capture may also
+  ship under no licence at all, as a short quotation for verification and
+  comment; such an entry MUST say so in place of a licence rather than
+  leaving the permission unstated, because an absent licence field otherwise
+  reads as an oversight.
+- **ERF-69** A capture MAY be an excerpt of its source rather than a whole
+  copy, and an excerpt capture MUST identify itself as one. It MUST contain
+  the quoted passage together with enough adjacent text for the passage's
+  place in the source to be legible: a capture holding the quote alone
+  proves nothing, because it is a copy of the thing it is meant to check.
+  The excerpt route exists because the format needs verifiability and not
+  republication, and because a short quotation with attribution is available
+  where republication of the work is not.
+- **ERF-70** Where a capture was produced by converting a source from
+  another format, the capture MUST record the converting tool and its exact
+  version, and that tool MUST be deterministic: the same tool at the same
+  version, given the same source bytes, produces the same text. A
+  non-deterministic converter (one whose output varies with a model version
+  or with the machine it runs on) MAY be used, and the capture MUST then say
+  so, which marks that source's check as reproducible by no one but its
+  author. Naming the instrument rather than specifying the conversion is the
+  same choice `ERF-26` makes for a search act, and for the same reason: no
+  standard defines a faithful text projection of a PDF or a web page, and a
+  named instrument is reproducible where an unnamed transformation is not.
+- **ERF-71** An entry whose capture is an excerpt or a conversion SHOULD
+  record an immutable locator for the source artifact and that artifact's
+  cryptographic digest, naming the algorithm. Together they close the step
+  the format cannot otherwise check: a reader who retrieves the artifact
+  confirms from the digest that it is the one the author held, and re-runs
+  the conversion under `ERF-70` to confirm the excerpt occurs in it. A
+  locator that resolves to different bytes on different days is not
+  immutable, whatever it is called.
 
 ### 4.2 The atom
 
@@ -979,13 +1029,33 @@ checks the relations no type can see.
   - f. A space before `,` `.` `;` `:` `!` `?` is removed, an artifact of
        document export.
 
-  These assume a text or markdown capture, which is what every capture in
-  the reference practice is. A capture in another format (a PDF, an HTML
-  file, a spreadsheet) has no defined conversion to comparison text, and
-  specifying one per media type is the successor design, deferred until the
-  first capture that is not text. A validator facing a capture whose format
-  it cannot convert MUST report the check as unavailable rather than pass or
-  fail it. The prose above names each transformation; the conformance case
+  These assume a text or markdown capture, which is what every capture is:
+  a capture is authored, not converted at check time. Where the source was a
+  PDF, a web page, or an EPUB, the conversion happened once, in the hands of
+  the person who made the capture, under `ERF-70`; the format receives its
+  result. This is deliberate. No standard defines a faithful text projection
+  of a PDF or an HTML document, because what counts as text in either one
+  (reading order across columns, table cell order, alt text, footnotes,
+  running heads) is an editorial question and not a mechanical one. A
+  specification that defined one would be inventing a standard and calling
+  it a citation, and a specification that named a library would be choosing
+  a runtime. Naming the instrument and requiring it to be deterministic
+  keeps the step reproducible without either.
+
+  A validator therefore never converts. Facing a capture that is not text or
+  markdown it MUST report the check as unavailable rather than pass or fail
+  it, exactly as it does for a capture it does not hold.
+
+  Two observations from converting a scanned source, recorded because they
+  are easy to get backwards. First, an optical character recognition layer
+  already embedded in a source artifact is not a source of
+  nondeterminism: the recognition ran once, before the artifact existed, and
+  the digest of `ERF-71` pins its result, so reading that layer is as
+  reproducible as reading any other text. Running recognition oneself is the
+  non-deterministic act, and it is the one `ERF-70` requires a capture to
+  declare. Second, such layers are commonly spaced irregularly, and step 11
+  is what absorbs that: the same passage that a plain substring search misses
+  is found once normalized. The prose above names each transformation; the conformance case
   files (`conformance/cases/normalization.txt` and
   `conformance/cases/quote-check.yaml`, this repository) are normative for
   its exact behavior: where a reading of the prose and a case disagree, the

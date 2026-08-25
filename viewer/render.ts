@@ -9,7 +9,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Atom, Claim, Survey } from "../types/erf.ts";
 import type { LoadedCorpus, Narrative } from "./corpus.ts";
-import { bindingRe } from "./corpus.ts";
+import { bindingRe, shipsWithCorpus } from "./corpus.ts";
 import {
   backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,
   disposition, normalizeForCheck, quoteCheck, resolvable, staleAudits,
@@ -184,7 +184,7 @@ export function renderIndex(c: LoadedCorpus): string {
     const d = disposition(cl).disposition;
     dispCounts.set(d, (dispCounts.get(d) ?? 0) + 1);
   }
-  const shipped = [...c.captures.values()].filter((x) => x.status === "shipped").length;
+  const shipped = [...c.captures.values()].filter((x) => shipsWithCorpus(x)).length;
   const body = `
 <h1>${esc(c.manifest.title)}</h1>
 <p class="sub">Corpus <span class="id">${esc(c.manifest.id)}</span> &middot;

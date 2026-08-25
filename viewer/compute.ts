@@ -5,6 +5,7 @@
  */
 import type { Atom, Claim, StandingEntry } from "../types/erf.ts";
 import type { LoadedCorpus } from "./corpus.ts";
+import { shipsWithCorpus } from "./corpus.ts";
 
 export type Disposition =
   | "proposal" | "active" | "contested" | "rejected" | "retired";
@@ -107,7 +108,7 @@ export function resolvable(atomId: string, c: LoadedCorpus): { ok: boolean; why:
   // saying, deliberately, that this capture could not travel. Reporting both
   // as "no capture recorded" collapsed the distinction the rule was for.
   if (!cap) return { ok: false, why: "no entry in the capture mapping, which is a defect in the mapping rather than a statement about this atom (ERF-4)" };
-  if (cap.status === "shipped" && cap.path) return { ok: true, why: "captured copy travels with the corpus" };
+  if (shipsWithCorpus(cap) && cap.path) return { ok: true, why: "captured copy travels with the corpus" };
   return { ok: false, why: cap.reason ?? `capture recorded as absent, status: ${cap.status}` };
 }
 

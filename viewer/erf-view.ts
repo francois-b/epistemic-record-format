@@ -11,7 +11,7 @@
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { loadCorpus } from "./corpus.ts";
+import { loadCorpus, shipsWithCorpus } from "./corpus.ts";
 import { claimsUsingAtom } from "./compute.ts";
 import {
   renderAtom, renderCapture, renderClaim, renderHealth, renderIndex,
@@ -40,7 +40,7 @@ function main(argv: string[]): number {
 
   const captureText = (atomId: string): string | null => {
     const cap = c.captures.get(atomId);
-    if (!cap || cap.status !== "shipped" || !cap.path) return null;
+    if (!cap || !shipsWithCorpus(cap) || !cap.path) return null;
     const p = join(corpusDir, cap.path);
     return existsSync(p) ? readFileSync(p, "utf8") : null;
   };

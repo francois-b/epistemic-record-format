@@ -22,6 +22,12 @@ requirements:
     tests: [fixtures/invalid/atom-absent-from-mapping]
   ERF-5:
     tests: [fixtures/invalid/absence-without-reason]
+  ERF-69:
+    uncovered: no fixture asserts an excerpt capture declares itself, and whether an excerpt carries enough context is an authoring judgment
+  ERF-70:
+    uncovered: no fixture asserts a converted capture names its tool, its version, and whether it reproduces
+  ERF-71:
+    uncovered: no fixture asserts an excerpt or converted capture records an immutable locator and a digest
   ERF-6:
     tests: [quote-check]
   ERF-7:

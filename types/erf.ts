@@ -244,17 +244,38 @@ export interface RegistryEntry {
 
 /** One row of the per-corpus capture mapping (ERF-3, ERF-4, ERF-5). */
 export interface CaptureEntry {
-  status: "shipped" | "not-redistributable" | "licence-unverified";
+  status:
+    | "shipped"                 // ships under a licence that permits it (ERF-68)
+    | "shipped-as-quotation"    // ships as a short quotation, under no licence (ERF-68, ERF-69)
+    | "not-redistributable"     // copyright forbids republication (ERF-5)
+    | "access-restricted"       // an access agreement forbids extraction (ERF-5)
+    | "licence-unverified";     // rights could not be established (ERF-5)
   /** Relative to the mapping file; null when the capture does not ship. */
   path: string | null;
-  /** REQUIRED when `status` is not `shipped` (ERF-5). */
+  /** REQUIRED when no capture ships (ERF-5). */
   reason?: string;
   /** SPDX identifier where one applies (ERF-68). */
   licence?: string;
   /** The licence's plain name, since an identifier does not explain itself. */
   licence_name?: string;
+  /** True when the capture is a passage rather than a whole copy (ERF-69). */
+  excerpt?: boolean;
+  /** The tool that converted the source to this text, and whether it
+   *  reproduces (ERF-70). Absent when the source was already text. */
+  converter?: Converter;
+  /** An immutable locator for the source artifact (ERF-71). */
+  source_locator?: string;
+  /** The source artifact's digest, algorithm named: "sha256:<hex>" (ERF-71). */
+  source_digest?: string;
   /** Human-readable note on what the capture is. */
   source?: string;
+}
+
+export interface Converter {
+  /** The tool and its exact version, named: "pymupdf4llm 0.3.4". */
+  tool: string;
+  /** Same tool, same version, same bytes, same text out (ERF-70). */
+  deterministic: boolean;
 }
 
 // This file describes a record IN MEMORY. The serialization rules describe

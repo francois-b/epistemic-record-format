@@ -6,6 +6,70 @@ are never reused, and every change lands here with a date.
 
 ## Unreleased
 
+### 2026-08-24 — the freeze lifts for captures: excerpts, converters, source identity
+
+The operator lifted the 2026-08-23 freeze for one batch: the capture layer
+was too thin to carry the example corpus that is actually wanted (the
+knowledge-work essay and its 147 atoms, most of whose sources permit
+quotation but not republication). Three requirements added, two amended,
+one note rewritten; all landed with their implementation, their model
+changes, and their coverage rows in the same pass.
+
+**A capture may be an excerpt (`ERF-69`).** A capture holding the quoted
+passage plus enough adjacent text to make its place in the source legible
+is a conforming capture, and must identify itself as one. The excerpt
+route exists because the format needs verifiability and not
+republication: a short quotation with attribution is available where
+republishing the work is not.
+
+**A converted capture names its converter (`ERF-70`).** Where the capture
+text was produced from a PDF, a web page, or an EPUB, the capture records
+the tool and its exact version, and the tool must be deterministic; a
+non-deterministic converter may be used but must be declared, which marks
+that check as reproducible by nobody but its author. Naming the
+instrument rather than specifying the conversion is ERF-26's move,
+applied to extraction, and for the same reason: no standard defines a
+faithful text projection of a PDF or an HTML document.
+
+**Source identity travels as a locator and a digest (`ERF-71`).** An
+excerpt or converted capture should record an immutable locator for the
+source artifact and its digest, algorithm named. Together they close the
+step the format cannot otherwise check: a reader who fetches the artifact
+confirms it is the one the author held, then re-runs the conversion and
+the containment check themselves.
+
+**`ERF-5` splits copyright from contract.** `not-redistributable` now
+means copyright forbids republication, and a new `access-restricted`
+means an agreement accepted to obtain the source forbids extraction. They
+fail differently: the first leaves ERF-69's quotation route open, the
+second closes it, since a term of access is not answered by a passage
+being short.
+
+**`ERF-68` gains the quotation basis.** A capture may ship under no
+licence at all, as a short quotation for verification and comment, and
+the entry must say so (status `shipped-as-quotation`) rather than leaving
+the permission unstated. The example corpus's four W3C captures were
+mislabelled with an SPDX id for a different licence precisely because the
+vocabulary had no honest option.
+
+**The ERF-51 media-type note is rewritten.** Captures are authored, not
+converted at check time, so the deferred per-media-type extraction
+profile is no longer a successor design: the conversion happens once, in
+the capture author's hands, under ERF-70. The note now records why no
+extraction standard exists (reading order, table cells, alt text, and
+footnotes are editorial questions), and two findings from converting a
+real scanned source: an OCR layer already embedded in a hashed artifact
+is not a source of nondeterminism, and OCR's irregular spacing is exactly
+what normalization step 11 absorbs — the Pacioli 1494/1914 quote fails a
+raw substring search and passes normalized.
+
+The `CaptureEntry` shape grows accordingly (two statuses, `excerpt`,
+`converter`, `source_locator`, `source_digest`, and a `Converter` shape)
+in `types/erf.ts` and the section 3 mirror; the viewer asks one
+`shipsWithCorpus` predicate instead of comparing to the `shipped`
+literal; ERF-69/70/71 enter the coverage map as uncovered, honestly, with
+their fixtures owed.
+
 ### 2026-08-24 — an audit of the satellites: five fixes, no spec change
 
 An audit of `types/erf.ts`, `viewer/`, and `examples/corpus/` against the
