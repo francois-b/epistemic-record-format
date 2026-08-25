@@ -115,7 +115,7 @@ export function resolvable(atomId: string, c: LoadedCorpus): { ok: boolean; why:
   // re-runnable by anyone holding the captures, saying nothing about
   // shipping. (The earlier gate on shipping status silently skipped checks a
   // holder was entitled to run; found by the v0.9 stress battery, lane 4.)
-  if (src.path) return { ok: true, why: "captured copy is held with the corpus" };
+  if (src.normalized) return { ok: true, why: "captured copy is held with the corpus" };
   return { ok: false, why: src.reason ?? `capture recorded as absent, status: ${src.status}` };
 }
 

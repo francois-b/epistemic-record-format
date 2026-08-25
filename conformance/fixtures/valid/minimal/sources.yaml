@@ -2,4 +2,4 @@ sources:
   fx-src:
     citation_text: "Fixture source, 2026"
     status: "shipped"
-    path: "captures/source.txt"
+    normalized: "captures/source.txt"

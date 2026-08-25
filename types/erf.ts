@@ -131,7 +131,7 @@ export interface Atom {
   corpus: CorpusId;
   /** One sentence: what the quote shows; audited per ERF-11. */
   finding: string;
-  /** Verbatim from the capture; `[...]` marks elision (ERF-6). */
+  /** Verbatim from the normalized text; `[...]` marks elision (ERF-6). */
   quote: string;
   /** The source quoted, named in the corpus's source list (ERF-4). */
   source: SourceId;
@@ -235,41 +235,54 @@ export interface Source {
   citation_text: string;
   /** Canonical when present; `citation_text` renders from it (ERF-8). */
   citation?: CSL;
-  /** What was retrieved; absent for received files (ERF-7). */
-  fetched?: Fetched;
+  /** The raw file, as it arrived (ERF-2). */
+  received?: Received;
   status:
     | "shipped"                 // ships under a licence that permits it (ERF-68)
     | "shipped-as-quotation"    // ships as a short quotation, under no licence (ERF-68, ERF-69)
     | "not-redistributable"     // copyright forbids republication (ERF-5)
     | "access-restricted"       // an access agreement forbids extraction (ERF-5)
     | "licence-unverified";     // rights could not be established (ERF-5)
-  /** The capture, relative to the source list, when it ships. */
-  path?: string;
-  /** REQUIRED when no capture ships (ERF-5). */
+  /** The text quotes are checked against: the pipeline's output, relative
+   *  to the source list (ERF-1). */
+  normalized?: string;
+  /** "sha256:<hex>" of that file, so a reader can confirm the bytes the
+   *  checks ran against (ERF-71). */
+  normalized_digest?: string;
+  /** REQUIRED when no normalized text ships (ERF-5). */
   reason?: string;
   /** SPDX identifier where one applies (ERF-68). */
   licence?: string;
   /** The licence's plain name, since an identifier does not explain itself. */
   licence_name?: string;
-  /** True when the capture is a passage rather than a whole copy (ERF-69). */
-  excerpt?: boolean;
-  /** The tool that extracted this text from the source, named with its
-   *  exact version ("pymupdf4llm 0.3.4"). Absent when the source was
-   *  already text. MUST be deterministic (ERF-70). */
+  /** Present when the normalized text is a passage rather than the whole
+   *  work: who selected it and when (ERF-69). Selection is the one step of
+   *  the pipeline no tool can be named for, so it is attributed. */
+  excerpt?: Excerpt;
+  /** The tool that produced markdown from the raw file, named with its exact
+   *  version ("pymupdf4llm 0.3.4"). MUST be deterministic (ERF-70). */
   extraction?: string;
-  /** The tool that cleaned the extracted text, named with its exact
-   *  version ("pandoc 3.1.11 --wrap=none"). Absent when nothing was
-   *  cleaned. MUST be deterministic (ERF-70). */
-  cleanup?: string;
+  /** The tool that normalized that markdown, named with its exact version
+   *  ("pandoc 3.1.11 --wrap=none"). MUST be deterministic (ERF-70). */
+  normalization?: string;
 }
 
-export interface Fetched {
-  /** The artifact actually retrieved: the file itself, never a page
-   *  describing it (ERF-7). */
-  url: string;
-  /** "sha256:<hex>", algorithm named, when the location serves stable
-   *  bytes (ERF-71). */
+export interface Received {
+  /** Where it came from, when it came from the web. */
+  url?: string;
+  /** Where the corpus holds it, when the corpus holds it. A published cut
+   *  drops this and keeps `url` and `digest` (ERF-2). */
+  path?: string;
+  /** "sha256:<hex>", when the location serves stable bytes (ERF-71). */
   digest?: string;
+  /** The date it arrived. REQUIRED when the location is mutable (ERF-2). */
+  on?: string;
+}
+
+export interface Excerpt {
+  /** Who selected the passage. An LLM may; it is recorded like any actor. */
+  by: Actor;
+  on: string;
 }
 
 // This file describes a record IN MEMORY. The serialization rules describe

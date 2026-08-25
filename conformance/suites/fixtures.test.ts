@@ -33,8 +33,8 @@ const dirsIn = (p: string) =>
 function findQuoteFailures(dir: string, c: ReturnType<typeof loadCorpus>): void {
   for (const a of c.atoms.values()) {
     const src = c.sources.get(a.source);
-    if (!src?.path) continue;
-    const p = join(dir, src.path);
+    if (!src?.normalized) continue;
+    const p = join(dir, src.normalized);
     if (!existsSync(p)) continue;
     const chk = quoteCheck(a, readFileSync(p, "utf8"));
     if (chk.state === "fail") {

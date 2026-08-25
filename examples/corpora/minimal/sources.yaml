@@ -33,7 +33,7 @@ sources:
 
   ragas-faithfulness-docs:
     citation_text: "RAGAS documentation, \"Faithfulness\""
-    fetched:
+    received:
       url: https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/faithfulness/
     status: licence-unverified
     reason: "The project's code is Apache-2.0, but the documentation site
@@ -42,7 +42,7 @@ sources:
 
   guru-verification-docs:
     citation_text: "Guru product documentation, \"What is Verification\""
-    fetched:
+    received:
       url: https://www.getguru.com/product/verification
     status: not-redistributable
     reason: "Vendor product documentation, all rights reserved."
@@ -50,19 +50,19 @@ sources:
   w3c-prov-dm-2013:
     citation_text: "W3C, \"PROV-DM: The PROV Data Model\", W3C
       Recommendation, 30 April 2013"
-    fetched:
+    received:
       url: http://www.w3.org/TR/2013/REC-prov-dm-20130430/
     status: shipped-as-quotation
-    path: captures/w3c-prov-dm-2013-entities-activities.txt
-    excerpt: true
+    normalized: normalized/w3c-prov-dm-2013-entities-activities.txt
+    excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}
     licence_name: "W3C Document License 2023"
 
   w3c-prov-o-2013:
     citation_text: "W3C, \"PROV-O: The PROV Ontology\", W3C Recommendation,
       30 April 2013"
-    fetched:
+    received:
       url: http://www.w3.org/TR/2013/REC-prov-o-20130430/
     status: shipped-as-quotation
-    path: captures/w3c-prov-o-2013-agents-attribution.txt
-    excerpt: true
+    normalized: normalized/w3c-prov-o-2013-agents-attribution.txt
+    excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}
     licence_name: "W3C Document License 2023"

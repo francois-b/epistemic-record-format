@@ -3,5 +3,5 @@ sources:
     citation_text: "Incident sequence log, 2026"
     status: not-redistributable
     reason: "internal log, not cleared for redistribution"
-    path: captures/sequence-log.md
-    excerpt: true
+    normalized: normalized/sequence-log.md
+    excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}

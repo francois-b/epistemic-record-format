@@ -1,8 +1,8 @@
 ---
 id: B-52
 kind: defect
-status: open
-priority: P1
+status: closed
+priority: closed
 priority_because: "Two implementations that resolve the base differently cannot load the same corpus, and the rule currently lives in a code comment."
 basis: reported
 raised: "independent verification of the nine, 2026-08-25"
@@ -20,3 +20,7 @@ verifications:
 ## Proposed resolution
 
 Say in a requirement what the path is relative to.
+
+## Resolution
+
+Closed 2026-08-25: the path is `normalized`, and ERF-3 states it is relative to the source list in the requirement rather than a comment.

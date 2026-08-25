@@ -3,7 +3,7 @@
 # is one entry of `sources.yaml`, keyed by its id; it is shown here in store
 # form with the id as a field. The capture is a hand-selected excerpt
 # (ERF-69) converted from a scanned PDF by a named, deterministic tool
-# (ERF-70), with the fetched artifact pinned by its digest (ERF-71): a
+# (ERF-70), with the raw file pinned by its digest (ERF-71): a
 # reader who fetches the PDF confirms it is the one the author held, then
 # re-runs the conversion and the containment check themselves. The embedded
 # OCR text layer is not a source of nondeterminism: the recognition ran
@@ -18,10 +18,10 @@ citation:
   title: "Particularis de Computis et Scripturis"
   issued: 1494
   translator: [{family: Geijsbeek, given: John B.}]
-fetched:
+received:
   url: "https://archive.org/download/ancientdoubleent00geijuoft/ancientdoubleent00geijuoft.pdf"
   digest: "sha256:05e58ce3f2589584d7d36446c46e2f74ab14f33ee6d1f0f20ef5e21c2aeaf2aa"
 status: shipped-as-quotation
-path: captures/pacioli-1494-geijsbeek.md
-excerpt: true
+normalized: normalized/pacioli-1494-geijsbeek.md
+excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}
 extraction: "pymupdf4llm 0.3.4"

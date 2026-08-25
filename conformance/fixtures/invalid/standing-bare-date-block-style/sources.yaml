@@ -3,5 +3,5 @@ sources:
     citation_text: "Internal migration note, 2026-08-01"
     status: not-redistributable
     reason: "internal note, not cleared for redistribution"
-    path: captures/note.md
-    excerpt: true
+    normalized: normalized/note.md
+    excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}

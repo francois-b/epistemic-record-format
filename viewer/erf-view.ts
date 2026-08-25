@@ -41,8 +41,8 @@ function main(argv: string[]): number {
   const captureText = (atomId: string): string | null => {
     const src = c.sources.get(c.atoms.get(atomId)?.source ?? "");
     // A held capture is checkable regardless of its shipping status (ERF-50).
-    if (!src?.path) return null;
-    const p = join(corpusDir, src.path);
+    if (!src?.normalized) return null;
+    const p = join(corpusDir, src.normalized);
     return existsSync(p) ? readFileSync(p, "utf8") : null;
   };
 

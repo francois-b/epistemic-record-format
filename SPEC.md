@@ -19,8 +19,7 @@ deliberately does not do is `docs/purpose.md`, what was ruled out is
 
 ## 1. Scope and conformance
 
-This format records four things: what a source *said* (atoms over captured
-sources), what an author *claims* (claims), what was *searched* and what it
+This format records four things: what a source *said* (atoms over its normalized text), what an author *claims* (claims), what was *searched* and what it
 yielded (surveys), and where people *stand* (standings). What was *done* about any of it
 (decisions, actions, outcomes) is out of scope: a neighboring system may
 consume these records, and an activated bet plus its standing entries covers
@@ -92,11 +91,12 @@ shown here.
   confidentiality: which corpora may travel together, and which may cite
   which, are deployment policies this version records nothing about.
 - *source*: the work a quote came from, listed once per corpus with its
-  citation, locator, and capture (section 4.1). Not a record: nobody
+  citation, locator, and normalized text (section 4.1). Not a record: nobody
   asserts a source.
-- *capture*: the copy of a source saved when first read. Checks run
-  against the capture, never the live web.
-- *attester*: whoever is speaking in a captured text: the person or body
+- *normalized text*: what a source's raw file becomes after extraction,
+  excerpting and normalization; the only thing checks run against, never
+  the live web. *raw file*: the source as it arrived, before any of that.
+- *attester*: whoever is speaking in a source's text: the person or body
   whose word a quote carries, as distinct from the document carrying it.
   A vendor's page attests the vendor; a forum post attests its poster.
 - *substrate*: the system holding a corpus's records, whether a git
@@ -150,7 +150,7 @@ interface Atom {
   type: "atom";
   corpus: CorpusId;            // the corpus this record belongs to
   finding: string;             // one sentence: what the quote shows
-  quote: string;               // verbatim from the capture; [...] marks an omission
+  quote: string;               // verbatim from the normalized text; [...] elides
   source: SourceId;            // the source quoted, per the corpus's source list (ERF-4)
   source_quality: SourceQuality;
   as_of_date?: string;         // the date the FACT is true of
@@ -217,25 +217,34 @@ interface CorpusDeclaration {
 interface Source {                           // one entry of the source list
   citation_text: string;       // identifies the work; never a URL (ERF-7)
   citation?: CSL;              // canonical when present (ERF-8)
-  fetched?: Fetched;           // what was retrieved; absent for received files
+  received?: Received;         // the raw file, as it arrived (ERF-2, ERF-7)
   status: "shipped"                          // under a licence (ERF-68)
         | "shipped-as-quotation"             // under none (ERF-68, ERF-69)
         | "not-redistributable"              // copyright forbids it (ERF-5)
         | "access-restricted"                // an agreement forbids it (ERF-5)
         | "licence-unverified";              // rights unestablished (ERF-5)
-  path?: string;               // the capture, relative to the list, when it ships
-  reason?: string;             // REQUIRED when no capture ships (ERF-5)
+  normalized?: string;         // the text quotes are checked against (ERF-1)
+  normalized_digest?: string;  // "sha256:<hex>" of that file (ERF-71)
+  reason?: string;             // REQUIRED when no normalized text ships (ERF-5)
   licence?: string;            // SPDX identifier where one applies (ERF-68)
   licence_name?: string;       // the licence's plain name
-  excerpt?: boolean;           // the capture is a passage, not a whole copy (ERF-69)
-  extraction?: string;         // the tool that extracted this text, versioned (ERF-70)
-  cleanup?: string;            // the tool that cleaned it, versioned (ERF-70)
+  excerpt?: Excerpt;           // who selected the passage, and when (ERF-69)
+  extraction?: string;         // the tool that produced markdown from raw (ERF-70)
+  normalization?: string;      // the tool that cleaned that markdown (ERF-70)
 }
 
-interface Fetched {                          // the artifact actually retrieved
-  url: string;                 // the file itself, never a page describing it (ERF-7)
-  digest?: string;             // "sha256:<hex>", when the bytes are stable (ERF-71)
+interface Received {                         // the raw file, as it arrived
+  url?: string;                // where it came from, when it came from the web
+  path?: string;               // where the corpus holds it, when it holds it
+  digest?: string;             // "sha256:<hex>", when the bytes are stable
+  on?: string;                 // the date it was received (ERF-2)
 }
+
+interface Excerpt {                          // the one attributed step (ERF-69)
+  by: Actor;                   // who selected the passage; an LLM may
+  on: string;                  // when
+}
+
 
 ```
 
@@ -288,11 +297,11 @@ is bound by the data model alone, with advice in the section named.
 | Source field (not a record) | Constrained by |
 |:--|:--|
 | `citation_text`, `citation` | `ERF-7`, `ERF-8` |
-| `fetched.url`, `fetched.digest` | `ERF-7`, `ERF-71` |
-| `status`, `path`, `reason` | `ERF-4`, `ERF-5` |
+| `received.url`, `received.path`, `received.digest`, `received.on` | `ERF-2`, `ERF-7`, `ERF-71` |
+| `status`, `normalized`, `normalized_digest`, `reason` | `ERF-1`, `ERF-4`, `ERF-5`, `ERF-71` |
 | `licence`, `licence_name` | `ERF-68` |
-| `excerpt` | `ERF-69` |
-| `extraction`, `cleanup` | `ERF-70` |
+| `excerpt.by`, `excerpt.on` | `ERF-69` |
+| `extraction`, `normalization` | `ERF-70` |
 
 How records are found: atoms are retrieved by embedding `finding` and
 `quote`. The finding is written to be checkable away from its source,
@@ -326,9 +335,9 @@ transcript, a book. A source is not a record: it carries no created stamp,
 no standings, and no disposition, because nobody asserts a source. Each is
 listed once in the corpus's source list and shared by every atom that
 quotes it, which is what keeps one work's citation, locator, licence, and
-capture stated in one place rather than repeated on each atom and free to
-drift apart. The format never reads a source. It reads the *capture*, the
-copy saved when the source was first read, which is what makes a check
+normalized text stated in one place rather than repeated on each atom and
+free to drift apart. The format never reads a raw file at check time. It
+reads the source's *normalized text*, which is what makes a check
 re-runnable years later and what turns a dead link into weakened provenance
 rather than a broken check.
 
@@ -349,7 +358,7 @@ sources:
       url: "https://archive.org/download/ancientdoubleent00geijuoft/ancientdoubleent00geijuoft.pdf"
       digest: "sha256:05e58ce3f2589584d7d36446c46e2f74ab14f33ee6d1f0f20ef5e21c2aeaf2aa"
     status: shipped-as-quotation
-    path: captures/pacioli-1494-geijsbeek.md
+    normalized: normalized/pacioli-1494-geijsbeek.md
     excerpt: true
     extraction: "pymupdf4llm 0.3.4"
     cleanup: "pandoc 3.1.11 --wrap=none"
@@ -359,25 +368,34 @@ Where a source has no `citation` block, write `citation_text` as "Author,
 Title (venue, year), locator when it matters"; the upgrade path to
 exactness is the citation block.
 
-Capture when you first read something. Legacy material is captured the next
-time it is read or used, and its atoms are minted then; a corpus is not
-retrofitted wholesale, because a capture made long after the reading is
-evidence about today's page rather than about what was read.
+Take the raw file when you first read something. Legacy material is taken
+the next time it is read or used, and its atoms are minted then; a corpus
+is not retrofitted wholesale, because a file taken long after the reading
+is evidence about today's page rather than about what was read.
 
-- **ERF-1** A capture MUST exist before any check runs against a source,
-  and checks MUST run against the capture, never the live web.
-- **ERF-2** A received file (report, transcript) is immutable: it MUST be
-  retained as received, and a revision arriving later MUST be a new source,
-  never an overwrite. A web page is mutable: its capture MUST be dated.
+- **ERF-1** A source's *normalized text* MUST exist before any check runs
+  against it, and checks MUST run against that text, never the live web. It
+  is the output of the corpus's text pipeline: the raw file as received,
+  then extraction to markdown, then a passage selected from it, then
+  normalization. Where a source arrives already as clean markdown the
+  pipeline is empty and the normalized text is the file itself.
+- **ERF-2** A raw file is immutable: a revision arriving later MUST be a
+  new source, never an overwrite. A corpus that holds the raw file records
+  where, in `received.path`; a corpus that does not holds `received.url` and
+  `received.digest` instead, which is what lets a reader obtain the same
+  bytes. A source whose raw file is mutable at its location, a web page
+  above all, MUST record `received.on`, the date it arrived, because
+  otherwise nothing says which version was read.
 - **ERF-3** A corpus MUST keep a source list: one entry per work,
   following the `Source` shape of section 3, keyed by a source id unique
-  within the corpus. A source's citation, locator, and capture live on the
-  source, not on the atom. How the list is stored is the substrate's
+  within the corpus. A source's citation, locator, and normalized text live
+  on the source, not on the atom. How the list is stored is the substrate's
   business, like everything else (section 8); its interchange form is a
   YAML document under the rules of section 7.
 - **ERF-4** Every atom MUST name its source (`source`), and the named id
   MUST exist in the corpus's source list. Every source MUST either give
-  its capture's path or record that no capture is held and why. Absence
+  the path of its normalized text or record that none is held and why.
+  Absence
   MUST be explicit: a source list is checkable only when it is complete,
   because a validator can tell a recorded absence from an omission and
   cannot tell an omission from an oversight.
@@ -393,36 +411,56 @@ evidence about today's page rather than about what was read.
   not answered by the fact that a passage is short. The vocabulary is
   provisional and grows by a demonstrated instance rather than by
   anticipation.
-- **ERF-68** A source whose capture ships SHOULD name the licence that
+- **ERF-68** A source whose normalized text ships SHOULD name the licence that
   permits it, as an SPDX licence identifier where the licence has one, with
   the licence's plain name alongside because an identifier does not explain
-  itself. An identifier matches or it does not; two captures under
+  itself. An identifier matches or it does not; two texts under
   nominally the same licence, described in prose, match only by eye. Where
   no identifier applies, prose alone is correct: SPDX names a licence and
   never the judgment about whether redistribution is permitted, which stays
-  `ERF-5`'s closed vocabulary and this format's own call. A capture may also
+  `ERF-5`'s closed vocabulary and this format's own call. The text may also
   ship under no licence at all, as a short quotation for verification and
   comment; such a source MUST carry the status `shipped-as-quotation`
   rather than leaving the permission unstated, because an absent licence
   field otherwise reads as an oversight rather than as a different basis.
-- **ERF-69** A capture MAY be an excerpt of its source rather than a whole
-  copy, and its source MUST then say so (`excerpt`). It MUST contain
-  the quoted passage together with enough adjacent text for the passage's
-  place in the source to be legible: a capture holding the quote alone
-  proves nothing, because it is a copy of the thing it is meant to check.
-  The excerpt route exists because the format needs verifiability and not
-  republication, and because a short quotation with attribution is available
-  where republication of the work is not.
-- **ERF-70** Where a capture was produced from a source in another format,
+- **ERF-69** A source's normalized text MAY be an excerpt of the work
+  rather than a whole copy, and MUST then record who selected the passage
+  and when (`excerpt`). It MUST contain the quoted passage together with
+  enough adjacent text for the passage's place in the work to be legible: a
+  text holding the quote alone proves nothing, because it is a copy of the
+  thing it is meant to check. The excerpt route exists because the format
+  needs verifiability and not republication, and because a short quotation
+  with attribution is available where republication of the work is not.
+
+  Selecting a passage is the one step of the pipeline no tool can be named
+  for, so it is attributed instead. An LLM may select; `excerpt.by` records
+  which, on the same footing as any other actor, and a selection that
+  misleads by omission is a judgment failure attributable to it.
+
+  Fidelity, unlike selection, is checkable and MUST be checked by anyone
+  holding the raw file: the normalized text MUST occur, under the folding
+  of `ERF-51`, in the normalization of the whole extracted source. This is
+  the quote check one level up, and it is what keeps a fallible selector
+  from silently altering what it selected. A reader without the raw file
+  performs it by obtaining the file at `received.url`, confirming
+  `received.digest`, and re-running the tools of `ERF-70`.
+
+
+- **ERF-70** Where normalized text was produced from a raw file in another
+  format,
   the source MUST name the extracting tool and its exact version
   (`extraction`), and that tool MUST be deterministic: the same tool at the
   same version, given the same source bytes, produces the same text. A
-  non-deterministic tool MUST NOT be used to produce a capture. Where the
-  extracted text was then cleaned, by reflowing wrapped lines, repairing
+  non-deterministic tool MUST NOT be used to produce normalized text. Where the
+  extracted text was then normalized, by reflowing wrapped lines, repairing
   hyphenation, or dropping export artifacts, the source MUST name the
-  cleaning tool and its version too (`cleanup`). Both fields are absent when
-  the step did not happen: a source that was already text needs no
-  extraction, and a capture nobody cleaned needs no cleanup.
+  normalizing tool and its version too (`normalization`). Both fields are
+  absent when the step did not happen: a source that arrived as text needs
+  no extraction, and text nobody normalized needs no normalization.
+
+  The extraction's own output is not retained. Both tools are named and
+  deterministic, so anyone holding the raw file reproduces it exactly, and
+  a stored copy would prove nothing the two names do not.
 
   Naming the instrument rather than specifying the transformation is the
   same choice `ERF-26` makes for a search act, and for the same reason: no
@@ -438,10 +476,10 @@ evidence about today's page rather than about what was read.
 > recognition ran once, before the artifact existed, and the digest of
 > `ERF-71` pins its result, so reading that layer is as reproducible as
 > reading any other text. Running recognition oneself is the
-> non-deterministic act, and this requirement forbids it as a capture
+> non-deterministic act, and this requirement forbids it as a pipeline
 > step. An author who needs one runs it, reads the result, and authors the
-> capture from what they read, which is what a capture already is.
-- **ERF-71** A source whose capture is an excerpt or a conversion SHOULD
+> normalized text from what they read, which is what it already is.
+- **ERF-71** A source whose normalized text is an excerpt or a conversion SHOULD
   carry `fetched.digest`, the cryptographic digest of the retrieved
   artifact with the algorithm named ("sha256:<hex>"). The locator and the
   digest together close the step the format cannot otherwise check: a
@@ -488,7 +526,7 @@ time scope, and it hedges exactly as hard as the source does ("states", not
 checkable away from its context is doing work, not padding.
 
 The atom names its source and keeps its own `source_quality`, and the
-split is deliberate: identity, locator, licence, and capture describe the
+split is deliberate: identity, locator, licence, and normalized text describe the
 work and live once on the source (section 4.1), while the grade is a
 judgment about how much weight the attester's word carries *for this
 finding* (`ERF-9`, `ERF-10`), so two atoms may legitimately grade one
@@ -508,7 +546,7 @@ surveys have bodies and use them. The atom has none, so `limitations` is
 not a caveat slot bolted onto prose that already exists, it is the atom's
 only prose.
 
-- **ERF-6** The `quote` MUST be verbatim from the capture. An omission
+- **ERF-6** The `quote` MUST be verbatim from the source's normalized text. An omission
   inside a quote MUST be written `[...]`; bare `...` is reserved for dots
   the source itself contains.
 - **ERF-7** A source's `citation_text` MUST NOT contain a URL. A citation
@@ -525,17 +563,17 @@ only prose.
 - **ERF-9** `source_quality` MUST grade one axis: how much weight the
   attester's word carries for the fact the finding conveys. Two inputs are
   assessed and the weaker governs. Provenance distance is how many hops
-  separate the captured text from the fact. Attester accountability is
+  separate the source's text from the fact. Attester accountability is
   whether the source is identifiable, answerable, and positioned to know,
   or anonymous, self-interested, or of unknown competence. It MUST NOT
-  encode audit state, which is `finding_audit`'s record, or capture
+  encode audit state, which is `finding_audit`'s record, or excerpt
   fidelity, which is the mechanical check's derived result; a consumer
   wanting one combined trust signal computes it from the three at read
   time.
 
 | Value | The attester and the chain |
 |:---------|:-------------------------------------------------------------|
-| `high` | Direct and accountable: a regulator or court filing, an organization's disclosure made under legal or regulatory accountability, a named study reporting its own data, a captured primary. |
+| `high` | Direct and accountable: a regulator or court filing, an organization's disclosure made under legal or regulatory accountability, a named study reporting its own data, a primary read directly. |
 | `medium` | An identifiable intermediary reporting someone else's fact, or a first party with an interest in the answer: trade press, an analyst note, a vendor's claim about its own product, a one-hop relay. The same organization can attest at both grades: its audited filing is accountable, its marketing page is interested. |
 | `low` | An unaccountable or unidentifiable attester, or a chain not yet pulled to primary: a forum comment, an aggregator citing an unnamed original. |
 
@@ -545,11 +583,11 @@ only prose.
   anonymous forum, stays `low`, because the reader's question is whether X
   holds, not whether someone said it. A finding whose subject *is* discourse
   itself, what a population says, believes, or claims, MUST say so in its
-  own words; the utterance is then the substance, a captured identified
+  own words; the utterance is then the substance, a recorded identified
   utterance is direct and accountable, and the grade can be checked against
   what the atom attests.
 - **ERF-11** The mechanical check (the normalized quote occurs in the
-  capture) is recomputable by anyone holding the corpus and its captures,
+  normalized text) is recomputable by anyone holding the corpus and its texts,
   so its result MUST NOT be stored. The judgment (does the quote, in
   context, support the finding?) is not recomputable: it MUST be recorded
   per auditor in `finding_audit`, with the protocol version that produced
@@ -575,7 +613,7 @@ only prose.
   is true of, which is distinct from the date the atom recorded it: dated
   statistics carry it and timeless statements omit it. `limitations`
   records the caveat about the evidence, whether that is chain quality, a
-  capture block, a scope warning, or a note on a PARTIAL verdict.
+  a withheld text, a scope warning, or a note on a PARTIAL verdict.
 
 ### 4.3 The claim
 
@@ -680,7 +718,7 @@ prose: does the recorded why survive the evidence on record?
   computed (`ERF-41`). Minting is not a standing: a claim is born with
   none, and a claim nobody has taken a stance on is a proposal. The origin
   story belongs in working notes; origin that carries evidential weight is
-  a source: capture it and cite atoms.
+  a source: take it, normalize it, and cite atoms.
 - **ERF-23** Evidence MUST live on the claim, in both directions:
   `atoms_for` and `atoms_against`. Evidence against a claim MUST NOT be
   modeled as a rival claim.
@@ -1006,11 +1044,11 @@ checks the relations no type can see.
   incoming `supports` edge (`ERF-24`). The computed warning a render
   shows.
 - **ERF-50** The mechanical quote check (the normalized quote occurs in
-  the capture) MUST be re-runnable by anyone holding the corpus and its
-  captures; it MUST run as a gate at minting and after any transform that
+  the source's normalized text) MUST be re-runnable by anyone holding the corpus and its
+  normalized texts; it MUST run as a gate at minting and after any transform that
   moves atoms between homes.
 - **ERF-51** Normalization MUST be this ordered sequence, applied
-  identically to the quote and to the capture, so that two conforming tools
+  identically to the quote and to the normalized text, so that two conforming tools
   reach the same verdict on the same pair:
 
   1. Unicode NFKC.
@@ -1024,9 +1062,9 @@ checks the relations no type can see.
   author did not introduce. NFKC because an extractor emits compatibility
   characters nobody types, a ligature as one glyph rather than two letters,
   and an editor may silently decompose it. The emphasis markers because the
-  capture is markdown and the quote is the prose inside it, so a source that
+  normalized text is markdown and the quote is the prose inside it, so a source that
   italicises a word mid-sentence yields `*however*` in one and `however` in
-  the other. Whitespace because line structure differs between a capture and
+  the other. Whitespace because line structure differs between a text and
   a quoted span and always will.
 
 > *Note (non-normative):* on what this sequence deliberately does not do,
@@ -1038,26 +1076,26 @@ checks the relations no type can see.
 > Anglophone set and not French guillemets, German low quotes, CJK corner
 > brackets, fullwidth forms, or two-em dashes, so a French source failed a
 > format that claimed to fold quotation marks. And they were forgiving the
-> wrong thing: the capture is what the check runs against, so an author who
+> wrong thing: the normalized text is what the check runs against, so an author who
 > retypes rather than copies is guessing at their own evidence, and a
 > failure telling them to copy is the correct answer. Measured over 160
 > atoms in three corpora, dropping the folds newly failed four, and every
 > one was a real transcription divergence the folding had concealed.
-> Layout repair moved to where it belongs, a named tool at capture time
+> Layout repair moved to where it belongs, a named tool in the pipeline
 > (`ERF-70`), rather than a rule guessing at information the extractor
 > discarded. Which glyph a source used is a fact about the source; a
 > consumer that wants it normalized does so at read time, as it does with
 > every other reading the format computes rather than stores.
 
-  These assume a text or markdown capture, which is what every capture is:
-  a capture is authored, not converted at check time. Where the source was a
+  These assume text or markdown, which is what normalized text always is:
+  it is authored, not converted at check time. Where the source was a
   PDF, a web page, or an EPUB, the conversion happened once, in the hands of
-  the person who made the capture, under `ERF-70`; the format receives its
+  the person who ran the pipeline, under `ERF-70`; the format receives its
   result.
 
-  A validator therefore never converts. Facing a capture that is not text or
+  A validator therefore never converts. Facing a normalized text that is not text or
   markdown it MUST report the check as unavailable rather than pass or fail
-  it, exactly as it does for a capture it does not hold. The prose above
+  it, exactly as it does for a text it does not hold. The prose above
   names each transformation; the conformance case files
   (`conformance/cases/normalization.txt` and
   `conformance/cases/quote-check.yaml`, this repository) are normative for
@@ -1069,7 +1107,7 @@ checks the relations no type can see.
   split on `[...]` BEFORE normalization, because normalization may fold or
   strip brackets and would otherwise destroy the marker; each span is then
   normalized independently. Every non-empty span MUST occur in the
-  normalized capture, in order and without overlap. A quote whose spans are
+  normalized text, in order and without overlap. A quote whose spans are
   all empty MUST fail rather than trivially pass. The text between two
   spans is unbounded by design: an elision marker is the author's assertion
   that they removed material, and whether the removal misleads is a
@@ -1173,7 +1211,7 @@ checks the relations no type can see.
   read: what a label means, and which corpora may cite or travel with
   which, are deployment policies, like every other policy this version
   leaves to the consumer. A corpus travels as a directory or archive of
-  its records and captures, and the declaration travels with it, which is
+  its records and their normalized texts, and the declaration travels with it, which is
   what makes a received corpus self-describing. The declaration declares
   no bars or gates.
 - **ERF-60** A consumer MAY refuse a corpus whose MAJOR `spec_version` it
@@ -1225,7 +1263,7 @@ it lacks, is in the companion document `docs/influences.md`; the systems it
 covers are listed in the informative references below. Two elements of this format appear in none of the surveyed systems: the
 standings ledger (append-only, per-person, reasoned, human-only, with
 dispositions computed), and the evidence primitive of a verbatim quote
-checked against an immutable captured copy. One imported caution: CiTO's
+checked against an immutable copy of its source. One imported caution: CiTO's
 forty typed citation relations failed of manual-annotation burden; this
 format's four relations rely on machine proposal with human ruling to stay
 below that threshold.
@@ -1239,15 +1277,14 @@ below that threshold.
   check, so a deployment that needs the wall must build it where its other
   policies live. The `classification` label on the declaration (`ERF-59`)
   is the natural anchor for one.
-- Captures travel only where their licences permit. Captured copies of
-  sources are, in general, copyrighted third-party works; whether a given
-  capture ships with a shared or published corpus is a licence and
+- Normalized texts travel only where their licences permit. They are, in general, copyrighted third-party works; whether a given
+  text ships with a shared or published corpus is a licence and
   deployment question the format records rather than rules on. The source
-  list holds the judgment either way: a shipped capture names its
+  list holds the judgment either way: a shipped text names its
   licence (`ERF-68`), a withheld one records the reason (`ERF-5`). The
   honest scope of re-checkability follows: anyone holding the corpus *and
-  a capture* can re-run that atom's mechanical check; a recipient of the
-  records alone holds citations and fetch locators, not proof.
+  its normalized texts* can re-run that atom's mechanical check; a recipient of the
+  records alone holds citations and locators, not proof.
 - Standings are personal data. The ledger is, by design, a dated record
   of named people's positions with their reasons. Taking a stance is
   consenting to that record within the corpus; *publishing* a corpus is a

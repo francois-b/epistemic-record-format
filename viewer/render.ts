@@ -345,7 +345,7 @@ export function renderAtom(a: Atom, c: LoadedCorpus, users: string[]): string {
 
 <h3>Quote</h3>
 <blockquote class="q">${esc(a.quote.trim())}</blockquote>
-<p class="sub">${esc(src?.citation_text ?? `(source ${a.source} not in the source list)`)}${src?.fetched ? ` &middot; <a href="${esc(src.fetched.url)}">${esc(src.fetched.url)}</a>` : ""}</p>
+<p class="sub">${esc(src?.citation_text ?? `(source ${a.source} not in the source list)`)}${src?.received ? ` &middot; <a href="${esc(src.received.url)}">${esc(src.received.url)}</a>` : ""}</p>
 
 ${r.ok
   ? `<div class="okbox">The captured copy travels with this corpus. <a href="capture-${esc(a.id)}.html">See the quote in its capture</a>.</div>`

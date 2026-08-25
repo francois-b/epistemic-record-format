@@ -6,6 +6,46 @@ are never reused, and every change lands here with a date.
 
 ## Unreleased
 
+### 2026-08-25 — the pipeline is named, and the capture becomes normalized text
+
+The word "capture" is retired. Web archiving already uses it for the raw
+bytes off the wire, and this format used it for the derived text at the
+other end of the pipeline, which is the established term for the opposite
+of its established meaning. Sixty-four occurrences across seventeen
+requirements now say what they mean.
+
+The pipeline has four stages and the format names all of them. A **raw
+file** arrives, from the web or an inbox or a scanner, and `received`
+records where it came from, where the corpus holds it if it does, its
+digest, and the date it arrived, which is what `ERF-2` demanded and had
+nowhere to put. **Extraction** turns it into markdown by a named
+deterministic tool. **Excerpting** selects the passage, and it is the one
+step no tool can be named for, so it is attributed: `excerpt.by` records
+who chose, an LLM included. **Normalization** cleans that markdown by a
+second named deterministic tool. The result is the source's **normalized
+text**, at `normalized`, with `normalized_digest` beside it, because that
+file is what every quote check actually runs against and nothing pinned it
+before.
+
+The extraction's own output is not retained, stated as a choice: both tools
+are named and deterministic, so anyone holding the raw file reproduces it.
+
+Selection being fallible is answered rather than accepted. `ERF-69` now
+requires that the normalized text occur, under the folding of `ERF-51`, in
+the normalization of the whole extracted source. That is the quote check
+one level up, it costs no new machinery, and it means a fallible selector
+can pick the wrong passage, which is a judgment attributable to it, but
+cannot silently alter one. Four invented-punctuation defects found by hand
+across five authoring batches would have been caught by this.
+
+The two-cut consequence follows: a corpus holding every raw file is the
+full cut, and a published cut drops `received.path` and ships the
+normalized texts that quotation permits. Same records, same ids, so a
+reader citing an atom cites the same thing; what differs is what they can
+verify without fetching the raw themselves.
+
+Closes B-44 and B-52.
+
 ### 2026-08-25 — normalization drops from seventeen steps to three
 
 Operator rulings on the capture pipeline, taken after four normalization

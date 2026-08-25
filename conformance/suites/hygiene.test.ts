@@ -59,10 +59,10 @@ test("the example corpus loads with no conformance finding", () => {
 test("every standalone example carries only defined fields and legal values", () => {
   const dir = join(REPO, "examples");
   const VERDICTS = new Set(["SUPPORTED", "PARTIAL", "UNSUPPORTED"]);
-  const SOURCE_FIELDS = new Set(["id", "citation_text", "citation", "fetched",
-    "status", "path", "reason", "licence", "licence_name", "excerpt",
-    "extraction", "cleanup"]);
-  const FETCHED_FIELDS = new Set(["url", "digest"]);
+  const SOURCE_FIELDS = new Set(["id", "citation_text", "citation", "received",
+    "status", "normalized", "normalized_digest", "reason", "licence",
+    "licence_name", "excerpt", "extraction", "normalization"]);
+  const RECEIVED_FIELDS = new Set(["url", "path", "digest", "on"]);
   for (const name of readdirSync(dir).filter((f) => f.endsWith(".yaml"))) {
     const doc = yaml.load(readFileSync(join(dir, name), "utf8"), { schema: yaml.JSON_SCHEMA }) as Record<string, unknown>;
     if (name.startsWith("source-")) {
@@ -72,9 +72,9 @@ test("every standalone example carries only defined fields and legal values", ()
       for (const key of Object.keys(doc)) {
         assert.ok(SOURCE_FIELDS.has(key) || key.startsWith("x_"), `${name}: "${key}" is not a defined source field (ERF-55)`);
       }
-      const f = (doc["fetched"] ?? {}) as Record<string, unknown>;
+      const f = (doc["received"] ?? {}) as Record<string, unknown>;
       for (const key of Object.keys(f)) {
-        assert.ok(FETCHED_FIELDS.has(key) || key.startsWith("x_"), `${name}: fetched."${key}" is not a defined field (ERF-55)`);
+        assert.ok(RECEIVED_FIELDS.has(key) || key.startsWith("x_"), `${name}: received."${key}" is not a defined field (ERF-55)`);
       }
       const ct = String(doc["citation_text"] ?? "");
       assert.ok(!/:\/\//.test(ct), `${name}: citation_text carries a URL (ERF-7)`);

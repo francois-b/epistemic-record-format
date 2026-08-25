@@ -1,8 +1,8 @@
 ---
 id: B-44
 kind: defect
-status: open
-priority: P1
+status: closed
+priority: closed
 priority_because: "`ERF-2` states a MUST that no field in the `Source` shape can satisfy, so the fix adds a field and two conforming producers are already dating captures in incompatible places; provisional pending verification by someone other than the raiser."
 basis: demonstrated
 raised: "backlog verification pass, 2026-08-25"
@@ -24,3 +24,7 @@ verifications:
 ## Proposed resolution
 
 Add the field, or state where the date lives.
+
+## Resolution
+
+Closed 2026-08-25: `received.on` holds the date a mutable source arrived, and `received.path` holds the raw file where a corpus keeps it. Both clauses of ERF-2 now have a field.

@@ -1,8 +1,8 @@
 sources:
   acme-blog-2026:
     citation_text: "Acme Analytics, company blog, 2026"
-    fetched:
+    received:
       url: "https://acme-analytics.example/blog/fastest-platform"
     status: shipped-as-quotation
-    path: captures/vendor-blog-post.md
-    excerpt: true
+    normalized: normalized/vendor-blog-post.md
+    excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}

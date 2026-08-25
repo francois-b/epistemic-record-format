@@ -1,9 +1,9 @@
 sources:
   pubco-2026-10k:
     citation_text: "PubCo Inc., Form 10-K, fiscal year 2026"
-    fetched:
+    received:
       url: "https://www.sec.gov/example/pubco-2026-10k.htm"
     status: shipped-as-quotation
-    path: captures/pubco-2026-filing.md
-    excerpt: true
+    normalized: normalized/pubco-2026-filing.md
+    excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}
     x_retrieval_batch: "edgar-2026-08-sweep"

@@ -1,6 +1,6 @@
 # A standalone source entry (SPEC.md, section 4.1): the web-native work
 # behind `atom-web.yaml`. `citation_text` identifies the work and never
-# carries a URL (ERF-7); `fetched.url` names the artifact actually
+# carries a URL (ERF-7); `received.url` names the artifact actually
 # retrieved, the file itself rather than a page describing it.
 # The capture is withheld with its reason stated (ERF-5): arXiv grants
 # authors distribution rights but grants third parties none by default,
@@ -8,7 +8,7 @@
 id: lightman-2023-verify
 citation_text: >-
   Lightman et al., "Let's Verify Step by Step" (arXiv 2305.20050)
-fetched:
+received:
   url: "https://arxiv.org/pdf/2305.20050"
 status: licence-unverified
 reason: >-

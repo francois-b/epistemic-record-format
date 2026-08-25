@@ -2,5 +2,5 @@ sources:
   registry-dashboard-2026-08-24:
     citation_text: "Deployment Registry Dashboard, snapshot 2026-08-24"
     status: shipped-as-quotation
-    path: captures/registry-2026-count.md
-    excerpt: true
+    normalized: normalized/registry-2026-count.md
+    excerpt: {by: "agent/claude-fable-5", on: "2026-08-25"}
