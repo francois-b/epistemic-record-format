@@ -1,0 +1,10 @@
+requirement: ERF-4
+record: fx-001
+field: source
+because: >
+  The source list writes its entries as further top-level keys beside
+  `type`, which is the reading an independent implementation took from the
+  earlier wording of `ERF-3` (F-003). `ERF-3` now names the nesting: the top
+  level is exactly `type` and `sources`. A loader following it finds no
+  entry named `fx-src`, so the atom's source does not resolve. The fixture
+  exists so the two readings cannot both pass.

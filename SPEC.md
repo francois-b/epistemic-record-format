@@ -409,12 +409,24 @@ is evidence about today's page rather than about what was read.
   bytes. A source whose raw file is mutable at its location, a web page
   above all, MUST record `received.on`, the date it arrived, because
   otherwise nothing says which version was read.
-- **ERF-3** A corpus MUST keep a source list: a document carrying
-  `type: sources`, one entry per work following the `Source` shape of
-  section 3, keyed by a source id unique within the corpus. A source's citation, locator, and normalized text live
-  on the source, not on the atom. How the list is stored is the substrate's
-  business, like everything else (section 8); its interchange form is a
-  YAML document under the rules of section 7.
+- **ERF-3** A corpus MUST keep a source list: a document whose top level
+  is a mapping of exactly two keys, `type` with the value `sources`, and
+  `sources`, holding one entry per work following the `Source` shape of
+  section 3, keyed by a source id unique within the corpus:
+
+```yaml
+type: sources
+sources:
+  pacioli-1494-geijsbeek: {…}
+```
+
+  The nesting is written out because an earlier wording named both keys
+  without saying which contained which, and an independent implementation
+  read the entries as further top-level keys beside `type`. A source's
+  citation, locator, and normalized text live on the source, not on the
+  atom. How the list is stored is the substrate's business, like everything
+  else (section 8); its interchange form is a YAML document under the rules
+  of section 7.
 - **ERF-4** Every atom MUST name its source (`source`), and the named id
   MUST exist in the corpus's source list. Every source MUST either give
   the path of its normalized text or record that none is held and why.

@@ -17,8 +17,13 @@ requirements:
   ERF-2:
     untestable-by-design: how a capture is made and dated is a producer practice, not a property of a loaded record
   ERF-3:
-    tests: [fixtures/valid/minimal]
-    note: the source list lives beside the corpus, never on the atom
+    tests: [fixtures/valid/minimal, fixtures/invalid/source-entries-at-top-level]
+    note: >
+      the source list lives beside the corpus, never on the atom, and its
+      top level is exactly `type` and `sources` (F-003). The invalid fixture
+      writes the entries as further top-level keys, which is the reading an
+      independent implementation took from the earlier wording, so the two
+      readings cannot both pass.
   ERF-4:
     tests: [fixtures/invalid/atom-absent-from-mapping]
   ERF-5:
