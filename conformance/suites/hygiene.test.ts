@@ -57,8 +57,8 @@ test("every standalone example carries only defined fields and legal values", ()
   for (const name of readdirSync(dir).filter((f) => f.endsWith(".yaml"))) {
     const doc = yaml.load(readFileSync(join(dir, name), "utf8"), { schema: yaml.JSON_SCHEMA }) as Record<string, unknown>;
     if (name.startsWith("source-")) {
-      // A source is a corpus artifact, not a record (section 4.1): no type,
-      // no corpus, no created. Its roster is the Source shape plus an id,
+      // A source is not a record (section 4.1): no type, no corpus, no
+      // created stamp. Its roster is the Source shape plus an id,
       // which standalone store form carries as a field.
       for (const key of Object.keys(doc)) {
         assert.ok(SOURCE_FIELDS.has(key) || key.startsWith("x_"), `${name}: "${key}" is not a defined source field (ERF-55)`);

@@ -26,7 +26,7 @@ export type ClaimId = string;
 /** Same deployment namespace; slug SHOULD end with the conducted date (ERF-28). */
 export type SurveyId = string;
 
-/** A registered corpus id, per the corpus registry (ERF-64). */
+/** A corpus id, per the corpus declaration (ERF-59). */
 export type CorpusId = string;
 
 /** A recorded topic-family name. */
@@ -212,8 +212,8 @@ export interface Survey {
 }
 
 // ---------------------------------------------------------------------------
-// Corpus artifacts (not records): the manifest, the registry entry, and one
-// entry of the capture mapping (ERF-3, ERF-4, ERF-5, ERF-59, ERF-64).
+// Beside the records, a corpus has structure of its own: its declaration
+// and its sources (ERF-3, ERF-4, ERF-5, ERF-59). Neither is a record.
 // ---------------------------------------------------------------------------
 
 /** The corpus manifest (ERF-59). Where it and the registry disagree about
@@ -228,8 +228,6 @@ export interface CorpusDeclaration {
   owner?: Actor;
 }
 
-/** One row of the deployment's corpus registry (ERF-64). */
-/** One row of the per-corpus capture mapping (ERF-3, ERF-4, ERF-5). */
 /** A source's id: its key in the corpus's source list (ERF-3). */
 export type SourceId = string;
 

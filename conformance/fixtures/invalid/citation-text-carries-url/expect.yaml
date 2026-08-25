@@ -3,4 +3,4 @@ record: fx-src
 field: citation_text
 because: >
   A citation identifies a work; a locator retrieves one copy. The retrieved
-  locator is the source's fetched_url, never part of its citation_text.
+  locator is the source's fetched.url, never part of its citation_text.

@@ -515,8 +515,8 @@ export function loadCorpus(dir: string): LoadedCorpus {
   }
 
   // ---- sources ------------------------------------------------------------
-  // `ERF-3`: the source list. A source is a corpus artifact: identified by
-  // its key here, shared by every atom that quotes it, carrying the work's
+  // `ERF-3`: the source list. A source is not a record: identified by its
+  // key here, shared by every atom that quotes it, carrying the work's
   // citation, locator, and capture in one place.
   const sources = new Map<string, Source>();
   const srcPath = join(dir, "sources.yaml");
