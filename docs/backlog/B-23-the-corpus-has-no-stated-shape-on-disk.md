@@ -2,6 +2,7 @@
 id: B-23
 kind: defect
 status: open
+priority: unassessed
 basis: demonstrated
 raised: "trials 1, 2 and 4 independently, 2026-08-25 (S1, S14, S15)"
 verified:

@@ -2,6 +2,7 @@
 id: B-34
 kind: defect
 status: open
+priority: unassessed
 basis: demonstrated
 raised: "trial 2, 2026-08-25 (S13)"
 verified:

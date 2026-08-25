@@ -2,6 +2,7 @@
 id: B-41
 kind: defect
 status: open
+priority: unassessed
 basis: demonstrated
 raised: "trial 5 (Rust), 2026-08-25"
 verified:

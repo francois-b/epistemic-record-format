@@ -2,6 +2,7 @@
 id: B-39
 kind: defect
 status: contested
+priority: unassessed
 basis: demonstrated
 raised: "trial 1's validator against the example corpus, 2026-08-25 (S9)"
 verified:

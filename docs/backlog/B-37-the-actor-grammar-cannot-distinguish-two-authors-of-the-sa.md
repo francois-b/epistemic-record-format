@@ -2,6 +2,7 @@
 id: B-37
 kind: defect
 status: open
+priority: unassessed
 basis: demonstrated
 raised: "capex corpus, 151 records across five authors, 2026-08-25 (S16)"
 verified:

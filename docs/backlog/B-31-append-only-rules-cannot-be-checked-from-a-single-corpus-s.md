@@ -2,6 +2,7 @@
 id: B-31
 kind: defect
 status: open
+priority: unassessed
 basis: reported
 raised: "trial 4 undecidable 5, 2026-08-25 (S8)"
 verified:

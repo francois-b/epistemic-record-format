@@ -2,6 +2,7 @@
 id: B-16
 kind: capability
 status: open
+priority: trigger-driven
 basis: anticipated
 raised: "design period"
 verified:

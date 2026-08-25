@@ -2,6 +2,7 @@
 id: B-36
 kind: defect
 status: open
+priority: unassessed
 basis: demonstrated
 raised: "trial 3's closing author against trial 1's validator, 2026-08-25 (S21)"
 verified:

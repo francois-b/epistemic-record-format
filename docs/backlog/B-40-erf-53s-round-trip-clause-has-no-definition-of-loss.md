@@ -2,6 +2,7 @@
 id: B-40
 kind: defect
 status: open
+priority: unassessed
 basis: demonstrated
 raised: "trial 6 (SQL), 2026-08-25"
 verified:

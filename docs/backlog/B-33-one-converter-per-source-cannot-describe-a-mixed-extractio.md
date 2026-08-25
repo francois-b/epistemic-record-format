@@ -2,6 +2,7 @@
 id: B-33
 kind: defect
 status: open
+priority: unassessed
 basis: reported
 raised: "trial 2, 2026-08-25 (S11)"
 verified:

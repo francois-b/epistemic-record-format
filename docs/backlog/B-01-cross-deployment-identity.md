@@ -2,6 +2,7 @@
 id: B-01
 kind: capability
 status: open
+priority: trigger-driven
 basis: anticipated
 raised: "retired from v0.9 as `ERF-16` on 2026-08-24 with the realm concept"
 verified:

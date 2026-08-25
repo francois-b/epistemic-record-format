@@ -2,6 +2,7 @@
 id: B-28
 kind: defect
 status: open
+priority: unassessed
 basis: reported
 raised: "trial 1 ambiguity A2, 2026-08-25 (S3)"
 verified:

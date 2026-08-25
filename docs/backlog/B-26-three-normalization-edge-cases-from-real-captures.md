@@ -2,6 +2,7 @@
 id: B-26
 kind: defect
 status: open
+priority: unassessed
 basis: demonstrated
 raised: "trial 2 and capex batch 5, 2026-08-25 (S12)"
 verified:

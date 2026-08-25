@@ -2,6 +2,7 @@
 id: B-20
 kind: capability
 status: contested
+priority: trigger-driven
 basis: anticipated
 raised: "design period"
 verified:

@@ -48,6 +48,36 @@ in this folder**; this page is generated from them by
   already decided elsewhere). A contested entry is a decision about the
   entry, not about the format.
 
+## How an entry gets here
+
+An entry is not raised here. Observations land in `../findings/`, and pass
+three gates before becoming an entry: **raised** (someone noticed it),
+**specified** (a second hand determines what is actually being claimed
+about the specification), **verified** (a third hand checks that claim
+against the specification as it stands). Only a finding verified `accurate`
+becomes an entry. The reasoning, and what happens to the ones that do not,
+is in `../findings/README.md`.
+
+## Priority
+
+One dimension, and it means one thing: **what must be settled before v1.0
+is published.**
+
+- **P1** — blocks publication. Either the fix is breaking, and breaking
+  changes are free before publication and a migration for every adopter
+  after; or leaving it means two conforming implementations cannot read
+  each other; or the specification asserts something untrue.
+- **P2** — should be fixed soon, does not block, non-breaking.
+- **P3** — real, can wait indefinitely. Contested entries sit here too:
+  they need disposal rather than a ruling.
+- **trigger-driven** — capabilities only. They are not scheduled and not
+  ranked; each names the event that would revive it, and that event is
+  their prioritization.
+
+There is deliberately no effort or size field. A second dimension invites
+trading urgency against cost, and the only question this queue needs
+answered is what has to be true before the specification is published.
+
 ## The rule this queue exists to enforce
 
 A field earns its place by a demonstrated need rather than by symmetry or by
@@ -84,12 +114,12 @@ def main():
             problems.append(f"{p.name}: no frontmatter")
             continue
         title = re.search(r"^# B-\d+ · (.+)$", p.read_text(), re.M)
-        for req in ("id", "kind", "status", "basis", "raised", "verified"):
+        for req in ("id", "kind", "status", "priority", "basis", "raised", "verified"):
             if req not in fm:
                 problems.append(f"{p.name}: missing {req}")
         rows.append({"id": fm.get("id",""), "title": title.group(1) if title else p.stem,
                      "kind": fm.get("kind",""), "basis": fm.get("basis",""),
-                     "status": fm.get("status",""),
+                     "status": fm.get("status",""), "priority": fm.get("priority",""),
                      "verdict": (fm.get("verified") or {}).get("verdict",""),
                      "file": p.name})
     if problems:
@@ -100,17 +130,19 @@ def main():
     head = HEADER
     def tbl(title, note, rs):
         if not rs: return ""
-        s = f"## {title}\n\n{note}\n\n| id | | basis | verification |\n|---|---|---|---|\n"
+        s = f"## {title}\n\n{note}\n\n| id | priority | | basis | verification |\n|---|---|---|---|---|\n"
         for r in rs:
-            s += f"| [`{r['id']}`]({r['file']}) | {r['title']} | `{r['basis']}` | `{r['verdict']}` |\n"
+            s += f"| [`{r['id']}`]({r['file']}) | **{r['priority']}** | {r['title']} | `{r['basis']}` | `{r['verdict']}` |\n"
         return s + "\n"
     out = head
     out += tbl("Contested", "Verification disputes these: stale, inaccurate, duplicated, or already ruled elsewhere. Each needs a decision about the **entry** before the format is touched.",
                [r for r in rows if r["status"] == "contested"])
     out += tbl("Unverified", "Raised but not yet checked by anyone other than whoever raised them. **Not ready to be decided.**",
                [r for r in rows if r["verdict"] == "unverified"])
-    out += tbl("Defects awaiting a ruling", "Verified accurate. The specification is wrong, unclear, or incomplete here.",
-               [r for r in rows if r["kind"] == "defect" and r["status"] == "open" and r["verdict"] == "accurate"])
+    ready = [r for r in rows if r["kind"] == "defect" and r["status"] == "open" and r["verdict"] == "accurate"]
+    order = {"P1": 0, "P2": 1, "P3": 2, "unassessed": 3}
+    ready.sort(key=lambda r: (order.get(r["priority"], 9), int(r["id"].split("-")[1])))
+    out += tbl("Defects awaiting a ruling", "Verified accurate, ordered by priority. The specification is wrong, unclear, or incomplete here.", ready)
     out += tbl("Capabilities awaiting a trigger", "Verified accurate. The format does not do these yet; each names the event that would revive it.",
                [r for r in rows if r["kind"] == "capability" and r["status"] == "open" and r["verdict"] == "accurate"])
     counts = collections.Counter(r["verdict"] for r in rows)

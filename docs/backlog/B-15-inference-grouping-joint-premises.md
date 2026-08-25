@@ -2,6 +2,7 @@
 id: B-15
 kind: capability
 status: open
+priority: trigger-driven
 basis: anticipated
 raised: "design period"
 verified:

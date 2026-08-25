@@ -2,6 +2,7 @@
 id: B-22
 kind: capability
 status: contested
+priority: trigger-driven
 basis: anticipated
 raised: "cut from the format 2026-08-23 as ERF v1.1.0"
 verified:

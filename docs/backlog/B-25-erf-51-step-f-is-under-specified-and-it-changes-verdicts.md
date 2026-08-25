@@ -2,6 +2,7 @@
 id: B-25
 kind: defect
 status: open
+priority: unassessed
 basis: demonstrated
 raised: "predicted by trial 1 (A8), proved by capex atom `acx-110`, 2026-08-25 (S7)"
 verified:

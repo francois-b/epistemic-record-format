@@ -2,6 +2,7 @@
 id: B-32
 kind: defect
 status: open
+priority: unassessed
 basis: reported
 raised: "trials 2 and 3's closing author, three independent flags, 2026-08-25 (S10)"
 verified:

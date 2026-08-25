@@ -2,6 +2,7 @@
 id: B-07
 kind: capability
 status: open
+priority: trigger-driven
 basis: anticipated
 raised: "design period; sharpened 2026-08-24 when captures gained `fetched.digest`"
 verified:

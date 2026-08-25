@@ -2,6 +2,7 @@
 id: B-27
 kind: defect
 status: open
+priority: unassessed
 basis: reported
 raised: "trial 1 friction 31, 2026-08-25 (S6)"
 verified:

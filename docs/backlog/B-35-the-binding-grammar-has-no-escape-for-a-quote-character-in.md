@@ -2,6 +2,7 @@
 id: B-35
 kind: defect
 status: open
+priority: unassessed
 basis: reported
 raised: "trial 3's closing author, 2026-08-25 (S20)"
 verified:

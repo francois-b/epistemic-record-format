@@ -2,6 +2,7 @@
 id: B-38
 kind: defect
 status: open
+priority: unassessed
 basis: reported
 raised: "capex claims batch B, 2026-08-25 (S18)"
 verified:

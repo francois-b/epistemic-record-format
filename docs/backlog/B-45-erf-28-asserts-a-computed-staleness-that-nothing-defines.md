@@ -2,6 +2,7 @@
 id: B-45
 kind: defect
 status: open
+priority: unassessed
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
 verified:
