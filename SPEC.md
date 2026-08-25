@@ -12,8 +12,9 @@ model: claude-fable-5
 
 Specification, v0.9 (draft). The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way is
-`docs/history.md`, the fields it draws on are `docs/influences.md`, and
-what it deliberately does not do is `docs/purpose.md`. The normative data model is the TypeScript file
+`docs/history.md`, the fields it draws on are `docs/influences.md`, what it
+deliberately does not do is `docs/purpose.md`, what was ruled out is
+`docs/non-goals.md`, and what it does not do yet is `docs/backlog.md`. The normative data model is the TypeScript file
 `types/erf.ts`, mirrored inline in section 3.
 
 ## 1. Scope and conformance

@@ -23,19 +23,6 @@ dates are what a reader can use. A decision that closes a proposal is
 recorded here in the same commit that implements it. A register nobody
 updates is worse than none, because it reads as complete.
 
-A format's readers keep proposing what its authors already considered. This
-register exists so a proposal can be checked against a ruling instead of
-re-argued, and so the reasons stay attached to the decisions. Things retired
-*after* being used also appear in the subtraction ledger above, with the
-measurement that decided them; this table is the scannable index.
-
-Rows carry the date the ruling was taken. Versions are deliberately
-absent: before first publication they record iteration rather than
-release, and dates are what a reader can actually use. A decision
-that closes a proposal is recorded here in the same commit that implements
-it, on the same discipline the changelog already follows. A register nobody
-updates is worse than none, because it reads as complete.
-
 ## Declined
 
 | Decision | Ruled | Why |
@@ -80,6 +67,6 @@ updates is worse than none, because it reads as complete.
 
 ## Deferred
 
-Deferred items and their triggers live in `BACKLOG.md`. They are a queue
+Deferred items and their triggers live in `backlog.md`. They are a queue
 rather than a record: an item leaves that file when its trigger fires, which
 is the opposite lifecycle to everything else in this document.

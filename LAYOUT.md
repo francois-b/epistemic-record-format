@@ -46,7 +46,8 @@ than being either.
 
 **History.** Why the format is the way it is, and what it does not yet do.
 
-- `CHANGELOG.md`, `DESIGN-HISTORY.md`, `BACKLOG.md`, `README.md`
+- `CHANGELOG.md`, `README.md`, and `docs/` (purpose, non-goals, backlog,
+  influences, history)
 
 ## Admitting a new kind of thing
 
