@@ -1,0 +1,7 @@
+requirement: ERF-14
+record: (corpus)
+field: as_of_date
+because: >
+  A year, a year and month, and a full date are all legal, and a record
+  MUST NOT state precision the source did not give. Three atoms, one at
+  each precision, must load clean.

@@ -153,7 +153,7 @@ interface Atom {
   quote: string;               // verbatim from the normalized text; [...] elides
   source: SourceId;            // the source quoted, per the corpus's source list (ERF-4)
   source_quality: SourceQuality;
-  as_of_date?: string;         // the date the FACT is true of
+  as_of_date?: string;         // the date the FACT is true of (ERF-14)
   limitations?: string;        // recorded caveat about the evidence
   created: ActorStamp;
   last_modified?: ActorStamp;
@@ -617,9 +617,16 @@ only prose.
   sequence number (`kwg-117`), never renamed and never reused.
 - **ERF-14** `as_of_date`, where present, MUST record the date the fact
   is true of, which is distinct from the date the atom recorded it: dated
-  statistics carry it and timeless statements omit it. `limitations`
-  records the caveat about the evidence, whether that is chain quality, a
-  a withheld text, a scope warning, or a note on a PARTIAL verdict.
+  statistics carry it and timeless statements omit it. It MAY be a year, a
+  year and month, or a full date, and MUST NOT state precision the source
+  did not give: a study reporting a figure for 2018 carries `2018`, not an
+  invented day, on the same principle `ERF-27` applies to a search act's
+  yield. A figure true of a period carries that period's end. A statement
+  about the future carries the date it was made, because what is true of
+  that date is that someone expected it, and an expectation is not true of
+  the period it forecasts. `limitations` records the caveat about the
+  evidence, whether that is chain quality, a withheld text, a scope
+  warning, or a note on a PARTIAL verdict.
 
 ### 4.3 The claim
 

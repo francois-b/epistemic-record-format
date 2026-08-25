@@ -136,7 +136,10 @@ export interface Atom {
   /** The source quoted, named in the corpus's source list (ERF-4). */
   source: SourceId;
   source_quality: SourceQuality;
-  /** The date the FACT is true of, distinct from when it was recorded. */
+  /** The date the FACT is true of, distinct from when the atom recorded
+   *  it. A year, a year and month, or a full date; never more precise than
+   *  the source (ERF-14). A period figure carries the period's end; a
+   *  statement about the future carries the date it was made. */
   as_of_date?: string;
   /** Recorded caveat about the evidence. The atom alone carries this:
    *  a record with a body puts its caveats there, and the atom has
