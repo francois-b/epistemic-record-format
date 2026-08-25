@@ -193,11 +193,39 @@ export function quoteCheck(atom: Atom, captureText: string | null): QuoteCheck {
   }
   let cursor = 0;
   for (const p of parts) {
-    const at = hay.indexOf(p, cursor);
-    if (at < 0) return { state: "fail", detail: "a segment of the quote does not occur in the capture" };
+    const at = findWholeWords(hay, p, cursor);
+    if (at < 0) return { state: "fail", detail: "a segment of the quote does not occur in the capture as whole words" };
     cursor = at + p.length;
   }
   return { state: "pass", detail: "the normalized quote occurs in the capture" };
+}
+
+/** A letter, digit, or combining mark: the characters a word is made of. */
+const WORD = /[\p{L}\p{N}\p{M}]/u;
+
+/**
+ * `ERF-52`: a span occurs only at word boundaries. Where the span begins
+ * with a word character, the character before the match must not be one;
+ * where it ends with a word character, the character after must not be
+ * one. Plain substring containment let `The cat[...]sat` pass against
+ * "The catapult ... sat", because trimming each span had removed the
+ * whitespace that made it a whole word at its edge (F-008, found by the Go
+ * trial). A span opening or closing on punctuation is unconstrained on
+ * that side: the punctuation itself is the boundary.
+ */
+function findWholeWords(hay: string, needle: string, from: number): number {
+  const headIsWord = WORD.test(needle[0] ?? "");
+  const tailIsWord = WORD.test(needle[needle.length - 1] ?? "");
+  let at = hay.indexOf(needle, from);
+  while (at >= 0) {
+    const before = at === 0 ? "" : hay[at - 1]!;
+    const after = hay[at + needle.length] ?? "";
+    const okHead = !headIsWord || before === "" || !WORD.test(before);
+    const okTail = !tailIsWord || after === "" || !WORD.test(after);
+    if (okHead && okTail) return at;
+    at = hay.indexOf(needle, at + 1);
+  }
+  return -1;
 }
 
 /**

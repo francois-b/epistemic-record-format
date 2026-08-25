@@ -124,3 +124,34 @@ cases:
     quote: "anything"
     capture: null
     expect: uncheckable
+
+  - name: an elided quote assembled from word fragments fails
+    requirement: ERF-52
+    note: >
+      F-008, found by the Go trial. Split-before-normalize plus trim left
+      plain substring containment, so "The cat" matched inside "The
+      catapult" and "sat" matched "sat", in order, without overlap. Spans
+      must occur as whole words.
+    quote: "The cat[...]sat"
+    capture: "The catapult was heavy. Someone eventually sat on the mat beside it."
+    expect: fail
+
+  - name: a fragment of a longer word fails even without an elision
+    requirement: ERF-52
+    note: the same fabrication without the marker; verbatim means whole words.
+    quote: "cat"
+    capture: "The catapult was heavy."
+    expect: fail
+
+  - name: a span opening on punctuation is unconstrained on that side
+    requirement: ERF-52
+    note: the punctuation is the boundary; a quote may begin mid-sentence at a quotation mark or bracket.
+    quote: "(heavy) it was"
+    capture: "The catapult (heavy) it was, and old."
+    expect: pass
+
+  - name: whole words on both sides of an elision still pass
+    requirement: ERF-52
+    quote: "The catapult[...]sat on the mat"
+    capture: "The catapult was heavy. Someone eventually sat on the mat beside it."
+    expect: pass

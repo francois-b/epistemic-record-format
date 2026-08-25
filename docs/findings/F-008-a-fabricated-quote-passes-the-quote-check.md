@@ -23,7 +23,8 @@ verifications:
     Run against the reference: quote `The cat[...]sat` against the text
     "The catapult was heavy. Someone eventually sat on the mat beside it."
     returns PASS.
-outcome: open
+outcome: promoted
+promoted_to: "ERF-52, ruled directly 2026-08-25"
 ---
 
 # F-008 · A fabricated quote passes the quote check
@@ -73,3 +74,30 @@ format's own definition. Before publication it costs a sentence.
 3. **Do not trim span edges adjacent to an elision.** Preserves the author's
    own spacing as the boundary signal. Elegant, but depends on authors
    spacing elisions consistently.
+
+## Resolution
+
+Ruled 2026-08-25, option 2: word boundaries at every span edge, not only
+beside an elision. Where a span begins with a letter, digit or combining
+mark, the character before its occurrence must not be one; likewise at the
+end. A span opening or closing on punctuation is unconstrained on that side,
+because the punctuation is the boundary.
+
+Option 1 (elision-adjacent edges only) was declined because it treats this
+as an elision bug, and it is a containment bug: quoting `cat` out of
+`catapult` is the same fabrication without the marker, and `ERF-6`'s
+"verbatim" means a run of whole words from the source. Closing only the
+door today's attack came through leaves the next trial to find the same
+defect in different clothes. Option 3 (do not trim elision-adjacent edges)
+was declined because it makes correctness depend on authors spacing their
+elisions consistently, and fails silently when they do not.
+
+Cost measured before ruling: zero. All 164 real quotes across the three live
+corpora give the same verdict as before, including the same four
+transcription failures. The stricter rule rejects fabrications and nothing
+else.
+
+Four conformance cases in `cases/quote-check.yaml`: the attack itself, the
+same fragment with no elision, a span opening on punctuation (passes), and
+whole words on both sides of an elision (passes). The attack can no longer
+regress silently.

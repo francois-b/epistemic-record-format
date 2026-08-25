@@ -1208,8 +1208,21 @@ checks the relations no type can see.
   split on `[...]` BEFORE normalization, because normalization may fold or
   strip brackets and would otherwise destroy the marker; each span is then
   normalized independently. Every non-empty span MUST occur in the
-  normalized text, in order and without overlap. A quote whose spans are
-  all empty MUST fail rather than trivially pass. The text between two
+  normalized text, in order and without overlap, **and as whole words**:
+  where a span begins with a letter, digit, or combining mark, the
+  character before its occurrence MUST NOT be one, and where it ends with
+  one, the character after MUST NOT be one. A span that opens or closes on
+  punctuation is unconstrained on that side, because the punctuation is
+  the boundary. Without this rule the check is substring containment, and
+  `The cat[...]sat` passes against a text reading "The catapult was heavy.
+  Someone eventually sat": an atom attributing to a source words it never
+  contained, with a green check. Trimming each span (`ERF-51` step 3) is
+  what removed the whitespace that had made it a whole word at its edge.
+  The rule applies at every span edge and not only beside an elision,
+  because quoting `cat` out of `catapult` is the same fabrication without
+  the marker, and a verbatim quotation (`ERF-6`) is a run of whole words
+  from the source. A quote whose spans are all empty MUST fail rather than
+  trivially pass. The text between two
   spans is unbounded by design: an elision marker is the author's assertion
   that they removed material, and whether the removal misleads is a
   judgment for the audit, not a distance a validator can measure.
