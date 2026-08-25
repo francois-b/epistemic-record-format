@@ -10,7 +10,7 @@ either into the specification or into the design history's declined register
 if the trigger arrives and the answer turns out to be no.
 
 Decisions already taken against something are not here. Those live in
-`DESIGN-HISTORY.md`, which is a permanent record rather than a queue.
+`non-goals.md`, which is a permanent record rather than a queue.
 
 | Deferred | Trigger |
 |:--|:--|

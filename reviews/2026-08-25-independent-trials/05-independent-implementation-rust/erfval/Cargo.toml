@@ -1,0 +1,16 @@
+[package]
+name = "erfval"
+version = "0.1.0"
+edition = "2021"
+description = "An independent validator for the Epistemic Record Format (ERF) v0.9 draft"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_yaml = "0.9"
+yaml-rust2 = "0.10"
+unicode-normalization = "0.1"
+regex = "1"
+walkdir = "2"
+
+[profile.release]
+panic = "abort"

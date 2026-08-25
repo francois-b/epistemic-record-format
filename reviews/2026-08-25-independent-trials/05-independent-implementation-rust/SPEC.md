@@ -11,9 +11,9 @@ model: claude-fable-5
 # The Epistemic Record Format
 
 Specification, v0.9 (draft). The abstract and status are in `README.md`;
-the change history is in `CHANGELOG.md`; how the format got this way is
-`docs/history.md`, the fields it draws on are `docs/influences.md`, and
-what it deliberately does not do is `docs/purpose.md`. The normative data model is the TypeScript file
+the change history is in `CHANGELOG.md`; how the format got this way, and
+what the surrounding field holds, is the companion document
+`DESIGN-HISTORY.md`. The normative data model is the TypeScript file
 `types/erf.ts`, mirrored inline in section 3.
 
 ## 1. Scope and conformance
@@ -311,7 +311,7 @@ alike: serialization fidelity outranks TypeScript idiom, so every example
 stays copy-pasteable between this document and a file. Type aliases are
 PascalCase and self-sufficient out of context (`EpistemicKind`, not
 `Kind`). The conventions that govern how future names are chosen are in
-`docs/history.md`; they bind whoever edits this specification, not an
+`DESIGN-HISTORY.md`; they bind whoever edits this specification, not an
 implementer reading it.
 
 ## 4. Record types
@@ -1080,7 +1080,7 @@ checks the relations no type can see.
 > and merge without conflict. That cannot bite a single sequential writer,
 > which is the reference practice; the structural answer when a second
 > writer arrives, content-addressed identity in the Trusty URI shape, is
-> deferred behind that trigger in `docs/backlog.md`.
+> deferred behind that trigger in `BACKLOG.md`.
 
 > *Note (non-normative):* a `retired` disposition MUST NOT be read as
 > "shown false". Withdrawals on record split three ways. Some absorb a
@@ -1215,13 +1215,13 @@ checks the relations no type can see.
   Insertions append; retired ids are never reused and are never refilled.
 - The discipline the specification's own editors work under (forcing
   instances, the decision register, the changelog) is stated in
-  `docs/history.md`; it binds whoever amends this document, not an
+  `DESIGN-HISTORY.md`; it binds whoever amends this document, not an
   implementer reading it.
 
 ## Related formats (non-normative)
 
 A five-territory survey of adjacent formats, with what each does and what
-it lacks, is in the companion document `docs/influences.md`; the systems it
+it lacks, is in the companion document `DESIGN-HISTORY.md`; the systems it
 covers are listed in the informative references below. Two elements of this format appear in none of the surveyed systems: the
 standings ledger (append-only, per-person, reasoned, human-only, with
 dispositions computed), and the evidence primitive of a verbatim quote
@@ -1273,8 +1273,7 @@ below that threshold.
 
 ### Informative
 
-- *How the format got this way*: `docs/history.md`, this repository
-- *Influences*: `docs/influences.md`, this repository
+- *ERF: Design History and Prior Art*: `DESIGN-HISTORY.md`, this repository
 - Gordon and Walton, *The Carneades Argumentation Framework* (CMNA 2006)
 - Nanopublication Guidelines: nanopub.net; Kuhn and Dumontier, *Trusty URIs*
 - SEPIO: github.com/monarch-initiative/SEPIO-ontology

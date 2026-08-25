@@ -80,20 +80,22 @@ cannot.
 
 ## Documents
 
-| File | What it is |
+The specification is normative; everything else explains, demonstrates, or
+checks it.
+
+| Read this | To answer |
 |---|---|
-| [`SPEC.md`](SPEC.md) | The specification: record types, numbered requirements (RFC 2119), vocabularies, invariants, serialization. |
-| [`types/erf.ts`](types/erf.ts) | The normative data model as a compiling TypeScript file; `SPEC.md` carries an inline mirror. |
-| [`DESIGN-HISTORY.md`](DESIGN-HISTORY.md) | Non-normative companion: how the format got this way (the subtraction ledger, the reversals, the decision register) and the prior-art survey. |
-| [`BACKLOG.md`](BACKLOG.md) | What the format does not yet do, each item with the event that would revive it. |
-| [`CHANGELOG.md`](CHANGELOG.md) | Change history, newest first. |
-| [`reviews/`](reviews/) | Adversarial review passes, archived verbatim with per-finding adjudications: a disposition of comments, with LLMs among the reviewers. |
-| [`conformance/`](conformance/) | The conformance suite: cases, fixtures, and a coverage map from every requirement to what defends it. |
-| [`examples/`](examples/) | Single-record examples as standalone YAML, plus [`examples/corpora/minimal/`](examples/corpora/minimal/), a small complete corpus of real records exercising every record type, and [`examples/site/`](examples/site/), that corpus rendered. |
-| [`reviews/`](reviews/) | Evaluations of the specification itself: adversarial reads, and independent trials that tested the document by building from it. Findings carry dispositions. |
-| [`LAYOUT.md`](LAYOUT.md) | What kinds of things live where, and how a new kind is admitted. |
-| [`viewer/`](viewer/) | `erf-view`, the reference consumer: a TypeScript static-site generator that imports the normative model and computes every derived reading from the specification text. |
-| [`tools/lint-spec-style.py`](tools/lint-spec-style.py) | The style lint the spec itself is held to (requirement-block shape, note form, no em dashes in prose). Run: `python3 tools/lint-spec-style.py`. |
+| [`SPEC.md`](SPEC.md) | What are the rules? Record types, numbered requirements (RFC 2119), vocabularies, invariants, serialization. |
+| [`types/erf.ts`](types/erf.ts) | What are the shapes? The normative data model as a compiling TypeScript file; `SPEC.md` mirrors it inline. |
+| [`docs/purpose.md`](docs/purpose.md) | **What does this format do, and what does it deliberately refuse to do?** |
+| [`docs/`](docs/) | Why is a rule the way it is (`history.md`), was an idea already declined (`non-goals.md`), will it ever do X (`backlog.md`), where do the ideas come from (`influences.md`). |
+| [`examples/`](examples/) | What does it look like in use? Single-record examples, plus [`examples/corpora/minimal/`](examples/corpora/minimal/), a complete small corpus, and [`examples/site/`](examples/site/), that corpus rendered. |
+| [`conformance/`](conformance/) | Does my implementation obey the rules? Cases, fixtures, and a map from every requirement to what defends it. |
+| [`viewer/`](viewer/) | What does one implementation look like? `erf-view`, the reference consumer, computing every derived reading from the specification text. |
+| [`reviews/`](reviews/) | Does the document itself work? Evaluations of the specification: adversarial reads, and independent trials that tested it by building from it. |
+| [`CHANGELOG.md`](CHANGELOG.md) | What changed, and when. |
+| [`LAYOUT.md`](LAYOUT.md) | What lives where, and how a new kind of thing is admitted. |
+| [`tools/`](tools/) | The style lint the specification holds itself to. |
 
 ## License
 
