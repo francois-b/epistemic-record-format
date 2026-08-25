@@ -2,7 +2,8 @@
 id: B-44
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "`ERF-2` states a MUST that no field in the `Source` shape can satisfy, so the fix adds a field and two conforming producers are already dating captures in incompatible places; provisional pending verification by someone other than the raiser."
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
 verified:

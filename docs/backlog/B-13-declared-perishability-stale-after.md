@@ -3,6 +3,7 @@ id: B-13
 kind: capability
 status: open
 priority: trigger-driven
+priority_because: "A capability waiting on a report that actually needs declared perishability."
 basis: anticipated
 raised: "design period"
 verified:

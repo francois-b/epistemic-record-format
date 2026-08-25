@@ -3,6 +3,7 @@ id: B-10
 kind: capability
 status: open
 priority: trigger-driven
+priority_because: "A capability waiting on the first family split or rename that matters to an existing document."
 basis: anticipated
 raised: "design period"
 verified:

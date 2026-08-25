@@ -2,7 +2,8 @@
 id: B-22
 kind: capability
 status: contested
-priority: trigger-driven
+priority: P3
+priority_because: "Verification found its provenance cites a version that never existed and the cut already recorded in `non-goals.md`, so the entry needs disposal rather than a ruling."
 basis: anticipated
 raised: "cut from the format 2026-08-23 as ERF v1.1.0"
 verified:

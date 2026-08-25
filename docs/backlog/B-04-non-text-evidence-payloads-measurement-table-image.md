@@ -3,6 +3,7 @@ id: B-04
 kind: capability
 status: open
 priority: trigger-driven
+priority_because: "A capability waiting on the first non-text atom in real work, which has not appeared."
 basis: anticipated
 raised: "design period"
 verified:

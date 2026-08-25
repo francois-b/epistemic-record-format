@@ -3,6 +3,7 @@ id: B-07
 kind: capability
 status: open
 priority: trigger-driven
+priority_because: "A capability partly overtaken by `ERF-71` and otherwise waiting on a capture reorganization or a corpus actually being shared."
 basis: anticipated
 raised: "design period; sharpened 2026-08-24 when captures gained `fetched.digest`"
 verified:

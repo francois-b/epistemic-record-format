@@ -2,7 +2,8 @@
 id: B-29
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "The specification contradicts itself, `bound-at` being a MUST in `ERF-32` and optional in the grammar beside it, so the same narrative binding is both conforming and not."
 basis: reported
 raised: "trial 1 ambiguity A1, 2026-08-25 (S4)"
 verified:

@@ -2,7 +2,8 @@
 id: B-38
 kind: defect
 status: open
-priority: unassessed
+priority: P2
+priority_because: "Multi-writer work is already deferred in `purpose.md`, the `supports` workaround conforms, and letting a child declare its parent would be an additive field rather than a break."
 basis: reported
 raised: "capex claims batch B, 2026-08-25 (S18)"
 verified:

@@ -2,7 +2,8 @@
 id: B-40
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "`ERF-53` asserts a lossless round trip it never defines, three defensible equivalences give three different answers on one corpus, and a silent body discard is conforming today, so store-backed and file-backed implementations cannot exchange corpora reliably; provisional pending verification by someone other than the raiser."
 basis: demonstrated
 raised: "trial 6 (SQL), 2026-08-25"
 verified:

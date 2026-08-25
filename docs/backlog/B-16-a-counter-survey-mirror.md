@@ -3,6 +3,7 @@ id: B-16
 kind: capability
 status: open
 priority: trigger-driven
+priority_because: "A capability waiting on the first survey that must stand against a claim rather than back one."
 basis: anticipated
 raised: "design period"
 verified:

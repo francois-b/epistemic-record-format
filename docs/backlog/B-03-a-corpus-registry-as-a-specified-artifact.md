@@ -3,6 +3,7 @@ id: B-03
 kind: capability
 status: open
 priority: trigger-driven
+priority_because: "A capability waiting on a tool that must discover corpora it was not pointed at, which nothing in the trial battery needed."
 basis: anticipated
 raised: "retired from v0.9 as `ERF-64` on 2026-08-24"
 verified:

@@ -2,7 +2,8 @@
 id: B-47
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "`ERF-66`'s duplicate-key and anchor ban exists precisely because two parsers may legally disagree about a file, and on a literal read it does not reach `sources.yaml`, the one file every quote check depends on; provisional pending verification by someone other than the raiser."
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
 verified:

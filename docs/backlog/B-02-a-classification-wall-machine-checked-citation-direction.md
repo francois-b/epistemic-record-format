@@ -3,6 +3,7 @@ id: B-02
 kind: capability
 status: open
 priority: trigger-driven
+priority_because: "A capability sitting behind a boundary `purpose.md` draws deliberately, confidentiality enforcement, whose trigger has not fired."
 basis: anticipated
 raised: "retired from v0.9 as `ERF-45` on 2026-08-24 as a policy"
 verified:

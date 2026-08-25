@@ -3,6 +3,7 @@ id: B-06
 kind: capability
 status: open
 priority: trigger-driven
+priority_because: "A capability waiting on the first bad atom found after citation, which has not appeared."
 basis: anticipated
 raised: "design period"
 verified:

@@ -2,7 +2,8 @@
 id: B-36
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "One author writes the narrative's `created` as a bare date while another implementation's validator demands an actor stamp, and typing the three fields is a shape decision that is free only now."
 basis: demonstrated
 raised: "trial 3's closing author against trial 1's validator, 2026-08-25 (S21)"
 verified:

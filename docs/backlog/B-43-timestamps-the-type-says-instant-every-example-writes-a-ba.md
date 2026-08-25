@@ -2,7 +2,8 @@
 id: B-43
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "The data model says instant, every example writes a bare date, two trials made different calls, and a strict reading makes a conforming validator reject the specification's own examples; provisional pending verification by someone other than the raiser."
 basis: reported
 raised: "trial 5 (Rust), 2026-08-25"
 verified:

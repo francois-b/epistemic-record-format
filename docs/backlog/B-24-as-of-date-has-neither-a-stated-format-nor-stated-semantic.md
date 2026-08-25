@@ -2,7 +2,8 @@
 id: B-24
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "A conforming validator rejects the specification's own example corpus over date precision, and two batch authors already recorded incompatible period semantics, so the field must be pinned while pinning it is still free."
 basis: demonstrated
 raised: "trial 1 (A-series) and capex batches 1, 3 and 5, 2026-08-25 (S2)"
 verified:

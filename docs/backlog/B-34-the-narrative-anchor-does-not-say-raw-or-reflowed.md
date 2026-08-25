@@ -2,7 +2,8 @@
 id: B-34
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "Whether an anchor matches raw or reflowed text decides whether a consumer MUST report a binding as broken under `ERF-33`, so two conforming tools reach opposite conclusions about the same narrative."
 basis: demonstrated
 raised: "trial 2, 2026-08-25 (S13)"
 verified:

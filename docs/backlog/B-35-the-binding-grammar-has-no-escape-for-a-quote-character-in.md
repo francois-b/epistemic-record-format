@@ -2,7 +2,8 @@
 id: B-35
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "The narrative-binding grammar cannot represent an anchor containing a quote character, and a wire grammar is the cheapest thing to change before publication and the most expensive after."
 basis: reported
 raised: "trial 3's closing author, 2026-08-25 (S20)"
 verified:

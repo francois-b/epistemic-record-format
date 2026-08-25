@@ -3,6 +3,7 @@ id: B-09
 kind: capability
 status: open
 priority: trigger-driven
+priority_because: "A capability waiting on the content-addressed id, capture manifest, or signature that would be the thing needing a canonical form."
 basis: anticipated
 raised: "design period"
 verified:

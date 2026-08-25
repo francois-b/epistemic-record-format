@@ -2,7 +2,8 @@
 id: B-42
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "Every uniqueness and resolution rule scopes to a deployment that has no id, declaration, or file, so a travelling corpus cannot state the scope its ids were unique in and a recipient cannot tell a collision from a coincidence; provisional pending verification by someone other than the raiser."
 basis: demonstrated
 raised: "trial 6 (SQL), 2026-08-25"
 verified:

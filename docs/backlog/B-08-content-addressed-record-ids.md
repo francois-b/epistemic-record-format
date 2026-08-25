@@ -3,6 +3,7 @@ id: B-08
 kind: capability
 status: open
 priority: trigger-driven
+priority_because: "A capability waiting on a second writer minting into a shared corpus, the same trigger the specification's own uniqueness note defers behind."
 basis: anticipated
 raised: "design period"
 verified:

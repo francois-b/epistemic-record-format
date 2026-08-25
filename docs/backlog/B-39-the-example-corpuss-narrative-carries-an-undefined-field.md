@@ -2,7 +2,8 @@
 id: B-39
 kind: defect
 status: contested
-priority: unassessed
+priority: P3
+priority_because: "Verification found it a duplicate of B-36, which states the same root cause better, so the entry needs disposal rather than a ruling."
 basis: demonstrated
 raised: "trial 1's validator against the example corpus, 2026-08-25 (S9)"
 verified:

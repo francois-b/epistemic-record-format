@@ -2,7 +2,8 @@
 id: B-31
 kind: defect
 status: open
-priority: unassessed
+priority: P2
+priority_because: "The fix is a clarifying note that binds no shape and changes no verdict, and the entry itself asks to wait for the SQL trial's wording."
 basis: reported
 raised: "trial 4 undecidable 5, 2026-08-25 (S8)"
 verified:

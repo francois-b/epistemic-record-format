@@ -2,7 +2,8 @@
 id: B-20
 kind: capability
 status: contested
-priority: trigger-driven
+priority: P3
+priority_because: "Verification found it already ruled in `non-goals.md` under policies of any kind, so the entry needs disposal rather than a ruling."
 basis: anticipated
 raised: "design period"
 verified:

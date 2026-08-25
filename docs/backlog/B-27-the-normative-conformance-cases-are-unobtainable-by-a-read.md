@@ -2,7 +2,8 @@
 id: B-27
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "`ERF-51` makes files outside the document normative, so what ships with the published specification is a decision the act of publishing forces."
 basis: reported
 raised: "trial 1 friction 31, 2026-08-25 (S6)"
 verified:

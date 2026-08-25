@@ -2,7 +2,8 @@
 id: B-26
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "Each case is a place where two conforming implementations normalize the same capture differently, and any correction to the sequence changes verdicts on already-minted atoms, so it is cheap now and a re-audit for every adopter later."
 basis: demonstrated
 raised: "trial 2 and capex batch 5, 2026-08-25 (S12)"
 verified:

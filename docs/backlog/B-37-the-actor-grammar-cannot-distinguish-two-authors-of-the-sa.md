@@ -2,7 +2,8 @@
 id: B-37
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "The `<producer>/<version>` actor convention collapsed five authors of 151 records into one string, defeating the provenance the format exists to keep, and an identifier convention is the single most expensive thing to change after adoption."
 basis: demonstrated
 raised: "capex corpus, 151 records across five authors, 2026-08-25 (S16)"
 verified:

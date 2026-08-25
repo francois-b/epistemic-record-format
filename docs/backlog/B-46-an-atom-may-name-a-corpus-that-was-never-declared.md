@@ -2,7 +2,8 @@
 id: B-46
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "An atom naming an undeclared corpus conforms today, so widening the obligation invalidates corpora that currently pass, which costs nothing before anyone holds one; provisional pending verification by someone other than the raiser."
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
 verified:

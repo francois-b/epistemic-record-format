@@ -2,7 +2,8 @@
 id: B-41
 kind: defect
 status: open
-priority: unassessed
+priority: P2
+priority_because: "Requirement ids append by design, so numbering the data model's own obligations later is a non-breaking minor addition and no implementation behaves differently meanwhile; provisional pending verification by someone other than the raiser."
 basis: demonstrated
 raised: "trial 5 (Rust), 2026-08-25"
 verified:

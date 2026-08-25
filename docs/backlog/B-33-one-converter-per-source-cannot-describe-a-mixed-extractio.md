@@ -2,7 +2,8 @@
 id: B-33
 kind: defect
 status: open
-priority: unassessed
+priority: P2
+priority_because: "The disclosed workaround conforms and errs conservatively, and blessing it in guidance is non-breaking, so this waits for a second instance before it earns a shape change."
 basis: reported
 raised: "trial 2, 2026-08-25 (S11)"
 verified:

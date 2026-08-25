@@ -3,6 +3,7 @@ id: B-15
 kind: capability
 status: open
 priority: trigger-driven
+priority_because: "A capability waiting on a lint or a cold reader actually miscounting a joint premise set."
 basis: anticipated
 raised: "design period"
 verified:

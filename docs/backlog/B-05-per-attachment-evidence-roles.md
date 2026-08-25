@@ -2,7 +2,8 @@
 id: B-05
 kind: capability
 status: contested
-priority: trigger-driven
+priority: P3
+priority_because: "Verification found the description inaccurate and the entry bodiless, so it needs disposal rather than a ruling or a trigger."
 basis: anticipated
 raised: "design period"
 verified:

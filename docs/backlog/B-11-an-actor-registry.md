@@ -3,6 +3,7 @@ id: B-11
 kind: capability
 status: open
 priority: trigger-driven
+priority_because: "A capability waiting on a second human in a corpus, which `purpose.md` names as a deliberate boundary rather than an omission."
 basis: anticipated
 raised: "design period"
 verified:

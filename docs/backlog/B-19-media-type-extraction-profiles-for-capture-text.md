@@ -2,7 +2,8 @@
 id: B-19
 kind: capability
 status: contested
-priority: trigger-driven
+priority: P3
+priority_because: "Verification found it stale, the 2026-08-24 `ERF-51` rewrite having given its trigger a defined outcome, so the entry needs disposal rather than a ruling."
 basis: anticipated
 raised: "design period"
 verified:

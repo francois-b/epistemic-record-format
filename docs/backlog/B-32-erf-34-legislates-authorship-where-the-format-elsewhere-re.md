@@ -2,7 +2,8 @@
 id: B-32
 kind: defect
 status: open
-priority: unassessed
+priority: P2
+priority_because: "Softening a restriction to attribution is a relaxation, which is the one kind of change that stays free after publication, and the current wording misleads no implementation."
 basis: reported
 raised: "trials 2 and 3's closing author, three independent flags, 2026-08-25 (S10)"
 verified:

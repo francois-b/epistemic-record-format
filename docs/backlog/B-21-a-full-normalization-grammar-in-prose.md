@@ -2,7 +2,8 @@
 id: B-21
 kind: capability
 status: contested
-priority: trigger-driven
+priority: P3
+priority_because: "Verification found the entry inaccurate about which defects overlap it, so it needs disposal, its live subject already being carried by B-25 and B-26."
 basis: anticipated
 raised: "design period"
 verified:

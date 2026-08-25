@@ -2,7 +2,8 @@
 id: B-23
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "Two trials wrote different filenames for the declaration and the narratives directory and each produced a corpus the reference could not read, twice silently, which is interoperability failing on day one."
 basis: demonstrated
 raised: "trials 1, 2 and 4 independently, 2026-08-25 (S1, S14, S15)"
 verified:

@@ -2,7 +2,8 @@
 id: B-30
 kind: defect
 status: open
-priority: unassessed
+priority: P1
+priority_because: "Whether a closure includes its own root decides whether a premise-less argument is a flag or a violation, so two validators reach opposite conformance verdicts on the same corpus."
 basis: reported
 raised: "trial 1 ambiguity A3 and trial 4 undecidable 4, 2026-08-25 (S5)"
 verified:
