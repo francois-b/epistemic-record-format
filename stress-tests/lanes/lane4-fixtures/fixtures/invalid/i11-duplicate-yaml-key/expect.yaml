@@ -1,0 +1,13 @@
+requirement: ERF-66
+record: erfx-i11-1c
+field: "epistemic_kind (written twice)"
+reason: >
+  `epistemic_kind: bet` appears twice in the frontmatter block. YAML
+  itself permits duplicate keys and leaves a processor's response
+  undefined, so two conforming YAML parsers may legally disagree about
+  which value wins on the exact same bytes -- which is why ERF-66 bans
+  the construct outright rather than specifying last-key-wins or
+  first-key-wins. This is a raw-text-level violation, not a data-model
+  one: the file is well-formed enough for many parsers to load
+  silently, which is what makes it easy to miss without a dedicated
+  raw-frontmatter scan ahead of YAML parsing.

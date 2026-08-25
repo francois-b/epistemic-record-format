@@ -1,0 +1,11 @@
+requirement: ERF-43
+record: erfx-i03-1c
+field: "edges[0].to"
+reason: >
+  The claim's one edge targets its own id ("erfx-i03-1c" pointing at
+  "erfx-i03-1c"). ERF-43 states plainly that self-edges MUST NOT exist.
+  Chosen relation is `supports` rather than `assumes`/`decomposes-into`
+  to test the reading that the self-edge ban is general across all four
+  relation types, not scoped to the two relations ERF-43 separately
+  bars from cycles -- see friction-log for the alternate (narrower)
+  reading.

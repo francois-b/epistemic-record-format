@@ -1,0 +1,120 @@
+sources:
+
+  buffon-1792-histoire-naturelle-vol10:
+    citation_text: "Georges-Louis Leclerc, Comte de Buffon, Buffon's Natural
+      History: Containing a Theory of the Earth, a General History of Man,
+      of the Brute Creation, and of Vegetables, Minerals, &c., trans. J. S.
+      Barr (London: J. S. Barr, 1792), vol. 10, 'Of the Degeneration of
+      Animals'"
+    citation:
+      type: book
+      author: [{family: "Leclerc, Comte de Buffon", given: "Georges-Louis"}]
+      translator: [{family: Barr, given: "James Smith"}]
+      title: "Buffon's Natural History: Containing a Theory of the Earth,
+        a General History of Man, of the Brute Creation, and of Vegetables,
+        Minerals, &c."
+      publisher-place: London
+      publisher: "J. S. Barr"
+      issued: 1792
+      volume: 10
+    fetched:
+      url: "https://archive.org/download/bim_eighteenth-century_histoire-naturelle-eng_leclerc-george-louis-c_1792_10/bim_eighteenth-century_histoire-naturelle-eng_leclerc-george-louis-c_1792_10.pdf"
+      digest: "sha256:e6258fe7b28c5e863905312d77ec8b98a31eacf8489ef4e1a83e522b34f4eb54"
+    status: shipped
+    path: captures/buffon-1792-histoire-naturelle-vol10.md
+    excerpt: true
+    licence_name: "Public domain (United States; published 1792, author
+      died 1788; Internet Archive scan of a Library of Congress /
+      microfilm-collection copy, no rights restriction declared)"
+    converter:
+      tool: "pymupdf4llm 0.3.4 (PyMuPDF 1.28.2), pages 1-30 of the PDF
+        (0-indexed 0-29), default settings"
+      deterministic: true
+
+  jefferson-1853-notes-virginia-query6:
+    citation_text: "Thomas Jefferson, Notes on the State of Virginia
+      (Richmond: J. W. Randolph, 1853), Query VI, 'Productions Mineral,
+      Vegetable and Animal', pp. 44-69"
+    citation:
+      type: book
+      author: [{family: Jefferson, given: Thomas}]
+      title: "Notes on the State of Virginia"
+      publisher-place: "Richmond, Va."
+      publisher: "J. W. Randolph"
+      issued: 1853
+    fetched:
+      url: "https://archive.org/download/notesonstateofvi01jeff/notesonstateofvi01jeff.pdf"
+      digest: "sha256:fc918458dc8e37977c83f80aa07ad15cbfe7e279859a2e0eb5f625226b0241ad"
+    status: shipped
+    path: captures/jefferson-1853-notes-virginia-query6.md
+    excerpt: true
+    licence_name: "Public domain (United States; Jefferson's text first
+      published 1785, this Library of Congress-held printing 1853)"
+    converter:
+      tool: "Mixed, disclosed inline in the capture body: pymupdf4llm 0.3.4
+        (PyMuPDF 1.28.2) against PDF pages 59-85 (0-indexed 58-84) for the
+        prose; manual transcription by agent/claude-sonnet-5 from a 200-dpi
+        PyMuPDF page render (fitz.Page.get_pixmap) of PDF page 67
+        (0-indexed 66, printed p. 51) for Table I, whose printed table has
+        no embedded OCR text layer for this scan"
+      deterministic: false
+
+  jefferson-to-buffon-1787-10-01:
+    citation_text: "Thomas Jefferson to Buffon, 1 October 1787, in The
+      Papers of Thomas Jefferson, vol. 12, 7 August 1787 - 31 March 1788,
+      ed. Julian P. Boyd (Princeton: Princeton University Press, 1955),
+      pp. 194-195"
+    citation:
+      type: personal_communication
+      author: [{family: Jefferson, given: Thomas}]
+      recipient: [{family: "Leclerc, Comte de Buffon", given: "Georges-Louis"}]
+      title: "Thomas Jefferson to Buffon, 1 October 1787"
+      issued: "1787-10-01"
+      container-title: "The Papers of Thomas Jefferson"
+      volume: 12
+      editor: [{family: Boyd, given: "Julian P."}]
+      publisher-place: Princeton
+      publisher: "Princeton University Press"
+      issued-container: 1955
+      page: "194-195"
+    fetched:
+      url: "https://founders.archives.gov/documents/Jefferson/01-12-02-0191"
+    status: shipped
+    path: captures/jefferson-to-buffon-1787-10-01.md
+    excerpt: true
+    licence_name: "Public domain (letter written 1787; text as transcribed
+      by the National Archives' Founders Online project). This capture
+      ships Jefferson's own letter text only. Founders Online's own added
+      annotations and editorial notes for this document are separately
+      copyrighted by Princeton University Press ('The annotations to this
+      document, and any other modern editorial content, are copyright ©
+      Princeton University Press. All rights reserved.', per the page
+      footer) and are deliberately excluded from this capture."
+    converter:
+      tool: "claude-in-chrome MCP tool get_page_text (Chrome DOM article-text
+        extraction; exact extension/tool version not exposed to the calling
+        agent -- see friction-log.md, ERF-70)"
+      deterministic: false
+
+  monticello-american-moose-encyclopedia:
+    citation_text: "Thomas Jefferson Foundation, 'American Moose,' Thomas
+      Jefferson Encyclopedia, Monticello.org, accessed 2026-08-25"
+    citation:
+      type: entry-encyclopedia
+      author: [{literal: "Thomas Jefferson Foundation"}]
+      title: "American Moose"
+      container-title: "Thomas Jefferson Encyclopedia"
+      publisher: "Thomas Jefferson Foundation, Inc."
+      accessed: "2026-08-25"
+    fetched:
+      url: "https://www.monticello.org/encyclopedia/american-moose"
+    status: not-redistributable
+    reason: "Modern institutional web content, copyright Thomas Jefferson
+      Foundation, Inc.; standard all-rights-reserved notice, no open
+      licence declared. Freely readable online (copyright permits reading)
+      but republication is not authorized, so this corpus records the
+      source's existence and its role in the survey's search acts
+      (surveys/bjd-buffon-retraction-survey-2026-08-25.md) without shipping
+      any capture of its text. No atom in this corpus quotes this source.
+      This is the corpus's one modern secondary source recorded under
+      ERF-5's absence machinery rather than shipped; see friction-log.md."

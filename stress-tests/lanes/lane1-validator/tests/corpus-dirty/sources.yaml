@@ -1,0 +1,21 @@
+sources:
+  cap-src:
+    citation_text: "A Held Capture (self-published, 2026)"
+    status: shipped
+    path: captures/cap.md
+  url-in-citation:
+    citation_text: "See https://example.com/report for the full report (2026)"
+    status: not-redistributable
+    reason: "Copyright permits reading but not republication."
+  no-reason:
+    citation_text: "An Absent Source (nowhere, 2026)"
+    status: licence-unverified
+  bad-status:
+    citation_text: "A Mislabelled Source (nowhere, 2026)"
+    status: withheld
+  ship-no-path:
+    citation_text: "A Shipped Ghost (nowhere, 2026)"
+    status: shipped
+    fetched:
+      url: "https://example.com/f.pdf"
+      digest: "md5:abc123"

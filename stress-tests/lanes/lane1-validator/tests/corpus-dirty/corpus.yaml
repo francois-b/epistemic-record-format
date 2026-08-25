@@ -1,0 +1,5 @@
+id: dirty
+title: "Smoke-test corpus: dirty"
+spec_version: "0.9.0"
+notes: "an unknown field on the declaration"
+x_experiment: "a legal extension field"

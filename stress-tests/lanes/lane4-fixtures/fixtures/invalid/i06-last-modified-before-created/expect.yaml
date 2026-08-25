@@ -1,0 +1,10 @@
+requirement: ERF-48
+record: erfx-i06-1c
+field: "last_modified.timestamp"
+reason: >
+  `last_modified` (2026-08-18) is earlier than `created` (2026-08-20).
+  ERF-48 requires any change to a record to set `last_modified` to a
+  timestamp later than its `created` (and later than any prior
+  `last_modified`); this is checkable from a single snapshot with no
+  substrate history, unlike the append-only exception clause in the
+  same requirement -- see friction-log.

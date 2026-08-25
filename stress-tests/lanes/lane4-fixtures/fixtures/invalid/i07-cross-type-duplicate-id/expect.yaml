@@ -1,0 +1,10 @@
+requirement: ERF-36
+record: "erfx-shared-7 (atom), erfx-shared-7 (claim)"
+field: "id"
+reason: >
+  An atom and a claim both use the id "erfx-shared-7". ERF-36 requires
+  every record id to be unique across every corpus in the deployment
+  *regardless of record type* -- a check easy to under-implement as
+  "unique within each record-type namespace" (e.g. a directory-per-type
+  layout with per-directory uniqueness), which this fixture would slip
+  past. ERF-38 obligates a validator to reject on exactly this.

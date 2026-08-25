@@ -1,0 +1,14 @@
+requirement: ERF-22
+record: erfx-i02-1c
+field: "disposition"
+reason: >
+  A claim MUST NOT store a state field: disposition is computed from
+  current standings alone (ERF-41), never persisted. Here `disposition:
+  active` is written directly into the claim's frontmatter, which is
+  exactly the shortcut ERF-22 forbids -- and note the field also has no
+  home in the `Claim` interface at all, so this single write
+  necessarily also trips the unknown-field rule of ERF-55; the two
+  requirements are not separable for a "stored disposition" fixture,
+  because the only way to violate ERF-22 is to add a field the schema
+  does not define. Recorded here under ERF-22 as the more specific,
+  intended violation.

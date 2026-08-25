@@ -1,0 +1,10 @@
+requirement: ERF-44
+record: "erfx-i05-1c, erfx-i05-2c"
+field: "edges[0] (both records)"
+reason: >
+  Both claims carry an explicit `conflicts-with` edge pointing at each
+  other for the same pair. ERF-44 requires `conflicts-with` to be
+  stored once per pair, with the reciprocal derived rather than
+  separately written -- unlike `supports`/`assumes`/`decomposes-into`,
+  which are inherently directional and would not trip this rule even
+  when two claims point at each other.

@@ -1,0 +1,6 @@
+sources:
+  vendor-sla-2026:
+    citation_text: "Vendor Z, Service Level Agreement, 2026 edition"
+    status: shipped-as-quotation
+    path: captures/thin-excerpt.md
+    excerpt: true

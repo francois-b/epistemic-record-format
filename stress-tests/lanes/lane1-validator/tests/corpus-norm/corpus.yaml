@@ -1,0 +1,10 @@
+id: norm
+title: "Smoke-test corpus: normalization"
+spec_version: "0.9.0"
+sources:
+  styled-page:
+    citation_text: "A Styled Page (self-published, 2026)"
+    status: shipped
+    licence: "CC0-1.0"
+    licence_name: "Creative Commons Zero 1.0"
+    path: captures/styled-page.md

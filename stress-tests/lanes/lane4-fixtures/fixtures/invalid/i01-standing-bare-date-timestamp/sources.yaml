@@ -1,0 +1,7 @@
+sources:
+  internal-note-2026-08-01:
+    citation_text: "Internal migration note, 2026-08-01"
+    status: not-redistributable
+    reason: "internal note, not cleared for redistribution"
+    path: captures/note.md
+    excerpt: true

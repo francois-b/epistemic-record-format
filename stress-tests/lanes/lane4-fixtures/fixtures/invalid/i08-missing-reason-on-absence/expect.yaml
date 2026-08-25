@@ -1,0 +1,12 @@
+requirement: ERF-5
+record: "source: paywalled-industry-report-2026"
+field: "reason"
+reason: >
+  The source records an absence (`status: access-restricted`, no
+  `path`) but carries no `reason`. ERF-5 requires a source recording an
+  absence to carry both a status from the closed set AND a
+  human-readable `reason`; a status alone tells a reader which of the
+  three failure modes applies but not why, which is exactly the
+  distinction ERF-5's own prose draws between the two non-redistribution
+  statuses (copyright vs. contract) -- unrecoverable without the
+  reason text.
