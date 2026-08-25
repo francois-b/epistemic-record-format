@@ -2,8 +2,8 @@
 id: B-41
 kind: defect
 status: open
-priority: P2
-priority_because: "Requirement ids append by design, so numbering the data model's own obligations later is a non-breaking minor addition and no implementation behaves differently meanwhile; provisional pending verification by someone other than the raiser."
+priority: P3
+priority_because: "Section 1 already binds the Record class to the data model, and ids append by design, so numbering later is free (both reviewers)."
 basis: demonstrated
 raised: "trial 5 (Rust), 2026-08-25"
 verifications:

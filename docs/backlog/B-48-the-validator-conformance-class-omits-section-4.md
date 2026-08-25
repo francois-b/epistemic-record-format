@@ -2,8 +2,8 @@
 id: B-48
 kind: defect
 status: open
-priority: P1
-priority_because: "The Validator class does not bind `ERF-6`, `ERF-12`, or `ERF-19`, so two conforming validators can differ on whether a quote is verbatim, and widening a conformance class after anyone claims it is a breaking change; provisional pending verification by someone other than the raiser."
+priority: P2
+priority_because: "Both reviewers: the class opens with every machine-checkable MUST that applies, and ERF-50 to 52 sit in section 6; the fix is an "including"."
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
 verifications:

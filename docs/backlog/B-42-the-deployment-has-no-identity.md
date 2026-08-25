@@ -2,8 +2,9 @@
 id: B-42
 kind: defect
 status: open
-priority: P1
-priority_because: "Every uniqueness and resolution rule scopes to a deployment that has no id, declaration, or file, so a travelling corpus cannot state the scope its ids were unique in and a recipient cannot tell a collision from a coincidence; provisional pending verification by someone other than the raiser."
+merge_into: B-01
+priority: P3
+priority_because: "Fable: the definitions already state the scope is implicit, and a store needing a key is a substrate concern ERF-63 leaves to the substrate. Candidate for merge into B-01."
 basis: demonstrated
 raised: "trial 6 (SQL), 2026-08-25"
 verifications:

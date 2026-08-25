@@ -2,8 +2,8 @@
 id: B-31
 kind: defect
 status: open
-priority: P2
-priority_because: "The fix is a clarifying note that binds no shape and changes no verdict, and the entry itself asks to wait for the SQL trial's wording."
+priority: P3
+priority_because: "ERF-40 already says the check runs against the substrate history and ERF-63 requires that history; no fixture exercising it is a suite limitation (Fable)."
 basis: reported
 raised: "trial 4 undecidable 5, 2026-08-25 (S8)"
 verifications:

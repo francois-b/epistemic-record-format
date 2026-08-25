@@ -2,8 +2,9 @@
 id: B-43
 kind: defect
 status: open
-priority: P1
-priority_because: "The data model says instant, every example writes a bare date, two trials made different calls, and a strict reading makes a conforming validator reject the specification's own examples; provisional pending verification by someone other than the raiser."
+merge_into: B-24
+priority: P2
+priority_because: "Fable: ERF-19 already says a bare date is correct where nothing is ordered; the residual is the type comment. Fold into B-24."
 basis: reported
 raised: "trial 5 (Rust), 2026-08-25"
 verifications:

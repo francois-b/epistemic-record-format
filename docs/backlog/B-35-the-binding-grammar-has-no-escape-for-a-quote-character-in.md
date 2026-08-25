@@ -3,7 +3,7 @@ id: B-35
 kind: defect
 status: open
 priority: P1
-priority_because: "The narrative-binding grammar cannot represent an anchor containing a quote character, and a wire grammar is the cheapest thing to change before publication and the most expensive after."
+priority_because: "Kept at P1 against GPT: a wire grammar that cannot express a legal anchor is the cheapest thing to change before publication and the most expensive after (Opus, Fable)."
 basis: reported
 raised: "trial 3's closing author, 2026-08-25 (S20)"
 verifications:

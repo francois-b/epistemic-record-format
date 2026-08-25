@@ -2,8 +2,8 @@
 id: B-45
 kind: defect
 status: open
-priority: P1
-priority_because: "`ERF-28` asserts a computed survey staleness that nothing in the format defines, which is the specification stating something about itself that is not true; provisional pending verification by someone other than the raiser."
+priority: P2
+priority_because: "Fable: the dangling clause has nothing to implement and no two implementations diverge on it."
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
 verifications:

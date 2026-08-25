@@ -2,8 +2,9 @@
 id: B-47
 kind: defect
 status: open
-priority: P1
-priority_because: "`ERF-66`'s duplicate-key and anchor ban exists precisely because two parsers may legally disagree about a file, and on a literal read it does not reach `sources.yaml`, the one file every quote check depends on; provisional pending verification by someone other than the raiser."
+merge_into: B-36
+priority: P3
+priority_because: "Verified against the spec: ERF-3 already puts the source list under section 7, so only the narrative file is unscoped. Fold into B-36."
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
 verifications:

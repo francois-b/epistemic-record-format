@@ -2,8 +2,8 @@
 id: B-27
 kind: defect
 status: open
-priority: P1
-priority_because: "`ERF-51` makes files outside the document normative, so what ships with the published specification is a decision the act of publishing forces."
+priority: P2
+priority_because: "Publishing the repository ships the normative case files by construction; what remains is a publication-checklist line, not a spec defect (both reviewers)."
 basis: reported
 raised: "trial 1 friction 31, 2026-08-25 (S6)"
 verifications:

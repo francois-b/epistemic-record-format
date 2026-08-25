@@ -2,8 +2,8 @@
 id: B-46
 kind: defect
 status: open
-priority: P1
-priority_because: "An atom naming an undeclared corpus conforms today, so widening the obligation invalidates corpora that currently pass, which costs nothing before anyone holds one; provisional pending verification by someone other than the raiser."
+priority: P2
+priority_because: "Fable: a one-word widening of ERF-17 that invalidates only corpora no real practice produces."
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
 verifications:
