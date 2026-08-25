@@ -10,9 +10,9 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, basename } from "node:path";
 import yaml from "js-yaml";
-import type { Atom, Claim, Survey, CaptureEntry, CorpusManifest } from "../types/erf.ts";
+import type { Atom, Claim, Survey, CaptureEntry, CorpusDeclaration } from "../types/erf.ts";
 
-export type { CaptureEntry, CorpusManifest };
+export type { CaptureEntry, CorpusDeclaration };
 
 /** A place where the corpus and the normative model disagree. */
 export interface ConformanceFinding {
@@ -46,7 +46,7 @@ export function bindingRe(): RegExp {
 }
 
 export interface LoadedCorpus {
-  manifest: CorpusManifest;
+  manifest: CorpusDeclaration;
   atoms: Map<string, Atom>;
   claims: Map<string, Claim>;
   surveys: Map<string, Survey>;
@@ -187,6 +187,9 @@ function checkKnownFields(
   if (!known) return;
   for (const key of Object.keys(data)) {
     if (known.has(key)) continue;
+    // ERF-72: the extension namespace. An x_ field is legal on any record,
+    // never an unknown-field violation; it is preserved like anything else.
+    if (key.startsWith("x_")) continue;
     const special = PROHIBITED_KEYS[kind]?.[key];
     findings.push({
       record: id,
@@ -251,7 +254,7 @@ function checkStampOrder(data: Record<string, unknown>, id: string, findings: Co
 
 /**
  * `ERF-36` and `ERF-38`: an id is unique across every record type in the
- * realm, and a duplicate is rejected rather than absorbed.
+ * deployment, and a duplicate is rejected rather than absorbed.
  *
  * A `Map.set` on an existing key silently discards the first record, so a
  * duplicated atom id would make one atom vanish and every claim citing it
@@ -273,7 +276,7 @@ function setUnique<T>(
       field: "id",
       detail: `duplicate id: already used by an existing ${prior} record, `
         + `repeated by a ${kind} record. Ids are unique across every record `
-        + `type in a realm (ERF-36); the later record is not loaded.`,
+        + `type in a deployment (ERF-36); the later record is not loaded.`,
     });
     return;
   }
@@ -286,8 +289,8 @@ export function loadCorpus(dir: string): LoadedCorpus {
   /** id -> record type, so a collision across types is caught too. */
   const seenIds = new Map<string, string>();
 
-  const manifest = yaml.load(readFileSync(join(dir, "corpus.yaml"), "utf8"), YAML_OPTS) as CorpusManifest;
-  for (const f of ["id", "title", "spec_version", "classification"]) {
+  const manifest = yaml.load(readFileSync(join(dir, "corpus.yaml"), "utf8"), YAML_OPTS) as CorpusDeclaration;
+  for (const f of ["id", "title", "spec_version"]) {
     if (!(manifest as unknown as Record<string, unknown>)[f]) {
       findings.push({
         record: "corpus.yaml",

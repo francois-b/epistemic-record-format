@@ -1,0 +1,8 @@
+requirement: ERF-72
+record: fxx-001
+field: x_review_batch
+because: >
+  An x_-prefixed field is the designated extension namespace: a producer
+  may originate one, and a validator must not report it as an unknown-field
+  violation. The corpus loads with zero findings. Note the declaration also
+  omits classification, which ERF-59 makes optional.

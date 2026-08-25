@@ -188,8 +188,8 @@ export function renderIndex(c: LoadedCorpus): string {
   const body = `
 <h1>${esc(c.manifest.title)}</h1>
 <p class="sub">Corpus <span class="id">${esc(c.manifest.id)}</span> &middot;
-classification ${esc(c.manifest.classification)} &middot;
-conforms to ERF ${esc(c.manifest.spec_version)}</p>
+${c.manifest.classification ? `classification ${esc(c.manifest.classification)} &middot;
+` : ""}conforms to ERF ${esc(c.manifest.spec_version)}</p>
 
 <h2>Narratives</h2>
 <ul class="plain">${c.narratives.map((n) =>

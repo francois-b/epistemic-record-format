@@ -42,16 +42,21 @@ test("every coverage row names a requirement the spec still has", () => {
 });
 
 test("a retired id is not silently refilled", () => {
+  // ERF-16 was cross-realm reference resolution, retired 2026-08-24 with
+  // the realm concept itself: no second deployment exists to share with,
+  // and the backlog holds the trigger.
   // ERF-29 was the survey `limitations` requirement, retired 2026-08-23.
   // ERF-30 required a narrative to comprise prose plus a claims-tree
   // document, retired 2026-08-23: a claims-tree is one practice's doc class,
   // not something the format needs.
+  // ERF-45 was the classification wall, retired 2026-08-24: a rule about
+  // who may cite what is a policy, and v1 struck policies.
   // ERF-46 was title/body agreement, retired 2026-08-24 into ERF-18's
   // guidance: whether an opening in other words states the same claim is a
   // reading, and authoring judgment is not numbered. Retired ids are never
   // reused, so a reappearance would mean the numbering discipline broke
   // rather than that a rule came back.
-  for (const id of ["ERF-29", "ERF-30", "ERF-46"]) {
+  for (const id of ["ERF-16", "ERF-29", "ERF-30", "ERF-45", "ERF-46", "ERF-64"]) {
     assert.ok(!specRequirements().includes(id), `${id} is retired and must not reappear`);
     assert.ok(!(id in coverage()), `coverage names retired ${id}`);
   }

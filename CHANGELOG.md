@@ -6,6 +6,60 @@ are never reused, and every change lands here with a date.
 
 ## Unreleased
 
+### 2026-08-24 — the container layer pares down to the corpus
+
+Realm, the corpus registry, and the classification wall leave v1, by
+operator ruling, so the version that publishes is the version a reader
+can hold: every concept that remains is one a first corpus needs. The
+coverage map had already said this quietly: of six uncovered requirements,
+two were the wall and the registry's ordered levels, and the one
+untestable-for-want-of-an-implementation requirement was multi-realm
+identity. Structure nothing exercises is anticipation, and the backlog
+rule (a thing earns its place by demonstrated need) now applies to the
+container layer as it always applied to fields.
+
+**`ERF-45` is retired.** The wall (a record must not cite a record whose
+classification is narrower) is a rule about who may see what, which is a
+policy, and v1 struck policies on 2026-08-23. The security section now
+says plainly that a deployment mixing open and sensitive corpora needs
+such a rule and that this version gives it no vocabulary and no check.
+
+**`ERF-64` is retired.** The corpus registry, with its ordered
+classification levels, becomes deployment practice the format no longer
+specifies. The reference deployment keeps its registry file; the spec
+stops requiring one.
+
+**`ERF-16` is retired and realm leaves the vocabulary.** Ids are scoped
+to the deployment, said plainly: the corpora read and cited together
+(`ERF-35` through `ERF-38` reworded). Cross-deployment identity goes to
+the backlog with its trigger, two parties sharing records whose ids may
+collide.
+
+**The manifest becomes the corpus declaration (`ERF-59`).** A manifest
+lists contents and this document never did; a declaration declares what
+the corpus is and what version it speaks. `classification` survives as
+an optional opaque label the format records and does not read, so a
+travelling corpus can still name its sensitivity without the format
+pretending to enforce it; the manifest-versus-registry tie-breaker goes
+with the registry. `CorpusManifest` becomes `CorpusDeclaration` in the
+model; `RegistryEntry` is deleted.
+
+**`ERF-72` adds the extension namespace.** A field named `x_*` is legal
+on any record or corpus artifact, never an unknown-field violation, and
+is where a practice grows vocabulary before the spec admits it; a field
+graduates by entering a later version under its bare name. Everywhere
+else `ERF-55`'s strictness stands, deliberately: rigid by default,
+extensible in one designated place, against the decay that general
+tolerance invites. The `licence_note` field this morning's audit removed
+is the motivating instance: as `x_licence_note` it would have been legal
+experimentation rather than a defect.
+
+Sixty-six live requirements; the retired set is 16, 29, 30, 45, 46, 64,
+all guarded against refill. The viewer honors `x_`, requires only id,
+title, and spec_version of a declaration, and renders classification
+only where one is present. A new valid fixture carries an extension
+field and a declaration with no classification.
+
 ### 2026-08-24 — the freeze lifts for captures: excerpts, converters, source identity
 
 The operator lifted the 2026-08-23 freeze for one batch: the capture layer

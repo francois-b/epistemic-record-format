@@ -7,7 +7,8 @@
 #                          in the format)
 #
 # A requirement with neither tests nor a reason is a hole in this file, and
-# the runner fails on one. ERF-29 and ERF-46 are retired and must not appear.
+# the runner fails on one. ERF-16, ERF-29, ERF-30, ERF-45, ERF-46, and
+# ERF-64 are retired and must not appear.
 
 requirements:
   ERF-1:
@@ -22,6 +23,9 @@ requirements:
     tests: [fixtures/invalid/atom-absent-from-mapping]
   ERF-5:
     tests: [fixtures/invalid/absence-without-reason]
+  ERF-72:
+    tests: [fixtures/valid/extension-field]
+    note: an x_ field on a record loads with zero findings
   ERF-69:
     uncovered: no fixture asserts an excerpt capture declares itself, and whether an excerpt carries enough context is an authoring judgment
   ERF-70:
@@ -48,8 +52,6 @@ requirements:
     untestable-by-design: whether a fact is dated or timeless is an authoring judgment
   ERF-15:
     tests: [fixtures/invalid/reference-encodes-location]
-  ERF-16:
-    untestable-by-design: no multi-realm implementation exists to test against
   ERF-17:
     tests: [fixtures/valid/minimal]
     note: the loader requires corpus on every record
@@ -114,8 +116,6 @@ requirements:
     note: >
       the storage half; that a consumer reads both directions is exercised
       through conflictsFor in the rendered output
-  ERF-45:
-    uncovered: no fixture crosses the classification wall
   ERF-47:
     tests: [staleness]
   ERF-48:
@@ -157,8 +157,6 @@ requirements:
     untestable-by-design: which store is authoritative is a deployment fact
   ERF-63:
     untestable-by-design: a permission, satisfiable by any substrate
-  ERF-64:
-    uncovered: no fixture omits the registry's ordered classification levels
   ERF-65:
     tests: [serialization]
     note: asserts a date-shaped scalar loads as a string, not a date object

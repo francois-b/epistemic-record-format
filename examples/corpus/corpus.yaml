@@ -1,8 +1,9 @@
-# The example corpus manifest (ERF-59, ERF-64).
+# The example corpus declaration (ERF-59).
 #
-# One corpus-registry entry, written out on its own because this corpus
-# travels alone. In a deployment with several corpora these fields are rows
-# in the realm's corpus registry instead.
+# The declaration travels with the corpus, which is what makes a received
+# corpus self-describing. `classification` is an opaque label the format
+# records and does not read (ERF-59); this corpus carries one to show the
+# field, and a corpus that omits it is exactly as conforming.
 
 id: erf-example
 title: "ERF example corpus"

@@ -10,7 +10,7 @@ What follows is one arrangement that works, offered so a reader has
 something concrete to look at.
 
 ```
-corpus.yaml            the manifest: id, title, spec_version, classification, owner
+corpus.yaml            the declaration: id, title, spec_version, and optionally classification and owner
 LAYOUT.md              this file
 README.md              what the corpus holds and where it came from
 atoms/<id>.md          one file per atom

@@ -20,11 +20,10 @@
 /** Corpus prefix plus sequence, e.g. "kwg-117". Never renamed, never reused. */
 export type AtomId = string;
 
-/** Unique across the realm's corpora; encodes no location (ERF-36).
- *  Across realms, identity is the pair of realm and id. */
+/** Unique across the deployment's corpora; encodes no location (ERF-36). */
 export type ClaimId = string;
 
-/** Same realm namespace; slug SHOULD end with the conducted date (ERF-28). */
+/** Same deployment namespace; slug SHOULD end with the conducted date (ERF-28). */
 export type SurveyId = string;
 
 /** A registered corpus id, per the corpus registry (ERF-64). */
@@ -156,7 +155,7 @@ export interface Atom {
 /** A statement that can be true or false, one a person could stand behind
  *  or dispute (section 4.3). */
 export interface Claim {
-  /** Unique across the realm's corpora (ERF-36). */
+  /** Unique across the deployment's corpora (ERF-36). */
   id: ClaimId;
   type: "claim";
   /** Confidentiality tier; mutable where identity is not (ERF-17). */
@@ -192,7 +191,7 @@ export interface Claim {
  *  polarity: the same record backs an absence, sparseness, or density
  *  reading; the citing claim decides the use. */
 export interface Survey {
-  /** Unique in the realm; SHOULD end with the conducted date (ERF-28). */
+  /** Unique in the deployment; SHOULD end with the conducted date (ERF-28). */
   id: SurveyId;
   type: "survey";
   corpus: CorpusId;
@@ -223,25 +222,17 @@ export interface Survey {
 
 /** The corpus manifest (ERF-59). Where it and the registry disagree about
  *  `classification`, the registry governs. */
-export interface CorpusManifest {
+export interface CorpusDeclaration {
   id: CorpusId;
   title: string;
   /** SemVer (ERF-61). */
   spec_version: string;
-  /** A member of the registry's declared, ordered levels (ERF-64). */
-  classification: string;
+  /** Opaque label; the format records it and does not read it (ERF-59). */
+  classification?: string;
   owner?: Actor;
 }
 
 /** One row of the deployment's corpus registry (ERF-64). */
-export interface RegistryEntry {
-  id: CorpusId;
-  /** Where the authoritative copy lives (ERF-62). */
-  home: string;
-  classification: string;
-  purpose: string;
-}
-
 /** One row of the per-corpus capture mapping (ERF-3, ERF-4, ERF-5). */
 export interface CaptureEntry {
   status:

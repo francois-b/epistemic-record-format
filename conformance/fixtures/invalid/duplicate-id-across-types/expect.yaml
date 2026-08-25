@@ -2,6 +2,6 @@ requirement: ERF-36
 record: fx-001
 field: id
 because: >
-  Ids are unique across every record type in a realm, not merely within a
+  Ids are unique across every record type in a deployment, not merely within a
   type. A validator that scans only claims misses this, and a consumer that
   loads records into one map by id silently overwrites.

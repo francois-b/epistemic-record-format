@@ -42,10 +42,10 @@ Conformance is claimed per class, not against the whole document:
 
 - Record: a single atom, claim, or survey. Binds the data model
   (section 3) and its record type's requirements (section 4).
-- Corpus: a collection of records under one corpus-registry entry. Binds the
-  invariants (section 6) and the corpus artifacts: the manifest
-  (`ERF-59`), the authoritative home (`ERF-62`), the registry entry
-  (`ERF-64`), and the capture mapping (`ERF-3`, `ERF-4`, `ERF-5`).
+- Corpus: a collection of records under one declaration. Binds the
+  invariants (section 6) and the corpus artifacts: the declaration
+  (`ERF-59`), the authoritative home (`ERF-62`), and the capture mapping
+  (`ERF-3`, `ERF-4`, `ERF-5`).
 - Producer: a tool or process that writes records. Binds the serialization
   rules (section 7) and the producer SHOULDs of section 4 (for example
   `ERF-20`). Producers are strict: they write only defined fields,
@@ -88,9 +88,9 @@ shown here.
 - *record*: one atom, claim, or survey. Structured fields plus
   one body text, which for an atom is empty (section 4.2).
 - *corpus*: a body of work owning records; a research program, an
-  engagement, a venture, or the personal corpus. The unit of
-  confidentiality, which is what the classification wall (`ERF-45`) is
-  drawn between.
+  engagement, a venture, or the personal corpus. Also the natural unit of
+  confidentiality: which corpora may travel together, and which may cite
+  which, are deployment policies this version records nothing about.
 - *capture*: the copy of a source saved when first read. Checks run
   against the capture, never the live web.
 - *attester*: whoever is speaking in a captured text: the person or body
@@ -102,14 +102,10 @@ shown here.
   or agent, `process:<id>` for automation. Every actor id MUST follow this
   convention. Writing and confirming are separate acts recorded in separate
   fields: who wrote a record need not be who checked it.
-- *owner*: the corpus's responsible person, per the corpus registry.
-- *corpus registry*: the deployment's list of registered corpora, each with
-  an id, a home, a classification, and a purpose (`ERF-64`). It registers
-  corpora, not sources; a map from atom ids to captured copies is a separate
-  file and a separate concern.
-- *realm*: the set of corpora one corpus registry lists. Record ids are
-  unique within a realm (`ERF-36`). Two parties keeping separate
-  registries are two realms, and a bare id means nothing between them.
+- *owner*: the corpus's responsible person, per its declaration.
+- *deployment*: the set of corpora read and cited together, under one
+  operator or organization. Record ids are unique within a deployment
+  (`ERF-36`); between two deployments a bare id promises nothing.
 - *disposition*: the computed reading of a claim's standings, one of
   `proposal`, `active`, `contested`, `rejected`, `retired` (`ERF-41`).
   Never a stored field.
@@ -164,7 +160,7 @@ interface Atom {
 }
 
 interface Claim {
-  id: ClaimId;                 // unique across the realm's corpora
+  id: ClaimId;                 // unique across the deployment's corpora
   type: "claim";
   corpus: CorpusId;            // confidentiality tier; mutable
   title: string;               // THE claim statement (normative)
@@ -204,22 +200,15 @@ interface Survey {
   body: string;
 }
 
-// Corpus artifacts (not records): the manifest, the registry entry, and
-// one entry of the capture mapping (ERF-3, ERF-4, ERF-5, ERF-59, ERF-64).
+// Corpus artifacts (not records): the corpus declaration and one entry of
+// the capture mapping (ERF-3, ERF-4, ERF-5, ERF-59).
 
-interface CorpusManifest {
+interface CorpusDeclaration {
   id: CorpusId;
   title: string;
   spec_version: string;        // SemVer (ERF-61)
-  classification: string;      // a member of the registry's declared levels
+  classification?: string;     // opaque label; the format does not read it
   owner?: Actor;
-}
-
-interface RegistryEntry {                    // one row of the corpus registry
-  id: CorpusId;
-  home: string;                // where the authoritative copy lives
-  classification: string;
-  purpose: string;
 }
 
 interface CaptureEntry {                     // one row of the capture mapping
@@ -587,9 +576,6 @@ prose: does the recorded why survive the evidence on record?
 
 - **ERF-15** References MUST be bare ids and MUST NOT encode location.
   A claim moved between corpora keeps its id, and no reference changes.
-- **ERF-16** A shared surface MUST resolve a reference against the realm
-  it came from. Across realms, identity is the pair of realm and id, and
-  bare ids are not promised to be unique between two parties' realms.
 - **ERF-17** `corpus` MUST be written on every claim and MUST name a
   registered corpus. Changing it is a promotion or transfer; the change
   stamps `last_modified` (`ERF-48`) and its reason belongs in the working
@@ -876,22 +862,21 @@ are not a stored vocabulary; see `ERF-41`.
 All machine-checkable. Types express what types can express; the validator
 checks the relations no type can see.
 
-- **ERF-35** Every reference MUST resolve in the realm namespace:
-  `atoms_for`, `atoms_against`, `edges.to`, and `surveys` name existing
-  records. Ids are realm-unique (`ERF-36`), so one lookup serves every
-  record type; which corpus may cite which is the wall's question
-  (`ERF-45`), not resolution's.
+- **ERF-35** Every reference MUST resolve within the deployment (the
+  corpora read and cited together): `atoms_for`, `atoms_against`,
+  `edges.to`, and `surveys` name existing records. Ids are
+  deployment-unique (`ERF-36`), so one lookup serves every record type.
 - **ERF-36** Every record id MUST be unique across every corpus in the
-  realm, regardless of record type: one atom, claim, or survey may hold a
-  given id, and no second record of any type may repeat it.
-- **ERF-37** A producer MUST verify that an id is unused in the realm
+  deployment, regardless of record type: one atom, claim, or survey may
+  hold a given id, and no second record of any type may repeat it.
+- **ERF-37** A producer MUST verify that an id is unused in the deployment
   before writing a record. The means are the substrate's: a directory that
-  cannot hold two files of one name, a unique index, a lookup against the
-  registry. The format states the invariant and declines to specify the
-  mechanism, because the mechanism is exactly what varies between
-  substrates (section 8).
-- **ERF-38** A validator MUST reject a realm containing duplicate record
-  ids, regardless of record type.
+  cannot hold two files of one name, a unique index, a lookup against a
+  list the deployment keeps. The format states the invariant and declines
+  to specify the mechanism, because the mechanism is exactly what varies
+  between substrates (section 8).
+- **ERF-38** A validator MUST reject a deployment containing duplicate
+  record ids, regardless of record type.
 - **ERF-39** Every standing entry MUST have a `human:` actor and a
   non-empty `why`.
 - **ERF-40** Standings MUST be append-only; an edit or deletion of an
@@ -926,34 +911,6 @@ checks the relations no type can see.
   argument, and an act the format permits cannot retroactively make a
   corpus non-conforming.
 - **ERF-44** `conflicts-with` MUST be stored once per pair.
-- **ERF-45** A record MUST NOT reference a record whose classification is
-  narrower than its own, in edges or in evidence. A narrower corpus MAY
-  cite a more open one; never the reverse. The comparison MUST be evaluated
-  against the ordered classification levels the realm's corpus registry
-  declares (`ERF-64`): without a declared order the wall is not
-  machine-checkable, because nothing tells a validator that one label is
-  narrower than another, and two deployments may use different vocabularies
-  with neither wrong. References are bare ids, so a record MAY cite one in
-  another corpus; the wall is what governs which direction that may run.
-> *Note (non-normative):* on the classification vocabulary. A realm invents
-> its own ordered levels, and one is not supplied here. A registry MAY adopt
-> the Traffic Light Protocol (FIRST.org, TLP 2.0) and use `CLEAR`, `GREEN`,
-> `AMBER`, `AMBER+STRICT`, `RED` as its ordering, which has the advantage of
-> being widely practised and immediately legible to anyone outside the
-> corpus. Note the axes differ: TLP grades how far a recipient may forward
-> something, while `ERF-45` governs which records may reference which. They
-> line up well enough to reuse the names, and not well enough for this
-> format to require them.
-
-> *Note (non-normative):* on reading this format's provenance as PROV. The
-> record's attribution maps onto W3C PROV without adopting a graph model: a
-> record corresponds to a `prov:Entity`, its `created` stamp to
-> `prov:wasGeneratedBy` with the actor as `prov:wasAssociatedWith`, and a
-> `human:` actor to `prov:wasAttributedTo` a `prov:Person` while a
-> producer-and-version actor maps to a `prov:SoftwareAgent`. The mapping is
-> offered so a PROV consumer can read these records; adopting PROV itself
-> would add an RDF model and remove nothing.
-
 - **ERF-47** Staleness MUST be computed, never stored: a
   `finding_audit`, `evidence_audit`, or narrative binding older than the last change
   to what it judged is flagged stale. Where the two stamps differ in
@@ -1131,8 +1088,9 @@ checks the relations no type can see.
   on every record of every type, and no meaning lives in a path.
 - **ERF-55** Empty lists MUST be omitted: a field's absence means none.
   A producer MUST NOT originate a field the declared `spec_version` does
-  not define. An unknown key is a producer validation error, caught by a
-  validator, and never a consumer's licence to refuse (`ERF-57`).
+  not define, outside the extension namespace of `ERF-72`. An unknown key
+  is a producer validation error, caught by a validator, and never a
+  consumer's licence to refuse (`ERF-57`).
 - **ERF-56** A reader MUST materialize an omitted list-typed field as an
   empty list. An omitted list means none, never unknown, so a record that
   omits one is complete rather than partial. This applies to
@@ -1146,18 +1104,32 @@ checks the relations no type can see.
   solely because it contains them. Strictness belongs to the producer and
   detection to the validator; a consumer that refuses what it does not
   recognize breaks forward compatibility for everything downstream of it.
+- **ERF-72** A field whose name begins `x_` is an extension field: a
+  producer MAY originate one on any record or corpus artifact, and a
+  validator MUST NOT report it as an unknown-field violation of `ERF-55`.
+  Extension fields are where a practice grows vocabulary before this
+  specification admits it: a field lives under the prefix while its need
+  is being demonstrated, and graduates by entering a later version under
+  its bare name, at which point the bare name governs and the prefixed
+  form is a distinct, still-legal extension field. The prefix is the
+  entire mechanism; this version assigns no meaning to any extension
+  field, and a consumer treats one exactly as it treats an unknown field
+  (`ERF-57`). Everywhere else the strictness of `ERF-55` stands: rigid by
+  default, extensible in one designated place, because a format tolerant
+  everywhere decays into whatever its implementations happen to write.
 - **ERF-58** The event-time key MUST be `timestamp`, everywhere.
-- **ERF-59** A corpus MUST carry a manifest, a YAML document under this
-  section's rules following the `CorpusManifest` shape of section 3. It
-  MUST declare `id` (the corpus id), `title` (for a person),
-  `spec_version` (the version its records conform to), and
-  `classification` (the confidentiality tier the corpus registry records).
-  It MAY name an `owner`, the actor responsible for the corpus. Where the
-  manifest and the registry disagree about a corpus's classification, the
-  registry governs and a validator MUST flag the disagreement: one wall,
-  one authority. The manifest declares no bars or gates: v1 specifies
-  what records mean and how references resolve, and leaves use to the
-  consumer.
+- **ERF-59** A corpus MUST carry a declaration, a YAML document under
+  this section's rules following the `CorpusDeclaration` shape of section
+  3. It MUST declare `id` (the corpus id), `title` (for a person), and
+  `spec_version` (the version its records conform to). It MAY name an
+  `owner`, the actor responsible for the corpus, and MAY carry a
+  `classification`, an opaque label this version records and does not
+  read: what a label means, and which corpora may cite or travel with
+  which, are deployment policies, like every other policy this version
+  leaves to the consumer. A corpus travels as a directory or archive of
+  its records and captures, and the declaration travels with it, which is
+  what makes a received corpus self-describing. The declaration declares
+  no bars or gates.
 - **ERF-60** A consumer MAY refuse a corpus whose MAJOR `spec_version` it
   does not support, and MUST say so when it does. For an unsupported MINOR
   version it MUST either preserve unrecognized content losslessly or refuse
@@ -1185,16 +1157,9 @@ checks the relations no type can see.
   attribution, and an edit history sufficient to verify `ERF-40`. Files
   in git are the reference implementation (history and diffing for free);
   a record's body is one more field in a database.
-- **ERF-64** A deployment MUST keep a corpus registry: corpus id, home,
-  classification, purpose. The registry MUST declare the realm's
-  classification levels as an ordered list, most open first, and every
-  corpus's `classification` MUST be a member of it. A corpus travels as a directory or archive of
-  its records and captures; a sensitive corpus MAY publish a redacted cut
-  through the same machinery.
-
 ## Versioning and change control
 
-- The `spec_version` on a corpus manifest (`ERF-59`) governs the semantics
+- The `spec_version` on a corpus declaration (`ERF-59`) governs the semantics
   of that corpus's records; migrations between versions are explicit, never
   inferred from field absence.
 - Requirement ids are a flat sequence and carry no meaning beyond identity:
@@ -1219,12 +1184,13 @@ below that threshold.
 
 ## Security and privacy considerations
 
-- Classification is edge-checked. Each corpus carries a classification in
-  the corpus registry, and the reference direction is constrained: a record in a
-  public corpus MUST NOT reference a record in a confidential corpus (the
-  reverse is permitted). A compiled public document leaning on
-  confidential material is a leak at build time; the validator's wall
-  check (section 6) exists for this.
+- Confidentiality is a deployment policy, deliberately. A deployment
+  mixing open and sensitive corpora needs a rule about which may cite
+  which, and a compiled open document leaning on sensitive material is a
+  leak at build time; this version gives that rule no vocabulary and no
+  check, so a deployment that needs the wall must build it where its other
+  policies live. The `classification` label on the declaration (`ERF-59`)
+  is the natural anchor for one.
 - Captures travel only where their licences permit. Captured copies of
   sources are, in general, copyrighted third-party works; whether a given
   capture ships with a shared or published corpus is a licence and
@@ -1270,11 +1236,6 @@ below that threshold.
 - BCP 47 (RFC 5646), language tags. No record carries a language today;
   if one ever does, its value is a BCP 47 tag. Advisory, because a field
   with no forcing instance is not admitted.
-- Traffic Light Protocol 2.0: first.org/tlp. A sensible default
-  classification vocabulary for a deployment with no reason to invent
-  one, though its rungs describe who may receive a document rather than
-  which corpus may cite which, so `ERF-64` recommends and never requires
-  it.
 - `text/markdown` (RFC 7763) describes a record body. This format
   registers no media type of its own; registration serves
   content negotiation at a scale it has not reached.
