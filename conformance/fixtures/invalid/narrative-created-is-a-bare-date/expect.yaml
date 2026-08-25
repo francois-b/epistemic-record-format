@@ -1,0 +1,9 @@
+requirement: ERF-34
+record: fx-narrative
+field: created
+because: >
+  `created` is the `{timestamp, by}` stamp every created thing in this
+  format carries. A bare date is the reading one trial author took while
+  another implementation's validator demanded the actor stamp, which is the
+  disagreement B-36 records. `by` matters more here than on a record: a
+  narrative is prose, and who wrote it is the fact nothing else captures.

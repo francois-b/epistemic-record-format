@@ -563,6 +563,25 @@ export function loadCorpus(dir: string): LoadedCorpus {
         index: c.index,
       });
     }
+    // `ERF-34`: the three frontmatter fields, typed. Naming them without
+    // typing them left two readings and two authors took one each (B-36).
+    for (const k of ["title", "corpus", "created"]) {
+      if (data[k] === undefined) {
+        findings.push({
+          record: slug, field: k,
+          detail: `a narrative MUST carry ${k} in its frontmatter (ERF-34)`,
+        });
+      }
+    }
+    const cr = data["created"] as { timestamp?: unknown; by?: unknown } | undefined;
+    if (data["created"] !== undefined
+        && (typeof cr !== "object" || cr === null || !cr.timestamp || !cr.by)) {
+      findings.push({
+        record: slug, field: "created",
+        detail: `created is the {timestamp, by} stamp every created thing in this `
+          + `format carries, not a bare date (ERF-34, ERF-19)`,
+      });
+    }
     narratives.push({
       slug,
       title: String(data["title"] ?? basename(f, ".md")),

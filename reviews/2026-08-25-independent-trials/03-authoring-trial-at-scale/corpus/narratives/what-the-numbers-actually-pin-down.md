@@ -2,7 +2,7 @@
 type: narrative
 title: "What the Numbers Actually Pin Down"
 corpus: ai-capex
-created: "2026-08-25"
+created: {timestamp: "2026-08-25", by: "agent/claude-sonnet-5"}
 ---
 Set the bull and bear arguments aside for a moment and ask a narrower question: independent of which camp turns out to be right, what do the filings, the auctions, and the fab disclosures in this corpus actually establish as fact? Not what they imply, not what they are marshaled to support, just what happened, at what scale, disclosed by the party with the most direct knowledge of the number. This is that reading, and it turns out to be less settled than either camp's confident framing suggests, even before a single interpretive claim is added on top.
 

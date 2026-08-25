@@ -966,13 +966,23 @@ char     ::= any character other than '"' and '\', or one of the
   in the narrative, and hiding it turns a broken citation into a confident
   sentence. A consumer MUST NOT invent a record to satisfy the reference.
 - **ERF-34** A narrative MUST NOT be modelled as a record: it is a
-  document. It carries frontmatter with `type: narrative`, which is how a consumer
-  finds it (`ERF-54`), plus `title`, `corpus`, and `created`, and its
-  narrative bindings are the only structured content in it. It has
-  no evidence, no standings, and no disposition, which is precisely why it
-  is not a record: nothing about it is adjudicated, and a person disputes
-  the claims it binds to rather than the prose. It therefore has no
-  interface in the data model of section 3.
+  document. It carries frontmatter with `type: narrative`, which is how a
+  consumer finds it (`ERF-54`), plus `title`, a string; `corpus`, the id of
+  the corpus it belongs to; and `created`, the `{timestamp, by}` stamp every
+  other created thing in this format carries (`ERF-19`). Its narrative
+  bindings are the only structured content in it. It has no evidence, no
+  standings, and no disposition, which is precisely why it is not a record:
+  nothing about it is adjudicated, and a person disputes the claims it binds
+  to rather than the prose. It therefore has no interface in the data model
+  of section 3.
+
+  Naming the three fields without typing them left two readings, and two
+  authors took one each. `created` takes the same stamp as everywhere else,
+  for two reasons. One field name with two shapes in one format is how an
+  implementer is made to guess, and guessing is what this rule exists to
+  stop. And `by` earns its place here more than it does on a record: this
+  document is prose, authored by a person and never generated, so who wrote
+  it is the fact a reader most wants and the one nothing else records.
 
 > *Note (non-normative):* staleness detects that the claim moved, not what
 > moved, so a typo fix in a body flags its narrative bindings. That is the
@@ -1269,10 +1279,19 @@ checks the relations no type can see.
   arrange its files however it likes, or hold no files at all; what travels
   is a set of self-describing documents, and where they sit carries nothing.
 - **ERF-55** Empty lists MUST be omitted: a field's absence means none.
-  A producer MUST NOT originate a field the declared `spec_version` does
-  not define, outside the extension namespace of `ERF-72`. An unknown key
-  is a producer validation error, caught by a validator, and never a
-  consumer's licence to refuse (`ERF-57`).
+  This governs **lists**, and a producer MUST NOT generalize it to an
+  optional mapping: a mapping that is present and empty asserts existence,
+  per section 3, and MUST be written. `ERF-20`'s `evidence_at_stance` is
+  why the distinction is worth a sentence. Absent, it says the ruler
+  stamped nothing; present and empty, it says the ruler stamped, and faced
+  no evidence. Those are different facts, and `ERF-20` calls the second the
+  one thing about a ruling's context that cannot be recovered later, so a
+  producer tidying `{}` away destroys it and makes never-stamped and
+  stamped-facing-nothing the same bytes. A producer MUST NOT originate a
+  field the declared `spec_version` does not define, outside the extension
+  namespace of `ERF-72`. An unknown key is a producer validation error,
+  caught by a validator, and never a consumer's licence to refuse
+  (`ERF-57`).
 - **ERF-56** A reader MUST materialize an omitted list-typed field as an
   empty list. An omitted list means none, never unknown, so a record that
   omits one is complete rather than partial. This applies to

@@ -96,7 +96,11 @@ requirements:
   ERF-33:
     tests: [output]
   ERF-34:
-    untestable-by-design: that a narrative is a document rather than a record is a modelling rule with no runtime surface
+    tests: [fixtures/invalid/narrative-created-is-a-bare-date]
+    note: >
+      the three frontmatter fields, typed in B-36. That a narrative is a
+      document rather than a record remains a modelling rule with no runtime
+      surface; its frontmatter is checkable and now checked.
   ERF-35:
     tests: [fixtures/invalid/prior-survey-dangling, fixtures/valid/evidence-at-stance-outlives-atom]
     note: >
@@ -161,7 +165,14 @@ requirements:
   ERF-54:
     tests: [fixtures/valid/minimal]
   ERF-55:
-    tests: [fixtures/invalid/unknown-field-originated, hygiene]
+    tests: [fixtures/invalid/unknown-field-originated, hygiene,
+            fixtures/valid/evidence-at-stance-faced-nothing]
+    note: >
+      the omit rule governs lists only (B-51). The valid fixture carries one
+      standing with evidence_at_stance present-and-empty and one with it
+      absent, and asserts the two survive the load differently, because a
+      loader that tidied the empty mapping away would pass a load-clean
+      check while destroying the distinction.
   ERF-56:
     tests: [fixtures/valid/minimal]
     note: the fixture omits empty lists and loads complete

@@ -2,7 +2,7 @@
 type: narrative
 title: "State of the Question: The AI Capital-Expenditure Sustainability Debate"
 corpus: ai-capex
-created: "2026-08-25"
+created: {timestamp: "2026-08-25", by: "agent/claude-sonnet-5"}
 ---
 Two claims sit at the center of this corpus, and neither one is settled by the evidence collected here. One holds that the current pace of AI infrastructure spending substantially exceeds what current and near-term realizable AI-specific revenue can justify, financed increasingly by debt and off-balance-sheet structures, and that this indicates meaningful bubble risk. The other holds that the same spending is economically sustainable because it is substantially backed by contracted, prepaid, and capacity-constrained real customer demand rather than speculative overbuilding. The two are recorded as direct conflicts-with counterparts of each other, and reading the corpus straight through, that is the honest state of it: both arguments are built from real, checkable atoms, and neither has run out of ground to stand on.
 <!-- claims: ai-capex-outpaces-realizable-revenue-bubble-risk ai-capex-sustainable-given-demand-backing "neither one is settled by the evidence collected here" bound-at=2026-08-25 -->

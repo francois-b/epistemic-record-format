@@ -1,0 +1,5 @@
+type: corpus
+id: fixture-narrative-bare-date
+title: "A narrative stamped with a bare date"
+spec_version: "0.9.0"
+classification: public

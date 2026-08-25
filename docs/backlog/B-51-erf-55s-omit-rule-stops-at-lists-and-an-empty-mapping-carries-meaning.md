@@ -1,8 +1,8 @@
 ---
 id: B-51
 kind: defect
-status: open
-priority: P1
+status: closed
+priority: closed
 priority_because: "The distinction is expressible today and undefended, and losing it silently destroys the one fact about a ruling's context that ERF-20 says cannot be recovered later."
 basis: reported
 raised: "independent verification of the nine, 2026-08-25"
@@ -32,3 +32,29 @@ verifications:
 ## Proposed resolution
 
 State that `ERF-55` governs lists and that an optional mapping present-but-empty is meaningful, or give `evidence_at_stance` an explicit representation for the faced-nothing case.
+
+## Resolution
+
+Ruled 2026-08-25, narrowed first by an adversarial verification.
+
+`gemini-3.5-flash`, prompted to refute, returned `inaccurate` and argued
+that the distinction is already expressible: `ERF-55` says lists, nothing
+authorizes omitting an empty mapping, so `{}` present asserts existence
+under section 3. That refutes a claim the entry never made. Its
+`priority_because` reads "expressible today and undefended", and undefended
+was the point. The refutation was useful anyway, because it narrowed the
+fix from giving `evidence_at_stance` a new representation to a single
+clause.
+
+`ERF-55` now says the omit rule governs **lists**, that a producer MUST NOT
+generalize it to an optional mapping, and why: absent means the ruler
+stamped nothing, present-and-empty means the ruler stamped and faced no
+evidence, and `ERF-20` calls the second the one fact about a ruling's
+context that cannot be recovered later. A producer tidying `{}` away makes
+never-stamped and stamped-facing-nothing the same bytes.
+
+Fixture `valid/evidence-at-stance-faced-nothing` carries both standings in
+one claim, and the test asserts the two survive the load differently rather
+than asserting the corpus loads. A loader that tidied `{}` away would have
+passed a load-clean check while destroying exactly what the fixture exists
+to protect.

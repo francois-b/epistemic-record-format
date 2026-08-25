@@ -2,7 +2,7 @@
 type: narrative
 title: "The Bear Case on Its Best Day"
 corpus: ai-capex
-created: "2026-08-25"
+created: {timestamp: "2026-08-25", by: "agent/claude-sonnet-5"}
 ---
 The skeptical case against the AI buildout is easy to caricature as pure vibes, a short-seller's grudge dressed up in big numbers. The corpus does not support that caricature. It supports something narrower and harder to dismiss: four separate lines of evidence, each with its own methodology and its own honest limitations, that converge on the same conclusion from different directions rather than repeating one analyst's opinion four times. This is that case stated as strongly as the corpus's own atoms allow, including the places where it is thinner than its proponents' rhetoric suggests.
 

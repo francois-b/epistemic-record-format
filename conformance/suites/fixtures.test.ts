@@ -123,6 +123,21 @@ test("an anchor left behind by an edit is flagged, and the corpus still conforms
   assert.match(flags[0], /no longer occurs/);
 });
 
+/**
+ * `ERF-55`/`ERF-20`: an empty mapping is not an empty list. A loader that
+ * tidies `{}` away would pass the load-clean check while destroying the
+ * distinction, so the assertion is on the two standings, not the corpus.
+ */
+test("evidence_at_stance present-and-empty is not the same as absent", () => {
+  const c = loadCorpus(join(FIXTURES, "valid", "evidence-at-stance-faced-nothing"));
+  const st = c.claims.get("fx-claim")?.standings ?? [];
+  assert.equal(st.length, 2);
+  assert.notEqual(st[0]?.evidence_at_stance, undefined,
+    "stamped-and-faced-nothing MUST survive the load as a present empty mapping");
+  assert.equal(st[1]?.evidence_at_stance, undefined,
+    "never-stamped MUST stay absent");
+});
+
 test("invalid fixtures are rejected, each citing its requirement", async (t) => {
   const dir = join(FIXTURES, "invalid");
   for (const name of dirsIn(dir)) {

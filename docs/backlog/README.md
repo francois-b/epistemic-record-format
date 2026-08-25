@@ -96,7 +96,7 @@ Raised but not yet checked by anyone other than whoever raised them. **Not ready
 | [`B-46`](B-46-an-atom-may-name-a-corpus-that-was-never-declared.md) | **P2** | An atom may name a corpus that was never declared | `reported` | `accurate` · `unverified` ⚠ split |
 | [`B-47`](B-47-the-serialization-rules-are-written-about-records-and-miss.md) | **P2** | The serialization rules are written about records and miss the other files | `reported` | `accurate` · `unverified` ⚠ split |
 | [`B-48`](B-48-the-validator-conformance-class-omits-section-4.md) | **P2** | The Validator conformance class omits section 4 | `reported` | `accurate` · `unverified` ⚠ split |
-| [`B-51`](B-51-erf-55s-omit-rule-stops-at-lists-and-an-empty-mapping-carries-meaning.md) | **P1** | `ERF-55`'s omit rule stops at lists, and one empty mapping carries meaning | `reported` | `unverified` · `accurate` ⚠ split |
+| [`B-51`](B-51-erf-55s-omit-rule-stops-at-lists-and-an-empty-mapping-carries-meaning.md) | **closed** | `ERF-55`'s omit rule stops at lists, and one empty mapping carries meaning | `reported` | `unverified` · `accurate` ⚠ split |
 | [`B-52`](B-52-the-base-for-a-capture-path-is-stated-only-in-a-comment.md) | **closed** | The base for a capture `path` is stated only in a comment | `reported` | `unverified` |
 | [`B-53`](B-53-erf-67s-encoding-clause-does-not-clearly-reach-captures.md) | **P2** | `ERF-67`'s encoding clause does not clearly reach captures | `reported` | `unverified` |
 | [`B-54`](B-54-nothing-states-a-key-order-for-frontmatter.md) | **P3** | Nothing states a key order for frontmatter | `reported` | `unverified` |
@@ -109,7 +109,6 @@ Verified accurate, ordered by priority. The specification is wrong, unclear, or 
 
 | id | priority | | basis | verification |
 |---|---|---|---|---|
-| [`B-36`](B-36-the-narratives-frontmatter-fields-are-named-but-untyped.md) | **P1** | The narrative's frontmatter fields are named but untyped | `demonstrated` | `accurate` |
 | [`B-27`](B-27-the-normative-conformance-cases-are-unobtainable-by-a-read.md) | **P2** | The normative conformance cases are unobtainable by a reader of the specification alone | `reported` | `accurate` |
 | [`B-37`](B-37-the-actor-grammar-cannot-distinguish-two-authors-of-the-sa.md) | **P2** | The actor grammar cannot distinguish two authors of the same model | `demonstrated` | `accurate` |
 | [`B-31`](B-31-append-only-rules-cannot-be-checked-from-a-single-corpus-s.md) | **P3** | Append-only rules cannot be checked from a single corpus snapshot | `reported` | `accurate` |
