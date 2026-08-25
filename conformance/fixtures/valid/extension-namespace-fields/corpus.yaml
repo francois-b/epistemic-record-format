@@ -1,0 +1,5 @@
+id: erfx-v2
+title: "Fixture: extension namespace on every structure"
+spec_version: "0.9.0"
+owner: "human:francois"
+x_internal_priority: 2

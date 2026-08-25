@@ -118,3 +118,39 @@ reference viewer so the suite adds no toolchain of its own. `js-yaml` reads
 the case files. `node_modules` is a symlink to the viewer's, so the suite
 runs in this repository without a second install; a fresh clone can instead
 run `npm install` here against the `package.json` in this directory.
+
+## Adoptions
+
+Cases that entered this suite from an evaluation rather than from its
+authors, with the date and the reason. `LAYOUT.md` requires the record:
+adoption is a decision, not a file copy.
+
+**2026-08-25, from the independent trials** (`reviews/2026-08-25-independent-trials/`).
+An agent that could not see this suite wrote fixtures against `SPEC.md`
+alone. Adopted: six valid corpora (legal but unusual shapes: a claim with
+no evidence at all, extension fields across every record type, a
+unicode-and-elision gauntlet, a contested disposition, a survey-backed
+universal negative, an argument whose premises arrive only as graph
+edges); five invalid corpora that probe a different shape of a rule this
+suite already tested (a block-style bare-date standing, whose flow-style
+sibling had been hiding a reference bug for months; a two-node cycle; a
+byte-order mark with CRLF) or a rule it did not test at all (both `ERF-52`
+elision cases); and four **spirit** fixtures, a category this suite lacked.
+
+Not adopted: seven invalid fixtures that duplicate existing cases rule for
+rule and shape for shape. The originals stay in the review, which remains
+the faithful record of what that trial produced.
+
+The adoption also exposed a hole in this suite's own harness: it ran the
+loader and never the quote check, so a fixture violating the rule the
+format exists for could not fail. It now runs both.
+
+## Spirit fixtures
+
+`fixtures/spirit/` holds corpora that a correct validator MUST accept and
+that plainly violate what the format means: an excerpt capture holding
+only the quote it exists to check, a sweeping absence backed by one
+trivial search, a claim whose title and body say different things. Each
+carries a `note.md` naming the SHOULD or the guidance that is doing the
+work no machine can do. They are not failures waiting to be fixed. They
+are the map of where the specification's authority is prose.

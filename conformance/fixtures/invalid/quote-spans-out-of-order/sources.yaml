@@ -1,0 +1,7 @@
+sources:
+  sequence-log-2026:
+    citation_text: "Incident sequence log, 2026"
+    status: not-redistributable
+    reason: "internal log, not cleared for redistribution"
+    path: captures/sequence-log.md
+    excerpt: true

@@ -1,0 +1,12 @@
+requirement: ERF-43
+record: erfx-i04-1c
+field: edges
+reason: >
+  erfx-i04-1c assumes erfx-i04-2c, and erfx-i04-2c assumes erfx-i04-1c:
+  a two-node cycle on `assumes`. ERF-43 requires `assumes` (and
+  `decomposes-into`) to admit no cycles, and also requires an
+  argument's premise closure to terminate in non-argument leaves; here
+  the closure never terminates at all, both members being `argument`
+  kind, which is a distinct failure mode from the single-node self-edge
+  case in i03 -- the two are easy to conflate under one cycle check
+  that only tests length-1 cycles.

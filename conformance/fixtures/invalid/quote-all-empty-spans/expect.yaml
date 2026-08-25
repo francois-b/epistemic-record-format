@@ -1,0 +1,11 @@
+requirement: ERF-52
+record: erfx-i09-1
+field: "quote"
+reason: >
+  The quote is exactly "[...]" -- a single elision marker with nothing
+  before, between, or after it, so every span is empty. ERF-52 states
+  this explicitly: "A quote whose spans are all empty MUST fail rather
+  than trivially pass." A naive implementation that only checks
+  "each non-empty span occurs in order" would vacuously pass this
+  (there are zero non-empty spans to check), which is the exact trap
+  the sentence exists to close.

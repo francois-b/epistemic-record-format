@@ -1,0 +1,12 @@
+sources:
+  vendor-x-benchmark-2026:
+    citation_text: "Vendor X, Citation Resolution Benchmark Report, 2026"
+    status: shipped-as-quotation
+    path: captures/vendor-benchmark-2026.md
+    excerpt: true
+  independent-replication-2026:
+    citation_text: "Independent Replication Group, Citation Resolution
+      Replication Note, 2026"
+    status: shipped-as-quotation
+    path: captures/independent-replication-2026.md
+    excerpt: true

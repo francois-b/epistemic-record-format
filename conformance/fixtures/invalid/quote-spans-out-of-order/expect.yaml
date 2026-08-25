@@ -1,0 +1,11 @@
+requirement: ERF-52
+record: erfx-i10-1
+field: "quote"
+reason: >
+  The quote's two spans, "gamma concluded the sequence" and "Alpha
+  occurred first", are cited in the reverse of the order they occur in
+  the capture (Alpha precedes gamma in the source). ERF-52 requires
+  every non-empty span to occur in the normalized capture "in order and
+  without overlap"; a substring-membership check on each span
+  individually, run without tracking cursor position between spans,
+  would miss this even though both spans individually are verbatim.

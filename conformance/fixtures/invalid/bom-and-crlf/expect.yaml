@@ -1,0 +1,12 @@
+requirement: ERF-67
+record: erfx-i12-1c
+field: (file)
+reason: >
+  The file opens with a UTF-8 byte-order mark (EF BB BF) and uses CRLF
+  line endings throughout. ERF-67 requires a record file to be UTF-8
+  encoded with LF line endings and no BOM. Content-level fields all
+  parse fine, which is exactly why this class of violation is easy to
+  miss: it lives in the bytes around the YAML/CommonMark, not in any
+  field a schema check would inspect, and a validator that hands the
+  file straight to a lenient YAML loader (many silently accept and
+  strip a leading BOM) will never see it.

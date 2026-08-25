@@ -1,0 +1,10 @@
+requirement: ERF-19
+record: erfx-i01-1c
+field: standings[].timestamp
+reason: >
+  The standing entry's timestamp is a bare date ("2026-08-02") instead
+  of a full RFC 3339 instant with an offset. ERF-19 requires standings
+  timestamps specifically (unlike as_of_date or a survey's conducted,
+  which stay bare dates) to carry both a time and an offset, because
+  standings is the one ordered ledger a same-day precision mismatch
+  would silently mis-settle.

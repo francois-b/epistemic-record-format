@@ -58,7 +58,7 @@ requirements:
   ERF-18:
     untestable-by-design: that a title states the claim is the authoring act itself; the mechanical half was ERF-46, retired 2026-08-24 into this guidance
   ERF-19:
-    tests: [fixtures/invalid/standing-bare-date]
+    tests: [fixtures/invalid/standing-bare-date, fixtures/invalid/standing-bare-date-block-style]
     note: >
       timestamp precision is covered by the fixture; the append-only and
       non-empty-why halves are covered by ERF-39 and ERF-40
@@ -109,7 +109,7 @@ requirements:
   ERF-42:
     tests: [disposition, output]
   ERF-43:
-    tests: [fixtures/invalid/self-edge, fixtures/invalid/assumes-cycle]
+    tests: [fixtures/invalid/self-edge, fixtures/invalid/assumes-cycle, fixtures/invalid/assumes-cycle-two-node]
     note: the retired-leaf flag has no case yet; it needs a standing to retire a leaf
   ERF-44:
     tests: [fixtures/invalid/conflicts-stored-twice]
@@ -131,7 +131,12 @@ requirements:
   ERF-51:
     tests: [normalization, quote-check]
   ERF-52:
-    tests: [quote-check]
+    tests: [quote-check, fixtures/invalid/quote-all-empty-spans, fixtures/invalid/quote-spans-out-of-order]
+    note: >
+      the elision rules gained fixtures on 2026-08-25 by adoption from the
+      independent trials; before that the cases file tested them and no
+      corpus did, so a validator could pass every fixture while accepting a
+      quote of nothing but elisions
   ERF-53:
     tests: [fixtures/valid/minimal]
     note: the fixture round-trips through frontmatter plus body
@@ -163,7 +168,7 @@ requirements:
   ERF-66:
     tests: [fixtures/invalid/frontmatter-duplicate-key, fixtures/invalid/frontmatter-anchor]
   ERF-67:
-    tests: [fixtures/invalid/bom-file]
+    tests: [fixtures/invalid/bom-file, fixtures/invalid/bom-and-crlf]
     note: >
       the byte-order-mark half; CommonMark defines a parse for any text, so
       no body can fail to be CommonMark, and encodings beyond the BOM are
