@@ -11,6 +11,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync, statSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { join, relative } from "node:path";
 import yaml from "js-yaml";
 import { loadCorpus, KNOWN_FIELDS } from "../../viewer/corpus.ts";
@@ -97,3 +98,26 @@ test("every standalone example carries only defined fields and legal values", ()
     assert.ok(!/:\/\//.test(ct), `${name}: citation_text carries a URL (ERF-7)`);
   }
 });
+
+/**
+ * The linters under `tools/` run as gates, not as scripts someone must
+ * remember. Both existed only as manual commands until 2026-08-25, which
+ * is the same failure they are meant to catch: a check that does not run is
+ * not a check. Shelled out rather than reimplemented, so there is one
+ * definition of each.
+ */
+for (const [name, script] of [
+  ["the specification's prose style", "lint-spec-style.py"],
+  ["field names across the two normative surfaces", "lint-field-names.py"],
+] as const) {
+  test(`${name} passes its linter`, () => {
+    try {
+      execFileSync("python3", [join(REPO, "tools", script)], {
+        cwd: REPO, encoding: "utf8", stdio: "pipe",
+      });
+    } catch (e) {
+      const err = e as { stdout?: string; stderr?: string };
+      assert.fail(`tools/${script} reported:\n${(err.stdout ?? "") + (err.stderr ?? "")}`);
+    }
+  });
+}

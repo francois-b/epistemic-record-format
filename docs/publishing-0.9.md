@@ -41,13 +41,11 @@ does that on its own.
 
 ## Worth doing first, cheaply
 
-**The spec-to-types gate (`F-005`).** Nothing checks that `SPEC.md` and
-`types/erf.ts` name the same fields, and they disagreed for a day: the
-source rename reached the model, the loader, the viewer and the fixtures and
-stopped short of the specification. A check that every field named in one
-appears in the other is about a dozen lines. Two of the five findings raised
-today are this same class, which is the argument for the gate rather than
-for more care.
+**~~The spec-to-types gate (`F-005`).~~ Done 2026-08-25.**
+`tools/lint-field-names.py` checks that every field declared in a normative
+interface is named in `SPEC.md`, and was verified against the defect it
+exists for. It also surfaced that neither linter ran anywhere: both are now
+invoked by the conformance suite, so one command is the gate.
 
 **`F-004`, the capture header.** Every normalized-text file in both authored
 corpora opens with YAML frontmatter the format never specifies, five of them

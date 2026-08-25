@@ -11,7 +11,7 @@ specified:
   requirement: "section 3, ERF-7, ERF-71"
   claim: null
 verifications: []
-outcome: open
+outcome: closed
 ---
 
 # F-005 · The source rename never reached the specification
@@ -57,3 +57,28 @@ moment it happened. Its absence is why a day passed.
 points the other way). The question that answer suggests is not "is the
 spec stale" but "what keeps the four normative surfaces (`SPEC.md`,
 `types/erf.ts`, the fixtures, the reference implementation) from drifting."
+
+## Resolution
+
+Closed 2026-08-25. The repair landed when the finding was raised; the gate
+landed with this note.
+
+`tools/lint-field-names.py` asserts that every field declared in a normative
+interface in `types/erf.ts` is named somewhere in `SPEC.md`, counting both
+backticked prose and the specification's own embedded interface and YAML
+blocks. Eighty-three fields, and it was verified against the defect it
+exists for: renaming `received` back to `fetched` in `SPEC.md` makes it
+exit 1 naming `Source.received`.
+
+Only that direction is checked. The reverse would fire on field names the
+specification legitimately discusses without defining, such as `x_`
+extensions and fields named in prose about why they were retired.
+
+**And the gate that was missing under the missing gate.** Neither linter ran
+anywhere. `lint-spec-style.py` had existed for days as a command someone had
+to remember, and this one would have joined it. Both are now invoked by the
+conformance suite, so `npx tsx conformance/run.ts` is the single gate and a
+check that does not run cannot masquerade as one. That was the actual
+finding: three separate checks reported on something they did not read
+(`F-005`, the loader's silent skip, `backlog-index.py`'s hand-rolled
+parser), and a fourth was not read by anything at all.
