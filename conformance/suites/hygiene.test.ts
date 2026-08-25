@@ -17,7 +17,10 @@ import { loadCorpus, KNOWN_FIELDS } from "../../viewer/corpus.ts";
 import { REPO } from "../paths.ts";
 
 /** Historical documents cite old ids on purpose; everything else may not. */
-const HISTORY = new Set(["DESIGN-HISTORY.md", "CHANGELOG.md"]);
+// Documents that narrate the format's past may cite the ids it used then.
+// DESIGN-HISTORY.md split into docs/ on 2026-08-25; history.md inherited
+// the id migrations and therefore this exemption.
+const HISTORY = new Set(["docs/history.md", "CHANGELOG.md"]);
 const SKIP_DIRS = new Set(["node_modules", ".git", "site"]);
 
 function* walk(dir: string): Generator<string> {

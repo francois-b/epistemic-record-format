@@ -57,7 +57,7 @@ CREATE TABLE corpus (
   -- [ERF-59] "an opaque label this version records and does not read".
   -- Modelled as free TEXT precisely because a CHECK here would be reading it.
   classification TEXT,
-  owner          TEXT CHECK (owner IS NULL OR erf_is_actor(owner)),
+  owner          TEXT CHECK (owner IS NULL OR (owner GLOB 'human:?*' OR owner GLOB 'process:?*' OR owner GLOB '?*/?*')),
   PRIMARY KEY (deployment_id, id)
 ) STRICT;
 
@@ -179,14 +179,18 @@ CREATE TABLE record (
   -- which a survey has none of. So `created` is nullable here and required by
   -- type below; ERF-48's trigger falls back to `conducted` for surveys.
   created_timestamp      TEXT CHECK (created_timestamp IS NULL
-                                     OR erf_is_timestamp(created_timestamp)),
-  created_by             TEXT CHECK (created_by IS NULL OR erf_is_actor(created_by)),
+                                     OR (created_timestamp GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+        OR (created_timestamp GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]*'
+            AND (created_timestamp GLOB '*Z' OR created_timestamp GLOB '*[+-][0-9][0-9]:[0-9][0-9]')))),
+  created_by             TEXT CHECK (created_by IS NULL OR (created_by GLOB 'human:?*' OR created_by GLOB 'process:?*' OR created_by GLOB '?*/?*')),
   -- [ERF-48] "A record never edited since minting correctly carries no
   -- last_modified at all" -- hence nullable, and hence NOT defaulted.
   last_modified_timestamp TEXT CHECK (last_modified_timestamp IS NULL
-                                      OR erf_is_timestamp(last_modified_timestamp)),
+                                      OR (last_modified_timestamp GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+        OR (last_modified_timestamp GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]*'
+            AND (last_modified_timestamp GLOB '*Z' OR last_modified_timestamp GLOB '*[+-][0-9][0-9]:[0-9][0-9]')))),
   last_modified_by        TEXT CHECK (last_modified_by IS NULL
-                                      OR erf_is_actor(last_modified_by)),
+                                      OR (last_modified_by GLOB 'human:?*' OR last_modified_by GLOB 'process:?*' OR last_modified_by GLOB '?*/?*')),
 
   -- 1 when `type` is one of the three the format defines; 0 for a record this
   -- schema is holding opaquely under ERF-57.
@@ -243,7 +247,7 @@ CREATE TABLE atom (
   -- [ERF-14] "the date the FACT is true of". A bare date, explicitly: ERF-19
   -- says "a bare date remains correct where nothing is ordered, as in an
   -- atom's as_of_date".
-  as_of_date     TEXT CHECK (as_of_date IS NULL OR erf_is_date(as_of_date)),
+  as_of_date     TEXT CHECK (as_of_date IS NULL OR (as_of_date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')),
   limitations    TEXT,                                       -- [ERF-14]
 
   PRIMARY KEY (deployment_id, id),
@@ -297,8 +301,10 @@ CREATE TABLE survey (
   -- [ERF-28] "conducted", machine actors legal. A bare date is legal here
   -- ("a bare date remains correct where nothing is ordered, as in ... a
   -- survey's conducted", ERF-19) even though staleness IS computed from it.
-  conducted_timestamp TEXT NOT NULL CHECK (erf_is_timestamp(conducted_timestamp)),
-  conducted_by        TEXT NOT NULL CHECK (erf_is_actor(conducted_by)),
+  conducted_timestamp TEXT NOT NULL CHECK ((conducted_timestamp GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+        OR (conducted_timestamp GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]*'
+            AND (conducted_timestamp GLOB '*Z' OR conducted_timestamp GLOB '*[+-][0-9][0-9]:[0-9][0-9]')))),
+  conducted_by        TEXT NOT NULL CHECK ((conducted_by GLOB 'human:?*' OR conducted_by GLOB 'process:?*' OR conducted_by GLOB '?*/?*')),
   -- [ERF-28] re-run linkage. FK to survey, not to record: the field is typed
   -- SurveyId. Self-referential, so a survey chain is a linked list.
   prior_survey_id   TEXT,
@@ -348,7 +354,9 @@ CREATE TABLE atom_finding_audit (
   -- [ERF-12] exactly one of three. A failed or abandoned audit MUST NOT be
   -- written as a verdict, which is why the closed set has no failure member.
   verdict       TEXT NOT NULL CHECK (verdict IN ('SUPPORTED','PARTIAL','UNSUPPORTED')),
-  timestamp     TEXT NOT NULL CHECK (erf_is_timestamp(timestamp)),  -- [ERF-58]
+  timestamp     TEXT NOT NULL CHECK ((timestamp GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+        OR (timestamp GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]*'
+            AND (timestamp GLOB '*Z' OR timestamp GLOB '*[+-][0-9][0-9]:[0-9][0-9]')))),  -- [ERF-58]
   -- [ERF-11] "the protocol travels with the verdict"; required, not optional.
   protocol      TEXT NOT NULL CHECK (length(trim(protocol)) > 0),
   PRIMARY KEY (deployment_id, atom_id, pos),
@@ -367,7 +375,9 @@ CREATE TABLE claim_evidence_audit (
   pos           INTEGER NOT NULL CHECK (pos >= 0),
   auditor       TEXT NOT NULL CHECK (length(trim(auditor)) > 0),
   verdict       TEXT NOT NULL CHECK (verdict IN ('SUPPORTED','PARTIAL','UNSUPPORTED')),
-  timestamp     TEXT NOT NULL CHECK (erf_is_timestamp(timestamp)),
+  timestamp     TEXT NOT NULL CHECK ((timestamp GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+        OR (timestamp GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]*'
+            AND (timestamp GLOB '*Z' OR timestamp GLOB '*[+-][0-9][0-9]:[0-9][0-9]')))),
   protocol      TEXT NOT NULL CHECK (length(trim(protocol)) > 0),
   PRIMARY KEY (deployment_id, claim_id, pos),
   FOREIGN KEY (deployment_id, claim_id) REFERENCES claim(deployment_id, id)
@@ -383,7 +393,8 @@ CREATE TABLE claim_standing (
   -- [ERF-19] "MUST be a full RFC 3339 instant carrying both a time and an
   -- offset ... and MUST NOT be a bare date." The one place in the format
   -- where precision is mandatory, because this is the only ordered ledger.
-  timestamp     TEXT NOT NULL CHECK (erf_is_instant(timestamp)),
+  timestamp     TEXT NOT NULL CHECK ((timestamp GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]*'
+         AND (timestamp GLOB '*Z' OR timestamp GLOB '*[+-][0-9][0-9]:[0-9][0-9]'))),
   stance        TEXT NOT NULL CHECK (stance IN ('for','against','withdrawn')),
   -- [ERF-21][ERF-39] "A standing's `by` MUST be a human: actor."
   by            TEXT NOT NULL CHECK (by GLOB 'human:?*'),
@@ -530,7 +541,9 @@ CREATE TABLE survey_search (
   -- instrument did not give.
   hits_reported TEXT NOT NULL,
   -- [ERF-28] "absent one, an act inherits the survey's conducted timestamp".
-  timestamp     TEXT CHECK (timestamp IS NULL OR erf_is_timestamp(timestamp)),
+  timestamp     TEXT CHECK (timestamp IS NULL OR (timestamp GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+        OR (timestamp GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]*'
+            AND (timestamp GLOB '*Z' OR timestamp GLOB '*[+-][0-9][0-9]:[0-9][0-9]')))),
   PRIMARY KEY (deployment_id, survey_id, pos),
   FOREIGN KEY (deployment_id, survey_id) REFERENCES survey(deployment_id, id)
     ON DELETE CASCADE ON UPDATE CASCADE
@@ -637,8 +650,10 @@ CREATE TABLE narrative (
   -- meaning for records. See Q11.
   path           TEXT NOT NULL,
   title          TEXT NOT NULL,               -- [ERF-34] frontmatter: title,
-  created_timestamp TEXT NOT NULL CHECK (erf_is_timestamp(created_timestamp)),
-  created_by     TEXT CHECK (created_by IS NULL OR erf_is_actor(created_by)),
+  created_timestamp TEXT NOT NULL CHECK ((created_timestamp GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+        OR (created_timestamp GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]*'
+            AND (created_timestamp GLOB '*Z' OR created_timestamp GLOB '*[+-][0-9][0-9]:[0-9][0-9]')))),
+  created_by     TEXT CHECK (created_by IS NULL OR (created_by GLOB 'human:?*' OR created_by GLOB 'process:?*' OR created_by GLOB '?*/?*')),
   body           TEXT NOT NULL,
   PRIMARY KEY (deployment_id, corpus_id, path),
   FOREIGN KEY (deployment_id, corpus_id) REFERENCES corpus(deployment_id, id)
@@ -655,7 +670,7 @@ CREATE TABLE narrative_binding (
   pos           INTEGER NOT NULL,
   claim_id      TEXT NOT NULL,      -- deliberately NOT a foreign key
   anchor        TEXT NOT NULL CHECK (length(anchor) > 0),   -- [ERF-31] REQUIRED
-  bound_at      TEXT CHECK (bound_at IS NULL OR erf_is_date(bound_at)),
+  bound_at      TEXT CHECK (bound_at IS NULL OR (bound_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')),
   PRIMARY KEY (deployment_id, corpus_id, path, pos, claim_id),
   FOREIGN KEY (deployment_id, corpus_id, path)
     REFERENCES narrative(deployment_id, corpus_id, path)
@@ -830,9 +845,15 @@ END;
 -- 'later' admits the same day."
 --
 -- This is the format's purest transition constraint: it compares the new row
--- to the old one, so no CHECK can express it. The three-way precision rule
--- (instant vs instant, date vs date, and the mixed case) is delegated to
--- erf_ts_cmp().
+-- to the old one, so no CHECK can express it.
+--
+-- The precision rule is inlined rather than factored into a function because
+-- SQLite resolves functions in CHECK constraints at CREATE TABLE time, so a
+-- schema that depends on application-defined helpers is not a schema anyone
+-- else can open (friction-log 2026-08-25). "Later" means:
+--   both bare dates      -> NEW >= OLD           (same day admitted)
+--   anything else        -> instant strictly later
+-- julianday() reads an RFC 3339 offset correctly, so +02:00 and Z compare.
 --
 -- The ERF-48 EXCEPTION -- "appending to an append-only list MUST NOT advance
 -- it" -- needs no code here at all, and that is a finding: in a normalized
@@ -842,16 +863,22 @@ END;
 CREATE TRIGGER erf48_last_modified_advances
 BEFORE UPDATE ON record
 WHEN NEW.last_modified_timestamp IS NOT NULL
- AND (OLD.last_modified_timestamp IS NULL
-      OR NEW.last_modified_timestamp <> OLD.last_modified_timestamp
-      OR NEW.type <> OLD.type OR NEW.corpus_id <> OLD.corpus_id)
+ AND NEW.last_modified_timestamp IS NOT OLD.last_modified_timestamp
 BEGIN
   SELECT CASE
     WHEN OLD.last_modified_timestamp IS NOT NULL
-     AND erf_ts_cmp(NEW.last_modified_timestamp, OLD.last_modified_timestamp) < 0
+     AND CASE WHEN length(NEW.last_modified_timestamp) = 10
+               AND length(OLD.last_modified_timestamp) = 10
+              THEN NEW.last_modified_timestamp < OLD.last_modified_timestamp
+              ELSE julianday(NEW.last_modified_timestamp)
+                   <= julianday(OLD.last_modified_timestamp) END
     THEN RAISE(ABORT, 'ERF-48: last_modified must be later than any prior last_modified')
     WHEN NEW.created_timestamp IS NOT NULL
-     AND erf_ts_cmp(NEW.last_modified_timestamp, NEW.created_timestamp) < 0
+     AND CASE WHEN length(NEW.last_modified_timestamp) = 10
+               AND length(NEW.created_timestamp) = 10
+              THEN NEW.last_modified_timestamp < NEW.created_timestamp
+              ELSE julianday(NEW.last_modified_timestamp)
+                   < julianday(NEW.created_timestamp) END
     THEN RAISE(ABORT, 'ERF-48: last_modified must be later than created')
   END;
 END;
