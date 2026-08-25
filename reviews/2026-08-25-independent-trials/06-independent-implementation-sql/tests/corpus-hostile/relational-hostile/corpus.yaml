@@ -1,0 +1,5 @@
+# a corpus declaration may carry comments; nothing forbids them
+spec_version: 0.9.0
+title: 'Hostile-styles fixture corpus'
+id: relational-hostile
+owner: process:trial-harness

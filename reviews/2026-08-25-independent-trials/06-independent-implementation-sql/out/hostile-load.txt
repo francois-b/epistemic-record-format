@@ -1,0 +1,9 @@
+loaded 6 records into out/hostile.db
+  violation ERF-55  records/h-002.md                   key 'provenance_note' is not defined for a atom
+  violation ERF-55  records/h-002.md                   empty list 'finding_audit' is written out; it must be omitted
+  violation ERF-53  records/h-003.md                   an atom has no body; 151 bytes discarded
+  violation ERF-55  records/h-claim.md                 empty list 'families' is written out; it must be omitted
+  report    ERF-72  records/h-002.md                   key 'x_trial' is not defined for a atom
+  report    ERF-57  records/h-unknown-type.md          unknown record type 'hypothesis' preserved as opaque data
+  advice    ERF-71  sources.yaml                       source hostile-fixture is an excerpt or a conversion and carries no fetched.digest
+wrote 6 records to out/hostile-regen

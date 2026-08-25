@@ -1,0 +1,8 @@
+sources:
+  hostile-fixture:
+    citation_text: "Trial Fixture, Hostile Styles Capture (constructed for the SQL trial, 2026)"
+    fetched:
+      url: https://example.invalid/fixtures/hostile.md
+    status: shipped-as-quotation
+    path: captures/hostile-capture.md
+    excerpt: true

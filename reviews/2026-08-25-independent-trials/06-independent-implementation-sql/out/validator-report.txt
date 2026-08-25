@@ -1,0 +1,98 @@
+┌──────────────────────────────────────────────────────────────┐
+│                                                              │
+├──────────────────────────────────────────────────────────────┤
+│ --- ERF-41 computed disposition (never a stored field, ERF-2 │
+│ 2) ---                                                       │
+└──────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────┬─────────────┐
+│                 claim_id                 │ disposition │
+├──────────────────────────────────────────┼─────────────┤
+│ constraints-cannot-see-transitions       │ active      │
+│ keys-swallow-the-violations-they-enforce │ active      │
+│ losslessness-needs-an-equivalence        │ active      │
+│ mixed-precision-is-unorderable           │ active      │
+│ append-only-needs-triggers               │ contested   │
+│ path-carries-corpus-membership           │ rejected    │
+│ schema-alone-can-validate-a-corpus       │ retired     │
+└──────────────────────────────────────────┴─────────────┘
+┌──────────────────────────────────────────┐
+│                                          │
+├──────────────────────────────────────────┤
+│ --- ERF-41 current stance per person --- │
+└──────────────────────────────────────────┘
+┌──────────────────────────────────────────┬──────────────────────┬───────────┬──────────────────────┐
+│                 claim_id                 │          by          │  stance   │      timestamp       │
+├──────────────────────────────────────────┼──────────────────────┼───────────┼──────────────────────┤
+│ append-only-needs-triggers               │ human:trial-operator │ for       │ 2026-08-23T09:25:00Z │
+│ append-only-needs-triggers               │ human:trial-reviewer │ against   │ 2026-08-24T11:00:00Z │
+│ constraints-cannot-see-transitions       │ human:trial-operator │ for       │ 2026-08-23T09:20:00Z │
+│ keys-swallow-the-violations-they-enforce │ human:trial-operator │ for       │ 2026-08-24T17:10:00Z │
+│ losslessness-needs-an-equivalence        │ human:trial-operator │ for       │ 2026-08-24T16:40:00Z │
+│ mixed-precision-is-unorderable           │ human:trial-reviewer │ for       │ 2026-08-23T10:05:00Z │
+│ path-carries-corpus-membership           │ human:trial-operator │ against   │ 2026-08-24T18:20:00Z │
+│ schema-alone-can-validate-a-corpus       │ human:trial-operator │ withdrawn │ 2026-08-24T18:00:00Z │
+└──────────────────────────────────────────┴──────────────────────┴───────────┴──────────────────────┘
+┌───────────────────────────────────────────────┐
+│                                               │
+├───────────────────────────────────────────────┤
+│ --- ERF-49 unbacked, flagged not rejected --- │
+└───────────────────────────────────────────────┘
+┌───────────────┬────────────────────────────────┬────────────────┐
+│ deployment_id │            claim_id            │ epistemic_kind │
+├───────────────┼────────────────────────────────┼────────────────┤
+│ canonical     │ path-carries-corpus-membership │ observation    │
+└───────────────┴────────────────────────────────┴────────────────┘
+┌────────────────────────────────────────────────────┐
+│                                                    │
+├────────────────────────────────────────────────────┤
+│ --- ERF-24 auditability computed from the kind --- │
+└────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────┬──────────────┐
+│                 claim_id                 │ is_auditable │
+├──────────────────────────────────────────┼──────────────┤
+│ append-only-needs-triggers               │ 1            │
+│ constraints-cannot-see-transitions       │ 1            │
+│ keys-swallow-the-violations-they-enforce │ 1            │
+│ losslessness-needs-an-equivalence        │ 1            │
+│ mixed-precision-is-unorderable           │ 1            │
+│ path-carries-corpus-membership           │ 1            │
+│ schema-alone-can-validate-a-corpus       │ 1            │
+└──────────────────────────────────────────┴──────────────┘
+┌─────────────────────────────┐
+│                             │
+├─────────────────────────────┤
+│ --- ERF-47 stale audits --- │
+└─────────────────────────────┘
+┌───────────────┬─────────┬─────┬───────────────────┬────────────┬──────────────────────┐
+│ deployment_id │ atom_id │ pos │      auditor      │  audit_ts  │      changed_ts      │
+├───────────────┼─────────┼─────┼───────────────────┼────────────┼──────────────────────┤
+│ canonical     │ rt-003  │ 0   │ fixture-auditor-a │ 2026-08-20 │ 2026-08-23T09:15:00Z │
+└───────────────┴─────────┴─────┴───────────────────┴────────────┴──────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                                                              │
+├──────────────────────────────────────────────────────────────┤
+│ --- ERF-43 argument closure terminating in a retired leaf -- │
+│ -                                                            │
+└──────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────┐
+│                                      │
+├──────────────────────────────────────┤
+│ --- ERF-32/33 narrative bindings --- │
+└──────────────────────────────────────┘
+┌──────────────────────────┬──────────────────────────────────────────┬────────────┐
+│           path           │                 claim_id                 │ staleness  │
+├──────────────────────────┼──────────────────────────────────────────┼────────────┤
+│ narratives/trial-note.md │ constraints-cannot-see-transitions       │ current    │
+│ narratives/trial-note.md │ keys-swallow-the-violations-they-enforce │ current    │
+│ narratives/trial-note.md │ no-such-claim-in-this-corpus             │ unresolved │
+└──────────────────────────┴──────────────────────────────────────────┴────────────┘
+┌──────────────────────────────┬───────────────────────────────────────────────────┐
+│      unresolved_binding      │                      anchor                       │
+├──────────────────────────────┼───────────────────────────────────────────────────┤
+│ no-such-claim-in-this-corpus │ something to report rather than something to drop │
+└──────────────────────────────┴───────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────┐
+│                                                           │
+├───────────────────────────────────────────────────────────┤
+│ --- ERF-55/57/72 what a tolerant consumer must report --- │
+└───────────────────────────────────────────────────────────┘

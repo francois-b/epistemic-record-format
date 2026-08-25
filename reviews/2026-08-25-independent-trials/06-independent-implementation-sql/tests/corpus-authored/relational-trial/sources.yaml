@@ -1,0 +1,38 @@
+sources:
+  fixture-constraint-kinds:
+    citation_text: "Trial Fixture, Notes on Constraint Kinds (constructed for the SQL trial, 2026), sections 2-4"
+    citation:
+      type: report
+      author:
+        - family: Fixture
+          given: Trial
+      title: "Notes on Constraint Kinds"
+      issued: 2026
+    fetched:
+      url: "https://example.invalid/fixtures/constraint-kinds.md"
+      digest: "sha256:0000000000000000000000000000000000000000000000000000000000000001"
+    status: shipped-as-quotation
+    path: captures/fixture-constraint-kinds-2026-08-20.md
+    excerpt: true
+    converter: {tool: "fixture-writer 1.0", deterministic: true}
+  fixture-interchange-notes:
+    citation_text: "Trial Fixture, Notes on Interchange Forms (constructed for the SQL trial, 2026)"
+    status: shipped
+    path: captures/fixture-interchange-notes-2026-08-21.md
+    licence: CC0-1.0
+    licence_name: "Creative Commons Zero v1.0 Universal"
+  fixture-ordering-note:
+    citation_text: "Trial Fixture, Ordering Note (constructed for the SQL trial, 2026)"
+    status: shipped-as-quotation
+    path: captures/fixture-ordering-note-2026-07-30.md
+    excerpt: true
+  fixture-vendor-page:
+    citation_text: "Fixture Vendor, product page describing its own constraint engine (2026)"
+    fetched:
+      url: "https://example.invalid/vendor/constraints.html"
+    status: not-redistributable
+    reason: "Fixture stands in for a copyrighted vendor page: reading is permitted, republication is not."
+  fixture-received-report:
+    citation_text: "Fixture Counterparty, internal assessment delivered under NDA (2026)"
+    status: access-restricted
+    reason: "Fixture stands in for a report received under an agreement forbidding extraction."

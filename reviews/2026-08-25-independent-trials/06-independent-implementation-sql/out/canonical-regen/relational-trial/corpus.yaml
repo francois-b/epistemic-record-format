@@ -1,0 +1,5 @@
+id: relational-trial
+title: "SQL trial fixture corpus: expressing ERF as a relational schema"
+spec_version: 0.9.0
+classification: internal
+owner: human:trial-operator

@@ -1,0 +1,4 @@
+id: beta
+title: "Beta: a corpus with atoms and no source list"
+spec_version: "0.9.0"
+owner: "process:nightly-import"

@@ -319,7 +319,7 @@ fn decode_searches(ctx: &mut Ctx, map: &RawMap) -> Vec<SearchAct> {
                     if style == Style::Plain && crate::raw::is_json_number(t) {
                         ctx.rep.violation("ERF-27", &ctx.subject.clone(), &format!("{p}.hits_reported"),
                             &ctx.file.clone(), n.line + ctx.offset,
-                            format!("`{t}` resolves to a number; `hits_reported` records the yield as text, as the instrument reported it — quote it"));
+                            format!("`{t}` resolves to a number; `hits_reported` records the yield as text, as the instrument reported it, so quote it"));
                         Some(t.to_string())
                     } else if t.trim().is_empty() {
                         ctx.rep.violation("ERF-27", &ctx.subject.clone(), &format!("{p}.hits_reported"),

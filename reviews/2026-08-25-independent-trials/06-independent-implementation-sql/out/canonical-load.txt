@@ -1,0 +1,7 @@
+loaded 17 records into out/canonical.db
+  report    ERF-72  records/claims/rejected-example.md key 'x_trial_note' is not defined for a claim
+  advice    ERF-20  records/claims/keys-hide-violations.md standing 0 carries no evidence_at_stance
+  advice    ERF-20  records/claims/retired-example.md  standing 0 carries no evidence_at_stance
+  advice    ERF-20  records/claims/retired-example.md  standing 1 carries no evidence_at_stance
+  advice    ERF-71  sources.yaml                       source fixture-ordering-note is an excerpt or a conversion and carries no fetched.digest
+wrote 17 records to out/canonical-regen

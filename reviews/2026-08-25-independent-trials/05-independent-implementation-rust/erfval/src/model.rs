@@ -645,7 +645,7 @@ impl<'a> Ctx<'a> {
                 if style == Style::Plain
                     && (text == "null" || text == "true" || text == "false" || crate::raw::is_json_number(text))
                 {
-                    self.v(req, field, node.line, format!("`{text}` resolves to a non-string under the YAML 1.2 JSON schema (ERF-65); this field is typed `string` — quote it"));
+                    self.v(req, field, node.line, format!("`{text}` resolves to a non-string under the YAML 1.2 JSON schema (ERF-65); this field is typed `string`, so quote it"));
                     return None;
                 }
                 if style == Style::Plain && text.is_empty() {

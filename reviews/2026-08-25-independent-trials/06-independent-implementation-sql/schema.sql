@@ -400,6 +400,14 @@ CREATE TABLE claim_standing (
   by            TEXT NOT NULL CHECK (by GLOB 'human:?*'),
   -- [ERF-19][ERF-39] "an entry without a reason is a toggle, not a judgment".
   why           TEXT NOT NULL CHECK (length(trim(why)) > 0),
+  -- [ERF-20] + [ERF-55] force this column into existence. ERF-20 makes
+  -- evidence_at_stance a producer SHOULD, so its ABSENCE is meaningful ("this
+  -- ruling was not stamped"). ERF-55 then requires an empty list to be
+  -- omitted, so a stamped ruling that faced no evidence at all serializes
+  -- identically to an unstamped one. Nothing in the record distinguishes the
+  -- two, and a round trip therefore needs a flag the interchange form cannot
+  -- carry. See relational-questions.md Q14.
+  evidence_stamped INTEGER NOT NULL DEFAULT 0 CHECK (evidence_stamped IN (0,1)),
   PRIMARY KEY (deployment_id, claim_id, pos),
   FOREIGN KEY (deployment_id, claim_id) REFERENCES claim(deployment_id, id)
     ON DELETE CASCADE ON UPDATE CASCADE
@@ -970,10 +978,15 @@ END;
 -- "it MUST be retained as received, and a revision arriving later MUST be a
 -- new source, never an overwrite." Enforced for the fields that describe the
 -- retrieved artifact. Only half the rule; see the CANNOT note in section 2.
+-- NARROWED to the retrieved artifact alone. An earlier draft also froze
+-- `citation_text`; that over-enforced, and worse, it masked the ERF-7
+-- citation_text CHECK, so the store reported ERF-2 for what was an ERF-7
+-- violation. Constraint precedence is diagnostic quality (friction-log
+-- 2026-08-25, ERF-2).
 CREATE TRIGGER erf2_source_artifact_immutable
 BEFORE UPDATE ON corpus_source
-WHEN (NEW.fetched_url, NEW.fetched_digest, NEW.citation_text)
-     IS NOT (OLD.fetched_url, OLD.fetched_digest, OLD.citation_text)
+WHEN (NEW.fetched_url, NEW.fetched_digest)
+     IS NOT (OLD.fetched_url, OLD.fetched_digest)
 BEGIN
   SELECT RAISE(ABORT, 'ERF-2: a revision is a new source, never an overwrite');
 END;

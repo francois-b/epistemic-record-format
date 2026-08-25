@@ -1,0 +1,39 @@
+sources:
+  page-with-url-in-citation:
+    citation_text: "Ledgerworks, 'Controls', https://ledgerworks.example/controls"
+    status: shipped
+    path: captures/ledgerworks-controls.md
+  missing-capture:
+    citation_text: "A work whose capture file is not on disk"
+    status: shipped-as-quotation
+    path: captures/not-here.md
+  absence-with-path:
+    citation_text: "A withheld work that nonetheless ships a capture"
+    status: access-restricted
+    path: captures/ledgerworks-controls.md
+    reason: "Access terms forbid redistribution."
+  absence-without-reason:
+    citation_text: "A withheld work with no reason recorded"
+    status: licence-unverified
+  neither-path-nor-reason:
+    citation_text: "A source that says nothing about its capture"
+    status: not-redistributable
+  bad-digest:
+    citation_text: "A work with a malformed digest (Anon, 2020)"
+    citation:
+      type: article
+      issued: "1999"
+    fetched:
+      url: "https://example.org/paper.pdf"
+      digest: "05e58ce3"
+    status: shipped
+    licence: "CC BY 4.0 international"
+    path: captures/ledgerworks-controls.md
+    excerpt: true
+    converter: {tool: "some-pdf-tool", deterministic: false}
+  pdf-capture:
+    citation_text: "A work whose capture was never converted to text (Anon, 2021)"
+    status: shipped
+    licence: "CC0-1.0"
+    licence_name: "Creative Commons Zero v1.0 Universal"
+    path: captures/unconverted.pdf

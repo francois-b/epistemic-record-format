@@ -1,0 +1,50 @@
+REQ      EXPECT   PROBE                                                RESULT
+----------------------------------------------------------------------------------------------------
+ERF-19   REFUSE   edit an existing standing entry                      REFUSE  ok  <- ERF-19/ERF-40: standings are append-only; a correction is a 
+ERF-19   REFUSE   delete an existing standing entry                    REFUSE  ok  <- ERF-19/ERF-40: standings are append-only; entries are never 
+ERF-20   REFUSE   edit the evidence stamped on a standing              REFUSE  ok  <- ERF-20: evidence_at_stance records what the ruler faced; it 
+ERF-40   REFUSE   edit a finding_audit verdict                         REFUSE  ok  <- ERF-40: finding_audit is append-only
+ERF-40   REFUSE   edit an evidence_audit verdict                       REFUSE  ok  <- ERF-40: evidence_audit is append-only
+ERF-28   REFUSE   change what a survey searched                        REFUSE  ok  <- ERF-28: what a survey conducted is immutable
+ERF-28   REFUSE   delete a search act                                  REFUSE  ok  <- ERF-28: what a survey conducted is immutable
+ERF-2    REFUSE   overwrite a source's retrieved artifact              REFUSE  ok  <- ERF-2: a revision is a new source, never an overwrite
+ERF-13   REFUSE   rename a record id                                   REFUSE  ok  <- ERF-13/ERF-15: a record id is permanent; it is never renamed
+ERF-48   REFUSE   stamp last_modified earlier than the prior stamp     REFUSE  ok  <- ERF-48: last_modified must be later than any prior last_modi
+ERF-48   REFUSE   stamp last_modified earlier than created             REFUSE  ok  <- ERF-48: last_modified must be later than created
+ERF-48   REFUSE   edit a never-edited claim without stamping           REFUSE  ok  <- ERF-48: editing a claim must stamp last_modified
+ERF-36   REFUSE   reuse a record id under a different type             REFUSE  ok  <- UNIQUE constraint failed: record.deployment_id, record.id, r
+ERF-35   REFUSE   cite an atom that does not exist                     REFUSE  ok  <- FOREIGN KEY constraint failed
+ERF-35   REFUSE   name a survey that does not exist                    REFUSE  ok  <- FOREIGN KEY constraint failed
+ERF-4    REFUSE   name a source absent from the corpus source list     REFUSE  ok  <- FOREIGN KEY constraint failed
+ERF-43   REFUSE   store a self-edge                                    REFUSE  ok  <- CHECK constraint failed: claim_id <> to_claim_id
+ERF-43   REFUSE   close an assumes cycle                               REFUSE  ok  <- ERF-43: assumes/decomposes-into admit no cycles
+ERF-44   REFUSE   store the reciprocal of a conflicts-with edge        REFUSE  ok  <- UNIQUE constraint failed: index 'claim_edge_conflict_pair_ux
+ERF-21   REFUSE   record a stance taken by a machine                   REFUSE  ok  <- CHECK constraint failed: by GLOB 'human:?*'
+ERF-39   REFUSE   record a stance with no reason                       REFUSE  ok  <- CHECK constraint failed: length(trim(why)) > 0
+ERF-19   REFUSE   record a stance timestamped with a bare date         REFUSE  ok  <- CHECK constraint failed: (timestamp GLOB '[0-9][0-9][0-9][0-
+ERF-19   REFUSE   record a stance instant with no offset               REFUSE  ok  <- CHECK constraint failed: (timestamp GLOB '[0-9][0-9][0-9][0-
+ERF-12   REFUSE   write a failed audit as a verdict                    REFUSE  ok  <- CHECK constraint failed: verdict IN ('SUPPORTED','PARTIAL','
+ERF-12   REFUSE   write an audit entry with no protocol                REFUSE  ok  <- CHECK constraint failed: length(trim(protocol)) > 0
+ERF-9    REFUSE   grade a source outside the closed vocabulary         REFUSE  ok  <- CHECK constraint failed: source_quality IN ('high','medium',
+ERF-24   REFUSE   use an epistemic kind outside the closed vocabulary  REFUSE  ok  <- CHECK constraint failed: epistemic_kind IN
+ERF-5    REFUSE   record an absence with no reason                     REFUSE  ok  <- CHECK constraint failed: (status IN ('shipped','shipped-as-q
+ERF-7    REFUSE   put a URL in citation_text                           REFUSE  ok  <- CHECK constraint failed: citation_text NOT GLOB '*://*'
+ERF-27   ALLOW    state a yield as a number rather than as text        ALLOW   ok
+ERF-52   REFUSE   store a quote that is nothing but an elision marker  REFUSE  ok  <- CHECK constraint failed: length(trim(replace(quote, '[...]',
+ERF-31   REFUSE   store a narrative binding with an empty anchor       REFUSE  ok  <- CHECK constraint failed: length(anchor) > 0
+ERF-26   ALLOW    name a category instead of a concrete instrument     ALLOW   ok
+ERF-6    ALLOW    store a quote that occurs in no capture              ALLOW   ok
+ERF-10   ALLOW    grade an anonymous forum comment as high             ALLOW   ok
+ERF-8    ALLOW    leave citation_text unrendered from its citation blo ALLOW   ok
+ERF-18   ALLOW    write a body that does not restate the title         ALLOW   ok
+ERF-23   ALLOW    put one atom on both sides of one claim              ALLOW   ok
+ERF-48   ALLOW    edit an already-edited claim without re-stamping     ALLOW   ok
+ERF-44   ALLOW    store supports in both directions of a pair          ALLOW   ok
+----------------------------------------------------------------------------------------------------
+
+STRUCTURAL ASSERTIONS (a MUST NOT expressed as an absent column)
+  ERF-22   claim              no such column
+  ERF-11   atom               no such column
+  ERF-20   standing_evidence  no such column
+
+40 probes, 0 mismatches

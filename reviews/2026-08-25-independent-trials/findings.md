@@ -7,6 +7,20 @@ model: claude-opus-5[1m]
 
 # Findings so far (trials 1, 3b, 4 landed)
 
+
+> **Where these findings live now.** Every finding that needed action was
+> migrated into `docs/backlog.md` on 2026-08-25 as a governed entry with an
+> id, a basis, and a verification state. This document stays as the trials'
+> own record of what they observed; the queue is where anything gets
+> decided. Findings marked here as "for the report" did not migrate,
+> because they are observations rather than work.
+>
+> The migration also exposed a defect in this document: only six of its
+> twenty-four entries carried an explicit attribution, and the rest had to
+> have their provenance recovered from prose. A findings register for a
+> provenance format should not need that. The backlog entries carry it as
+> a field.
+
 ## Reference-implementation bugs, fixed and committed
 
 - **R1. `ERF-19` checked flow-style YAML only.** The bare-date standing

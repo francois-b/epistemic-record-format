@@ -1,0 +1,4 @@
+id: broken-corpus
+title: "A corpus built to trip every machine-checkable MUST erfval implements"
+spec_version: "0.9"
+owner: "fbouet"

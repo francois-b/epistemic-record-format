@@ -1,0 +1,170 @@
+diff -ru -x captures tests/corpus-hostile/relational-hostile/corpus.yaml out/hostile-regen/relational-hostile/corpus.yaml
+--- tests/corpus-hostile/relational-hostile/corpus.yaml	2026-08-25 11:05:16
++++ out/hostile-regen/relational-hostile/corpus.yaml	2026-08-25 11:09:56
+@@ -1,5 +1,4 @@
+-# a corpus declaration may carry comments; nothing forbids them
+-spec_version: 0.9.0
+-title: 'Hostile-styles fixture corpus'
+ id: relational-hostile
++title: Hostile-styles fixture corpus
++spec_version: 0.9.0
+ owner: process:trial-harness
+diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-001.md out/hostile-regen/relational-hostile/records/h-001.md
+--- tests/corpus-hostile/relational-hostile/records/h-001.md	2026-08-25 11:05:16
++++ out/hostile-regen/relational-hostile/records/h-001.md	2026-08-25 11:09:56
+@@ -1,16 +1,12 @@
+ ---
++id: h-001
+ type: atom
+ corpus: relational-hostile
++finding: The hostile fixture states that a file which parses to the same mapping is the same record under every reading the specification supports.
++quote: a file that parses to the same mapping is the same record under every reading the document supports
+ source: hostile-fixture
+-id: h-001
+-finding: "The hostile fixture states that a file which parses to the same
+-  mapping is the same record under every reading the specification supports."
+-quote: 'a file that parses to the same mapping is the same record under every reading the document supports'
+ source_quality: high
+-created: {by: agent/claude-fable-5, timestamp: 2026-08-24}
++created: {timestamp: "2026-08-24", by: agent/claude-fable-5}
+ finding_audit:
+-    -   auditor: fixture-auditor-a
+-        verdict: SUPPORTED
+-        timestamp: 2026-08-24
+-        protocol: finding-audit-v2
++  - {auditor: fixture-auditor-a, verdict: SUPPORTED, timestamp: "2026-08-24", protocol: finding-audit-v2}
+ ---
+diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-002.md out/hostile-regen/relational-hostile/records/h-002.md
+--- tests/corpus-hostile/relational-hostile/records/h-002.md	2026-08-25 11:05:16
++++ out/hostile-regen/relational-hostile/records/h-002.md	2026-08-25 11:09:56
+@@ -2,17 +2,17 @@
+ id: h-002
+ type: atom
+ corpus: relational-hostile
+-finding: "The hostile fixture states that nothing in the serialization section constrains the order in which a producer writes the keys of a record."
+-quote: "Nothing in the serialization section constrains the order in which a producer writes the keys of a record."
++finding: The hostile fixture states that nothing in the serialization section constrains the order in which a producer writes the keys of a record.
++quote: Nothing in the serialization section constrains the order in which a producer writes the keys of a record.
+ source: hostile-fixture
+ source_quality: medium
+-limitations: |
+-  Two separate caveats, written as a block scalar:
+-  the fixture is constructed, and it speaks about this specification only.
+-created: {timestamp: 2026-08-24, by: "agent/claude-fable-5"}
+-provenance_note: "an undefined key that is not in the extension namespace"
++limitations: "Two separate caveats, written as a block scalar:\nthe fixture is constructed, and it speaks about this specification only.\n"
++created: {timestamp: "2026-08-24", by: agent/claude-fable-5}
++provenance_note: an undefined key that is not in the extension namespace
+ x_trial:
+   case: 4
+-  tags: [block-scalar, empty-list, unknown-key]
+-finding_audit: []
++  tags:
++    - block-scalar
++    - empty-list
++    - unknown-key
+ ---
+diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-003.md out/hostile-regen/relational-hostile/records/h-003.md
+--- tests/corpus-hostile/relational-hostile/records/h-003.md	2026-08-25 11:05:16
++++ out/hostile-regen/relational-hostile/records/h-003.md	2026-08-25 11:09:56
+@@ -2,12 +2,10 @@
+ id: h-003
+ type: atom
+ corpus: relational-hostile
+-finding: "The hostile fixture is quoted a third time to carry a body an atom is not permitted to have."
++finding: The hostile fixture is quoted a third time to carry a body an atom is not permitted to have.
+ quote: "The writer's chosen style is not the format's style, because the format has no style"
+ source: hostile-fixture
+ source_quality: low
+-limitations: "Quoted for a structural test rather than for its content."
+-created: {timestamp: 2026-08-24, by: "agent/claude-fable-5"}
++limitations: Quoted for a structural test rather than for its content.
++created: {timestamp: "2026-08-24", by: agent/claude-fable-5}
+ ---
+-This paragraph is a body on an atom. ERF-53 says an atom's file is frontmatter
+-and nothing else, so a conforming store has nowhere to put these bytes.
+diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-claim.md out/hostile-regen/relational-hostile/records/h-claim.md
+--- tests/corpus-hostile/relational-hostile/records/h-claim.md	2026-08-25 11:05:16
++++ out/hostile-regen/relational-hostile/records/h-claim.md	2026-08-25 11:09:56
+@@ -1,19 +1,16 @@
+ ---
+ id: style-does-not-change-the-record
+ type: claim
+-epistemic_kind: observation
+ corpus: relational-hostile
+-title: >-
+-  Two files that parse to the same mapping and the same body carry the same
+-  record, whatever their serialization style
+-created: {timestamp: 2026-08-24, by: "agent/claude-fable-5"}
++title: "Two files that parse to the same mapping and the same body carry the same record, whatever their serialization style"
++epistemic_kind: observation
++created: {timestamp: "2026-08-24", by: agent/claude-fable-5}
+ atoms_for: [h-001, h-002]
+-families: []
+ standings:
+-  - timestamp: 2026-08-24T12:00:00+02:00
++  - timestamp: "2026-08-24T12:00:00+02:00"
+     stance: for
+     by: human:trial-operator
+     why: "Recorded with an offset that is not Z, and with an empty evidence stamp, to see what survives."
+-    evidence_at_stance: {atoms_for: [], atoms_against: []}
++    evidence_at_stance: {}
+ ---
+ Two files that parse to the same mapping and the same body carry the same record, whatever their serialization style.
+diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-survey.md out/hostile-regen/relational-hostile/records/h-survey.md
+--- tests/corpus-hostile/relational-hostile/records/h-survey.md	2026-08-25 11:09:29
++++ out/hostile-regen/relational-hostile/records/h-survey.md	2026-08-25 11:09:56
+@@ -2,12 +2,17 @@
+ id: hostile-styles-2026-08-24
+ type: survey
+ corpus: relational-hostile
+-title: "Which legal YAML constructs a canonical writer cannot reproduce"
+-conducted: {timestamp: 2026-08-24, by: "agent/claude-fable-5"}
++title: Which legal YAML constructs a canonical writer cannot reproduce
++conducted: {timestamp: "2026-08-24", by: agent/claude-fable-5}
+ searches:
+-  - {tool: "manual enumeration", query: "constructs permitted by YAML 1.2 JSON schema and not fixed by ERF-53/65/66/67", hits_reported: "8 constructs"}
+-  - {tool: "grep -c (BSD grep, macOS 15)", query: "case 9: an unquoted yield, which ERF-65 resolves to an integer while ERF-27 and the SearchAct type both say string", hits_reported: 12}
++  - tool: manual enumeration
++    query: constructs permitted by YAML 1.2 JSON schema and not fixed by ERF-53/65/66/67
++    hits_reported: 8 constructs
++  - tool: "grep -c (BSD grep, macOS 15)"
++    query: "case 9: an unquoted yield, which ERF-65 resolves to an integer while ERF-27 and the SearchAct type both say string"
++    hits_reported: "12"
+ notable_results:
+-  - {what: "comments", note: "YAML comments are not data, so no data model can hold them; the round trip drops them silently."}
++  - what: comments
++    note: "YAML comments are not data, so no data model can hold them; the round trip drops them silently."
+ ---
+ Enumerated by hand while writing the hostile corpus.
+diff -ru -x captures tests/corpus-hostile/relational-hostile/records/h-unknown-type.md out/hostile-regen/relational-hostile/records/h-unknown-type.md
+--- tests/corpus-hostile/relational-hostile/records/h-unknown-type.md	2026-08-25 11:05:16
++++ out/hostile-regen/relational-hostile/records/h-unknown-type.md	2026-08-25 11:09:56
+@@ -2,8 +2,10 @@
+ id: h-hypothesis-001
+ type: hypothesis
+ corpus: relational-hostile
+-statement: "An unknown record type carries fields no version of this schema has columns for."
++statement: An unknown record type carries fields no version of this schema has columns for.
+ confidence: 0.4
+-created: {timestamp: 2026-08-24, by: "agent/claude-fable-5"}
++created:
++  timestamp: "2026-08-24"
++  by: agent/claude-fable-5
+ ---
+ The body of a record whose type this consumer does not know.
+diff -ru -x captures tests/corpus-hostile/relational-hostile/sources.yaml out/hostile-regen/relational-hostile/sources.yaml
+--- tests/corpus-hostile/relational-hostile/sources.yaml	2026-08-25 11:05:16
++++ out/hostile-regen/relational-hostile/sources.yaml	2026-08-25 11:09:56
+@@ -1,8 +1,8 @@
+ sources:
+   hostile-fixture:
++    citation_text: "Trial Fixture, Hostile Styles Capture (constructed for the SQL trial, 2026)"
++    fetched:
++      url: https://example.invalid/fixtures/hostile.md
+     status: shipped-as-quotation
+-    citation_text: "Trial Fixture, Hostile Styles Capture (constructed for the
+-      SQL trial, 2026)"
+     path: captures/hostile-capture.md
+     excerpt: true
+-    fetched: {url: "https://example.invalid/fixtures/hostile.md"}

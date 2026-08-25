@@ -1,0 +1,422 @@
+diff -ru -x captures tests/corpus-authored/relational-trial/corpus.yaml out/authored-regen/relational-trial/corpus.yaml
+--- tests/corpus-authored/relational-trial/corpus.yaml	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/corpus.yaml	2026-08-25 11:09:54
+@@ -2,4 +2,4 @@
+ title: "SQL trial fixture corpus: expressing ERF as a relational schema"
+ spec_version: 0.9.0
+ classification: internal
+-owner: "human:trial-operator"
++owner: human:trial-operator
+diff -ru -x captures tests/corpus-authored/relational-trial/narratives/trial-note.md out/authored-regen/relational-trial/narratives/trial-note.md
+--- tests/corpus-authored/relational-trial/narratives/trial-note.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/narratives/trial-note.md	2026-08-25 11:09:54
+@@ -1,5 +1,5 @@
+ ---
+-title: "A note on what the schema forced"
++title: A note on what the schema forced
+ corpus: relational-trial
+ created: {timestamp: "2026-08-24", by: "human:trial-operator"}
+ ---
+diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-001.md out/authored-regen/relational-trial/records/atoms/rt-001.md
+--- tests/corpus-authored/relational-trial/records/atoms/rt-001.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/atoms/rt-001.md	2026-08-25 11:09:54
+@@ -2,11 +2,11 @@
+ id: rt-001
+ type: atom
+ corpus: relational-trial
+-finding: "The constraint-kinds fixture states that a declarative constraint sees one row version at a time and therefore cannot decide whether an edit was permitted."
++finding: The constraint-kinds fixture states that a declarative constraint sees one row version at a time and therefore cannot decide whether an edit was permitted.
+ quote: "A declarative constraint sees exactly one row version at a time. [...] it can never decide whether an edit was permitted, because the prior value is not in scope when the constraint is evaluated."
+ source: fixture-constraint-kinds
+ source_quality: high
+-created: {timestamp: "2026-08-20", by: "agent/claude-fable-5"}
++created: {timestamp: "2026-08-20", by: agent/claude-fable-5}
+ finding_audit:
+   - {auditor: fixture-auditor-a, verdict: SUPPORTED, timestamp: "2026-08-20", protocol: finding-audit-v2}
+   - {auditor: fixture-auditor-b, verdict: SUPPORTED, timestamp: "2026-08-20", protocol: finding-audit-v2}
+diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-002.md out/authored-regen/relational-trial/records/atoms/rt-002.md
+--- tests/corpus-authored/relational-trial/records/atoms/rt-002.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/atoms/rt-002.md	2026-08-25 11:09:54
+@@ -6,7 +6,7 @@
+ quote: "An append-only ledger is not a property of a table; it is a property of the statements a writer is allowed to issue against that table. Enforcement is therefore procedural: the table must refuse UPDATE and DELETE outright."
+ source: fixture-constraint-kinds
+ source_quality: high
+-created: {timestamp: "2026-08-20", by: "agent/claude-fable-5"}
++created: {timestamp: "2026-08-20", by: agent/claude-fable-5}
+ finding_audit:
+   - {auditor: fixture-auditor-a, verdict: SUPPORTED, timestamp: "2026-08-20", protocol: finding-audit-v2}
+ ---
+diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-003.md out/authored-regen/relational-trial/records/atoms/rt-003.md
+--- tests/corpus-authored/relational-trial/records/atoms/rt-003.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/atoms/rt-003.md	2026-08-25 11:09:54
+@@ -6,7 +6,7 @@
+ quote: "Where an invariant is expressed as a key, the store loses the ability to hold a violating instance at all, and a validator built over that store can never report the violation it was written to detect."
+ source: fixture-constraint-kinds
+ source_quality: high
+-created: {timestamp: "2026-08-20", by: "agent/claude-fable-5"}
++created: {timestamp: "2026-08-20", by: agent/claude-fable-5}
+ last_modified: {timestamp: "2026-08-23T09:15:00Z", by: "human:trial-operator"}
+ finding_audit:
+   - {auditor: fixture-auditor-a, verdict: PARTIAL, timestamp: "2026-08-20", protocol: finding-audit-v2}
+diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-004.md out/authored-regen/relational-trial/records/atoms/rt-004.md
+--- tests/corpus-authored/relational-trial/records/atoms/rt-004.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/atoms/rt-004.md	2026-08-25 11:09:54
+@@ -7,7 +7,7 @@
+ source: fixture-interchange-notes
+ source_quality: medium
+ limitations: "The fixture is a constructed note written for this trial; it reports no measurement and stands only as a statement of the position."
+-created: {timestamp: "2026-08-21", by: "agent/claude-fable-5"}
++created: {timestamp: "2026-08-21", by: agent/claude-fable-5}
+ finding_audit:
+   - {auditor: fixture-auditor-b, verdict: SUPPORTED, timestamp: "2026-08-21", protocol: finding-audit-v2}
+ ---
+diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-005.md out/authored-regen/relational-trial/records/atoms/rt-005.md
+--- tests/corpus-authored/relational-trial/records/atoms/rt-005.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/atoms/rt-005.md	2026-08-25 11:09:54
+@@ -7,5 +7,5 @@
+ source: fixture-interchange-notes
+ source_quality: medium
+ limitations: "Constructed fixture; the claim is analytic rather than observed."
+-created: {timestamp: "2026-08-21", by: "agent/claude-fable-5"}
++created: {timestamp: "2026-08-21", by: agent/claude-fable-5}
+ ---
+diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-006.md out/authored-regen/relational-trial/records/atoms/rt-006.md
+--- tests/corpus-authored/relational-trial/records/atoms/rt-006.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/atoms/rt-006.md	2026-08-25 11:09:54
+@@ -2,12 +2,12 @@
+ id: rt-006
+ type: atom
+ corpus: relational-trial
+-finding: "The ordering-note fixture states that a day-precision timestamp and an instant-precision timestamp on the same day cannot be ordered against one another."
++finding: The ordering-note fixture states that a day-precision timestamp and an instant-precision timestamp on the same day cannot be ordered against one another.
+ quote: "A timestamp recorded at day precision and a timestamp recorded at instant precision on the same day cannot be placed in order with respect to one another, so any comparison between them must decide which way to fail."
+ source: fixture-ordering-note
+ source_quality: high
+ as_of_date: "2026-07-30"
+-created: {timestamp: "2026-07-30", by: "agent/claude-fable-5"}
++created: {timestamp: "2026-07-30", by: agent/claude-fable-5}
+ finding_audit:
+   - {auditor: fixture-auditor-a, verdict: SUPPORTED, timestamp: "2026-07-30", protocol: finding-audit-v2}
+ ---
+diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-007.md out/authored-regen/relational-trial/records/atoms/rt-007.md
+--- tests/corpus-authored/relational-trial/records/atoms/rt-007.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/atoms/rt-007.md	2026-08-25 11:09:54
+@@ -3,11 +3,11 @@
+ type: atom
+ corpus: relational-trial
+ finding: "A fixture vendor page asserts, about its own product, that its constraint engine enforces append-only ledgers declaratively."
+-quote: "our constraint engine enforces append-only ledgers declaratively"
++quote: our constraint engine enforces append-only ledgers declaratively
+ source: fixture-vendor-page
+ source_quality: medium
+ limitations: "A first party writing about its own product; no capture ships, so the quote cannot be re-checked from this corpus."
+-created: {timestamp: "2026-08-22", by: "agent/claude-fable-5"}
++created: {timestamp: "2026-08-22", by: agent/claude-fable-5}
+ finding_audit:
+   - {auditor: fixture-auditor-b, verdict: UNSUPPORTED, timestamp: "2026-08-22", protocol: finding-audit-v2}
+ ---
+diff -ru -x captures tests/corpus-authored/relational-trial/records/atoms/rt-008.md out/authored-regen/relational-trial/records/atoms/rt-008.md
+--- tests/corpus-authored/relational-trial/records/atoms/rt-008.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/atoms/rt-008.md	2026-08-25 11:09:54
+@@ -3,9 +3,9 @@
+ type: atom
+ corpus: relational-trial
+ finding: "An anonymous forum comment reported that a team abandoned trigger-based enforcement after a migration, without naming the team or the migration."
+-quote: "we ripped the triggers out after the migration and never looked back"
++quote: we ripped the triggers out after the migration and never looked back
+ source: fixture-received-report
+ source_quality: low
+ limitations: "An unidentifiable attester relaying an unverifiable event; the chain has not been pulled to a primary."
+-created: {timestamp: "2026-08-22", by: "agent/claude-fable-5"}
++created: {timestamp: "2026-08-22", by: agent/claude-fable-5}
+ ---
+diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/append-only-needs-triggers.md out/authored-regen/relational-trial/records/claims/append-only-needs-triggers.md
+--- tests/corpus-authored/relational-trial/records/claims/append-only-needs-triggers.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/claims/append-only-needs-triggers.md	2026-08-25 11:09:54
+@@ -4,24 +4,24 @@
+ corpus: relational-trial
+ title: "An append-only rule can only be enforced in a relational store by refusing UPDATE and DELETE procedurally, never by a column type or a check"
+ epistemic_kind: observation
+-created: {timestamp: "2026-08-20", by: "agent/claude-fable-5"}
++created: {timestamp: "2026-08-20", by: agent/claude-fable-5}
+ families: [schema-expressiveness, append-only]
+ atoms_for: [rt-002]
+ atoms_against: [rt-007]
+ standings:
+   - timestamp: "2026-08-23T09:25:00Z"
+     stance: for
+-    by: "human:trial-operator"
++    by: human:trial-operator
+     why: "Writing the schema produced the evidence: every append-only rule in the format became a BEFORE UPDATE trigger and none of them could be stated as a constraint."
+     evidence_at_stance: {atoms_for: [rt-002], atoms_against: [rt-007]}
+   - timestamp: "2026-08-24T11:00:00Z"
+     stance: against
+-    by: "human:trial-reviewer"
++    by: human:trial-reviewer
+     why: "Too strong as stated. A generated column over a history table, or a view with an INSTEAD OF trigger, moves the enforcement without making it procedural in the sense the title implies."
+     evidence_at_stance: {atoms_for: [rt-002], atoms_against: [rt-007]}
+ evidence_audit:
+   - {auditor: fixture-auditor-a, verdict: PARTIAL, timestamp: "2026-08-24", protocol: evidence-audit-v1}
+-semantic_query: "append only enforcement trigger update delete refuse relational"
++semantic_query: append only enforcement trigger update delete refuse relational
+ ---
+ An append-only rule can only be enforced in a relational store by refusing UPDATE and DELETE procedurally, never by a column type or a check.
+ 
+diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/keys-hide-violations.md out/authored-regen/relational-trial/records/claims/keys-hide-violations.md
+--- tests/corpus-authored/relational-trial/records/claims/keys-hide-violations.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/claims/keys-hide-violations.md	2026-08-25 11:09:54
+@@ -4,7 +4,7 @@
+ corpus: relational-trial
+ title: "Enforcing an invariant as a database key removes a validator's ability to report violations of it, because a violating corpus cannot be stored"
+ epistemic_kind: argument
+-created: {timestamp: "2026-08-23", by: "agent/claude-fable-5"}
++created: {timestamp: "2026-08-23", by: agent/claude-fable-5}
+ families: [schema-expressiveness, validation]
+ edges:
+   - {to: constraints-cannot-see-transitions, relation: assumes}
+@@ -12,11 +12,11 @@
+ standings:
+   - timestamp: "2026-08-24T17:10:00Z"
+     stance: for
+-    by: "human:trial-operator"
++    by: human:trial-operator
+     why: "Demonstrated in this trial: the loader aborts on a duplicate id instead of producing the report ERF-38 asks a validator for."
+ evidence_audit:
+   - {auditor: fixture-auditor-a, verdict: SUPPORTED, timestamp: "2026-08-24", protocol: evidence-audit-v1}
+-semantic_query: "primary key uniqueness validator report unstorable violation"
++semantic_query: primary key uniqueness validator report unstorable violation
+ ---
+ Enforcing an invariant as a database key removes a validator's ability to report violations of it, because a violating corpus cannot be stored.
+ 
+diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/losslessness-needs-an-equivalence.md out/authored-regen/relational-trial/records/claims/losslessness-needs-an-equivalence.md
+--- tests/corpus-authored/relational-trial/records/claims/losslessness-needs-an-equivalence.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/claims/losslessness-needs-an-equivalence.md	2026-08-25 11:09:54
+@@ -2,9 +2,9 @@
+ id: losslessness-needs-an-equivalence
+ type: claim
+ corpus: relational-trial
+-title: "A requirement that records round-trip without loss is not checkable until the equivalence relation on records is stated"
++title: A requirement that records round-trip without loss is not checkable until the equivalence relation on records is stated
+ epistemic_kind: observation
+-created: {timestamp: "2026-08-21", by: "agent/claude-fable-5"}
++created: {timestamp: "2026-08-21", by: agent/claude-fable-5}
+ short_name: loss-needs-equivalence
+ families: [interchange]
+ atoms_for: [rt-004, rt-005]
+@@ -12,12 +12,12 @@
+ standings:
+   - timestamp: "2026-08-24T16:40:00Z"
+     stance: for
+-    by: "human:trial-operator"
++    by: human:trial-operator
+     why: "The round trip run in this trial produced three different answers to whether a record survived, depending on which equivalence was applied, which is the claim."
+     evidence_at_stance: {atoms_for: [rt-004, rt-005]}
+ evidence_audit:
+   - {auditor: fixture-auditor-b, verdict: SUPPORTED, timestamp: "2026-08-24", protocol: evidence-audit-v1}
+-semantic_query: "round trip lossless equivalence byte identity canonical serialization"
++semantic_query: round trip lossless equivalence byte identity canonical serialization
+ ---
+ A requirement that records round-trip without loss is not checkable until the equivalence relation on records is stated.
+ 
+diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/mixed-precision-is-unorderable.md out/authored-regen/relational-trial/records/claims/mixed-precision-is-unorderable.md
+--- tests/corpus-authored/relational-trial/records/claims/mixed-precision-is-unorderable.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/claims/mixed-precision-is-unorderable.md	2026-08-25 11:09:54
+@@ -4,16 +4,16 @@
+ corpus: relational-trial
+ title: "Two timestamps recorded at different precisions on the same day cannot be ordered, so a format that permits both must say which way the comparison fails"
+ epistemic_kind: observation
+-created: {timestamp: "2026-07-30", by: "agent/claude-fable-5"}
++created: {timestamp: "2026-07-30", by: agent/claude-fable-5}
+ families: [time]
+ atoms_for: [rt-006]
+ standings:
+   - timestamp: "2026-08-23T10:05:00Z"
+     stance: for
+-    by: "human:trial-reviewer"
++    by: human:trial-reviewer
+     why: "Straightforward from the atom, and the format already agrees with it in one place by resolving the ambiguous case to stale."
+     evidence_at_stance: {atoms_for: [rt-006]}
+-semantic_query: "timestamp precision date instant same day ordering ambiguity"
++semantic_query: timestamp precision date instant same day ordering ambiguity
+ ---
+ Two timestamps recorded at different precisions on the same day cannot be ordered, so a format that permits both must say which way the comparison fails.
+ 
+diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/rejected-example.md out/authored-regen/relational-trial/records/claims/rejected-example.md
+--- tests/corpus-authored/relational-trial/records/claims/rejected-example.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/claims/rejected-example.md	2026-08-25 11:09:54
+@@ -4,13 +4,13 @@
+ corpus: relational-trial
+ title: "A record's corpus membership can be recovered from the directory it sits in, so the corpus field is redundant"
+ epistemic_kind: observation
+-created: {timestamp: "2026-08-21", by: "agent/claude-fable-5"}
++created: {timestamp: "2026-08-21", by: agent/claude-fable-5}
+ families: [interchange]
+ atoms_against: [rt-005]
+ standings:
+   - timestamp: "2026-08-24T18:20:00Z"
+     stance: against
+-    by: "human:trial-operator"
++    by: human:trial-operator
+     why: "The loader had to report a record whose frontmatter named a corpus other than the directory it was found under, and the record won. Membership is stated, not located."
+     evidence_at_stance: {atoms_against: [rt-005]}
+ x_trial_note: "kept deliberately unbacked on the for side, to exercise the ERF-49 flag"
+diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/retired-example.md out/authored-regen/relational-trial/records/claims/retired-example.md
+--- tests/corpus-authored/relational-trial/records/claims/retired-example.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/claims/retired-example.md	2026-08-25 11:09:54
+@@ -4,19 +4,19 @@
+ corpus: relational-trial
+ title: "A relational schema alone is sufficient to validate a conforming corpus, with no procedural checks required"
+ epistemic_kind: observation
+-created: {timestamp: "2026-08-20", by: "agent/claude-fable-5"}
++created: {timestamp: "2026-08-20", by: agent/claude-fable-5}
+ families: [validation]
+ atoms_for: [rt-003]
+ standings:
+   - timestamp: "2026-08-20T14:00:00Z"
+     stance: for
+-    by: "human:trial-operator"
++    by: human:trial-operator
+     why: "Held at the start of the trial, before the append-only rules were written out."
+   - timestamp: "2026-08-24T18:00:00Z"
+     stance: withdrawn
+-    by: "human:trial-operator"
++    by: human:trial-operator
+     why: "Withdrawn, not refuted: the statement is too coarse to argue with once the state and transition rules are separated. The content survives in constraints-cannot-see-transitions."
+-semantic_query: "schema sufficient validation procedural checks"
++semantic_query: schema sufficient validation procedural checks
+ ---
+ A relational schema alone is sufficient to validate a conforming corpus, with no procedural checks required.
+ 
+diff -ru -x captures tests/corpus-authored/relational-trial/records/claims/state-vs-transition.md out/authored-regen/relational-trial/records/claims/state-vs-transition.md
+--- tests/corpus-authored/relational-trial/records/claims/state-vs-transition.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/claims/state-vs-transition.md	2026-08-25 11:09:54
+@@ -2,9 +2,9 @@
+ id: constraints-cannot-see-transitions
+ type: claim
+ corpus: relational-trial
+-title: "A declarative constraint can express a constraint on a state and cannot express a constraint on a transition between states"
++title: A declarative constraint can express a constraint on a state and cannot express a constraint on a transition between states
+ epistemic_kind: observation
+-created: {timestamp: "2026-08-20", by: "agent/claude-fable-5"}
++created: {timestamp: "2026-08-20", by: agent/claude-fable-5}
+ short_name: state-not-transition
+ families: [schema-expressiveness]
+ atoms_for: [rt-001, rt-002]
+@@ -13,12 +13,12 @@
+ standings:
+   - timestamp: "2026-08-23T09:20:00Z"
+     stance: for
+-    by: "human:trial-operator"
++    by: human:trial-operator
+     why: "The two fixture atoms state it directly and nothing in the corpus cuts against it; the distinction also matched what the schema forced when ERF-19 and ERF-40 had to be written as triggers."
+     evidence_at_stance: {atoms_for: [rt-001, rt-002]}
+ evidence_audit:
+   - {auditor: fixture-auditor-a, verdict: SUPPORTED, timestamp: "2026-08-23", protocol: evidence-audit-v1}
+-semantic_query: "declarative constraint state transition prior value not in scope"
++semantic_query: declarative constraint state transition prior value not in scope
+ ---
+ A declarative constraint can express a constraint on a state and cannot express a constraint on a transition between states.
+ 
+diff -ru -x captures tests/corpus-authored/relational-trial/records/surveys/lossless-language-2026-08-22.md out/authored-regen/relational-trial/records/surveys/lossless-language-2026-08-22.md
+--- tests/corpus-authored/relational-trial/records/surveys/lossless-language-2026-08-22.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/surveys/lossless-language-2026-08-22.md	2026-08-25 11:09:54
+@@ -2,15 +2,15 @@
+ id: lossless-language-2026-08-22
+ type: survey
+ corpus: relational-trial
+-title: "First pass over the specification's language about storage substrates and losslessness"
+-conducted: {timestamp: "2026-08-22", by: "agent/claude-fable-5"}
++title: First pass over the specification's language about storage substrates and losslessness
++conducted: {timestamp: "2026-08-22", by: agent/claude-fable-5}
+ searches:
+   - tool: "grep -n (BSD grep, macOS 15)"
+-    query: "database"
++    query: database
+     scope: "SPEC.md, whole file"
+     hits_reported: "4"
+ notable_results:
+-  - what: "ERF-63"
++  - what: ERF-63
+     note: "States that a record's body is one more field in a database, which is the only guidance the format gives a relational implementer."
+ ---
+ A first pass, superseded by `round-trip-equivalence-2026-08-24`.
+diff -ru -x captures tests/corpus-authored/relational-trial/records/surveys/round-trip-equivalence-2026-08-24.md out/authored-regen/relational-trial/records/surveys/round-trip-equivalence-2026-08-24.md
+--- tests/corpus-authored/relational-trial/records/surveys/round-trip-equivalence-2026-08-24.md	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/records/surveys/round-trip-equivalence-2026-08-24.md	2026-08-25 11:09:54
+@@ -2,8 +2,8 @@
+ id: round-trip-equivalence-2026-08-24
+ type: survey
+ corpus: relational-trial
+-title: "Whether the specification anywhere states the equivalence relation under which a record round-trips without loss"
+-conducted: {timestamp: "2026-08-24", by: "agent/claude-fable-5"}
++title: Whether the specification anywhere states the equivalence relation under which a record round-trips without loss
++conducted: {timestamp: "2026-08-24", by: agent/claude-fable-5}
+ searches:
+   - tool: "grep -nE (BSD grep, macOS 15)"
+     query: "round-trip|round trip|without loss|lossless"
+@@ -14,15 +14,15 @@
+     scope: "SPEC.md, whole file"
+     hits_reported: "0 for the first three; 'canonical' occurs 4 times, always of the interchange form or of a citation block"
+     timestamp: "2026-08-24"
+-  - tool: "manual reading"
+-    query: "sections 7 and 8 read end to end for a definition of loss"
+-    scope: "SPEC.md lines 1101-1206"
+-    hits_reported: "no definition found"
++  - tool: manual reading
++    query: sections 7 and 8 read end to end for a definition of loss
++    scope: SPEC.md lines 1101-1206
++    hits_reported: no definition found
+ notable_results:
+-  - what: "ERF-53's proviso"
+-    note: "The only place the property is asserted. It names the interchange form but not what it means for two files to carry the same record."
++  - what: ERF-53's proviso
++    note: The only place the property is asserted. It names the interchange form but not what it means for two files to carry the same record.
+     atoms: [rt-005]
+-  - what: "ERF-55 and ERF-56 together"
++  - what: ERF-55 and ERF-56 together
+     note: "The nearest thing to an equivalence: an omitted list and an empty list are the same record. Stated for lists only, and never generalized."
+ prior_survey: lossless-language-2026-08-22
+ ---
+diff -ru -x captures tests/corpus-authored/relational-trial/sources.yaml out/authored-regen/relational-trial/sources.yaml
+--- tests/corpus-authored/relational-trial/sources.yaml	2026-08-25 11:03:25
++++ out/authored-regen/relational-trial/sources.yaml	2026-08-25 11:09:54
+@@ -6,21 +6,21 @@
+       author:
+         - family: Fixture
+           given: Trial
+-      title: "Notes on Constraint Kinds"
++      title: Notes on Constraint Kinds
+       issued: 2026
+     fetched:
+-      url: "https://example.invalid/fixtures/constraint-kinds.md"
+-      digest: "sha256:0000000000000000000000000000000000000000000000000000000000000001"
++      url: https://example.invalid/fixtures/constraint-kinds.md
++      digest: sha256:0000000000000000000000000000000000000000000000000000000000000001
+     status: shipped-as-quotation
+     path: captures/fixture-constraint-kinds-2026-08-20.md
+     excerpt: true
+-    converter: {tool: "fixture-writer 1.0", deterministic: true}
++    converter: {tool: fixture-writer 1.0, deterministic: true}
+   fixture-interchange-notes:
+     citation_text: "Trial Fixture, Notes on Interchange Forms (constructed for the SQL trial, 2026)"
+     status: shipped
+     path: captures/fixture-interchange-notes-2026-08-21.md
+     licence: CC0-1.0
+-    licence_name: "Creative Commons Zero v1.0 Universal"
++    licence_name: Creative Commons Zero v1.0 Universal
+   fixture-ordering-note:
+     citation_text: "Trial Fixture, Ordering Note (constructed for the SQL trial, 2026)"
+     status: shipped-as-quotation
+@@ -29,10 +29,10 @@
+   fixture-vendor-page:
+     citation_text: "Fixture Vendor, product page describing its own constraint engine (2026)"
+     fetched:
+-      url: "https://example.invalid/vendor/constraints.html"
++      url: https://example.invalid/vendor/constraints.html
+     status: not-redistributable
+     reason: "Fixture stands in for a copyrighted vendor page: reading is permitted, republication is not."
+   fixture-received-report:
+     citation_text: "Fixture Counterparty, internal assessment delivered under NDA (2026)"
+     status: access-restricted
+-    reason: "Fixture stands in for a report received under an agreement forbidding extraction."
++    reason: Fixture stands in for a report received under an agreement forbidding extraction.

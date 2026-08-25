@@ -1,0 +1,23 @@
+sources:
+  pacioli-1494-geijsbeek:
+    citation_text: "Luca Pacioli, Particularis de Computis et Scripturis
+      (Venice, 1494), ch. 36, trans. Geijsbeek 1914"
+    citation:
+      type: book
+      author: [{family: Pacioli, given: Luca}]
+      title: "Particularis de Computis et Scripturis"
+      publisher-place: Venice
+      issued: "1494"
+      chapter-number: 36
+      translator: [{family: Geijsbeek, given: "John B."}]
+    fetched:
+      url: "https://archive.org/download/ancientdoubleent00geijuoft/ancientdoubleent00geijuoft.pdf"
+      digest: "sha256:05e58ce3f2589584d7d36446c46e2f74ab14f33ee6d1f0f20ef5e21c2aeaf2aa"
+    status: shipped-as-quotation
+    path: captures/pacioli-1494-geijsbeek.md
+    excerpt: true
+    converter: {tool: "pymupdf4llm 0.3.4", deterministic: true}
+  vendor-brief-2026-received:
+    citation_text: "Ledgerworks Ltd, Internal Controls Brief (received by email, 2026-05-04)"
+    status: not-redistributable
+    reason: "Received under a confidentiality footer; copyright permits reading but not republication."
