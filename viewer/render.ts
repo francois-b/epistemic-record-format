@@ -506,6 +506,10 @@ ${list(uncheckable.map((x) => `<a href="capture-${esc(x.a.id)}.html"><span class
 <h2>References that do not resolve</h2>
 ${list(dangling.map((d) => `<span class="id">${esc(d.record)}</span> <span class="id">${esc(d.field)}</span> ${esc(d.detail)}`))}
 
+<h2>Files this consumer did not recognize</h2>
+<p class="sub">Reported, not rejected. A tolerant consumer preserves what it cannot interpret and says so; an unrecognized file is not a violation.</p>
+${list(c.unrecognized.map((u) => `<span class="id">${esc(u.path)}</span> ${u.type ? `declares <span class="t">${esc(u.type)}</span>, which this consumer does not implement` : "carries no <span class=\"id\">type</span>"}`))}
+
 <h2>Evidence a standing faced that the corpus no longer holds</h2>
 <p class="sub">Flags, not violations. <span class="id">ERF-35</span>: a reference recording a past state cannot be made wrong by a later act the format permits.</p>
 ${list(staleEvidence.map(esc))}

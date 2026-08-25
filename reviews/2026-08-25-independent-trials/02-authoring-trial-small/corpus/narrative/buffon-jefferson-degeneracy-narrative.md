@@ -1,4 +1,5 @@
 ---
+type: narrative
 title: "Buffon's American degeneracy thesis and Jefferson's refutation"
 corpus: buffon-jefferson-degeneracy
 created: {timestamp: "2026-08-25", by: "human:francois-bouet"}

@@ -1,4 +1,5 @@
 ---
+type: narrative
 title: "State of the Question: The AI Capital-Expenditure Sustainability Debate"
 corpus: ai-capex
 created: "2026-08-25"

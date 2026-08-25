@@ -1,4 +1,5 @@
 ---
+type: narrative
 title: "What the Numbers Actually Pin Down"
 corpus: ai-capex
 created: "2026-08-25"

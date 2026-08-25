@@ -8,7 +8,7 @@
  * quietly drift from the specification it is supposed to demonstrate.
  */
 import { readFileSync, readdirSync, existsSync } from "node:fs";
-import { join, basename } from "node:path";
+import { join, basename, relative } from "node:path";
 import yaml from "js-yaml";
 import type { Atom, Claim, Survey, Source, CorpusDeclaration } from "../types/erf.ts";
 
@@ -53,6 +53,17 @@ export interface LoadedCorpus {
   narratives: Narrative[];
   sources: Map<string, Source>;
   findings: ConformanceFinding[];
+  /**
+   * Files in the corpus tree this consumer did not recognize: no `type`, or
+   * a `type` it does not implement. Section 2 requires a tolerant consumer
+   * to preserve what it cannot interpret AND to report it. This is the
+   * report. It is deliberately NOT a finding: an unrecognized file is not a
+   * violation, and a corpus holding a README still conforms. Silence here
+   * was a real defect, found 2026-08-25 when the `ERF-54` widening left two
+   * authored corpora's source lists unread and the loader blamed 151 atoms
+   * for naming sources it had simply declined to load.
+   */
+  unrecognized: { path: string; type: string | null }[];
 }
 
 const FM = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;
@@ -329,6 +340,10 @@ export function loadCorpus(dir: string): LoadedCorpus {
   const files = walkFiles(dir);
   const typed = new Map<string, string>();
   for (const f of files) { const t = fileType(f); if (t) typed.set(f, t); }
+  const KNOWN = new Set(["atom", "claim", "survey", "corpus", "sources", "narrative"]);
+  const unrecognized = files
+    .filter((f) => !KNOWN.has(typed.get(f) ?? ""))
+    .map((f) => ({ path: relative(dir, f), type: typed.get(f) ?? null }));
   const declarations = [...typed].filter(([, t]) => t === "corpus").map(([f]) => f);
   if (declarations.length > 1) {
     findings.push({
@@ -615,5 +630,5 @@ export function loadCorpus(dir: string): LoadedCorpus {
     }
   }
 
-  return { manifest, atoms, claims, surveys, narratives, sources, findings };
+  return { manifest, atoms, claims, surveys, narratives, sources, findings, unrecognized };
 }

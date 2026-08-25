@@ -1,4 +1,5 @@
 ---
+type: narrative
 title: "The Bear Case on Its Best Day"
 corpus: ai-capex
 created: "2026-08-25"
