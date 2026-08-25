@@ -92,8 +92,13 @@ requirements:
   ERF-34:
     untestable-by-design: that a narrative is a document rather than a record is a modelling rule with no runtime surface
   ERF-35:
-    tests: [fixtures/valid/minimal]
-    note: the loader reports dangling references
+    tests: [fixtures/invalid/prior-survey-dangling, fixtures/valid/evidence-at-stance-outlives-atom]
+    note: >
+      both halves. Every valid fixture is asserted free of dangling
+      references; the invalid one breaks prior_survey, which asserts a
+      current relationship. The valid pair carries an evidence_at_stance
+      id the corpus no longer holds, and asserts the flag is raised while
+      conformance holds.
   ERF-36:
     tests: [fixtures/invalid/duplicate-id-across-types]
   ERF-37:

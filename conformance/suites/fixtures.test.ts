@@ -13,7 +13,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import yaml from "js-yaml";
 import { loadCorpus } from "../../viewer/corpus.ts";
-import { quoteCheck } from "../../viewer/compute.ts";
+import { danglingRefs, evidenceRefsFlagged, quoteCheck } from "../../viewer/compute.ts";
 import { FIXTURES } from "../paths.ts";
 
 interface Expectation {
@@ -50,8 +50,26 @@ test("valid fixtures load without a conformance finding", async (t) => {
     await t.test(name, () => {
       const c = loadCorpus(join(dir, name));
       assert.deepEqual(c.findings, [], `unexpected findings: ${JSON.stringify(c.findings, null, 2)}`);
+      // `ERF-35`, current half: a valid fixture holds no broken reference.
+      assert.deepEqual(danglingRefs(c), [],
+        `${name}: references that do not resolve: ${JSON.stringify(danglingRefs(c))}`);
     });
   }
+});
+
+/**
+ * `ERF-35`, historical half. An `evidence_at_stance` id the corpus no
+ * longer holds is a FLAG: the fixture must load clean AND the flag must
+ * actually be raised. Asserting only the first would pass for a validator
+ * that never looked, which is the failure this pair exists to catch.
+ */
+test("evidence a standing faced is flagged when it goes, never a violation", () => {
+  const c = loadCorpus(join(FIXTURES, "valid", "evidence-at-stance-outlives-atom"));
+  assert.deepEqual(c.findings, [], "a withdrawn atom cannot retroactively break conformance");
+  assert.deepEqual(danglingRefs(c), [], "a historical reference is not a dangling reference");
+  const flags = evidenceRefsFlagged(c);
+  assert.equal(flags.length, 1, `expected one flag, got ${JSON.stringify(flags)}`);
+  assert.match(flags[0], /fx-vendor-total/);
 });
 
 /**
@@ -87,6 +105,9 @@ test("invalid fixtures are rejected, each citing its requirement", async (t) => 
       // unexamined: this suite tested every rule except the one the format
       // exists for. Found on adopting the 2026-08-25 trial's fixtures.
       findQuoteFailures(join(dir, name), c);
+      // Reference resolution is computed too (`ERF-35`), so it needs the
+      // same lift as the quote check to be assertable here.
+      c.findings.push(...danglingRefs(c));
       assert.ok(c.findings.length > 0, `expected a finding for ${expect.requirement}, got none`);
 
       const onRecord = c.findings.filter((f) => f.record === expect.record && f.field === expect.field);

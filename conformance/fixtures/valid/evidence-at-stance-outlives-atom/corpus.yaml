@@ -1,0 +1,5 @@
+type: corpus
+id: fixture-evidence-at-stance
+title: "A standing whose evidence the corpus no longer holds"
+spec_version: "0.9.0"
+classification: public

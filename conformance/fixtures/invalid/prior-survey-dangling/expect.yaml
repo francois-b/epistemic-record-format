@@ -1,0 +1,7 @@
+requirement: ERF-35
+record: fx-survey-repeat
+field: prior_survey
+because: >
+  `prior_survey` asserts a current relationship between two surveys,
+  so it MUST resolve within the deployment. A re-run that names a first
+  pass nobody holds is a broken reference, not a historical note.

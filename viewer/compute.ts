@@ -4,7 +4,7 @@
  * projection over records the corpus already holds.
  */
 import type { Atom, Claim, StandingEntry } from "../types/erf.ts";
-import type { LoadedCorpus } from "./corpus.ts";
+import type { ConformanceFinding, LoadedCorpus } from "./corpus.ts";
 import { shipsWithCorpus } from "./corpus.ts";
 
 export type Disposition =
@@ -309,24 +309,60 @@ export function unbacked(claim: Claim, c?: LoadedCorpus): boolean {
   return false;
 }
 
-/** `ERF-35`: every reference resolves. */
-export function danglingRefs(c: LoadedCorpus): string[] {
-  const out: string[] = [];
+/**
+ * `ERF-35`: a reference asserting a CURRENT relationship MUST resolve.
+ * References recording a PAST state are `evidenceRefsFlagged` below, and
+ * are flags rather than violations.
+ *
+ * Returned in the `ConformanceFinding` shape so a validator can report a
+ * dangling reference the same way it reports any other violation, and so
+ * the conformance suite can assert the rule that fired.
+ */
+export function danglingRefs(c: LoadedCorpus): ConformanceFinding[] {
+  const out: ConformanceFinding[] = [];
   const has = (id: string) => c.claims.has(id) || c.surveys.has(id);
+  const miss = (record: string, field: string, what: string) =>
+    out.push({ record, field, detail: `names ${what}, which the deployment does not hold (ERF-35)` });
   for (const [id, cl] of c.claims) {
-    for (const a of [...cl.atoms_for, ...cl.atoms_against]) {
-      if (!c.atoms.has(a)) out.push(`${id} -> atom ${a}`);
-    }
-    for (const e of cl.edges) if (!has(e.to)) out.push(`${id} -> claim ${e.to}`);
-    for (const s of cl.surveys ?? []) if (!c.surveys.has(s)) out.push(`${id} -> survey ${s}`);
+    for (const a of cl.atoms_for) if (!c.atoms.has(a)) miss(id, "atoms_for", `atom ${a}`);
+    for (const a of cl.atoms_against) if (!c.atoms.has(a)) miss(id, "atoms_against", `atom ${a}`);
+    for (const e of cl.edges) if (!has(e.to)) miss(id, "edges", `claim ${e.to}`);
+    for (const s of cl.surveys ?? []) if (!c.surveys.has(s)) miss(id, "surveys", `survey ${s}`);
   }
   for (const [id, s] of c.surveys) {
     for (const nr of s.notable_results) {
-      for (const a of nr.atoms ?? []) if (!c.atoms.has(a)) out.push(`${id} -> atom ${a}`);
+      for (const a of nr.atoms ?? []) if (!c.atoms.has(a)) miss(id, "notable_results", `atom ${a}`);
+    }
+    if (s.prior_survey && !c.surveys.has(s.prior_survey)) {
+      miss(id, "prior_survey", `survey ${s.prior_survey}`);
     }
   }
   return out;
 }
+
+/**
+ * `ERF-35`, the other half: an `evidence_at_stance` id that no longer
+ * resolves is FLAGGED, never a violation. It records what a ruler faced at
+ * the moment of ruling, and a corpus changing afterwards is an act the
+ * format permits, so it cannot retroactively make the corpus
+ * non-conforming. Same reasoning as `ERF-43`'s retired leaf.
+ */
+export function evidenceRefsFlagged(c: LoadedCorpus): string[] {
+  const out: string[] = [];
+  for (const [id, cl] of c.claims) {
+    for (const st of cl.standings ?? []) {
+      const ev = st.evidence_at_stance;
+      if (!ev) continue;
+      for (const a of [...(ev.atoms_for ?? []), ...(ev.atoms_against ?? [])]) {
+        if (!c.atoms.has(a)) {
+          out.push(`${id} standing ${st.timestamp} faced atom ${a}, which the corpus no longer holds`);
+        }
+      }
+    }
+  }
+  return out;
+}
+
 
 /** Reverse index: which claims lean on an atom. */
 export function claimsUsingAtom(c: LoadedCorpus): Map<string, string[]> {

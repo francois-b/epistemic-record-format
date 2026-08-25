@@ -977,10 +977,21 @@ are not a stored vocabulary; see `ERF-41`.
 All machine-checkable. Types express what types can express; the validator
 checks the relations no type can see.
 
-- **ERF-35** Every reference MUST resolve within the deployment (the
-  corpora read and cited together): `atoms_for`, `atoms_against`,
-  `edges.to`, and `surveys` name existing records. Ids are
+- **ERF-35** A reference asserting a *current* relationship MUST resolve
+  within the deployment (the corpora read and cited together):
+  `atoms_for`, `atoms_against`, `edges.to`, `surveys`, `prior_survey`, and
+  each `notable_results` entry's `atoms` name existing records. Ids are
   deployment-unique (`ERF-36`), so one lookup serves every record type.
+
+  A reference recording a *past state* MUST NOT be a violation when it
+  fails to resolve, and a validator MUST flag it instead. `ERF-20`'s
+  `evidence_at_stance` names the evidence a ruler faced at the moment of
+  ruling, and a corpus changing afterwards is an act the format permits,
+  so it cannot retroactively make the corpus non-conforming. This is the
+  distinction `ERF-43` draws for a retired leaf and `ERF-33` for a
+  narrative binding, and it decides how any later id-bearing field is
+  treated: ask whether the reference asserts something now or records
+  something then.
 - **ERF-36** Every record id MUST be unique across every corpus in the
   deployment, regardless of record type: one atom, claim, or survey may
   hold a given id, and no second record of any type may repeat it.

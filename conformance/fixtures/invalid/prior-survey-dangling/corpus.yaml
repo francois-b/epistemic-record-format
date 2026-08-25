@@ -1,0 +1,5 @@
+type: corpus
+id: fixture-prior-survey-dangling
+title: "A survey naming a prior survey the deployment does not hold"
+spec_version: "0.9.0"
+classification: public

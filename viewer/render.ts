@@ -12,6 +12,7 @@ import type { LoadedCorpus, Narrative } from "./corpus.ts";
 import { bindingRe, shipsWithCorpus } from "./corpus.ts";
 import {
   backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,
+  evidenceRefsFlagged,
   disposition, normalizeForCheck, quoteCheck, resolvable, staleAudits,
   staleEvidenceAudit, unbacked,
 } from "./compute.ts";
@@ -477,6 +478,7 @@ export function renderHealth(c: LoadedCorpus, captureText: (id: string) => strin
   const failed = checks.filter((x) => x.chk.state === "fail");
   const uncheckable = checks.filter((x) => x.chk.state === "uncheckable");
   const dangling = danglingRefs(c);
+  const staleEvidence = evidenceRefsFlagged(c);
 
   const list = (items: string[]) => items.length
     ? `<ul class="plain">${items.map((i) => `<li>${i}</li>`).join("")}</ul>`
@@ -502,7 +504,11 @@ ${list(failed.map((x) => `<a href="capture-${esc(x.a.id)}.html"><span class="id"
 ${list(uncheckable.map((x) => `<a href="capture-${esc(x.a.id)}.html"><span class="id">${esc(x.a.id)}</span></a> ${esc(c.sources.get(x.a.source)?.reason ?? x.chk.detail)}`))}
 
 <h2>References that do not resolve</h2>
-${list(dangling.map(esc))}
+${list(dangling.map((d) => `<span class="id">${esc(d.record)}</span> <span class="id">${esc(d.field)}</span> ${esc(d.detail)}`))}
+
+<h2>Evidence a standing faced that the corpus no longer holds</h2>
+<p class="sub">Flags, not violations. <span class="id">ERF-35</span>: a reference recording a past state cannot be made wrong by a later act the format permits.</p>
+${list(staleEvidence.map(esc))}
 
 <h2>Narrative bindings whose freshness cannot be told</h2>
 ${list(c.narratives.flatMap((n) => n.bindings.map((b) => {

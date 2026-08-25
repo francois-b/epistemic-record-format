@@ -1,0 +1,11 @@
+---
+id: fx-replication
+type: atom
+corpus: fixture-evidence-at-stance
+finding: "The replication reports a total of nine units."
+quote: |
+  The replication reports nine units.
+source: fx-src
+source_quality: high
+created: {timestamp: 2026-08-24, by: "agent/conformance-fixture"}
+---
