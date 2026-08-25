@@ -47,7 +47,10 @@ than being either.
 **History.** Why the format is the way it is, and what it does not yet do.
 
 - `CHANGELOG.md`, `README.md`, and `docs/` (purpose, non-goals, backlog,
-  influences, history)
+  influences, history). The backlog is one file per entry under
+  `docs/backlog/`, indexed by a generated `docs/backlog.md`: entries are
+  edited individually and the index is never edited by hand, because an
+  entry's state belongs in one place.
 
 ## Admitting a new kind of thing
 

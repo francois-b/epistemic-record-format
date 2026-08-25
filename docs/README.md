@@ -14,7 +14,7 @@ answers a different question, one document per question.
 |---|---|
 | [`purpose.md`](purpose.md) | What does this format do, and what does it deliberately refuse to do? |
 | [`non-goals.md`](non-goals.md) | Was this idea considered? (Permanent no, with the date and the reason.) |
-| [`backlog.md`](backlog.md) | Will it ever do X, and is anything known to be wrong? The governed queue: capabilities waiting on a trigger, defects waiting on a ruling, each with its basis and whether anyone has verified the description. |
+| [`backlog.md`](backlog.md) | Will it ever do X, and is anything known to be wrong? The index over [`backlog/`](backlog/), one file per entry, each carrying its basis, its provenance, and a verification verdict. |
 | [`influences.md`](influences.md) | Where do these ideas come from, and what does each tradition already own? |
 | [`history.md`](history.md) | Why is this rule the way it is? What was tried, measured, reversed? |
 
