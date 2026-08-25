@@ -1,0 +1,810 @@
+# The ai-capex source list (ERF-3, ERF-4, ERF-5). Phase 1 of the v0.9
+# stress battery: bull half authored by lane 3a, bear half by lane 3b,
+# merged by the orchestrator. See stress-tests/stress-test-battery-v0.9.md.
+
+sources:
+  bear-academic-humlum-genai-labor-2025:
+    citation:
+      URL: https://www.andershumlum.com/s/chatbots_july25.pdf
+      author:
+      - family: Humlum
+        given: Anders
+      - family: Vestergaard
+        given: Emilie
+      container-title: NBER Working Paper Series, No. 33777
+      issued: '2025-07-15'
+      title: Large Language Models, Small Labor Market Effects
+      type: article-journal
+    citation_text: Humlum, Anders; Vestergaard, Emilie, "Large Language Models,
+      Small Labor Market Effects" (NBER Working Paper No. 33777, July 2025)
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4
+    excerpt: true
+    fetched:
+      digest: sha256:b69543b8f45ee53675ed717114a3b57686b0f48b01b8e70c8da343330a53bb9e
+      url: https://www.andershumlum.com/s/chatbots_july25.pdf
+    path: captures/bear-academic-humlum-genai-labor-2025.md
+    status: shipped-as-quotation
+  bear-bain-tech-report-2025:
+    citation:
+      URL: https://www.bain.com/globalassets/noindex/2025/bain_report_technology_report_2025.pdf
+      author:
+      - family: Crawford
+        given: David
+      - family: Hoecker
+        given: Anne
+      - family: Aulanier
+        given: Dana
+      container-title: Bain & Company
+      issued: '2025-10-16'
+      title: 'Technology Report 2025: AI leaders are extending their edge'
+      type: report
+    citation_text: 'Crawford, David; Hoecker, Anne; Aulanier, Dana (eds.), "Technology
+      Report 2025: AI leaders are extending their edge" (Bain & Company, 6th annual
+      Global Technology Report, October 2025)'
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4
+    excerpt: true
+    fetched:
+      digest: sha256:5c22754b354527739d20ad484dd7409513355fc3924ce74d41d6ee71d4b5022a
+      url: https://www.bain.com/globalassets/noindex/2025/bain_report_technology_report_2025.pdf
+    path: captures/bear-bain-tech-report-2025.md
+    status: shipped-as-quotation
+  bear-burry-nvidia-coreweave-depreciation-2025:
+    citation:
+      URL: https://substack.com/@michaeljburry/note/c-220488532
+      author:
+      - family: Burry
+        given: Michael
+      container-title: Cassandra Unchained (Substack)
+      issued: '2026-02-27'
+      title: Substack Note on CoreWeave's Off-Balance-Sheet Structure
+      type: post-weblog
+    citation_text: Michael Burry, "Substack Note on CoreWeave's Off-Balance-Sheet
+      Structure" (Cassandra Unchained, February 2026)
+    excerpt: true
+    fetched:
+      url: https://substack.com/@michaeljburry/note/c-220488532
+    path: captures/bear-burry-nvidia-coreweave-depreciation-2025.md
+    status: shipped-as-quotation
+  bear-cahn-600b-question-2024:
+    citation:
+      URL: https://sequoiacap.com/article/ais-600b-question/
+      author:
+      - family: Cahn
+        given: David
+      container-title: Sequoia Capital
+      issued: '2024-06-20'
+      title: AI's $600B Question
+      type: post-weblog
+    citation_text: David Cahn, "AI's $600B Question" (Sequoia Capital, June 2024)
+    excerpt: true
+    fetched:
+      url: https://sequoiacap.com/article/ais-600b-question/
+    path: captures/bear-cahn-600b-question-2024.md
+    status: shipped-as-quotation
+  bear-cahn-600b-question-followup:
+    citation:
+      URL: https://sequoiacap.com/article/ai-in-2026-the-tale-of-two-ais/
+      author:
+      - family: Cahn
+        given: David
+      container-title: Sequoia Capital
+      issued: '2025-12-03'
+      title: 'AI in 2026: A Tale of Two AIs'
+      type: post-weblog
+    citation_text: 'David Cahn, "AI in 2026: A Tale of Two AIs" (Sequoia Capital,
+      December 2025)'
+    excerpt: true
+    fetched:
+      url: https://sequoiacap.com/article/ai-in-2026-the-tale-of-two-ais/
+    path: captures/bear-cahn-600b-question-followup.md
+    status: shipped-as-quotation
+  bear-chanos-ai-capex-short-thesis:
+    citation:
+      URL: https://iconnections.io/insights/jim-chanos-ai-bubble-data-centers-global-alts-ny-2026/
+      author:
+      - family: iConnections
+        given: ''
+      container-title: iConnections Insights
+      issued: '2026-06-15'
+      title: Jim Chanos on the AI Bubble & Data Center Short Thesis
+      type: webpage
+    citation_text: Jim Chanos (Kynikos Associates), remarks at Global Alts New York
+      2026, reported in "Jim Chanos on the AI Bubble & Data Center Short Thesis"
+      (iConnections Insights, June 2026)
+    excerpt: true
+    fetched:
+      url: https://iconnections.io/insights/jim-chanos-ai-bubble-data-centers-global-alts-ny-2026/
+    path: captures/bear-chanos-ai-capex-short-thesis.md
+    status: shipped-as-quotation
+  bear-circular-financing-nvidia-openai-coreweave:
+    citation:
+      URL: https://www.theregister.com/2025/11/04/the_circular_economy_of_ai/
+      author:
+      - family: Jadhav
+        given: Abhishek
+      container-title: The Register
+      issued: '2025-11-04'
+      title: Nvidia, OpenAI, and the Trillion-Dollar Loop
+      type: article-newspaper
+    citation_text: Abhishek Jadhav, "Nvidia, OpenAI, and the Trillion-Dollar Loop"
+      (The Register, November 2025)
+    excerpt: true
+    fetched:
+      url: https://www.theregister.com/2025/11/04/the_circular_economy_of_ai/
+    path: captures/bear-circular-financing-nvidia-openai-coreweave.md
+    status: shipped-as-quotation
+  bear-covello-goldman-too-much-spend-2024:
+    citation:
+      URL: https://www.goldmansachs.com/insights/top-of-mind/gen-ai-too-much-spend-too-little-benefit
+      author:
+      - family: Covello
+        given: Jim
+      - family: Nathan
+        given: Allison
+      container-title: Goldman Sachs Research — Top of Mind, Issue 129
+      issued: '2024-06-25'
+      title: 'Gen AI: too much spend, too little benefit?'
+      type: report
+    citation_text: 'Covello, Jim (interviewed by Allison Nathan), "Gen AI: Too Much
+      Spend, Too Little Benefit?" (Goldman Sachs Research, Top of Mind, Issue 129,
+      June 2024)'
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4
+    excerpt: true
+    fetched:
+      digest: sha256:0fc6c28641616ab2d788042c70ea882c6e8ff96f9145a5dd4644cc77afc99fc2
+      url: https://www.goldmansachs.com/images/migrated/insights/pages/gs-research/gen-ai--too-much-spend,-too-little-benefit-/TOM_AI%202.0_ForRedaction.pdf
+    path: captures/bear-covello-goldman-too-much-spend-2024.md
+    status: shipped-as-quotation
+  bear-damodaran-ai-bubble-valuation:
+    citation:
+      URL: https://aswathdamodaran.blogspot.com/2026/08/ais-bar-mitzvah-moment-from-hype-hope.html
+      author:
+      - family: Damodaran
+        given: Aswath
+      container-title: Musings on Markets
+      issued: '2026-08-20'
+      title: 'AI''s Bar Mitzvah Moment: From Hype & Hope to Business Questions!'
+      type: post-weblog
+    citation_text: 'Aswath Damodaran, "AI''s Bar Mitzvah Moment: From Hype & Hope
+      to Business Questions!" (Musings on Markets, August 2026)'
+    excerpt: true
+    fetched:
+      url: https://aswathdamodaran.blogspot.com/2026/08/ais-bar-mitzvah-moment-from-hype-hope.html
+    path: captures/bear-damodaran-ai-bubble-valuation.md
+    status: shipped-as-quotation
+  bear-delloro-datacenter-capex-forecast-2025:
+    citation:
+      URL: https://www.delloro.com/news/data-center-capex-surges-57-percent-in-2025-as-ai-deployments-accelerate/
+      author:
+      - family: Dell'Oro Group
+        given: ''
+      container-title: Dell'Oro Group
+      issued: '2026-03-17'
+      title: Data Center Capex Surges 57 Percent in 2025 as AI Deployments Accelerate
+      type: webpage
+    citation_text: Dell'Oro Group, "Data Center Capex Surges 57 Percent in 2025
+      as AI Deployments Accelerate" (Press Release, March 2026)
+    excerpt: true
+    fetched:
+      url: https://www.delloro.com/news/data-center-capex-surges-57-percent-in-2025-as-ai-deployments-accelerate/
+    path: captures/bear-delloro-datacenter-capex-forecast-2025.md
+    status: shipped-as-quotation
+  bear-doomberg-ai-capex-critique:
+    citation:
+      URL: https://newsletter.doomberg.com/p/old-tapes
+      author:
+      - family: Doomberg
+        given: ''
+      container-title: Doomberg
+      issued: '2026-07-22'
+      title: Old Tapes
+      type: post-weblog
+    citation_text: Doomberg, "Old Tapes" (Doomberg newsletter, July 2026)
+    excerpt: true
+    fetched:
+      url: https://newsletter.doomberg.com/p/old-tapes
+    path: captures/bear-doomberg-ai-capex-critique.md
+    status: shipped-as-quotation
+  bear-fortune-circular-ai-deals-accounting:
+    citation:
+      URL: https://fortune.com/2026/08/18/openai-data-center-deal-with-nvidia-comes-in-145-billion-lower-than-reportedsignaling-concerns-of-artificial-demand-for-chips/
+      author:
+      - family: Fortune
+        given: ''
+      container-title: Fortune
+      issued: '2026-08-18'
+      title: OpenAI data center deal with Nvidia comes in $145 billion lower than
+        reported—signaling concerns of artificial demand for chips
+      type: article-newspaper
+    citation_text: Fortune, "OpenAI Data Center Deal With Nvidia Comes In $145 Billion
+      Lower Than Reported" (Fortune, August 2026)
+    excerpt: true
+    fetched:
+      url: https://fortune.com/2026/08/18/openai-data-center-deal-with-nvidia-comes-in-145-billion-lower-than-reportedsignaling-concerns-of-artificial-demand-for-chips/
+    path: captures/bear-fortune-circular-ai-deals-accounting.md
+    status: shipped-as-quotation
+  bear-gmo-grantham-chancellor-ai-bubble:
+    citation:
+      URL: https://www.gmo.com/globalassets/articles/viewpoints/2026/gmo_valuing-ai-extreme-bubble---new-golden-era---or-both_1-26.pdf
+      author:
+      - family: Grantham
+        given: Jeremy
+      - family: Chancellor
+        given: Edward
+      container-title: GMO Viewpoints
+      issued:
+        date-parts:
+        - - 2026
+          - 1
+      title: 'Valuing AI: Extreme Bubble, New Golden Era, or Both? / Anatomy of
+        a Technology Mania'
+      type: report
+    citation_text: 'Jeremy Grantham and Edward Chancellor, "Valuing AI: Extreme
+      Bubble, New Golden Era, or Both?" (GMO Viewpoints, January 2026)'
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4
+    excerpt: true
+    fetched:
+      digest: sha256:5daf528f000353864983475af0a247db67acd8e529eff39ff6144dcc5bc381b9
+      url: https://www.gmo.com/globalassets/articles/viewpoints/2026/gmo_valuing-ai-extreme-bubble---new-golden-era---or-both_1-26.pdf
+    path: captures/bear-gmo-grantham-chancellor-ai-bubble.md
+    status: shipped-as-quotation
+  bear-goldman-ai-bubble-debate-2025:
+    citation:
+      URL: https://www.goldmansachs.com/pdfs/insights/goldman-sachs-research/ai-in-a-bubble/report.pdf
+      author:
+      - family: Cahn
+        given: David
+      - family: Nathan
+        given: Allison
+      container-title: Goldman Sachs Research — Top of Mind, Issue 143
+      issued: '2025-10-22'
+      title: 'AI: in a bubble?'
+      type: report
+    citation_text: 'Cahn, David (interviewed by Allison Nathan), "AI: In a Bubble?"
+      (Goldman Sachs Research, Top of Mind, Issue 143, October 2025)'
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4
+    excerpt: true
+    fetched:
+      digest: sha256:b8c393fe7ecf0595443557ab2853fb27aa33e01b5248a8ec7b59a64dffc49659
+      url: https://www.goldmansachs.com/pdfs/insights/goldman-sachs-research/ai-in-a-bubble/report.pdf
+    path: captures/bear-goldman-ai-bubble-debate-2025.md
+    status: shipped-as-quotation
+  bear-iea-electricity-2025:
+    citation:
+      URL: https://www.iea.org/reports/electricity-2025
+      author:
+      - family: International Energy Agency
+        given: ''
+      container-title: IEA
+      issued: '2025-02-14'
+      title: Electricity 2025
+      type: report
+    citation_text: International Energy Agency, "Electricity 2025" (IEA, February
+      2025)
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4
+    excerpt: true
+    fetched:
+      digest: sha256:08fffb29edf8468c0a795a9b4eab2298a8059dce4307e97ade5b5ab4e9179f9e
+      url: https://iea.blob.core.windows.net/assets/7c671ef6-2947-4e87-beea-af0e1288e1d7/Electricity2025.pdf
+    path: captures/bear-iea-electricity-2025.md
+    status: shipped-as-quotation
+  bear-iea-energy-and-ai-2025:
+    citation:
+      URL: https://www.iea.org/reports/energy-and-ai
+      author:
+      - family: International Energy Agency
+        given: ''
+      container-title: World Energy Outlook Special Report
+      issued: '2025-04-10'
+      title: Energy and AI
+      type: report
+    citation_text: International Energy Agency, "Energy and AI" (World Energy Outlook
+      Special Report, April 2025)
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4
+    excerpt: true
+    fetched:
+      digest: sha256:3956b80152d4aac6b659a09d0cd7671a4bd53efeeb067e4d50df4230701b33e4
+      url: https://iea.blob.core.windows.net/assets/de9dea13-b07d-42c5-a398-d1b3ae17d866/EnergyandAI.pdf
+    path: captures/bear-iea-energy-and-ai-2025.md
+    status: shipped-as-quotation
+  bear-kedrosky-ai-capex-critique:
+    citation:
+      URL: https://www.edwardconard.com/macro-roundup/paul-kedrosky-estimates-that-ai-capex-drove-20-to-40-of-us-gdp-growth-of-3-in-q2-for-practical-purposes-ai-capex-ate-q2-gdp-growth/
+      author:
+      - family: Kedrosky
+        given: Paul
+      container-title: Applied Complexity (paulkedrosky.com)
+      issued: '2025-07-31'
+      title: Honey, AI Capex Keeps Eating ... Everything
+      type: post-weblog
+    citation_text: Paul Kedrosky, "Honey, AI Capex Keeps Eating ... Everything"
+      (Applied Complexity, July 2025), excerpted via Edward Conard Macro Roundup
+    excerpt: true
+    fetched:
+      url: https://www.edwardconard.com/macro-roundup/paul-kedrosky-estimates-that-ai-capex-drove-20-to-40-of-us-gdp-growth-of-3-in-q2-for-practical-purposes-ai-capex-ate-q2-gdp-growth/?view=detail&topic_filter=innovation-research
+    path: captures/bear-kedrosky-ai-capex-critique.md
+    status: shipped-as-quotation
+  bear-marcus-ai-bubble:
+    citation:
+      URL: https://garymarcus.substack.com/p/peak-bubble
+      author:
+      - family: Marcus
+        given: Gary
+      container-title: Marcus on AI
+      issued: '2025-09-11'
+      title: Peak bubble
+      type: post-weblog
+    citation_text: Gary Marcus, "Peak bubble" (Marcus on AI, September 2025)
+    excerpt: true
+    fetched:
+      url: https://garymarcus.substack.com/p/peak-bubble
+    path: captures/bear-marcus-ai-bubble.md
+    status: shipped-as-quotation
+  bear-mckinsey-cost-of-compute-2025:
+    citation:
+      URL: https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/the-cost-of-compute-a-7-trillion-dollar-race-to-scale-data-centers
+      author:
+      - family: Noffsinger
+        given: Jesse
+      - family: Patel
+        given: Mark
+      - family: Sachdeva
+        given: Pankaj
+      container-title: McKinsey Quarterly
+      issued: '2025-04-28'
+      title: 'The cost of compute: A $7 trillion race to scale data centers'
+      type: article-journal
+    citation_text: 'Noffsinger, Jesse; Patel, Mark; Sachdeva, Pankaj, "The cost
+      of compute: A $7 trillion race to scale data centers" (McKinsey Quarterly,
+      April 2025)'
+    excerpt: true
+    fetched:
+      url: https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/the-cost-of-compute-a-7-trillion-dollar-race-to-scale-data-centers
+    path: captures/bear-mckinsey-cost-of-compute-2025.md
+    status: shipped-as-quotation
+  bear-mit-nanda-genai-divide-2025:
+    citation:
+      URL: https://cloudelligent.com/wp-content/uploads/2026/02/v0.1_State_of_AI_in_Business_2025_Report.pdf
+      author:
+      - family: Challapally
+        given: Aditya
+      - family: Pease
+        given: Chris
+      - family: Raskar
+        given: Ramesh
+      - family: Chari
+        given: Pradyumna
+      container-title: MIT NANDA (Project NANDA)
+      issued: 2025-07
+      title: 'The GenAI Divide: State of AI in Business 2025'
+      type: report
+    citation_text: 'Challapally, Aditya; Pease, Chris; Raskar, Ramesh; Chari, Pradyumna,
+      "The GenAI Divide: State of AI in Business 2025" (MIT NANDA / Project NANDA,
+      July 2025)'
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4
+    excerpt: true
+    fetched:
+      digest: sha256:dd5c5f53b9b013705c1b7377f75dd056955d3ff215c7076562c553ac8a55b68f
+      url: https://cloudelligent.com/wp-content/uploads/2026/02/v0.1_State_of_AI_in_Business_2025_Report.pdf
+    path: captures/bear-mit-nanda-genai-divide-2025.md
+    status: shipped-as-quotation
+  bear-slok-apollo-ai-bubble-dotcom:
+    citation:
+      URL: https://www.apolloacademy.com/ai-bubble-today-is-bigger-than-the-it-bubble-in-the-1990s/
+      author:
+      - family: Slok
+        given: Torsten
+      container-title: Apollo Academy
+      issued: '2025-07-16'
+      title: AI Bubble Today Is Bigger Than the IT Bubble in the 1990s
+      type: webpage
+    citation_text: Torsten Slok, "AI Bubble Today Is Bigger Than the IT Bubble in
+      the 1990s" (Apollo Academy, July 2025)
+    fetched:
+      url: https://www.apolloacademy.com/ai-bubble-today-is-bigger-than-the-it-bubble-in-the-1990s/
+    reason: 'Page carries an explicit institutional distribution restriction, not
+      a generic copyright notice: "This presentation may not be distributed, transmitted
+      or otherwise communicated to others in whole or in part without the express
+      consent of Apollo Global Management, Inc." This plainly forbids even a short
+      excerpt, so the quotation route the cheat-sheet defaults to does not apply
+      here. No capture shipped; the source entry records the chart''s headline claim
+      and date for later reference by title/URL only.'
+    status: not-redistributable
+  bear-synergy-hyperscale-capex-2025:
+    citation:
+      URL: https://www.srgresearch.com/articles/hyperscale-spending-spree-is-driving-dramatic-growth-in-data-center-capacity
+      author:
+      - family: Synergy Research Group
+        given: ''
+      container-title: Synergy Research Group
+      issued: '2025-12-19'
+      title: Hyperscale Spending Spree is Driving Dramatic Growth in Data Center
+        Capacity
+      type: webpage
+    citation_text: Synergy Research Group, "Hyperscale Spending Spree is Driving
+      Dramatic Growth in Data Center Capacity" (Press Release, December 2025)
+    excerpt: true
+    fetched:
+      url: https://www.srgresearch.com/articles/hyperscale-spending-spree-is-driving-dramatic-growth-in-data-center-capacity
+    path: captures/bear-synergy-hyperscale-capex-2025.md
+    status: shipped-as-quotation
+  bear-zitron-haters-guide-ai-bubble:
+    citation:
+      URL: https://www.wheresyoured.at/the-haters-gui/
+      author:
+      - family: Zitron
+        given: Ed
+      container-title: Where's Your Ed At
+      issued: '2025-07-21'
+      title: The Hater's Guide To The AI Bubble
+      type: post-weblog
+    citation_text: Ed Zitron, "The Hater's Guide To The AI Bubble" (Where's Your
+      Ed At, July 2025)
+    excerpt: true
+    fetched:
+      url: https://www.wheresyoured.at/the-haters-gui/
+    path: captures/bear-zitron-haters-guide-ai-bubble.md
+    status: shipped-as-quotation
+  bear-zitron-subprime-ai-crisis:
+    citation:
+      URL: https://www.wheresyoured.at/subprimeai/
+      author:
+      - family: Zitron
+        given: Ed
+      container-title: Where's Your Ed At
+      issued: '2024-09-16'
+      title: The Subprime AI Crisis
+      type: post-weblog
+    citation_text: Ed Zitron, "The Subprime AI Crisis" (Where's Your Ed At, September
+      2024)
+    excerpt: true
+    fetched:
+      url: https://www.wheresyoured.at/subprimeai/
+    path: captures/bear-zitron-subprime-ai-crisis.md
+    status: shipped-as-quotation
+  bull-amzn-10q-2026q2:
+    citation_text: Amazon.com, Inc., Form 10-Q for the quarter ended June 30, 2026
+      (filed 2026-07-31, SEC accession 0001018724-26-000026), Item 2 (MD&A, Liquidity
+      and Capital Resources)
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:d07b8a88fa442c2c55bd65b3f1d336ca16e7d1e9fda831e1063d24adea60e4eb
+      url: https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm
+    licence_name: U.S. SEC filing, public-record financial disclosure, treated as
+      freely shippable per operator instruction
+    path: captures/bull-amzn-10q-2026q2.md
+    status: shipped
+  bull-amzn-earnings-release-2026q2:
+    citation_text: Amazon.com, Inc., "Amazon.com Announces Second Quarter Results"
+      (2026-07-30), Exhibit 99.1 to Form 8-K, SEC accession 0001018724-26-000024
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:3a867450183833d4b7f4ed73d81e9492f8117cb49ea6bd1986e9ad0ecd231895
+      url: https://www.sec.gov/Archives/edgar/data/1018724/000101872426000024/amzn-20260630xex991.htm
+    path: captures/bull-amzn-earnings-release-2026q2.md
+    status: shipped-as-quotation
+  bull-amzn-jassy-shareholder-letter-2025:
+    citation_text: Andy Jassy, "Amazon CEO Andy Jassy's 2025 Letter to Shareholders",
+      aboutamazon.com, published 2026-04-09
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:33ffeaf1a0e69a32d6c36d5130b9aa09fa690b0bf34dd7da9cb45063accf31e1
+      url: https://www.aboutamazon.com/news/company-news/amazon-ceo-andy-jassy-2025-letter-to-shareholders
+    path: captures/bull-amzn-jassy-shareholder-letter-2025.md
+    status: shipped-as-quotation
+  bull-anthropic-50b-infrastructure:
+    citation_text: Anthropic, "Anthropic invests $50 billion in American AI infrastructure",
+      anthropic.com/news, 2025-11-12
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:83b77aa74f39b00196459415d6d0ed6e5a4110f98954042e3db333c0de862671
+      url: https://www.anthropic.com/news/anthropic-invests-50-billion-in-american-ai-infrastructure
+    path: captures/bull-anthropic-50b-infrastructure.md
+    status: shipped-as-quotation
+  bull-anthropic-amazon-compute-2026:
+    citation_text: Anthropic/Amazon, "Anthropic and Amazon expand collaboration
+      for up to 5 gigawatts of new compute", anthropic.com/news, 2026-04-20
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:749cae5f0c105a9baa6b661568bc084f36683e4b3801fdbacee332b0b04df9be
+      url: https://www.anthropic.com/news/anthropic-amazon-compute
+    path: captures/bull-anthropic-amazon-compute-2026.md
+    status: shipped-as-quotation
+  bull-avgo-earnings-release-2026q2:
+    citation_text: Broadcom Inc., Q2 Fiscal Year 2026 earnings press release (Hock
+      Tan, Kirsten Spears), Exhibit 99 to Form 8-K, 2026-06-03, SEC accession 0001730168-26-000051
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:e142b67577a310f1cdc676d404f9e86851980555f0cdc916923fbe79f1fae695
+      url: https://www.sec.gov/Archives/edgar/data/1730168/000173016826000051/avgo-05032026x8kxex99.htm
+    path: captures/bull-avgo-earnings-release-2026q2.md
+    status: shipped-as-quotation
+  bull-bea-gdp-q1-2026:
+    citation_text: U.S. Bureau of Economic Analysis, "GDP (Advance Estimate), 1st
+      Quarter 2026" (BEA 26-21), released 2026-04-30
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:74fe82513c975b925248d44ce27b7d5f4830ff43b05346310fb4cc378012e2c7
+      url: https://www.bea.gov/news/2026/gdp-advance-estimate-1st-quarter-2026
+    licence_name: U.S. Government Work, public domain under 17 U.S.C. §105 (BEA
+      is a federal statistical agency; this release is authored by federal employees
+      in the course of official duties)
+    path: captures/bull-bea-gdp-q1-2026.md
+    status: shipped
+  bull-bloomberg-ai-bull-run-2026:
+    citation_text: Bloomberg Professional Services, "AI bull run to endure in 2026
+      on cash flows from apps, ETFs", bloomberg.com/professional/ insights/markets
+    fetched:
+      url: https://www.bloomberg.com/professional/insights/markets/ai-bull-run-to-endure-in-2026-on-cash-flows-from-apps-etfs/
+    reason: Attempted fetch (2026-08-24) returned Bloomberg's bot-check / access-gate
+      page (title 'Bloomberg - Are you a robot?'), not the article body; Bloomberg
+      content sits behind a subscription/access wall whose terms are accepted to
+      view it at all, independent of copyright, the ERF-5 access-restricted category
+      rather than not-redistributable, since the block is at the reading step, not
+      only republication. No capture held; this entry records the source's existence
+      (found via WebSearch snippet quoting its headline claim) without holding its
+      text.
+    status: access-restricted
+  bull-crwv-10q-2026q2:
+    citation_text: CoreWeave, Inc., Form 10-Q for the quarter ended June 30, 2026
+      (filed 2026-08-12, SEC accession 0001769628-26-000366), Item 1 (Notes, Remaining
+      Performance Obligations and Property and Equipment)
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:5ef1bddf52a356c5c8a77ebba2b53b35a7c35ac669b27e8fa7842f1f301124e7
+      url: https://www.sec.gov/Archives/edgar/data/1769628/000176962826000366/crwv-20260630.htm
+    licence_name: U.S. SEC filing, public-record financial disclosure, treated as
+      freely shippable per operator instruction
+    path: captures/bull-crwv-10q-2026q2.md
+    status: shipped
+  bull-futurum-ai-capex-2026:
+    citation_text: 'Futurum Group, "AI Capex 2026: The $690B Infrastructure Sprint",
+      futurumgroup.com/insights'
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:7e35e1bb74c53fbc4fbee60bdd31238e8c5b313d1f63769ee75595d2a1cd62a8
+      url: https://futurumgroup.com/insights/ai-capex-2026-the-690b-infrastructure-sprint/
+    path: captures/bull-futurum-ai-capex-2026.md
+    status: shipped-as-quotation
+  bull-googl-10q-2026q2:
+    citation_text: Alphabet Inc., Form 10-Q for the quarter ended June 30, 2026
+      (filed 2026-07-23, SEC accession 0001652044-26-000071), Item 2 (MD&A, Capital
+      Expenditures and Leases)
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:fecfbc2683f630380b17937278ce3745eca150eb90e21a945fd6b78fe19728c7
+      url: https://www.sec.gov/Archives/edgar/data/1652044/000165204426000071/goog-20260630.htm
+    licence_name: U.S. SEC filing, public-record financial disclosure, treated as
+      freely shippable per operator instruction
+    path: captures/bull-googl-10q-2026q2.md
+    status: shipped
+  bull-googl-earnings-call-2026q2:
+    citation_text: Alphabet Inc., Q2 2026 Earnings Call transcript (Sundar Pichai,
+      Anat Ashkenazi), 2026-07-22, published by Alphabet Investor Relations
+    converter:
+      deterministic: true
+      tool: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt: true
+    fetched:
+      digest: sha256:de938411f77818b147ff51d8ca2f70081f9a44401d396f1779ab5b5adfbd9123
+      url: https://s206.q4cdn.com/479360582/files/doc_events/2026/Jul/22/2026_Q2_Earnings_Transcript.pdf
+    path: captures/bull-googl-earnings-call-2026q2.md
+    status: shipped-as-quotation
+  bull-jpmorgan-ai-infrastructure-financing:
+    citation_text: J.P. Morgan, "Financing AI infrastructure and U.S. data centers",
+      jpmorgan.com/insights (John Servidea, Scott Wilcoxen quoted)
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:b0477e84624e451122cc27d49e999aeec925b756f7a207f45330d74665494213
+      url: https://www.jpmorgan.com/insights/banking/capital-markets/financing-ai-infrastructure-data-centers
+    path: captures/bull-jpmorgan-ai-infrastructure-financing.md
+    status: shipped-as-quotation
+  bull-meta-10q-2026q2:
+    citation_text: Meta Platforms, Inc., Form 10-Q for the quarter ended June 30,
+      2026 (filed 2026-07-30, SEC accession 0001628280-26-050705), Item 2 (MD&A,
+      Liquidity and Capital Resources)
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:b294c4f08edb78d0700cb82c86a0141a2cef38e4f1c2bb02b16ff1ce564a8492
+      url: https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm
+    licence_name: U.S. SEC filing, public-record financial disclosure, treated as
+      freely shippable per operator instruction
+    path: captures/bull-meta-10q-2026q2.md
+    status: shipped
+  bull-meta-earnings-release-2026q2:
+    citation_text: Meta Platforms, Inc., "Meta Reports Second Quarter 2026 Results"
+      (2026-07-29), Exhibit 99.1 to Form 8-K, SEC accession 0001628280-26-050596
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:96497fb80bc902097c756499df1f673303488652aa5460cfcc567546ed6cc31c
+      url: https://www.sec.gov/Archives/edgar/data/1326801/000162828026050596/meta-06302026xexhibit991.htm
+    path: captures/bull-meta-earnings-release-2026q2.md
+    status: shipped-as-quotation
+  bull-meta-zuckerberg-superintelligence-letter:
+    citation_text: Mark Zuckerberg, "Personal Superintelligence" (open letter),
+      meta.com/superintelligence/, 2025-07-30
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:990212e78f6b5818d3e4985972e36cc9d5d7cbb715f0abf3b58d0273532aeda6
+      url: https://www.meta.com/superintelligence/
+    path: captures/bull-meta-zuckerberg-superintelligence-letter.md
+    status: shipped-as-quotation
+  bull-msft-10k-2026:
+    citation_text: Microsoft Corporation, Form 10-K for the fiscal year ended June
+      30, 2026 (filed 2026-07-29, SEC accession 0001193125-26-323660), Item 1A (Risk
+      Factors), Item 7 (MD&A), Item 8 (Cash Flows Statements)
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:4bcf2da2871acc19e32c5a62f36f6d83d6aae03cdc4aaa9a86a9a21ee8223f02
+      url: https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm
+    licence_name: U.S. SEC filing, statutorily mandated public disclosure; treated
+      as freely shippable per operator instruction (public-record financial filing,
+      not a copyright-asserted work in practice); no SPDX identifier fits precisely,
+      see friction-log
+    path: captures/bull-msft-10k-2026.md
+    status: shipped
+  bull-msft-earnings-call-fy26q4:
+    citation_text: Microsoft Corporation, FY2026 Q4 Earnings Call prepared remarks
+      (Satya Nadella, Amy Hood), 2026-07-29, published by Microsoft Investor Relations
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (docx to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:b1ba4245f1940a27b58c80f7c085473b6790007aa563347756268455aeb779ae
+      url: https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/TranscriptFY26Q4.docx
+    path: captures/bull-msft-earnings-call-fy26q4.md
+    status: shipped-as-quotation
+  bull-nvda-10q-2026q1:
+    citation_text: NVIDIA Corporation, Form 10-Q for the quarter ended April 26,
+      2026 (fiscal Q1 2027; filed 2026-05-20, SEC accession 0001045810-26-000052),
+      Item 1 (Notes) and Item 2 (MD&A)
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:1b5de37b973da4a3f1cd31a09aa455c01c519ea7cc409c73de2250ad156f99e4
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000052/nvda-20260426.htm
+    licence_name: U.S. SEC filing, public-record financial disclosure, treated as
+      freely shippable per operator instruction
+    path: captures/bull-nvda-10q-2026q1.md
+    status: shipped
+  bull-nvda-msft-anthropic-partnership-2026:
+    citation_text: NVIDIA/Microsoft/Anthropic, "Microsoft, NVIDIA and Anthropic
+      Announce Strategic Partnerships", NVIDIA blog (published simultaneously on
+      the Microsoft, NVIDIA, and Anthropic newsrooms)
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:70419cb0bb4117c51dbef2360f63b154f09ca18d400f9ee53008ec1f5bd11a9f
+      url: https://blogs.nvidia.com/blog/microsoft-nvidia-anthropic-announce-partnership/
+    path: captures/bull-nvda-msft-anthropic-partnership-2026.md
+    status: shipped-as-quotation
+  bull-nvda-openai-10gw-partnership-2026:
+    citation_text: NVIDIA Corporation, "OpenAI and NVIDIA Announce Strategic Partnership
+      to Deploy 10 Gigawatts of NVIDIA Systems", NVIDIA Newsroom press release
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:adfc8094717cbd76cec0e9883b6a4da5549fb87ab4521f0d34c860c1a19fab77
+      url: https://nvidianews.nvidia.com/news/openai-and-nvidia-announce-strategic-partnership-to-deploy-10gw-of-nvidia-systems
+    path: captures/bull-nvda-openai-10gw-partnership-2026.md
+    status: shipped-as-quotation
+  bull-nvda-openai-ports-pike-2026:
+    citation_text: NVIDIA Corporation, "NVIDIA Guarantees SB Energy's PORTS-Pike
+      Technology Campus in Ohio to Exclusively Host NVIDIA AI Compute" (2026-08-17),
+      Exhibit 99.1 to Form 8-K, SEC accession 0001045810-26-000069
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:e3c39df5be133417c6f3b097cf6f81a5f502443bc4203eba55275fe2ad96f096
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000069/sbeoainvidia-portsrelease.htm
+    path: captures/bull-nvda-openai-ports-pike-2026.md
+    status: shipped-as-quotation
+  bull-orcl-10k-2026:
+    citation_text: Oracle Corporation, Form 10-K for the fiscal year ended May 31,
+      2026 (filed 2026-06-22, SEC accession 0001193125-26-277521), Item 7 (MD&A,
+      Remaining Performance Obligations and Capital Expenditures)
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:6cd094af28aa16098cad795bf785be1866d69e59605aed1d6aef75a911a5766b
+      url: https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm
+    licence_name: U.S. SEC filing, public-record financial disclosure, treated as
+      freely shippable per operator instruction
+    path: captures/bull-orcl-10k-2026.md
+    status: shipped
+  bull-orcl-earnings-release-2026q4:
+    citation_text: Oracle Corporation, "Oracle Announces Record Q4 and FY 2026 Results
+      Driven by Cloud Infrastructure & Cloud Applications" (2026-06-10), Exhibit
+      99.1 to Form 8-K, SEC accession 0001193125-26-265848
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:5f18e9a8297707330f846d037ba0832cc5ba94536d840008169bdb2659c71937
+      url: https://www.sec.gov/Archives/edgar/data/1341439/000119312526265848/orcl-ex99_1.htm
+    path: captures/bull-orcl-earnings-release-2026q4.md
+    status: shipped-as-quotation
+  bull-samaltman-abundant-intelligence:
+    citation_text: Sam Altman, "Abundant Intelligence", blog.samaltman.com, 2025-09-23
+    converter:
+      deterministic: true
+      tool: pandoc 3.8.3 (html to plain)
+    excerpt: true
+    fetched:
+      digest: sha256:82be3a2d057631957f567168089b0a4899a1c8f354103bc92997e46375883843
+      url: https://blog.samaltman.com/abundant-intelligence
+    path: captures/bull-samaltman-abundant-intelligence.md
+    status: shipped-as-quotation
