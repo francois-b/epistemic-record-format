@@ -1,7 +1,5 @@
 sources:
   fx-src:
     citation_text: "Fixture source, 2026, https://example.org/the-page"
-    capture:
-      status: "not-redistributable"
-      path: null
-      reason: "Fixture; no capture ships."
+    status: "not-redistributable"
+    reason: "Fixture; no capture ships."

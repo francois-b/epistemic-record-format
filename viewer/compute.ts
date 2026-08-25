@@ -109,10 +109,8 @@ export function resolvable(atomId: string, c: LoadedCorpus): { ok: boolean; why:
   // Reporting both as "no capture recorded" collapses the distinction the
   // rule is for.
   if (!src) return { ok: false, why: "the atom names no source the source list holds, which is a defect in the corpus rather than a statement about this atom (ERF-4)" };
-  const cap = src.capture;
-  if (!cap) return { ok: false, why: "the source records no capture entry (ERF-4)" };
-  if (shipsWithCorpus(cap) && cap.path) return { ok: true, why: "captured copy travels with the corpus" };
-  return { ok: false, why: cap.reason ?? `capture recorded as absent, status: ${cap.status}` };
+  if (shipsWithCorpus(src) && src.path) return { ok: true, why: "captured copy travels with the corpus" };
+  return { ok: false, why: src.reason ?? `capture recorded as absent, status: ${src.status}` };
 }
 
 export interface BackingReading {

@@ -1,6 +1,6 @@
 requirement: ERF-5
 record: fx-src
-field: sources.yaml
+field: reason
 because: >
   A source recording an absence carries a reason from the closed set and a
   human-readable note, so a reader learns why the check cannot run rather

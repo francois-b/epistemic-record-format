@@ -3,8 +3,8 @@
 # is one entry of `sources.yaml`, keyed by its id; it is shown here in store
 # form with the id as a field. The capture is a hand-selected excerpt
 # (ERF-69) converted from a scanned PDF by a named, deterministic tool
-# (ERF-70), with the source artifact pinned by locator and digest (ERF-71):
-# a reader who fetches the PDF confirms it is the one the author held, then
+# (ERF-70), with the fetched artifact pinned by its digest (ERF-71): a
+# reader who fetches the PDF confirms it is the one the author held, then
 # re-runs the conversion and the containment check themselves. The embedded
 # OCR text layer is not a source of nondeterminism: the recognition ran
 # once, before the artifact existed, and the digest pins its result.
@@ -18,11 +18,10 @@ citation:
   title: "Particularis de Computis et Scripturis"
   issued: 1494
   translator: [{family: Geijsbeek, given: John B.}]
-fetched_url: "https://archive.org/details/ancientdoubleent00geij"
-capture:
-  status: shipped-as-quotation
-  path: captures/pacioli-1494-geijsbeek.md
-  excerpt: true
-  converter: {tool: "pymupdf4llm 0.3.4", deterministic: true}
-  source_locator: "https://archive.org/download/ancientdoubleent00geijuoft/ancientdoubleent00geijuoft.pdf"
-  source_digest: "sha256:05e58ce3f2589584d7d36446c46e2f74ab14f33ee6d1f0f20ef5e21c2aeaf2aa"
+fetched:
+  url: "https://archive.org/download/ancientdoubleent00geijuoft/ancientdoubleent00geijuoft.pdf"
+  digest: "sha256:05e58ce3f2589584d7d36446c46e2f74ab14f33ee6d1f0f20ef5e21c2aeaf2aa"
+status: shipped-as-quotation
+path: captures/pacioli-1494-geijsbeek.md
+excerpt: true
+converter: {tool: "pymupdf4llm 0.3.4", deterministic: true}

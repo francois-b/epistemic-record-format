@@ -6,6 +6,42 @@ are never reused, and every change lands here with a date.
 
 ## Unreleased
 
+### 2026-08-24 — the source flattens to one shape
+
+Operator review of the day's additions found structure without data
+behind it: `Source` nested a `CaptureEntry` that nested a `Converter`,
+three interfaces and two levels for a relationship `ERF-2` makes strictly
+one-to-one (a revised document is a new source, so a source has exactly
+one capture, forever). The source is now one flat shape. `CaptureEntry`
+is deleted; `converter` stays a small object ({tool, deterministic}) by
+operator ruling.
+
+Two field defects went with the nesting. `source_locator` and
+`source_digest` stuttered inside their own entity (`source.source_digest`)
+and split one concept across two fields beside a third (`fetched_url`)
+that overlapped both. There is now exactly one retrieval concept:
+`fetched`, with `url` (the artifact actually retrieved, the file itself
+and never a landing page describing it, per operator ruling) and an
+optional `digest` ("sha256:<hex>") where the location serves stable
+bytes. `ERF-7` and `ERF-71` reword accordingly; a source that cannot be
+pinned simply carries no digest, which itself tells a reader what kind
+of source it was.
+
+Two vocabulary retirements in the same pass. "Corpus artifact", coined
+yesterday to group three shapes, has nothing left to group and is gone:
+the spec now says records and, beside them, the corpus's declaration and
+its sources, with the one distinction that matters stated where the
+source is defined (a source is not a record: no created stamp, no
+standings, no disposition, because nobody asserts a source). And `ERF-3`
+stops mandating "a YAML document": the source list is stated
+substrate-neutrally like everything else, with the YAML form as its
+section 7 interchange form, ending an inconsistency where records could
+live in any store and sources were chained to a file format.
+
+`path: null` entries disappear (the model's `path` is optional; absence
+is the absence). The example corpus, both standalone source examples,
+every fixture, and the hygiene roster flatten to match.
+
 ### 2026-08-24 — the source becomes a corpus artifact
 
 The format's section 4.1 was titled "The source" and defined no source:

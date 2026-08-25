@@ -10,9 +10,9 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, basename } from "node:path";
 import yaml from "js-yaml";
-import type { Atom, Claim, Survey, CaptureEntry, Source, CorpusDeclaration } from "../types/erf.ts";
+import type { Atom, Claim, Survey, Source, CorpusDeclaration } from "../types/erf.ts";
 
-export type { CaptureEntry, Source, CorpusDeclaration };
+export type { Source, CorpusDeclaration };
 
 /** A place where the corpus and the normative model disagree. */
 export interface ConformanceFinding {
@@ -89,14 +89,14 @@ function splitFrontmatter(text: string): { data: Record<string, unknown>; body: 
 }
 
 /**
- * A capture that ships, on either basis: under a licence (`shipped`) or as a
- * short quotation under none (`shipped-as-quotation`). The two are separate
- * statuses because the permission differs and `ERF-68` requires the entry to
- * say which; nothing downstream of the permission cares, so every reader asks
- * this question instead of comparing to a literal.
+ * A source whose capture ships, on either basis: under a licence (`shipped`)
+ * or as a short quotation under none (`shipped-as-quotation`). The two are
+ * separate statuses because the permission differs and `ERF-68` requires the
+ * source to say which; nothing downstream of the permission cares, so every
+ * reader asks this question instead of comparing to a literal.
  */
-export const shipsWithCorpus = (cap: { status: string } | undefined): boolean =>
-  cap?.status === "shipped" || cap?.status === "shipped-as-quotation";
+export const shipsWithCorpus = (src: { status: string } | undefined): boolean =>
+  src?.status === "shipped" || src?.status === "shipped-as-quotation";
 
 function listDir(dir: string, ext = ".md"): string[] {
   if (!existsSync(dir)) return [];
@@ -212,7 +212,7 @@ function checkCitationText(data: Record<string, unknown>, id: string, findings: 
       record: id,
       field: "citation_text",
       detail: "contains a URL; citation_text MUST NOT (ERF-7). The retrieved "
-        + "locator is fetched_url; a web-native work's identity is citation.URL.",
+        + "locator is fetched.url; a web-native work's identity is citation.URL.",
     });
   }
 }
@@ -528,19 +528,18 @@ export function loadCorpus(dir: string): LoadedCorpus {
   for (const [sid, src] of sources) {
     // `ERF-7`: a citation identifies a work; a locator retrieves one copy.
     checkCitationText(src as unknown as Record<string, unknown>, sid, findings);
-    const cap = src.capture;
-    if (!cap) {
+    if (!src.status) {
       findings.push({
         record: sid,
-        field: "sources.yaml",
-        detail: "source has no capture entry; every source records a capture "
+        field: "status",
+        detail: "source carries no status; every source records a capture "
           + "or an explicit absence with a reason (ERF-4).",
       });
-    } else if (!shipsWithCorpus(cap) && !cap.reason) {
+    } else if (!shipsWithCorpus(src) && !src.reason) {
       findings.push({
         record: sid,
-        field: "sources.yaml",
-        detail: `capture status ${cap.status} carries no reason (ERF-5)`,
+        field: "reason",
+        detail: `status ${src.status} carries no reason (ERF-5)`,
       });
     }
   }

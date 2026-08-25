@@ -27,46 +27,42 @@ sources:
     citation_text: "Hellyer, \"Evaluating Shepard's, KeyCite, and BCite for
       Case Validation Accuracy\", Law Library Journal 110:4 (2018) —
       peer-reviewed study, 357 citing relationships"
-    capture:
-      status: not-redistributable
-      path: null
-      reason: "Journal article. Freely readable at the publisher, but no
-        licence grants redistribution of the text by a third party."
+    status: not-redistributable
+    reason: "Journal article. Freely readable at the publisher, but no
+      licence grants redistribution of the text by a third party."
 
   ragas-faithfulness-docs:
     citation_text: "RAGAS documentation, \"Faithfulness\""
-    fetched_url: https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/faithfulness/
-    capture:
-      status: licence-unverified
-      path: null
-      reason: "The project's code is Apache-2.0, but the documentation site
-        carries no explicit content licence, so redistribution rights are
-        unverified. Unverified is not permission."
+    fetched:
+      url: https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/faithfulness/
+    status: licence-unverified
+    reason: "The project's code is Apache-2.0, but the documentation site
+      carries no explicit content licence, so redistribution rights are
+      unverified. Unverified is not permission."
 
   guru-verification-docs:
     citation_text: "Guru product documentation, \"What is Verification\""
-    fetched_url: https://www.getguru.com/product/verification
-    capture:
-      status: not-redistributable
-      path: null
-      reason: "Vendor product documentation, all rights reserved."
+    fetched:
+      url: https://www.getguru.com/product/verification
+    status: not-redistributable
+    reason: "Vendor product documentation, all rights reserved."
 
   w3c-prov-dm-2013:
     citation_text: "W3C, \"PROV-DM: The PROV Data Model\", W3C
       Recommendation, 30 April 2013"
-    fetched_url: http://www.w3.org/TR/2013/REC-prov-dm-20130430/
-    capture:
-      status: shipped-as-quotation
-      path: captures/w3c-prov-dm-2013-entities-activities.txt
-      excerpt: true
-      licence_name: "W3C Document License 2023"
+    fetched:
+      url: http://www.w3.org/TR/2013/REC-prov-dm-20130430/
+    status: shipped-as-quotation
+    path: captures/w3c-prov-dm-2013-entities-activities.txt
+    excerpt: true
+    licence_name: "W3C Document License 2023"
 
   w3c-prov-o-2013:
     citation_text: "W3C, \"PROV-O: The PROV Ontology\", W3C Recommendation,
       30 April 2013"
-    fetched_url: http://www.w3.org/TR/2013/REC-prov-o-20130430/
-    capture:
-      status: shipped-as-quotation
-      path: captures/w3c-prov-o-2013-agents-attribution.txt
-      excerpt: true
-      licence_name: "W3C Document License 2023"
+    fetched:
+      url: http://www.w3.org/TR/2013/REC-prov-o-20130430/
+    status: shipped-as-quotation
+    path: captures/w3c-prov-o-2013-agents-attribution.txt
+    excerpt: true
+    licence_name: "W3C Document License 2023"

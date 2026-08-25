@@ -184,7 +184,7 @@ export function renderIndex(c: LoadedCorpus): string {
     const d = disposition(cl).disposition;
     dispCounts.set(d, (dispCounts.get(d) ?? 0) + 1);
   }
-  const shipped = [...c.sources.values()].filter((s) => shipsWithCorpus(s.capture)).length;
+  const shipped = [...c.sources.values()].filter((s) => shipsWithCorpus(s)).length;
   const body = `
 <h1>${esc(c.manifest.title)}</h1>
 <p class="sub">Corpus <span class="id">${esc(c.manifest.id)}</span> &middot;
@@ -336,7 +336,6 @@ ${md(cl.body)}`;
 export function renderAtom(a: Atom, c: LoadedCorpus, users: string[]): string {
   const r = resolvable(a.id, c);
   const src = c.sources.get(a.source);
-  const cap = src?.capture;
   const body = `
 <h1><span class="id">${esc(a.id)}</span></h1>
 <p class="sub">Atom &middot; source quality ${esc(a.source_quality)}${a.as_of_date ? ` &middot; as of ${esc(a.as_of_date)}` : ""}</p>
@@ -346,7 +345,7 @@ export function renderAtom(a: Atom, c: LoadedCorpus, users: string[]): string {
 
 <h3>Quote</h3>
 <blockquote class="q">${esc(a.quote.trim())}</blockquote>
-<p class="sub">${esc(src?.citation_text ?? `(source ${a.source} not in the source list)`)}${src?.fetched_url ? ` &middot; <a href="${esc(src.fetched_url)}">${esc(src.fetched_url)}</a>` : ""}</p>
+<p class="sub">${esc(src?.citation_text ?? `(source ${a.source} not in the source list)`)}${src?.fetched ? ` &middot; <a href="${esc(src.fetched.url)}">${esc(src.fetched.url)}</a>` : ""}</p>
 
 ${r.ok
   ? `<div class="okbox">The captured copy travels with this corpus. <a href="capture-${esc(a.id)}.html">See the quote in its capture</a>.</div>`
@@ -367,7 +366,7 @@ ${users.length === 0
   ? `<p class="sub">Nothing cites this atom.</p>`
   : `<ul class="plain">${users.map((id) =>
       `<li><a href="claim-${esc(id)}.html">${esc(c.claims.get(id)?.title ?? id)}</a></li>`).join("")}</ul>`}
-${cap ? `<p class="sub">Capture status: <span class="id">${esc(cap.status)}</span></p>` : ""}`;
+${src ? `<p class="sub">Capture status: <span class="id">${esc(src.status)}</span></p>` : ""}`;
   return page(a.id, body, c.manifest.title);
 }
 
@@ -400,7 +399,6 @@ function locateForHighlight(raw: string, seg: string): [number, number] | null {
 export function renderCapture(a: Atom, c: LoadedCorpus, captureText: string | null): string {
   const chk = quoteCheck(a, captureText);
   const src = c.sources.get(a.source);
-  const cap = src?.capture;
   let shown = "";
   let highlightNote = "";
   if (captureText !== null) {
@@ -432,7 +430,7 @@ export function renderCapture(a: Atom, c: LoadedCorpus, captureText: string | nu
 ${chk.state === "pass" ? `<div class="okbox"><b>Quote check passes.</b><br>${esc(chk.detail)}</div>` : ""}
 ${chk.state === "fail" ? `<div class="warnbox"><b>Quote check fails.</b><br>${esc(chk.detail)}</div>` : ""}
 ${chk.state === "uncheckable" ? `<div class="warnbox"><b>The check cannot run here.</b><br>${esc(chk.detail)}${
-  cap?.reason ? `<br><br>${esc(cap.reason)}` : ""}<br><br>This is not a defect in the record. The atom names its source and its locator, and the check runs wherever the captured copy is held. It cannot run in a published copy that may not carry someone else's text, and saying so is this viewer's choice, in preference to quietly showing the claim as backed.</div>` : ""}
+  src?.reason ? `<br><br>${esc(src.reason)}` : ""}<br><br>This is not a defect in the record. The atom names its source and its locator, and the check runs wherever the captured copy is held. It cannot run in a published copy that may not carry someone else's text, and saying so is this viewer's choice, in preference to quietly showing the claim as backed.</div>` : ""}
 
 <h3>The quote</h3>
 <blockquote class="q">${esc(a.quote.trim())}</blockquote>
@@ -501,7 +499,7 @@ ${list(unaudited.map((a) => `<a href="atom-${esc(a.id)}.html"><span class="id">$
 ${list(failed.map((x) => `<a href="capture-${esc(x.a.id)}.html"><span class="id">${esc(x.a.id)}</span></a> ${esc(x.chk.detail)}`))}
 
 <h2>Quote checks that cannot run here</h2>
-${list(uncheckable.map((x) => `<a href="capture-${esc(x.a.id)}.html"><span class="id">${esc(x.a.id)}</span></a> ${esc(c.sources.get(x.a.source)?.capture?.reason ?? x.chk.detail)}`))}
+${list(uncheckable.map((x) => `<a href="capture-${esc(x.a.id)}.html"><span class="id">${esc(x.a.id)}</span></a> ${esc(c.sources.get(x.a.source)?.reason ?? x.chk.detail)}`))}
 
 <h2>References that do not resolve</h2>
 ${list(dangling.map(esc))}

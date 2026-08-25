@@ -39,9 +39,9 @@ function main(argv: string[]): number {
   writeFileSync(join(outDir, "assets", "erf.css"), stylesheet(), "utf8");
 
   const captureText = (atomId: string): string | null => {
-    const cap = c.sources.get(c.atoms.get(atomId)?.source ?? "")?.capture;
-    if (!cap || !shipsWithCorpus(cap) || !cap.path) return null;
-    const p = join(corpusDir, cap.path);
+    const src = c.sources.get(c.atoms.get(atomId)?.source ?? "");
+    if (!src || !shipsWithCorpus(src) || !src.path) return null;
+    const p = join(corpusDir, src.path);
     return existsSync(p) ? readFileSync(p, "utf8") : null;
   };
 

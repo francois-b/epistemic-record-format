@@ -238,21 +238,16 @@ export interface Source {
   citation_text: string;
   /** Canonical when present; `citation_text` renders from it (ERF-8). */
   citation?: CSL;
-  /** The locator actually retrieved; absent for received files. */
-  fetched_url?: string;
-  /** The saved copy, or the recorded absence (ERF-4, ERF-5). */
-  capture: CaptureEntry;
-}
-
-export interface CaptureEntry {
+  /** What was retrieved; absent for received files (ERF-7). */
+  fetched?: Fetched;
   status:
     | "shipped"                 // ships under a licence that permits it (ERF-68)
     | "shipped-as-quotation"    // ships as a short quotation, under no licence (ERF-68, ERF-69)
     | "not-redistributable"     // copyright forbids republication (ERF-5)
     | "access-restricted"       // an access agreement forbids extraction (ERF-5)
     | "licence-unverified";     // rights could not be established (ERF-5)
-  /** Relative to the mapping file; null when the capture does not ship. */
-  path: string | null;
+  /** The capture, relative to the source list, when it ships. */
+  path?: string;
   /** REQUIRED when no capture ships (ERF-5). */
   reason?: string;
   /** SPDX identifier where one applies (ERF-68). */
@@ -261,13 +256,18 @@ export interface CaptureEntry {
   licence_name?: string;
   /** True when the capture is a passage rather than a whole copy (ERF-69). */
   excerpt?: boolean;
-  /** The tool that converted the source to this text, and whether it
-   *  reproduces (ERF-70). Absent when the source was already text. */
+  /** How the fetched bytes became capture text; absent when the source
+   *  was already text (ERF-70). */
   converter?: Converter;
-  /** An immutable locator for the source artifact (ERF-71). */
-  source_locator?: string;
-  /** The source artifact's digest, algorithm named: "sha256:<hex>" (ERF-71). */
-  source_digest?: string;
+}
+
+export interface Fetched {
+  /** The artifact actually retrieved: the file itself, never a page
+   *  describing it (ERF-7). */
+  url: string;
+  /** "sha256:<hex>", algorithm named, when the location serves stable
+   *  bytes (ERF-71). */
+  digest?: string;
 }
 
 export interface Converter {
@@ -288,5 +288,5 @@ export interface Converter {
 // malformed one.
 //
 // Optional fields (`?`) are different in kind. They assert existence when
-// present: a `citation` means structure exists, a `fetched_url` means a
+// present: a `citation` means structure exists, a `fetched` means a
 // fetch happened, a `last_modified` means an edit happened.

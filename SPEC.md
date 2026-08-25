@@ -43,9 +43,8 @@ Conformance is claimed per class, not against the whole document:
 - Record: a single atom, claim, or survey. Binds the data model
   (section 3) and its record type's requirements (section 4).
 - Corpus: a collection of records under one declaration. Binds the
-  invariants (section 6) and the corpus artifacts: the declaration
-  (`ERF-59`), the authoritative home (`ERF-62`), and the source list
-  (`ERF-3`, `ERF-4`, `ERF-5`).
+  invariants (section 6), the declaration (`ERF-59`), the authoritative
+  home (`ERF-62`), and the source list (`ERF-3`, `ERF-4`, `ERF-5`).
 - Producer: a tool or process that writes records. Binds the serialization
   rules (section 7) and the producer SHOULDs of section 4 (for example
   `ERF-20`). Producers are strict: they write only defined fields,
@@ -57,8 +56,8 @@ Conformance is claimed per class, not against the whole document:
   Open Knowledge Format takes).
 - Validator: a tool that checks. Binds every machine-checkable MUST that
   applies to the input it accepts: section 6 in full, the serialization
-  rules of section 7, and the corpus artifacts named under the Corpus
-  class.
+  rules of section 7, and the declaration and source list named under the
+  Corpus class.
 
 Strict producers, tolerant consumers: divergence is caught by validators
 and surfaced, never by consumers refusing to read.
@@ -198,9 +197,10 @@ interface Survey {
   body: string;
 }
 
-// Corpus artifacts (not records): the corpus declaration and one entry of
-// the source list (ERF-3, ERF-4, ERF-5, ERF-59). A source is identified by
-// its key in that list and shared by every atom that quotes it.
+// Beside the records, a corpus has structure of its own: its declaration
+// and its sources (ERF-3, ERF-4, ERF-5, ERF-59). Neither is a record. A
+// source is identified by its key in the source list and shared by every
+// atom that quotes it.
 
 interface CorpusDeclaration {
   id: CorpusId;
@@ -213,27 +213,26 @@ interface CorpusDeclaration {
 interface Source {                           // one entry of the source list
   citation_text: string;       // identifies the work; never a URL (ERF-7)
   citation?: CSL;              // canonical when present (ERF-8)
-  fetched_url?: string;        // the locator retrieved; absent for received files
-  capture: CaptureEntry;       // the saved copy, or the recorded absence
-}
-
-interface CaptureEntry {                     // a source's capture, or its absence
+  fetched?: Fetched;           // what was retrieved; absent for received files
   status: "shipped"                          // under a licence (ERF-68)
         | "shipped-as-quotation"             // under none (ERF-68, ERF-69)
         | "not-redistributable"              // copyright forbids it (ERF-5)
         | "access-restricted"                // an agreement forbids it (ERF-5)
         | "licence-unverified";              // rights unestablished (ERF-5)
-  path: string | null;         // relative to the source list; null when absent
+  path?: string;               // the capture, relative to the list, when it ships
   reason?: string;             // REQUIRED when no capture ships (ERF-5)
   licence?: string;            // SPDX identifier where one applies (ERF-68)
   licence_name?: string;       // the licence's plain name
-  excerpt?: boolean;           // a passage, not a whole copy (ERF-69)
+  excerpt?: boolean;           // the capture is a passage, not a whole copy (ERF-69)
   converter?: Converter;       // absent when the source was already text (ERF-70)
-  source_locator?: string;     // immutable locator for the source (ERF-71)
-  source_digest?: string;      // "sha256:<hex>", algorithm named (ERF-71)
 }
 
-interface Converter {                        // how a source became this text
+interface Fetched {                          // the artifact actually retrieved
+  url: string;                 // the file itself, never a page describing it (ERF-7)
+  digest?: string;             // "sha256:<hex>", when the bytes are stable (ERF-71)
+}
+
+interface Converter {                        // how the fetched bytes became capture text
   tool: string;                // the tool and its exact version, named
   deterministic: boolean;      // same tool, same bytes, same text out (ERF-70)
 }
@@ -241,7 +240,7 @@ interface Converter {                        // how a source became this text
 
 Lists are total in the type and MAY be empty; empty lists are omitted in
 serialization (section 7). Optional fields (`?`) assert existence when
-present: a `citation` means structure exists, a `fetched_url` means a fetch
+present: a `citation` means structure exists, a `fetched` means a fetch
 happened, a `last_modified` means an edit happened.
 
 ### 3.1 Field reference
@@ -285,14 +284,14 @@ is bound by the data model alone, with advice in the section named.
 | `notable_results` | `ERF-27` |
 | `last_modified` | `ERF-28`, `ERF-48` |
 
-| Source field (corpus artifact, not a record) | Constrained by |
+| Source field (not a record) | Constrained by |
 |:--|:--|
-| `citation_text`, `citation`, `fetched_url` | `ERF-7`, `ERF-8` |
-| `capture.status`, `capture.path`, `capture.reason` | `ERF-4`, `ERF-5` |
-| `capture.licence`, `capture.licence_name` | `ERF-68` |
-| `capture.excerpt` | `ERF-69` |
-| `capture.converter` | `ERF-70` |
-| `capture.source_locator`, `capture.source_digest` | `ERF-71` |
+| `citation_text`, `citation` | `ERF-7`, `ERF-8` |
+| `fetched.url`, `fetched.digest` | `ERF-7`, `ERF-71` |
+| `status`, `path`, `reason` | `ERF-4`, `ERF-5` |
+| `licence`, `licence_name` | `ERF-68` |
+| `excerpt` | `ERF-69` |
+| `converter.tool`, `converter.deterministic` | `ERF-70` |
 
 How records are found: atoms are retrieved by embedding `finding` and
 `quote`. The finding is written to be checkable away from its source,
@@ -322,7 +321,8 @@ conformance means.
 ### 4.1 The source
 
 A source is whatever a quote came from: a web page, a received report, a
-transcript, a book. Sources are corpus artifacts, not records: each is
+transcript, a book. A source is not a record: it carries no created stamp,
+no standings, and no disposition, because nobody asserts a source. Each is
 listed once in the corpus's source list and shared by every atom that
 quotes it, which is what keeps one work's citation, locator, licence, and
 capture stated in one place rather than repeated on each atom and free to
@@ -344,14 +344,13 @@ sources:
       issued: 1494
       chapter-number: 36
       translator: [{family: Geijsbeek, given: John B.}]
-    fetched_url: "https://archive.org/details/ancientdoubleent00geij"
-    capture:
-      status: shipped-as-quotation
-      path: captures/pacioli-1494-geijsbeek.md
-      excerpt: true
-      converter: {tool: "pymupdf4llm 0.3.4", deterministic: true}
-      source_locator: "https://archive.org/download/ancientdoubleent00geijuoft/ancientdoubleent00geijuoft.pdf"
-      source_digest: "sha256:05e58ce3f2589584d7d36446c46e2f74ab14f33ee6d1f0f20ef5e21c2aeaf2aa"
+    fetched:
+      url: "https://archive.org/download/ancientdoubleent00geijuoft/ancientdoubleent00geijuoft.pdf"
+      digest: "sha256:05e58ce3f2589584d7d36446c46e2f74ab14f33ee6d1f0f20ef5e21c2aeaf2aa"
+    status: shipped-as-quotation
+    path: captures/pacioli-1494-geijsbeek.md
+    excerpt: true
+    converter: {tool: "pymupdf4llm 0.3.4", deterministic: true}
 ```
 
 Where a source has no `citation` block, write `citation_text` as "Author,
@@ -368,11 +367,12 @@ evidence about today's page rather than about what was read.
 - **ERF-2** A received file (report, transcript) is immutable: it MUST be
   retained as received, and a revision arriving later MUST be a new source,
   never an overwrite. A web page is mutable: its capture MUST be dated.
-- **ERF-3** A corpus MUST keep a source list: a YAML document under the
-  rules of section 7, each entry following the `Source` shape of section
-  3, keyed by a source id unique within the corpus. A source's citation,
-  locator, and capture live on the source, not on the atom; the fetch date
-  lives with the capture.
+- **ERF-3** A corpus MUST keep a source list: one entry per work,
+  following the `Source` shape of section 3, keyed by a source id unique
+  within the corpus. A source's citation, locator, and capture live on the
+  source, not on the atom. How the list is stored is the substrate's
+  business, like everything else (section 8); its interchange form is a
+  YAML document under the rules of section 7.
 - **ERF-4** Every atom MUST name its source (`source`), and the named id
   MUST exist in the corpus's source list. Every source MUST either give
   its capture's path or record that no capture is held and why. Absence
@@ -423,13 +423,15 @@ evidence about today's page rather than about what was read.
   standard defines a faithful text projection of a PDF or a web page, and a
   named instrument is reproducible where an unnamed transformation is not.
 - **ERF-71** A source whose capture is an excerpt or a conversion SHOULD
-  record an immutable locator for the source artifact and that artifact's
-  cryptographic digest, naming the algorithm. Together they close the step
-  the format cannot otherwise check: a reader who retrieves the artifact
-  confirms from the digest that it is the one the author held, and re-runs
-  the conversion under `ERF-70` to confirm the excerpt occurs in it. A
-  locator that resolves to different bytes on different days is not
-  immutable, whatever it is called.
+  carry `fetched.digest`, the cryptographic digest of the retrieved
+  artifact with the algorithm named ("sha256:<hex>"). The locator and the
+  digest together close the step the format cannot otherwise check: a
+  reader who retrieves the artifact at `fetched.url` confirms from the
+  digest that it is the one the author held, and re-runs the conversion
+  under `ERF-70` to confirm the excerpt occurs in it. A digest is worth
+  recording only where the location serves stable bytes; a page that
+  differs on every fetch cannot be pinned, and its source simply carries
+  no digest, which itself tells a reader what kind of source it was.
 
 ### 4.2 The atom
 
@@ -492,9 +494,10 @@ only prose.
   the source itself contains.
 - **ERF-7** A source's `citation_text` MUST NOT contain a URL. A citation
   identifies a work; a locator retrieves one copy. The retrieved locator
-  is the source's `fetched_url`; a web-native work's own identity MAY
-  appear as `citation.URL`. A received file has no retrieval locator, so
-  its source carries no `fetched_url`.
+  is `fetched.url`, and it names the artifact actually retrieved (the
+  file, not a landing page describing it); a web-native work's own
+  identity MAY appear as `citation.URL`. A received file has no retrieval
+  locator, so its source carries no `fetched`.
 - **ERF-8** When `citation` is present it is canonical: it MUST carry
   everything the rendered `citation_text` string shows, chapter,
   translator, and edition included, and `citation_text` MUST be rendered
@@ -1146,7 +1149,7 @@ checks the relations no type can see.
   detection to the validator; a consumer that refuses what it does not
   recognize breaks forward compatibility for everything downstream of it.
 - **ERF-72** A field whose name begins `x_` is an extension field: a
-  producer MAY originate one on any record or corpus artifact, and a
+  producer MAY originate one on any record, declaration, or source, and a
   validator MUST NOT report it as an unknown-field violation of `ERF-55`.
   Extension fields are where a practice grows vocabulary before this
   specification admits it: a field lives under the prefix while its need
