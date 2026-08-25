@@ -82,7 +82,9 @@ requirements:
   ERF-28:
     uncovered: no fixture covers survey immutability or the title stating what was sought
   ERF-31:
-    tests: [output, fixtures/invalid/binding-without-bound-at]
+    tests: [output, fixtures/invalid/binding-without-bound-at,
+            fixtures/valid/anchor-spans-a-line-wrap, fixtures/valid/anchor-with-escaped-quote,
+            fixtures/valid/anchor-broken-by-an-edit]
     note: >
       the binding grammar through the shared bindingRe, plus the recognition
       rule: a candidate that fails the grammar is reported rather than

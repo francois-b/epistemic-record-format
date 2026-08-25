@@ -13,7 +13,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import yaml from "js-yaml";
 import { loadCorpus } from "../../viewer/corpus.ts";
-import { danglingRefs, evidenceRefsFlagged, quoteCheck } from "../../viewer/compute.ts";
+import { brokenAnchors, danglingRefs, evidenceRefsFlagged, quoteCheck } from "../../viewer/compute.ts";
 import { FIXTURES } from "../paths.ts";
 
 interface Expectation {
@@ -92,6 +92,35 @@ test("spirit fixtures load clean, and each says what it gets away with", async (
       assert.ok(readFileSync(note, "utf8").trim().length > 100, `${name}: note.md must say which rule carries the weight`);
     });
   }
+});
+
+/**
+ * `ERF-31`, the anchor. Three cases that a validator which never looks
+ * would pass, so each asserts the positive fact and not merely that the
+ * corpus loaded.
+ */
+test("an anchor spanning a hand-wrapped line still occurs", () => {
+  const c = loadCorpus(join(FIXTURES, "valid", "anchor-spans-a-line-wrap"));
+  assert.equal(c.narratives[0]?.bindings.length, 1);
+  assert.deepEqual(brokenAnchors(c), [],
+    "ERF-51 collapses the newline on both sides, so the anchor matches");
+});
+
+test("an anchor carries the two escapes, and they are undone before matching", () => {
+  const c = loadCorpus(join(FIXTURES, "valid", "anchor-with-escaped-quote"));
+  const b = c.narratives[0]?.bindings[0];
+  assert.ok(b, "the binding must parse despite the quote characters inside the anchor");
+  assert.ok(b.anchor.includes('"the recorded total is seventeen units"'),
+    `the escapes must be undone; got: ${b.anchor}`);
+  assert.deepEqual(brokenAnchors(c), [], "the unescaped anchor occurs in the passage");
+});
+
+test("an anchor left behind by an edit is flagged, and the corpus still conforms", () => {
+  const c = loadCorpus(join(FIXTURES, "valid", "anchor-broken-by-an-edit"));
+  assert.deepEqual(c.findings, [], "editing prose is permitted, so this is no violation");
+  const flags = brokenAnchors(c);
+  assert.equal(flags.length, 1, `expected one flag, got ${JSON.stringify(flags)}`);
+  assert.match(flags[0], /no longer occurs/);
 });
 
 test("invalid fixtures are rejected, each citing its requirement", async (t) => {

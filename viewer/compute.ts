@@ -5,7 +5,7 @@
  */
 import type { Atom, Claim, StandingEntry } from "../types/erf.ts";
 import type { ConformanceFinding, LoadedCorpus } from "./corpus.ts";
-import { shipsWithCorpus } from "./corpus.ts";
+import { bindingCandidateRe, shipsWithCorpus } from "./corpus.ts";
 
 export type Disposition =
   | "proposal" | "active" | "contested" | "rejected" | "retired";
@@ -334,6 +334,34 @@ export function argumentLeaves(root: Claim, c: LoadedCorpus): string[] {
     const cl = c.claims.get(id);
     if (cl?.epistemic_kind !== "argument") continue;
     if (premiseClosure(cl, c).size === 0) out.push(id);
+  }
+  return out;
+}
+
+/**
+ * `ERF-31`: an anchor MUST occur in its passage, folded under `ERF-51` on
+ * both sides. Flagged rather than a violation, because an edit to the
+ * prose is an act the format permits (section 2).
+ *
+ * The fold is what makes a hand-wrapped paragraph a non-issue: a newline
+ * inside a sentence is a collapsed whitespace run, so an anchor that reads
+ * as one phrase matches as one phrase. Ruled 2026-08-25 (B-34, B-35).
+ */
+export function brokenAnchors(c: LoadedCorpus): string[] {
+  const out: string[] = [];
+  for (const n of c.narratives) {
+    // The markers are stripped before folding. Left in, every anchor
+    // occurs inside its own comment and the check passes vacuously: it
+    // would report a corpus where every anchor is broken as clean. Caught
+    // by valid/anchor-broken-by-an-edit on the first run.
+    const hay = normalizeForCheck(n.body.replace(bindingCandidateRe(), " "));
+    for (const b of n.bindings) {
+      const needle = normalizeForCheck(b.anchor);
+      if (needle && !hay.includes(needle)) {
+        out.push(`${n.slug}: anchor "${b.anchor}" no longer occurs in the passage `
+          + `(claims ${b.claims.join(", ")})`);
+      }
+    }
   }
   return out;
 }

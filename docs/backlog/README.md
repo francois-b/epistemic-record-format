@@ -109,8 +109,6 @@ Verified accurate, ordered by priority. The specification is wrong, unclear, or 
 
 | id | priority | | basis | verification |
 |---|---|---|---|---|
-| [`B-34`](B-34-the-narrative-anchor-does-not-say-raw-or-reflowed.md) | **P1** | The narrative anchor does not say raw or reflowed | `demonstrated` | `accurate` |
-| [`B-35`](B-35-the-binding-grammar-has-no-escape-for-a-quote-character-in.md) | **P1** | The binding grammar has no escape for a quote character in an anchor | `reported` | `accurate` |
 | [`B-36`](B-36-the-narratives-frontmatter-fields-are-named-but-untyped.md) | **P1** | The narrative's frontmatter fields are named but untyped | `demonstrated` | `accurate` |
 | [`B-27`](B-27-the-normative-conformance-cases-are-unobtainable-by-a-read.md) | **P2** | The normative conformance cases are unobtainable by a reader of the specification alone | `reported` | `accurate` |
 | [`B-37`](B-37-the-actor-grammar-cannot-distinguish-two-authors-of-the-sa.md) | **P2** | The actor grammar cannot distinguish two authors of the same model | `demonstrated` | `accurate` |

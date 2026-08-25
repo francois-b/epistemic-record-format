@@ -12,7 +12,7 @@ import type { LoadedCorpus, Narrative } from "./corpus.ts";
 import { bindingCandidateRe, bindingRe, shipsWithCorpus } from "./corpus.ts";
 import {
   backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,
-  evidenceRefsFlagged, retiredPremises,
+  brokenAnchors, evidenceRefsFlagged, retiredPremises,
   disposition, normalizeForCheck, quoteCheck, resolvable, staleAudits,
   staleEvidenceAudit, unbacked,
 } from "./compute.ts";
@@ -520,6 +520,10 @@ ${list(uncheckable.map((x) => `<a href="capture-${esc(x.a.id)}.html"><span class
 
 <h2>References that do not resolve</h2>
 ${list(dangling.map((d) => `<span class="id">${esc(d.record)}</span> <span class="id">${esc(d.field)}</span> ${esc(d.detail)}`))}
+
+<h2>Anchors that no longer occur in their passage</h2>
+<p class="sub">Flags, not violations. <span class="id">ERF-31</span>: the anchor is folded under <span class="id">ERF-51</span>, same as the quote check, so a hand-wrapped line is not what broke it. Someone edited the prose.</p>
+${list(brokenAnchors(c).map(esc))}
 
 <h2>Arguments resting on a premise its holders have withdrawn</h2>
 <p class="sub">Flags, not violations. <span class="id">ERF-43</span>: a withdrawal elsewhere creates this with no edit to the argument.</p>

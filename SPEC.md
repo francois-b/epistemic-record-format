@@ -909,15 +909,36 @@ narrative-binding ::= "<!--" ws* "claims:" ws+ ids ws+ anchor
 date     ::= YYYY "-" MM "-" DD
 ids      ::= id (ws+ id)*
 id       ::= one or more characters, none of them whitespace or '"'
-anchor   ::= '"' text '"'
+anchor   ::= '"' char* '"'
+char     ::= any character other than '"' and '\', or one of the
+             two-character escapes '\"' and '\\'
 ```
 
   Every part is required. Ids are separated by whitespace, never by commas,
-  because a comma inside an unquoted list invites a parser to guess. The
-  anchor is a verbatim substring of the passage: it is how software finds
-  the spot after the prose moves, and a narrative binding without one can
-  only point at a line number, which edits destroy. `bound-at` is the date
-  the binding was made, and `ERF-32` is what it is for.
+  because a comma inside an unquoted list invites a parser to guess.
+  `bound-at` is the date the binding was made, and `ERF-32` is what it is
+  for. The anchor is how software finds the spot after the prose moves; a
+  binding without one could only point at a line number, which edits
+  destroy. It carries two escapes because a grammar that cannot express a
+  legal value is a defect in the grammar: a passage whose own words are in
+  quotation marks would otherwise have no anchor at all.
+
+  **The anchor occurs in its passage under `ERF-51`**, the same fold the
+  quote check uses, applied to the anchor and to the passage alike. This
+  format answers *does this string occur in that text* exactly once, and
+  two occurrence tests would be two verdicts for one question. It also
+  settles the case that raised this: prose hand-wrapped at some column puts
+  a newline inside a sentence, which is a space in CommonMark and a
+  collapsed whitespace run under `ERF-51`, so an anchor that reads as one
+  phrase matches as one phrase. Nothing here reflows anything, and nothing
+  needs to: the fold that already exists is enough.
+
+  **A validator MUST flag an anchor that does not occur in its passage.**
+  Anchors break, and they break for the ordinary reason that someone edited
+  the prose. A flag rather than a violation, on section 2's principle: an
+  edit to the passage is an act the format permits. Without this the
+  failure is silent, which is how two anchors in one trial and one in
+  another went unnoticed until something else happened to look.
 
   **A binding that does not match this grammar MUST be reported, never
   skipped.** A comment opening `<!--` followed by `claims:` IS a narrative

@@ -42,7 +42,16 @@ export interface Narrative {
  * comments leaked into the page. One grammar, one definition.
  */
 export function bindingRe(): RegExp {
-  return /<!--\s*claims:\s*([^"]+?)\s*"([^"]*)"\s+bound-at=(\d{4}-\d{2}-\d{2})\s*-->/g;
+  return /<!--\s*claims:\s*([^"]+?)\s*"((?:[^"\\]|\\.)*)"\s+bound-at=(\d{4}-\d{2}-\d{2})\s*-->/g;
+}
+
+/**
+ * `ERF-31`: the anchor carries two escapes, `\"` and `\\`. Undo them to
+ * recover the text the author meant, which is what must occur in the
+ * passage.
+ */
+export function unescapeAnchor(raw: string): string {
+  return raw.replace(/\\(["\\])/g, "$1");
 }
 
 /**
@@ -549,7 +558,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
       }
       bindings.push({
         claims: (m[1] ?? "").trim().split(/\s+/).filter(Boolean),
-        anchor: m[2] ?? "",
+        anchor: unescapeAnchor(m[2] ?? ""),
         boundAt: m[3],
         index: c.index,
       });

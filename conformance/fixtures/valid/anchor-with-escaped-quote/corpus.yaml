@@ -1,0 +1,5 @@
+type: corpus
+id: fixture-anchor-escaped-quote
+title: "An anchor whose passage is in quotation marks"
+spec_version: "0.9.0"
+classification: public

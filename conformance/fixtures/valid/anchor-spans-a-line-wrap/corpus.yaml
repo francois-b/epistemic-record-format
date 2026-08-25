@@ -1,0 +1,5 @@
+type: corpus
+id: fixture-anchor-line-wrap
+title: "An anchor spanning a hand-wrapped line"
+spec_version: "0.9.0"
+classification: public

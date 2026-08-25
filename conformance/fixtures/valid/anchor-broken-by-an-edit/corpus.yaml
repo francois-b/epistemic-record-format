@@ -1,0 +1,5 @@
+type: corpus
+id: fixture-broken-anchor
+title: "An anchor left behind by an edit to the prose"
+spec_version: "0.9.0"
+classification: public
