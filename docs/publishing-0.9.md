@@ -14,32 +14,25 @@ makes two implementations silently disagree is not.
 
 ## Blocking
 
-**1. There is no licence.** No `LICENSE` file exists, so the default is all
-rights reserved and nobody may legally implement the specification. This is
-the only item here that is purely a decision.
+Two of the four are done, kept here with what was decided: a list that
+deletes what it settled stops being a record of the decision.
 
-Recommended: **CC BY 4.0** for the prose (`SPEC.md`, `README.md`, `docs/`,
-`examples/`, `reviews/`) and **Apache-2.0** for the code (`viewer/`,
-`tools/`, `types/`, `conformance/`). CC BY is the ordinary choice for a
-specification that wants implementations and requires only attribution.
-Apache-2.0 over MIT for the code because it carries an explicit patent
-grant, which matters when the code is a reference implementation someone
-will copy from. Two files, `LICENSE` and `LICENSE-CODE`, with `README.md`
-saying which covers what.
+**1. ~~There is no licence.~~ Done 2026-08-25.** CC BY 4.0 for the prose,
+Apache-2.0 for the code, canonical texts fetched rather than reproduced,
+each under a header naming the paths it covers. `README.md` says which is
+which, that an implementation is not a derivative work of the
+specification, and that nothing reaches the corpora anyone builds.
 
-**2. `F-003` is a demonstrated interoperability break and is unruled.**
-`ERF-3` never says whether source entries sit under a `sources:` key or
-alongside `type` at the top level. Both readings are live against the
-current prose, the Rust implementation took the second, and the result was
-151 atoms reported as naming sources that exist. This is the one open
-finding that would make a second implementer's work fail against the
-author's, which is precisely what a published format must not do. One
-sentence fixes it. Run it through the three gates and rule it.
+**2. ~~`F-003` is unruled.~~ Done 2026-08-25.** `ERF-3`'s top level is now
+exactly `type` and `sources`, with a worked example. Three gates, three
+hands, none of them the raiser's. The observation's second half, about a
+validator cascading rather than reporting the file it could not read, was
+split out as `F-006` rather than folded in.
 
 **3. The changelog has no released section.** Everything sits under
 `## Unreleased`. Publishing means cutting `## 0.9.0 — 2026-08-__` and
-stating the version discipline the format is committing to from here:
-requirement ids stable, retired ids never reused, insertions append.
+stating the version discipline the format commits to from here: requirement
+ids stable, retired ids never reused, insertions append.
 
 **4. There is no git remote.** The repository has never been pushed. The
 author creates the public repository and pushes; nothing in this repository
@@ -89,8 +82,8 @@ that other people's implementations become that evidence.
 
 ## Sequence
 
-1. Rule `F-003` through the three gates; one sentence into `ERF-3`.
-2. Choose the licence; add `LICENSE` and `LICENSE-CODE`; say so in the README.
+1. ~~Rule `F-003`.~~ Done.
+2. ~~Choose the licence.~~ Done.
 3. Add the spec-to-types gate; settle `F-004`; normalize the example actor ids.
 4. Rewrite the README's Status section around what the trials found (see below).
 5. Cut `## 0.9.0` in the changelog with the date.
