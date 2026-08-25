@@ -6,6 +6,57 @@ are never reused, and every change lands here with a date.
 
 ## Unreleased
 
+### 2026-08-25 — normalization drops from seventeen steps to three
+
+Operator rulings on the capture pipeline, taken after four normalization
+defects turned out to share one cause.
+
+**Extraction and cleanup are named tools on the source.** `converter`
+becomes `extraction`, a string naming the tool and its exact version, and
+`cleanup` joins it for the step that reflows wrapped lines and repairs
+export artifacts. Both absent when the step did not happen. The nested
+`Converter` shape and its `deterministic` boolean are gone, the boolean
+because determinism is now unconditional: `ERF-70` forbids a
+non-deterministic tool from producing a capture, which resolves the
+contradiction where the same requirement demanded determinism and then
+permitted its absence four lines later.
+
+The format does not say what good cleanup is. It cannot know, for a table
+or a code block or a line of verse where the line structure is the content.
+It requires only that whatever was done is named and can be run again.
+
+**`ERF-51` keeps three steps: NFKC, strip markdown emphasis and code
+markers, collapse whitespace.** Each describes a difference the author did
+not introduce. The fourteen that went were doing two jobs the sequence
+should never have held. Layout repair, which was guessing at information
+the extractor discarded, moves to capture time under `ERF-70`. And the
+character folds went for two reasons: they were unfinishable, covering the
+Anglophone quotation marks and not French guillemets, German low quotes,
+CJK corner brackets or two-em dashes, so a French source failed a format
+claiming to fold quotation marks; and they forgave the wrong thing, since
+the capture is what the check runs against and an author who retypes rather
+than copies is guessing at their own evidence.
+
+Measured before the cut, across 160 atoms in three corpora: four newly
+fail, and every one is a real transcription divergence the folding had
+concealed. The stricter check did not break four atoms. It found four that
+were never quite verbatim, on a corpus that had passed every gate until
+now.
+
+Step 7's deletion is the sharpest of them. A hyphen at a line break is
+undecidable without knowing the word, `classifi-cation` being one word and
+`Pre-money` two, so the sequence stopped guessing and the producer resolves
+it while looking at the page. Deferred as `B-55`, with a dictionary as its
+trigger.
+
+The conformance cases move with the requirement, including four new ones
+asserting what the sequence no longer does: a retyped curly apostrophe
+fails, a hyphen at a line break is not joined, a capture still carrying
+markdown link syntax fails rather than being repaired. `types/erf.ts` is
+brought to 0.9.0 in the same pass, its corpus comment no longer calling a
+corpus a confidentiality tier and its declaration comment no longer naming
+the registry retired on 2026-08-24.
+
 ### 2026-08-24 — v0.9, and a full staleness read
 
 The version drops from 1.0 to 0.9, by operator ruling: the specification

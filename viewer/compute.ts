@@ -167,43 +167,14 @@ export function backing(claim: Claim, c: LoadedCorpus): BackingReading {
  */
 export function normalizeForCheck(s: string): string {
   return s
-    // a. Markdown link syntax reduces to its link text.
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
-    // b. Attribute blobs in braces are removed.
-    .replace(/\{[^}]*\}/g, "")
-    // c. Parenthesized link targets: absolute, protocol-relative,
-    //    root-relative, fragment-only.
-    .replace(/\((?:https?:)?\/\/[^)]*\)/g, "")
-    .replace(/\(#[^)]*\)/g, "")
-    .replace(/\(\/[^)]*\)/g, "")
-    // d. Blockquote markers at the start of a line, with one following space.
-    .replace(/^[ \t]*>[ ]?/gm, "")
-    // e. Square brackets and \u00AE \u2122 \u00A9 ^ \. Straight double
-    //    quotes are NOT removed here; step 5 removes them after the fold.
-    .replace(/[[\]\u00AE\u2122\u00A9^\\]/g, "")
-    // f. A space before , . ; : ! ? \u2014 a document-export artifact.
-    .replace(/ ([,.;:!?])/g, "$1")
-    // 1. Unicode NFKC.
+    // 1. Unicode NFKC: an extractor emits compatibility characters nobody
+    //    types, and an editor may silently decompose them.
     .normalize("NFKC")
-    // 2. Soft hyphens.
-    .replace(/\u00AD/g, "")
-    // 3. Typographic single quotes.
-    .replace(/[\u2018\u2019\u201B]/g, "'")
-    // 4. Typographic double quotes.
-    .replace(/[\u201C\u201D\u201F]/g, '"')
-    // 5. Straight double quotes, AFTER the fold, so both spellings agree.
-    .replace(/"/g, "")
-    // 6. Dash variants.
-    .replace(/[\u2010-\u2015\u2212]/g, "-")
-    // 7. Words broken across lines.
-    .replace(/-\n\s*/g, "")
-    // 8. Runs of two or more hyphens.
-    .replace(/-{2,}/g, "-")
-    // 9. Emphasis and code markers.
+    // 2. Markdown emphasis and code markers: the capture is markdown and
+    //    the quote is the prose inside it.
     .replace(/[*_`]/g, "")
-    // 10. Dash spacing.
-    .replace(/\s*-\s*/g, "-")
-    // 11. Whitespace runs, then trim.
+    // 3. Whitespace runs, then trim: line structure differs between a
+    //    capture and a quoted span and always will.
     .replace(/\s+/g, " ")
     .trim();
 }

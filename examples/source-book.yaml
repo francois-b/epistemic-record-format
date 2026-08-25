@@ -24,4 +24,4 @@ fetched:
 status: shipped-as-quotation
 path: captures/pacioli-1494-geijsbeek.md
 excerpt: true
-converter: {tool: "pymupdf4llm 0.3.4", deterministic: true}
+extraction: "pymupdf4llm 0.3.4"

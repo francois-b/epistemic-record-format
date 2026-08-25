@@ -100,6 +100,8 @@ Raised but not yet checked by anyone other than whoever raised them. **Not ready
 | [`B-52`](B-52-the-base-for-a-capture-path-is-stated-only-in-a-comment.md) | **P1** | The base for a capture `path` is stated only in a comment | `reported` | `unverified` |
 | [`B-53`](B-53-erf-67s-encoding-clause-does-not-clearly-reach-captures.md) | **P2** | `ERF-67`'s encoding clause does not clearly reach captures | `reported` | `unverified` |
 | [`B-54`](B-54-nothing-states-a-key-order-for-frontmatter.md) | **P3** | Nothing states a key order for frontmatter | `reported` | `unverified` |
+| [`B-55`](B-55-dehyphenation-needs-a-dictionary-and-is-deferred.md) | **trigger-driven** | Dehyphenation at a line break | `anticipated` | `unverified` |
+| [`B-56`](B-56-icu-transform-rules-as-the-folding-definition.md) | **trigger-driven** | ICU transform rules as the folding definition | `anticipated` | `unverified` |
 
 ## Defects awaiting a ruling
 
@@ -109,16 +111,12 @@ Verified accurate, ordered by priority. The specification is wrong, unclear, or 
 |---|---|---|---|---|
 | [`B-23`](B-23-the-corpus-has-no-stated-shape-on-disk.md) | **P1** | The corpus has no stated shape on disk | `demonstrated` | `accurate` |
 | [`B-24`](B-24-as-of-date-has-neither-a-stated-format-nor-stated-semantic.md) | **P1** | `as_of_date` has neither a stated format nor stated semantics | `demonstrated` | `accurate` |
-| [`B-25`](B-25-erf-51-step-f-is-under-specified-and-it-changes-verdicts.md) | **P1** | `ERF-51` step f is under-specified, and it changes verdicts | `demonstrated` | `accurate` |
-| [`B-26`](B-26-three-normalization-edge-cases-from-real-captures.md) | **P1** | Three normalization edge cases from real captures | `demonstrated` | `accurate` |
 | [`B-28`](B-28-erf-35s-scope-is-ambiguous.md) | **P1** | `ERF-35`'s scope is ambiguous | `reported` | `accurate` |
 | [`B-29`](B-29-erf-32-requires-what-the-erf-31-grammar-makes-optional.md) | **P1** | `ERF-32` requires what the `ERF-31` grammar makes optional | `reported` | `accurate` |
 | [`B-30`](B-30-erf-43-and-erf-49-collide-at-the-flag-boundary.md) | **P1** | `ERF-43` and `ERF-49` collide at the flag boundary | `reported` | `accurate` |
 | [`B-34`](B-34-the-narrative-anchor-does-not-say-raw-or-reflowed.md) | **P1** | The narrative anchor does not say raw or reflowed | `demonstrated` | `accurate` |
 | [`B-35`](B-35-the-binding-grammar-has-no-escape-for-a-quote-character-in.md) | **P1** | The binding grammar has no escape for a quote character in an anchor | `reported` | `accurate` |
 | [`B-36`](B-36-the-narratives-frontmatter-fields-are-named-but-untyped.md) | **P1** | The narrative's frontmatter fields are named but untyped | `demonstrated` | `accurate` |
-| [`B-49`](B-49-erf-70-contradicts-itself-on-converter-determinism.md) | **P1** | `ERF-70` contradicts itself on converter determinism | `demonstrated` | `accurate` |
-| [`B-50`](B-50-the-normative-data-model-file-reinstates-retired-concepts.md) | **P1** | The normative data model file reinstates retired concepts | `demonstrated` | `accurate` |
 | [`B-27`](B-27-the-normative-conformance-cases-are-unobtainable-by-a-read.md) | **P2** | The normative conformance cases are unobtainable by a reader of the specification alone | `reported` | `accurate` |
 | [`B-37`](B-37-the-actor-grammar-cannot-distinguish-two-authors-of-the-sa.md) | **P2** | The actor grammar cannot distinguish two authors of the same model | `demonstrated` | `accurate` |
 | [`B-31`](B-31-append-only-rules-cannot-be-checked-from-a-single-corpus-s.md) | **P3** | Append-only rules cannot be checked from a single corpus snapshot | `reported` | `accurate` |
@@ -146,5 +144,5 @@ Verified accurate. The format does not do these yet; each names the event that w
 
 ---
 
-41 entries, 50 verifications: 35 accurate, 1 duplicate, 1 inaccurate, 13 unverified.
+43 entries, 52 verifications: 35 accurate, 1 duplicate, 1 inaccurate, 15 unverified.
 Regenerate with `python3 tools/backlog-index.py`.

@@ -60,7 +60,8 @@ test("every standalone example carries only defined fields and legal values", ()
   const dir = join(REPO, "examples");
   const VERDICTS = new Set(["SUPPORTED", "PARTIAL", "UNSUPPORTED"]);
   const SOURCE_FIELDS = new Set(["id", "citation_text", "citation", "fetched",
-    "status", "path", "reason", "licence", "licence_name", "excerpt", "converter"]);
+    "status", "path", "reason", "licence", "licence_name", "excerpt",
+    "extraction", "cleanup"]);
   const FETCHED_FIELDS = new Set(["url", "digest"]);
   for (const name of readdirSync(dir).filter((f) => f.endsWith(".yaml"))) {
     const doc = yaml.load(readFileSync(join(dir, name), "utf8"), { schema: yaml.JSON_SCHEMA }) as Record<string, unknown>;

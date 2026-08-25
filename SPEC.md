@@ -228,7 +228,8 @@ interface Source {                           // one entry of the source list
   licence?: string;            // SPDX identifier where one applies (ERF-68)
   licence_name?: string;       // the licence's plain name
   excerpt?: boolean;           // the capture is a passage, not a whole copy (ERF-69)
-  converter?: Converter;       // absent when the source was already text (ERF-70)
+  extraction?: string;         // the tool that extracted this text, versioned (ERF-70)
+  cleanup?: string;            // the tool that cleaned it, versioned (ERF-70)
 }
 
 interface Fetched {                          // the artifact actually retrieved
@@ -236,10 +237,6 @@ interface Fetched {                          // the artifact actually retrieved
   digest?: string;             // "sha256:<hex>", when the bytes are stable (ERF-71)
 }
 
-interface Converter {                        // how the fetched bytes became capture text
-  tool: string;                // the tool and its exact version, named
-  deterministic: boolean;      // same tool, same bytes, same text out (ERF-70)
-}
 ```
 
 Lists are total in the type and MAY be empty; empty lists are omitted in
@@ -295,7 +292,7 @@ is bound by the data model alone, with advice in the section named.
 | `status`, `path`, `reason` | `ERF-4`, `ERF-5` |
 | `licence`, `licence_name` | `ERF-68` |
 | `excerpt` | `ERF-69` |
-| `converter.tool`, `converter.deterministic` | `ERF-70` |
+| `extraction`, `cleanup` | `ERF-70` |
 
 How records are found: atoms are retrieved by embedding `finding` and
 `quote`. The finding is written to be checkable away from its source,
@@ -354,7 +351,8 @@ sources:
     status: shipped-as-quotation
     path: captures/pacioli-1494-geijsbeek.md
     excerpt: true
-    converter: {tool: "pymupdf4llm 0.3.4", deterministic: true}
+    extraction: "pymupdf4llm 0.3.4"
+    cleanup: "pandoc 3.1.11 --wrap=none"
 ```
 
 Where a source has no `citation` block, write `citation_text` as "Author,
@@ -415,16 +413,34 @@ evidence about today's page rather than about what was read.
   The excerpt route exists because the format needs verifiability and not
   republication, and because a short quotation with attribution is available
   where republication of the work is not.
-- **ERF-70** Where a capture was produced by converting a source from
-  another format, the source MUST record the converting tool and its exact
-  version (`converter`), and that tool MUST be deterministic: the same tool at the same
-  version, given the same source bytes, produces the same text. A
-  non-deterministic converter (one whose output varies with a model version
-  or with the machine it runs on) MAY be used, and the source MUST then say
-  so, which marks its check as reproducible by no one but its author. Naming the instrument rather than specifying the conversion is the
+- **ERF-70** Where a capture was produced from a source in another format,
+  the source MUST name the extracting tool and its exact version
+  (`extraction`), and that tool MUST be deterministic: the same tool at the
+  same version, given the same source bytes, produces the same text. A
+  non-deterministic tool MUST NOT be used to produce a capture. Where the
+  extracted text was then cleaned, by reflowing wrapped lines, repairing
+  hyphenation, or dropping export artifacts, the source MUST name the
+  cleaning tool and its version too (`cleanup`). Both fields are absent when
+  the step did not happen: a source that was already text needs no
+  extraction, and a capture nobody cleaned needs no cleanup.
+
+  Naming the instrument rather than specifying the transformation is the
   same choice `ERF-26` makes for a search act, and for the same reason: no
   standard defines a faithful text projection of a PDF or a web page, and a
   named instrument is reproducible where an unnamed transformation is not.
+  The format therefore never says what good cleanup is, which it cannot know
+  for a table, a code block, or a line of verse where the line structure is
+  the content. It requires only that whatever was done is named and can be
+  run again.
+
+> *Note (non-normative):* an optical character recognition layer already
+> embedded in a source artifact is not a source of nondeterminism: the
+> recognition ran once, before the artifact existed, and the digest of
+> `ERF-71` pins its result, so reading that layer is as reproducible as
+> reading any other text. Running recognition oneself is the
+> non-deterministic act, and this requirement forbids it as a capture
+> step. An author who needs one runs it, reads the result, and authors the
+> capture from what they read, which is what a capture already is.
 - **ERF-71** A source whose capture is an excerpt or a conversion SHOULD
   carry `fetched.digest`, the cryptographic digest of the retrieved
   artifact with the algorithm named ("sha256:<hex>"). The locator and the
@@ -998,69 +1014,52 @@ checks the relations no type can see.
   reach the same verdict on the same pair:
 
   1. Unicode NFKC.
-  2. Remove soft hyphens (`U+00AD`).
-  3. Fold typographic single quotes (`U+2018`, `U+2019`, `U+201B`) to `'`.
-  4. Fold typographic double quotes (`U+201C`, `U+201D`, `U+201F`) to `"`.
-  5. Remove straight double quotes (`"`). This MUST follow step 4, so that
-     a quotation typed with straight quotes and the same quotation typed
-     with typographic ones normalize to the same string.
-  6. Fold dash variants (`U+2010` through `U+2015`, `U+2212`) to `-`.
-  7. Join words broken across lines: remove a hyphen followed by a newline
-     and any leading whitespace on the next line.
-  8. Collapse runs of two or more hyphens to one.
-  9. Remove the emphasis and code markers `*`, `_`, and `` ` ``.
-  10. Unify dash spacing: whitespace either side of a hyphen is removed.
-  11. Collapse whitespace runs to a single space, then trim.
+  2. Remove the markdown emphasis and code markers `*`, `_`, and `` ` ``.
+  3. Collapse whitespace runs to a single space, then trim.
 
   Case MUST NOT be folded. Case is part of a verbatim quote, and folding it
   lets a mis-cased quote pass a check whose whole job is fidelity.
 
-  Steps 1 through 11 above run AFTER the markup-unwrapping steps below,
-  which are equally mandatory: measured over one corpus, running the
-  sequence without them moved the failure rate from 9% to 19%, so an
-  optional unwrapping decided the verdict on roughly one atom in ten. The
-  unwrapping steps, in order, before step 1:
+  Three steps, and each earns its place by describing a difference the
+  author did not introduce. NFKC because an extractor emits compatibility
+  characters nobody types, a ligature as one glyph rather than two letters,
+  and an editor may silently decompose it. The emphasis markers because the
+  capture is markdown and the quote is the prose inside it, so a source that
+  italicises a word mid-sentence yields `*however*` in one and `however` in
+  the other. Whitespace because line structure differs between a capture and
+  a quoted span and always will.
 
-  - a. Markdown link syntax reduces to its link text.
-  - b. Attribute blobs in braces are removed.
-  - c. Parenthesized link targets are removed: absolute, protocol-relative,
-       root-relative, and fragment-only.
-  - d. Blockquote markers at the start of a line are removed, with one
-       following space if present.
-  - e. Square brackets and the symbols `®`, `™`, `©`, `^`, and `\` are
-       removed. Straight double quotes are NOT removed here; they are
-       removed at step 5, after the typographic fold.
-  - f. A space before `,` `.` `;` `:` `!` `?` is removed, an artifact of
-       document export.
+> *Note (non-normative):* on what this sequence deliberately does not do,
+> and why the list is short. An earlier version folded typographic quotes
+> to straight ones, folded seven dash variants to a hyphen, joined words
+> broken across lines, and removed spaces before punctuation: seventeen
+> steps repairing layout damage and forgiving retyped characters. Two
+> things killed them. The character folds were unfinishable, covering the
+> Anglophone set and not French guillemets, German low quotes, CJK corner
+> brackets, fullwidth forms, or two-em dashes, so a French source failed a
+> format that claimed to fold quotation marks. And they were forgiving the
+> wrong thing: the capture is what the check runs against, so an author who
+> retypes rather than copies is guessing at their own evidence, and a
+> failure telling them to copy is the correct answer. Measured over 160
+> atoms in three corpora, dropping the folds newly failed four, and every
+> one was a real transcription divergence the folding had concealed.
+> Layout repair moved to where it belongs, a named tool at capture time
+> (`ERF-70`), rather than a rule guessing at information the extractor
+> discarded. Which glyph a source used is a fact about the source; a
+> consumer that wants it normalized does so at read time, as it does with
+> every other reading the format computes rather than stores.
 
   These assume a text or markdown capture, which is what every capture is:
   a capture is authored, not converted at check time. Where the source was a
   PDF, a web page, or an EPUB, the conversion happened once, in the hands of
   the person who made the capture, under `ERF-70`; the format receives its
-  result. This is deliberate. No standard defines a faithful text projection
-  of a PDF or an HTML document, because what counts as text in either one
-  (reading order across columns, table cell order, alt text, footnotes,
-  running heads) is an editorial question and not a mechanical one. A
-  specification that defined one would be inventing a standard and calling
-  it a citation, and a specification that named a library would be choosing
-  a runtime. Naming the instrument and requiring it to be deterministic
-  keeps the step reproducible without either.
+  result.
 
   A validator therefore never converts. Facing a capture that is not text or
   markdown it MUST report the check as unavailable rather than pass or fail
-  it, exactly as it does for a capture it does not hold.
-
-  Two observations from converting a scanned source, recorded because they
-  are easy to get backwards. First, an optical character recognition layer
-  already embedded in a source artifact is not a source of
-  nondeterminism: the recognition ran once, before the artifact existed, and
-  the digest of `ERF-71` pins its result, so reading that layer is as
-  reproducible as reading any other text. Running recognition oneself is the
-  non-deterministic act, and it is the one `ERF-70` requires a source to
-  declare. Second, such layers are commonly spaced irregularly, and step 11
-  is what absorbs that: the same passage that a plain substring search misses
-  is found once normalized. The prose above names each transformation; the conformance case
-  files (`conformance/cases/normalization.txt` and
+  it, exactly as it does for a capture it does not hold. The prose above
+  names each transformation; the conformance case files
+  (`conformance/cases/normalization.txt` and
   `conformance/cases/quote-check.yaml`, this repository) are normative for
   its exact behavior: where a reading of the prose and a case disagree, the
   case governs, and a conforming implementation reproduces every pair.

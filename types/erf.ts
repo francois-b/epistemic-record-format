@@ -1,6 +1,6 @@
 /**
  * The Epistemic Record Format (ERF): normative data model.
- * v1.0, 2026-08-24. Draft; not yet published.
+ * v0.9.0, 2026-08-25. Draft; not yet published.
  *
  * This file is the normative data model of the specification (SPEC.md,
  * section 3, which carries an inline mirror of it; where the two differ,
@@ -154,7 +154,7 @@ export interface Claim {
   /** Unique across the deployment's corpora (ERF-36). */
   id: ClaimId;
   type: "claim";
-  /** Confidentiality tier; mutable where identity is not (ERF-17). */
+  /** The corpus this record belongs to; mutable where identity is not (ERF-17). */
   corpus: CorpusId;
   /** THE claim statement (normative, ERF-18). */
   title: string;
@@ -216,8 +216,7 @@ export interface Survey {
 // and its sources (ERF-3, ERF-4, ERF-5, ERF-59). Neither is a record.
 // ---------------------------------------------------------------------------
 
-/** The corpus manifest (ERF-59). Where it and the registry disagree about
- *  `classification`, the registry governs. */
+/** The corpus declaration (ERF-59). */
 export interface CorpusDeclaration {
   id: CorpusId;
   title: string;
@@ -254,9 +253,14 @@ export interface Source {
   licence_name?: string;
   /** True when the capture is a passage rather than a whole copy (ERF-69). */
   excerpt?: boolean;
-  /** How the fetched bytes became capture text; absent when the source
-   *  was already text (ERF-70). */
-  converter?: Converter;
+  /** The tool that extracted this text from the source, named with its
+   *  exact version ("pymupdf4llm 0.3.4"). Absent when the source was
+   *  already text. MUST be deterministic (ERF-70). */
+  extraction?: string;
+  /** The tool that cleaned the extracted text, named with its exact
+   *  version ("pandoc 3.1.11 --wrap=none"). Absent when nothing was
+   *  cleaned. MUST be deterministic (ERF-70). */
+  cleanup?: string;
 }
 
 export interface Fetched {
@@ -266,13 +270,6 @@ export interface Fetched {
   /** "sha256:<hex>", algorithm named, when the location serves stable
    *  bytes (ERF-71). */
   digest?: string;
-}
-
-export interface Converter {
-  /** The tool and its exact version, named: "pymupdf4llm 0.3.4". */
-  tool: string;
-  /** Same tool, same version, same bytes, same text out (ERF-70). */
-  deterministic: boolean;
 }
 
 // This file describes a record IN MEMORY. The serialization rules describe

@@ -1,8 +1,8 @@
 ---
 id: B-26
 kind: defect
-status: open
-priority: P1
+status: closed
+priority: closed
 priority_because: "Each case is a place where two conforming implementations normalize the same capture differently, and any correction to the sequence changes verdicts on already-minted atoms, so it is cheap now and a re-audit for every adopter later."
 basis: demonstrated
 raised: "trial 2 and capex batch 5, 2026-08-25 (S12)"
@@ -19,3 +19,7 @@ A hyphen-space-newline that step 7's literal wording does not cover; a spurious 
 ## Proposed resolution
 
 Add as conformance cases; decide per case whether the prose or the case is wrong.
+
+## Resolution
+
+Closed 2026-08-25: all three artifacts were hyphen-and-line-wrap cases in steps 7, 10 and 11. Those steps are gone; the sequence no longer guesses at line breaks, and two of the three are now conformance cases asserting that it does not.

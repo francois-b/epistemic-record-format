@@ -1,8 +1,8 @@
 ---
 id: B-25
 kind: defect
-status: open
-priority: P1
+status: closed
+priority: closed
 priority_because: "Two implementations return opposite verdicts on the same faithful atom, which is exactly the divergence the normalization sequence exists to prevent."
 basis: demonstrated
 raised: "predicted by trial 1 (A8), proved by capex atom `acx-110`, 2026-08-25 (S7)"
@@ -19,3 +19,7 @@ verifications:
 ## Proposed resolution
 
 State that step f covers any whitespace run before the punctuation mark; add a conformance case pinning the line-wrapped pair; move the reference and the case file together.
+
+## Resolution
+
+Closed 2026-08-25: step f was deleted rather than repaired. Layout repair left the normalization sequence for capture time under ERF-70, so the whitespace-before-punctuation reading has nothing to be ambiguous about.

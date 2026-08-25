@@ -1,8 +1,8 @@
 ---
 id: B-49
 kind: defect
-status: open
-priority: P1
+status: closed
+priority: closed
 priority_because: "A normative requirement that forbids and permits the same thing is the clearest case the P1 definition names, and it is in the requirement that governs every converted capture."
 basis: demonstrated
 raised: "GPT-5.5 backlog review, 2026-08-25, via finding F-001"
@@ -19,3 +19,7 @@ verifications:
 ## Proposed resolution
 
 Choose one contract. The likely shape: converter metadata is mandatory whenever a conversion happened; a deterministic converter is what makes the check reproducible; a non-deterministic one is permitted only when declared, and the requirement says so once rather than twice in opposite directions.
+
+## Resolution
+
+Closed 2026-08-25 by operator ruling: determinism is unconditional. ERF-70 now forbids a non-deterministic tool from producing a capture, and the escape clause that contradicted it is gone.

@@ -100,3 +100,13 @@ specification, and the last machinery v0.9 has never run. After that, the
 1.0 question is genuinely open rather than hopeful: the spec has now been
 implemented twice, authored against nine times, and adversarially fixtured
 once, all cold.
+
+## A note on the corpora archived here
+
+These corpora record what each trial produced under the specification as it
+stood on 2026-08-25, and they are not migrated when the specification
+changes. Trial 2's source list carries a `converter` field with
+`deterministic: false`, which `ERF-70` forbade later the same day; that is
+the record being honest about what happened, not a corpus to be repaired.
+A trial corpus promoted to `examples/` would be migrated first, since an
+example is a corpus stamped as conforming.

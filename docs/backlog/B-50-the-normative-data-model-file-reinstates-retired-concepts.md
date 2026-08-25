@@ -1,8 +1,8 @@
 ---
 id: B-50
 kind: defect
-status: open
-priority: P1
+status: closed
+priority: closed
 priority_because: "The artifact the specification defers to currently reinstates a concept the specification removed, so the governing text and the governed text disagree about what the format is."
 basis: demonstrated
 raised: "claude-fable-5 backlog review, 2026-08-25, via finding F-002"
@@ -19,3 +19,7 @@ Section 3 says `types/erf.ts` governs where it and the inline mirror differ. Tha
 ## Proposed resolution
 
 Bring the file to 0.9.0 and strike the retired concepts. Then decide whether the mirror-versus-file precedence rule is worth keeping at all, given that it is what makes a stale comment normative.
+
+## Resolution
+
+Closed 2026-08-25: types/erf.ts now dates itself 0.9.0, its corpus comment no longer says confidentiality tier, and the declaration comment no longer names the retired registry.

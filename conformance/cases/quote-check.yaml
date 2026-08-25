@@ -70,12 +70,45 @@ cases:
   - name: a quote passes only after normalization
     requirement: ERF-51
     note: >
-      The capture carries markdown link syntax and an export artifact space
-      before the full stop. Without the mandatory unwrapping steps this fails,
-      which is precisely the divergence that made unwrapping mandatory.
-    quote: "The reported total was 17."
-    capture: "> The [reported total](https://ex.test/data) was 17 ."
+      The capture italicises a word and wraps a line inside the quoted span.
+      Both differences are ones the author did not introduce, which is what
+      the three surviving steps are for.
+    quote: "The reported total was 17 units."
+    capture: "The *reported* total\n  was 17 units."
     expect: pass
+
+  - name: a capture carrying markdown link syntax no longer passes
+    requirement: ERF-51
+    note: >
+      Layout and markup repair left the normalization sequence on
+      2026-08-25 and became a capture-time act under ERF-70. A capture still
+      carrying link syntax inside the quoted span is a capture that was not
+      cleaned, and the check says so rather than guessing.
+    quote: "The reported total was 17."
+    capture: "The [reported total](https://ex.test/data) was 17."
+    expect: fail
+
+  - name: a retyped curly apostrophe fails
+    requirement: ERF-51
+    note: >
+      The sequence folds no typographic characters. An author who retypes
+      rather than copies is guessing at their own evidence, and the failure
+      tells them to copy from the capture. Measured over 160 atoms in three
+      corpora, this newly failed four, and every one was a real
+      transcription divergence the folding had concealed.
+    quote: "that amount doesn't include leases"
+    capture: "that amount doesn\u2019t include leases"
+    expect: fail
+
+  - name: a hyphen at a line break is not joined
+    requirement: ERF-51
+    note: >
+      Undecidable without knowing the word: classifi-cation is one word,
+      Pre-money is two, and no rule tells them apart. The producer resolves
+      it at capture time; the checker does not guess.
+    quote: "Premoney valuation"
+    capture: "Pre-\nmoney valuation"
+    expect: fail
 
   - name: case is not folded
     requirement: ERF-51
