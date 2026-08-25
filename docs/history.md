@@ -18,7 +18,7 @@ any claim it holds. A reader who wants to know why a rule exists should not
 have to reconstruct it from a changelog.
 
 For what the format deliberately will not do, see `non-goals.md`. For what
-it does not do yet, see `backlog.md`. For the traditions it draws on, see
+it does not do yet, see `backlog/`. For the traditions it draws on, see
 `influences.md`.
 
 ## Origin

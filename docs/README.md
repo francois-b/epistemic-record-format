@@ -14,14 +14,14 @@ answers a different question, one document per question.
 |---|---|
 | [`purpose.md`](purpose.md) | What does this format do, and what does it deliberately refuse to do? |
 | [`non-goals.md`](non-goals.md) | Was this idea considered? (Permanent no, with the date and the reason.) |
-| [`backlog.md`](backlog.md) | Will it ever do X, and is anything known to be wrong? The index over [`backlog/`](backlog/), one file per entry, each carrying its basis, its provenance, and a verification verdict. |
+| [`backlog/`](backlog/) | Will it ever do X, and is anything known to be wrong? One file per entry, each carrying its basis, its provenance, and a verification verdict; its README is a generated index. |
 | [`influences.md`](influences.md) | Where do these ideas come from, and what does each tradition already own? |
 | [`history.md`](history.md) | Why is this rule the way it is? What was tried, measured, reversed? |
 
 Two of these are registers rather than essays, and the distinction is the
 point. **`non-goals.md` is a permanent no**: an idea ruled out under the
 current design, kept so a reader can check a proposal against a ruling
-instead of re-arguing it. **`backlog.md` is the queue**: capabilities the
+instead of re-arguing it. **`backlog/` is the queue**: capabilities the
 format does not have yet, each naming the event that would revive it, and
 defects a reader has reported, each waiting on a ruling. Every entry states
 its basis (demonstrated, reported, or merely anticipated) and whether

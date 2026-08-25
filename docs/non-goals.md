@@ -12,7 +12,7 @@ exists so that a proposal can be checked against a ruling instead of
 re-argued, and so the reason stays attached to the decision.
 
 Every entry is a **permanent no** under the current design, distinct from
-`backlog.md`, which is a **conditional yes**: things the format does not do
+`backlog/`, which is a **conditional yes**: things the format does not do
 yet, each waiting on a named event. An idea moves from here to there only
 if the ground it was declined on has changed, which is itself worth a dated
 entry.
@@ -67,6 +67,6 @@ updates is worse than none, because it reads as complete.
 
 ## Deferred
 
-Deferred items and their triggers live in `backlog.md`. They are a queue
+Deferred items and their triggers live in `backlog/`. They are a queue
 rather than a record: an item leaves that file when its trigger fires, which
 is the opposite lifecycle to everything else in this document.

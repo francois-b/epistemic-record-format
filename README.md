@@ -88,7 +88,7 @@ checks it.
 | [`SPEC.md`](SPEC.md) | What are the rules? Record types, numbered requirements (RFC 2119), vocabularies, invariants, serialization. |
 | [`types/erf.ts`](types/erf.ts) | What are the shapes? The normative data model as a compiling TypeScript file; `SPEC.md` mirrors it inline. |
 | [`docs/purpose.md`](docs/purpose.md) | **What does this format do, and what does it deliberately refuse to do?** |
-| [`docs/`](docs/) | Why is a rule the way it is (`history.md`), was an idea already declined (`non-goals.md`), will it ever do X (`backlog.md`), where do the ideas come from (`influences.md`). |
+| [`docs/`](docs/) | Why is a rule the way it is (`history.md`), was an idea already declined (`non-goals.md`), will it ever do X (`backlog/`), where do the ideas come from (`influences.md`). |
 | [`examples/`](examples/) | What does it look like in use? Single-record examples, plus [`examples/corpora/minimal/`](examples/corpora/minimal/), a complete small corpus, and [`examples/site/`](examples/site/), that corpus rendered. |
 | [`conformance/`](conformance/) | Does my implementation obey the rules? Cases, fixtures, and a map from every requirement to what defends it. |
 | [`viewer/`](viewer/) | What does one implementation look like? `erf-view`, the reference consumer, computing every derived reading from the specification text. |

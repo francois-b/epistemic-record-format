@@ -48,9 +48,10 @@ than being either.
 
 - `CHANGELOG.md`, `README.md`, and `docs/` (purpose, non-goals, backlog,
   influences, history). The backlog is one file per entry under
-  `docs/backlog/`, indexed by a generated `docs/backlog.md`: entries are
-  edited individually and the index is never edited by hand, because an
-  entry's state belongs in one place.
+  `docs/backlog/`, whose README is a generated index: entries are edited
+  individually and the index is never edited by hand, because an entry's
+  state belongs in exactly one place. Regenerate with
+  `python3 tools/backlog-index.py`.
 
 ## Admitting a new kind of thing
 

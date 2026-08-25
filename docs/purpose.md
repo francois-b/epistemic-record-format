@@ -78,7 +78,7 @@ disputes survived, and evidence accumulated.
 **Multi-party collaboration.** One human per corpus is the practice the
 format was extracted from. Actor registries, import provenance, and
 identifier collision between two writers are all deferred behind the arrival
-of a second human. *Owned for now by:* nothing here; see `backlog.md`.
+of a second human. *Owned for now by:* nothing here; see `backlog/`.
 
 **Ethics, beyond first-person commitment.** The `commitment` kind records
 conduct its author has chosen and will be held to, which is a deontic

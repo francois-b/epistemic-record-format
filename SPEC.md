@@ -14,7 +14,7 @@ Specification, v0.9 (draft). The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way is
 `docs/history.md`, the fields it draws on are `docs/influences.md`, what it
 deliberately does not do is `docs/purpose.md`, what was ruled out is
-`docs/non-goals.md`, and what it does not do yet is `docs/backlog.md`. The normative data model is the TypeScript file
+`docs/non-goals.md`, and what it does not do yet is `docs/backlog/`. The normative data model is the TypeScript file
 `types/erf.ts`, mirrored inline in section 3.
 
 ## 1. Scope and conformance
@@ -1081,7 +1081,7 @@ checks the relations no type can see.
 > and merge without conflict. That cannot bite a single sequential writer,
 > which is the reference practice; the structural answer when a second
 > writer arrives, content-addressed identity in the Trusty URI shape, is
-> deferred behind that trigger in `docs/backlog.md`.
+> deferred behind that trigger in `docs/backlog/`.
 
 > *Note (non-normative):* a `retired` disposition MUST NOT be read as
 > "shown false". Withdrawals on record split three ways. Some absorb a
