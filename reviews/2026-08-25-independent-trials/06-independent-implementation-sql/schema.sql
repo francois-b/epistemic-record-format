@@ -995,7 +995,7 @@ FROM (
            -- ERF-19 guarantees a full instant here, so ordering is total;
            -- pos breaks a same-instant tie, which the format does not
            -- address (friction-log 2026-08-25, ERF-41).
-           ORDER BY erf_ts_key(s.timestamp) DESC, s.pos DESC
+           ORDER BY julianday(s.timestamp) DESC, s.pos DESC
          ) AS rn
   FROM claim_standing s
 )
@@ -1098,7 +1098,18 @@ SELECT fa.deployment_id, fa.atom_id, fa.pos, fa.auditor, fa.timestamp AS audit_t
 FROM atom_finding_audit fa
 JOIN record r ON r.deployment_id = fa.deployment_id AND r.id = fa.atom_id
 WHERE r.last_modified_timestamp IS NOT NULL
-  AND erf_is_stale(fa.timestamp, r.last_modified_timestamp) = 1;
+  AND (CASE
+         -- [ERF-47] canonical comparison, repeated verbatim at every site
+         -- because a CHECK-safe schema cannot carry a helper function.
+         -- Two bare dates that are equal read as CURRENT ("the re-audit that
+         -- follows an edit lands on the same day"). Mixed precision on the
+         -- same day CANNOT be ordered, so it MUST resolve to stale.
+         WHEN length(fa.timestamp) = 10 AND length(r.last_modified_timestamp) = 10
+              THEN CASE WHEN fa.timestamp < r.last_modified_timestamp THEN 1 ELSE 0 END
+         WHEN (length(fa.timestamp) = 10) <> (length(r.last_modified_timestamp) = 10)
+              AND substr(fa.timestamp,1,10) = substr(r.last_modified_timestamp,1,10) THEN 1
+         ELSE CASE WHEN julianday(fa.timestamp) < julianday(r.last_modified_timestamp) THEN 1 ELSE 0 END
+       END) = 1;
 
 CREATE VIEW v_erf47_stale_evidence_audit AS
 SELECT ea.deployment_id, ea.claim_id, ea.pos, ea.auditor, ea.timestamp AS audit_ts,
@@ -1121,7 +1132,18 @@ JOIN (
 ) max_change
   ON max_change.deployment_id = ea.deployment_id AND max_change.claim_id = ea.claim_id
 WHERE max_change.changed_ts <> ''
-  AND erf_is_stale(ea.timestamp, max_change.changed_ts) = 1;
+  AND (CASE
+         -- [ERF-47] canonical comparison, repeated verbatim at every site
+         -- because a CHECK-safe schema cannot carry a helper function.
+         -- Two bare dates that are equal read as CURRENT ("the re-audit that
+         -- follows an edit lands on the same day"). Mixed precision on the
+         -- same day CANNOT be ordered, so it MUST resolve to stale.
+         WHEN length(ea.timestamp) = 10 AND length(max_change.changed_ts) = 10
+              THEN CASE WHEN ea.timestamp < max_change.changed_ts THEN 1 ELSE 0 END
+         WHEN (length(ea.timestamp) = 10) <> (length(max_change.changed_ts) = 10)
+              AND substr(ea.timestamp,1,10) = substr(max_change.changed_ts,1,10) THEN 1
+         ELSE CASE WHEN julianday(ea.timestamp) < julianday(max_change.changed_ts) THEN 1 ELSE 0 END
+       END) = 1;
 
 -- [ERF-32] a narrative binding is stale when the claim it names carries a
 -- last_modified later than its bound-at; without bound-at, staleness is
@@ -1136,9 +1158,18 @@ SELECT nb.deployment_id, nb.corpus_id, nb.path, nb.pos, nb.claim_id,
          WHEN (SELECT r.last_modified_timestamp FROM record r
                 WHERE r.deployment_id = nb.deployment_id AND r.id = nb.claim_id) IS NULL
            THEN 'current'
-         WHEN erf_is_stale(nb.bound_at,
-                           (SELECT r.last_modified_timestamp FROM record r
-                             WHERE r.deployment_id = nb.deployment_id AND r.id = nb.claim_id)) = 1
+         WHEN (CASE
+         -- [ERF-47] canonical comparison, repeated verbatim at every site
+         -- because a CHECK-safe schema cannot carry a helper function.
+         -- Two bare dates that are equal read as CURRENT ("the re-audit that
+         -- follows an edit lands on the same day"). Mixed precision on the
+         -- same day CANNOT be ordered, so it MUST resolve to stale.
+         WHEN length(nb.bound_at) = 10 AND length((SELECT r.last_modified_timestamp FROM record r WHERE r.deployment_id = nb.deployment_id AND r.id = nb.claim_id)) = 10
+              THEN CASE WHEN nb.bound_at < (SELECT r.last_modified_timestamp FROM record r WHERE r.deployment_id = nb.deployment_id AND r.id = nb.claim_id) THEN 1 ELSE 0 END
+         WHEN (length(nb.bound_at) = 10) <> (length((SELECT r.last_modified_timestamp FROM record r WHERE r.deployment_id = nb.deployment_id AND r.id = nb.claim_id)) = 10)
+              AND substr(nb.bound_at,1,10) = substr((SELECT r.last_modified_timestamp FROM record r WHERE r.deployment_id = nb.deployment_id AND r.id = nb.claim_id),1,10) THEN 1
+         ELSE CASE WHEN julianday(nb.bound_at) < julianday((SELECT r.last_modified_timestamp FROM record r WHERE r.deployment_id = nb.deployment_id AND r.id = nb.claim_id)) THEN 1 ELSE 0 END
+       END) = 1
            THEN 'stale'
          ELSE 'current'
        END AS staleness

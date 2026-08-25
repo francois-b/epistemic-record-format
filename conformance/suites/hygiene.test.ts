@@ -20,7 +20,12 @@ import { REPO } from "../paths.ts";
 // Documents that narrate the format's past may cite the ids it used then.
 // DESIGN-HISTORY.md split into docs/ on 2026-08-25; history.md inherited
 // the id migrations and therefore this exemption.
-const HISTORY = new Set(["docs/history.md", "CHANGELOG.md"]);
+// Documents that narrate the format's past may cite the ids it used then.
+// non-goals.md is a register of dated rulings, so an entry about a
+// requirement retired before the 2026-08-23 flatten legitimately cites the
+// id that requirement had when it was ruled on; there is no flat id to
+// point at instead, because the requirement no longer exists in any form.
+const HISTORY = new Set(["docs/history.md", "docs/non-goals.md", "CHANGELOG.md"]);
 const SKIP_DIRS = new Set(["node_modules", ".git", "site"]);
 
 function* walk(dir: string): Generator<string> {
