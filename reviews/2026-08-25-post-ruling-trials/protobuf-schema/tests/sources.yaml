@@ -1,0 +1,67 @@
+type: sources
+sources:
+
+  # The specification's own example (section 4.1). Exercises: a CSL citation
+  # block with INTEGER values (issued, chapter-number), nested name arrays, and
+  # hyphenated CSL keys that are illegal proto identifiers.
+  pacioli-1494-geijsbeek:
+    citation_text: "Luca Pacioli, Particularis de Computis et Scripturis
+      (Venice, 1494), ch. 36, trans. Geijsbeek 1914"
+    citation:
+      type: book
+      author: [{family: Pacioli, given: Luca}]
+      title: "Particularis de Computis et Scripturis"
+      publisher-place: Venice
+      issued: 1494
+      chapter-number: 36
+      translator: [{family: Geijsbeek, given: John B.}]
+    received:
+      url: "https://archive.org/download/ancientdoubleent00geijuoft/ancientdoubleent00geijuoft.pdf"
+      path: raw/pacioli-1494-geijsbeek.pdf
+      digest: "sha256:05e58ce3f2589584d7d36446c46e2f74ab14f33ee6d1f0f20ef5e21c2aeaf2aa"
+      timestamp: "2026-08-23"
+    status: shipped-as-quotation
+    normalized: normalized/pacioli-1494-geijsbeek.md
+    normalized_digest: "sha256:1b9a0c47d3e8f5a2c6b4e09f7d132a8be5c40f6719d2ab83c5e7104f9a6d2b3e"
+    extraction: "pymupdf4llm 0.3.4"
+    normalization: "pandoc 3.1.11 --wrap=none"
+    excerpt: {timestamp: "2026-08-23", by: "agent/claude-sonnet-5"}
+
+  # ERF-5: absence recorded explicitly, with a reason. No `normalized`, no
+  # `licence`, no `excerpt`, no `extraction`, no `normalization` -- five
+  # optional scalars whose absence is the assertion.
+  vendor-msa-2025:
+    citation_text: "Acme Analytics, Master Services Agreement (2025), sect. 8.2"
+    status: access-restricted
+    reason: "The terms of access accepted to obtain this document forbid
+      extraction or redistribution independently of copyright."
+
+  # ERF-68: shipped under a licence, with the SPDX id and the plain name.
+  # No `received` at all -- ERF-7: "A received file has no retrieval locator,
+  # so its source carries no `received`."
+  okf-spec-v0-2:
+    citation_text: "Open Knowledge Format, SPEC.md, v0.2 (2026)"
+    status: shipped
+    normalized: normalized/okf-spec-v0-2.md
+    licence: Apache-2.0
+    licence_name: "Apache License 2.0"
+
+  # PRESENCE CASE P-7. `received` PRESENT AND EMPTY. Per ERF-55 a present,
+  # empty mapping "asserts existence": a fetch happened and nothing about it
+  # was recorded. Per ERF-7 an absent `received` says the file was not
+  # retrieved at all. Two different facts, three bytes apart on the wire.
+  handed-over-usb-2026:
+    citation_text: "Internal architecture note, handed over on a USB stick,
+      2026-04-11"
+    received: {}
+    status: not-redistributable
+    reason: "Copyright permits reading but not republication."
+
+  # ERF-72 extension namespace, on a source.
+  forum-thread-2026-03:
+    citation_text: "Anonymous, comment thread on a practitioner forum,
+      March 2026"
+    status: licence-unverified
+    reason: "Redistribution rights could not be established, and unverified
+      is not permission."
+    x_retrieval_attempts: 3

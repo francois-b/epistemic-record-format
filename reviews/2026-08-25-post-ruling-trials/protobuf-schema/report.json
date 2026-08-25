@@ -1,0 +1,868 @@
+[
+ {
+  "file": "atom-empty-strings.md",
+  "type": "atom",
+  "notes": [],
+  "kind": "record",
+  "wire_bytes": 248,
+  "diffs": [],
+  "body_ok": true,
+  "rebuilt": {
+   "id": "pt-003",
+   "type": "atom",
+   "corpus": "proto-trial",
+   "finding": "A survey of a private sample says something about its curation and nothing about the world.",
+   "quote": "the sample says something about its curation, nothing about the world",
+   "source": "okf-spec-v0-2",
+   "source_quality": "low",
+   "as_of_date": "",
+   "limitations": "",
+   "created": {
+    "timestamp": "2026-08-24",
+    "by": "agent/claude-fable-5"
+   }
+  },
+  "body_back": "",
+  "n_bindings": 0,
+  "malformed_bindings": 0
+ },
+ {
+  "file": "atom-full.md",
+  "type": "atom",
+  "notes": [],
+  "kind": "record",
+  "wire_bytes": 563,
+  "diffs": [],
+  "body_ok": true,
+  "rebuilt": {
+   "id": "pt-001",
+   "type": "atom",
+   "corpus": "proto-trial",
+   "finding": "Pacioli's 1494 treatise states the double-entry rule explicitly: every ledger entry is made twice, once as a debit and once as a credit.",
+   "quote": "All entries made in the ledger have to be double entries -- that is, if you make one creditor, you must make some one debtor.",
+   "source": "pacioli-1494-geijsbeek",
+   "source_quality": "high",
+   "as_of_date": "1494",
+   "limitations": "A 1914 translation; the Latin original was not consulted.",
+   "created": {
+    "timestamp": "2026-08-24",
+    "by": "agent/claude-fable-5"
+   },
+   "last_modified": {
+    "timestamp": "2026-08-25T09:12:00Z",
+    "by": "human:francois"
+   },
+   "finding_audit": [
+    {
+     "auditor": "deepseek-v4-pro",
+     "verdict": "SUPPORTED",
+     "timestamp": "2026-08-24",
+     "protocol": "finding-audit-v2"
+    },
+    {
+     "auditor": "gemini-3.5-flash",
+     "verdict": "PARTIAL",
+     "timestamp": "2026-08-24",
+     "protocol": "finding-audit-v2"
+    }
+   ]
+  },
+  "body_back": "",
+  "n_bindings": 0,
+  "malformed_bindings": 0
+ },
+ {
+  "file": "atom-illegal-vocabulary.md",
+  "type": "atom",
+  "notes": [
+   [
+    "enum-illegal",
+    "erf.v0_9.AuditEntry",
+    "verdict",
+    "FAILED"
+   ]
+  ],
+  "kind": "record",
+  "wire_bytes": 254,
+  "diffs": [
+   [
+    "loss",
+    "finding_audit[0].verdict",
+    "key dropped",
+    "FAILED",
+    null
+   ]
+  ],
+  "body_ok": true,
+  "rebuilt": {
+   "id": "pt-004",
+   "type": "atom",
+   "corpus": "proto-trial",
+   "finding": "An audit run that produced nothing is an audit that did not happen.",
+   "quote": "an audit that produced nothing is an audit that did not happen",
+   "source": "okf-spec-v0-2",
+   "created": {
+    "timestamp": "2026-08-24",
+    "by": "agent/claude-fable-5"
+   },
+   "finding_audit": [
+    {
+     "auditor": "some-tool",
+     "timestamp": "2026-08-24",
+     "protocol": "finding-audit-v2"
+    }
+   ]
+  },
+  "body_back": "",
+  "n_bindings": 0,
+  "malformed_bindings": 0
+ },
+ {
+  "file": "atom-minimal.md",
+  "type": "atom",
+  "notes": [],
+  "kind": "record",
+  "wire_bytes": 307,
+  "diffs": [],
+  "body_ok": true,
+  "rebuilt": {
+   "id": "pt-002",
+   "type": "atom",
+   "corpus": "proto-trial",
+   "finding": "The Open Knowledge Format directs a consumer to preserve what it does not recognize rather than reject the document carrying it.",
+   "quote": "It reads what it understands and preserves the rest [...] reporting what it did not recognize.",
+   "source": "okf-spec-v0-2",
+   "source_quality": "medium",
+   "created": {
+    "timestamp": "2026-08-24",
+    "by": "agent/claude-fable-5"
+   }
+  },
+  "body_back": "",
+  "n_bindings": 0,
+  "malformed_bindings": 0
+ },
+ {
+  "file": "atom-unquoted-year.md",
+  "kind": "error",
+  "error": "TypeError: bad argument type for built-in operation",
+  "diffs": []
+ },
+ {
+  "file": "claim-argument-edges.md",
+  "type": "claim",
+  "notes": [],
+  "kind": "record",
+  "wire_bytes": 717,
+  "diffs": [
+   [
+    "licensed",
+    "standings[0].evidence_at_stance.atoms_against",
+    "empty list omitted (ERF-55)",
+    [],
+    null
+   ]
+  ],
+  "body_ok": true,
+  "rebuilt": {
+   "id": "presence-is-data",
+   "type": "claim",
+   "corpus": "proto-trial",
+   "title": "In this format the absence of a field is itself an assertion, not a missing value",
+   "epistemic_kind": "argument",
+   "created": {
+    "timestamp": "2026-08-24",
+    "by": "agent/claude-fable-5"
+   },
+   "last_modified": {
+    "timestamp": "2026-08-25T08:00:00Z",
+    "by": "human:francois"
+   },
+   "families": [
+    "presence"
+   ],
+   "edges": [
+    {
+     "to": "proto3-destroys-evidence-at-stance",
+     "relation": "supports"
+    },
+    {
+     "to": "universal-negative-scoped-only",
+     "relation": "assumes"
+    },
+    {
+     "to": "universal-negative-scoped-only-b",
+     "relation": "decomposes-into"
+    },
+    {
+     "to": "citation-round-trip",
+     "relation": "conflicts-with"
+    }
+   ],
+   "standings": [
+    {
+     "timestamp": "2026-08-24T09:00:00Z",
+     "stance": "for",
+     "by": "human:francois",
+     "why": "ERF-71 says a missing digest 'itself tells a reader what kind of source it was', which is presence carrying data outright.",
+     "evidence_at_stance": {
+      "atoms_for": [
+       "pt-001"
+      ]
+     }
+    },
+    {
+     "timestamp": "2026-08-25T07:00:00Z",
+     "stance": "withdrawn",
+     "by": "human:francois",
+     "why": "Withdrawn as too broad; the narrower version is the one about evidence_at_stance. Exit, not opposition."
+    }
+   ],
+   "evidence_audit": [
+    {
+     "auditor": "gpt-5.5",
+     "verdict": "PARTIAL",
+     "timestamp": "2026-08-24",
+     "protocol": "evidence-audit-v1"
+    }
+   ]
+  },
+  "body_back": "",
+  "n_bindings": 0,
+  "malformed_bindings": 0
+ },
+ {
+  "file": "claim-evidence-at-stance.md",
+  "type": "claim",
+  "notes": [],
+  "kind": "record",
+  "wire_bytes": 1241,
+  "diffs": [
+   [
+    "licensed",
+    "standings[2].evidence_at_stance.atoms_for",
+    "empty list omitted (ERF-55)",
+    [],
+    null
+   ],
+   [
+    "licensed",
+    "standings[2].evidence_at_stance.atoms_against",
+    "empty list omitted (ERF-55)",
+    [],
+    null
+   ]
+  ],
+  "body_ok": true,
+  "rebuilt": {
+   "id": "proto3-destroys-evidence-at-stance",
+   "type": "claim",
+   "corpus": "proto-trial",
+   "title": "A wire format without explicit presence cannot record the difference between a ruler who stamped nothing and a ruler who stamped and faced no evidence",
+   "epistemic_kind": "observation",
+   "created": {
+    "timestamp": "2026-08-24",
+    "by": "agent/claude-fable-5"
+   },
+   "families": [
+    "presence",
+    "wire-formats"
+   ],
+   "atoms_for": [
+    "pt-001",
+    "pt-002"
+   ],
+   "standings": [
+    {
+     "timestamp": "2026-08-24T10:00:00Z",
+     "stance": "for",
+     "by": "human:francois",
+     "why": "The rule is stated in ERF-55 in as many words, and the failure mode is named there too."
+    },
+    {
+     "timestamp": "2026-08-24T11:30:00Z",
+     "stance": "for",
+     "by": "human:reviewer-b",
+     "why": "Ruled with nothing attached to the claim at the time; recording that I faced nothing is the point.",
+     "evidence_at_stance": {}
+    },
+    {
+     "timestamp": "2026-08-24T12:15:00Z",
+     "stance": "against",
+     "by": "human:reviewer-c",
+     "why": "Written out longhand rather than omitted, which ERF-55 forbids a producer to do but obliges a consumer to read.",
+     "evidence_at_stance": {}
+    }
+   ]
+  },
+  "body_back": "A wire format without explicit presence cannot record the difference between a\nruler who stamped nothing and a ruler who stamped and faced no evidence.\n\n## Working notes\n\nThe three entries above are the measurement. If a round trip returns three\nentries whose `evidence_at_stance` state is (absent, present-empty,\npresent-empty), the encoding preserved the distinction ERF-55 protects and\nnormalized the ERF-55 producer violation in the third. If it returns\n(absent, absent, absent), the encoding destroyed it.\n",
+  "n_bindings": 0,
+  "malformed_bindings": 0
+ },
+ {
+  "file": "claim-extension-and-unknown.md",
+  "type": "claim",
+  "notes": [
+   [
+    "escape",
+    "erf.v0_9.Claim",
+    "x_confidence",
+    "x_fields"
+   ],
+   [
+    "escape",
+    "erf.v0_9.Claim",
+    "x_review",
+    "x_fields"
+   ],
+   [
+    "escape",
+    "erf.v0_9.Claim",
+    "granted",
+    "unrecognized"
+   ]
+  ],
+  "kind": "record",
+  "wire_bytes": 472,
+  "diffs": [
+   [
+    "order",
+    "(root)",
+    "mapping key order changed",
+    [
+     "id",
+     "type",
+     "corpus",
+     "title",
+     "epistemic_kind",
+     "created",
+     "atoms_for",
+     "x_confidence",
+     "x_review",
+     "granted"
+    ],
+    [
+     "id",
+     "type",
+     "corpus",
+     "title",
+     "epistemic_kind",
+     "created",
+     "atoms_for",
+     "x_review",
+     "x_confidence",
+     "granted"
+    ]
+   ],
+   [
+    "loss",
+    "x_confidence",
+    "int -> float",
+    3,
+    3.0
+   ],
+   [
+    "order",
+    "x_review",
+    "mapping key order changed",
+    [
+     "reviewer",
+     "rounds",
+     "passed"
+    ],
+    [
+     "rounds",
+     "passed",
+     "reviewer"
+    ]
+   ],
+   [
+    "loss",
+    "x_review.rounds",
+    "int -> float",
+    2,
+    2.0
+   ]
+  ],
+  "body_ok": true,
+  "rebuilt": {
+   "id": "citation-round-trip",
+   "type": "claim",
+   "corpus": "proto-trial",
+   "title": "A CSL citation block cannot be carried through a closed wire schema without either enumerating CSL or losing integer fidelity",
+   "epistemic_kind": "observation",
+   "created": {
+    "timestamp": "2026-08-24",
+    "by": "agent/claude-fable-5"
+   },
+   "atoms_for": [
+    "pt-001"
+   ],
+   "x_review": {
+    "rounds": 2.0,
+    "passed": false,
+    "reviewer": "human:reviewer-b"
+   },
+   "x_confidence": 3.0,
+   "granted": true
+  },
+  "body_back": "A CSL citation block cannot be carried through a closed wire schema without\neither enumerating CSL or losing integer fidelity.\n",
+  "n_bindings": 0,
+  "malformed_bindings": 0
+ },
+ {
+  "file": "claim-surveys-absent.md",
+  "type": "claim",
+  "notes": [],
+  "kind": "record",
+  "wire_bytes": 395,
+  "diffs": [],
+  "body_ok": true,
+  "rebuilt": {
+   "id": "universal-negative-scoped-only-b",
+   "type": "claim",
+   "corpus": "proto-trial",
+   "title": "No shipped citator exposes the reasoning behind a negative-treatment flag",
+   "epistemic_kind": "observation",
+   "created": {
+    "timestamp": "2026-08-24",
+    "by": "agent/claude-fable-5"
+   },
+   "short_name": "no citator reasoning",
+   "semantic_query": "citator negative treatment flag rationale, explainability"
+  },
+  "body_back": "No shipped citator exposes the reasoning behind a negative-treatment flag.\n\n## Working notes\n\nThe pair record for the optional-list question.\n",
+  "n_bindings": 0,
+  "malformed_bindings": 0
+ },
+ {
+  "file": "claim-surveys-empty.md",
+  "type": "claim",
+  "notes": [],
+  "kind": "record",
+  "wire_bytes": 616,
+  "diffs": [
+   [
+    "licensed",
+    "families",
+    "empty list omitted (ERF-55)",
+    [],
+    null
+   ],
+   [
+    "licensed",
+    "atoms_for",
+    "empty list omitted (ERF-55)",
+    [],
+    null
+   ],
+   [
+    "licensed",
+    "atoms_against",
+    "empty list omitted (ERF-55)",
+    [],
+    null
+   ],
+   [
+    "licensed",
+    "edges",
+    "empty list omitted (ERF-55)",
+    [],
+    null
+   ]
+  ],
+  "body_ok": true,
+  "rebuilt": {
+   "id": "universal-negative-scoped-only",
+   "type": "claim",
+   "corpus": "proto-trial",
+   "title": "No shipped knowledge-management tool records a per-person, reasoned, append-only standings ledger with computed dispositions",
+   "epistemic_kind": "observation",
+   "created": {
+    "timestamp": "2026-08-24",
+    "by": "agent/claude-fable-5"
+   },
+   "short_name": "no ledger anywhere",
+   "surveys": [],
+   "semantic_query": "append-only per-person position ledger with reasons, knowledge management, provenance tooling"
+  },
+  "body_back": "No shipped knowledge-management tool records a per-person, reasoned,\nappend-only standings ledger with computed dispositions.\n\n## Working notes\n\nERF-25 makes this a scoped audit rather than a proof, and directs the claim to\ncite surveys rather than atoms. It cites neither yet.\n",
+  "n_bindings": 0,
+  "malformed_bindings": 0
+ },
+ {
+  "file": "corpus.yaml",
+  "type": "corpus",
+  "notes": [],
+  "kind": "record",
+  "wire_bytes": 85,
+  "diffs": [],
+  "body_ok": true,
+  "rebuilt": {
+   "type": "corpus",
+   "id": "proto-trial",
+   "title": "A corpus authored to exercise proto3 presence semantics",
+   "spec_version": "0.9.0"
+  },
+  "body_back": "",
+  "n_bindings": 0,
+  "malformed_bindings": 0
+ },
+ {
+  "file": "narrative-presence-brief.md",
+  "type": "narrative",
+  "notes": [],
+  "kind": "record",
+  "wire_bytes": 2413,
+  "diffs": [],
+  "body_ok": true,
+  "rebuilt": {
+   "type": "narrative",
+   "title": "What a wire format can and cannot promise about an absent field",
+   "corpus": "proto-trial",
+   "created": {
+    "timestamp": "2026-08-24",
+    "by": "human:francois"
+   }
+  },
+  "body_back": "# What a wire format can and cannot promise about an absent field\n\nA record format that treats absence as an assertion is making a demand of every\nserialization it will ever travel through. The demand is not that the format be\ncompact, and it is not that it be typed. It is that a reader can tell a field\nthat was never written from a field written empty.\n\n<!-- claims: proto3-destroys-evidence-at-stance \"absence as an assertion\" bound-at=2026-08-24 -->\n\nMost wire formats do not make that promise by default, and the ones that offer\nit offer it as an opt-in a schema author must remember to take. A schema author\nwho forgets does not get an error. They get a corpus in which two different\nfacts have become one.\n\n<!-- claims: presence-is-data citation-round-trip \"two different facts have become one\" bound-at=2026-08-24 -->\n\nThe passage below carries an anchor whose own words are in quotation marks,\nwhich is the case ERF-31's escapes exist for: a grammar that cannot express a\nlegal value is a defect in the grammar.\n\n<!-- claims: presence-is-data \"the case ERF-31's \\\"escapes\\\" exist for\" bound-at=2026-08-24 -->\n\nAnd this last binding is MALFORMED on purpose: it names claims and gives an\nanchor but omits `bound-at`, which the grammar makes mandatory. ERF-31 requires\nthat it be reported rather than skipped, because a comment failing the grammar\nis otherwise indistinguishable from any other HTML comment and the claims it\nnamed simply vanish from the narrative.\n\n<!-- claims: presence-is-data \"reported rather than skipped\" -->\n\n<!-- An ordinary HTML comment, not a narrative binding: it does not open with\n     claims: and must not be recognized as one. -->\n",
+  "n_bindings": 4,
+  "malformed_bindings": 1
+ },
+ {
+  "file": "opaque-no-type.md",
+  "type": null,
+  "notes": [],
+  "kind": "opaque",
+  "wire_bytes": 158,
+  "diffs": [
+   [
+    "order",
+    "(root)",
+    "mapping key order changed",
+    [
+     "title",
+     "author"
+    ],
+    [
+     "author",
+     "title"
+    ]
+   ]
+  ],
+  "body_ok": true
+ },
+ {
+  "file": "opaque-unknown-type.md",
+  "type": "question",
+  "notes": [],
+  "kind": "opaque",
+  "wire_bytes": 371,
+  "diffs": [
+   [
+    "order",
+    "(root)",
+    "mapping key order changed",
+    [
+     "type",
+     "id",
+     "corpus",
+     "title",
+     "opened",
+     "blocking"
+    ],
+    [
+     "id",
+     "type",
+     "blocking",
+     "opened",
+     "title",
+     "corpus"
+    ]
+   ],
+   [
+    "order",
+    "opened",
+    "mapping key order changed",
+    [
+     "timestamp",
+     "by"
+    ],
+    [
+     "by",
+     "timestamp"
+    ]
+   ]
+  ],
+  "body_ok": true
+ },
+ {
+  "file": "sources.yaml",
+  "type": "sources",
+  "notes": [
+   [
+    "struct",
+    "erf.v0_9.Source",
+    "citation",
+    null
+   ],
+   [
+    "escape",
+    "erf.v0_9.Source",
+    "x_retrieval_attempts",
+    "x_fields"
+   ]
+  ],
+  "kind": "record",
+  "wire_bytes": 1505,
+  "diffs": [
+   [
+    "order",
+    "sources",
+    "mapping key order changed",
+    [
+     "pacioli-1494-geijsbeek",
+     "vendor-msa-2025",
+     "okf-spec-v0-2",
+     "handed-over-usb-2026",
+     "forum-thread-2026-03"
+    ],
+    [
+     "okf-spec-v0-2",
+     "vendor-msa-2025",
+     "pacioli-1494-geijsbeek",
+     "forum-thread-2026-03",
+     "handed-over-usb-2026"
+    ]
+   ],
+   [
+    "order",
+    "sources.pacioli-1494-geijsbeek",
+    "mapping key order changed",
+    [
+     "citation_text",
+     "citation",
+     "received",
+     "status",
+     "normalized",
+     "normalized_digest",
+     "extraction",
+     "normalization",
+     "excerpt"
+    ],
+    [
+     "citation_text",
+     "citation",
+     "received",
+     "status",
+     "normalized",
+     "normalized_digest",
+     "excerpt",
+     "extraction",
+     "normalization"
+    ]
+   ],
+   [
+    "order",
+    "sources.pacioli-1494-geijsbeek.citation",
+    "mapping key order changed",
+    [
+     "type",
+     "author",
+     "title",
+     "publisher-place",
+     "issued",
+     "chapter-number",
+     "translator"
+    ],
+    [
+     "chapter-number",
+     "translator",
+     "publisher-place",
+     "type",
+     "title",
+     "author",
+     "issued"
+    ]
+   ],
+   [
+    "order",
+    "sources.pacioli-1494-geijsbeek.citation.author[0]",
+    "mapping key order changed",
+    [
+     "family",
+     "given"
+    ],
+    [
+     "given",
+     "family"
+    ]
+   ],
+   [
+    "loss",
+    "sources.pacioli-1494-geijsbeek.citation.issued",
+    "int -> float",
+    1494,
+    1494.0
+   ],
+   [
+    "loss",
+    "sources.pacioli-1494-geijsbeek.citation.chapter-number",
+    "int -> float",
+    36,
+    36.0
+   ],
+   [
+    "order",
+    "sources.pacioli-1494-geijsbeek.citation.translator[0]",
+    "mapping key order changed",
+    [
+     "family",
+     "given"
+    ],
+    [
+     "given",
+     "family"
+    ]
+   ],
+   [
+    "loss",
+    "sources.forum-thread-2026-03.x_retrieval_attempts",
+    "int -> float",
+    3,
+    3.0
+   ]
+  ],
+  "body_ok": true,
+  "rebuilt": {
+   "type": "sources",
+   "sources": {
+    "okf-spec-v0-2": {
+     "citation_text": "Open Knowledge Format, SPEC.md, v0.2 (2026)",
+     "status": "shipped",
+     "normalized": "normalized/okf-spec-v0-2.md",
+     "licence": "Apache-2.0",
+     "licence_name": "Apache License 2.0"
+    },
+    "vendor-msa-2025": {
+     "citation_text": "Acme Analytics, Master Services Agreement (2025), sect. 8.2",
+     "status": "access-restricted",
+     "reason": "The terms of access accepted to obtain this document forbid extraction or redistribution independently of copyright."
+    },
+    "pacioli-1494-geijsbeek": {
+     "citation_text": "Luca Pacioli, Particularis de Computis et Scripturis (Venice, 1494), ch. 36, trans. Geijsbeek 1914",
+     "citation": {
+      "chapter-number": 36.0,
+      "translator": [
+       {
+        "given": "John B.",
+        "family": "Geijsbeek"
+       }
+      ],
+      "publisher-place": "Venice",
+      "type": "book",
+      "title": "Particularis de Computis et Scripturis",
+      "author": [
+       {
+        "given": "Luca",
+        "family": "Pacioli"
+       }
+      ],
+      "issued": 1494.0
+     },
+     "received": {
+      "url": "https://archive.org/download/ancientdoubleent00geijuoft/ancientdoubleent00geijuoft.pdf",
+      "path": "raw/pacioli-1494-geijsbeek.pdf",
+      "digest": "sha256:05e58ce3f2589584d7d36446c46e2f74ab14f33ee6d1f0f20ef5e21c2aeaf2aa",
+      "timestamp": "2026-08-23"
+     },
+     "status": "shipped-as-quotation",
+     "normalized": "normalized/pacioli-1494-geijsbeek.md",
+     "normalized_digest": "sha256:1b9a0c47d3e8f5a2c6b4e09f7d132a8be5c40f6719d2ab83c5e7104f9a6d2b3e",
+     "excerpt": {
+      "timestamp": "2026-08-23",
+      "by": "agent/claude-sonnet-5"
+     },
+     "extraction": "pymupdf4llm 0.3.4",
+     "normalization": "pandoc 3.1.11 --wrap=none"
+    },
+    "forum-thread-2026-03": {
+     "citation_text": "Anonymous, comment thread on a practitioner forum, March 2026",
+     "status": "licence-unverified",
+     "reason": "Redistribution rights could not be established, and unverified is not permission.",
+     "x_retrieval_attempts": 3.0
+    },
+    "handed-over-usb-2026": {
+     "citation_text": "Internal architecture note, handed over on a USB stick, 2026-04-11",
+     "received": {},
+     "status": "not-redistributable",
+     "reason": "Copyright permits reading but not republication."
+    }
+   }
+  },
+  "body_back": "",
+  "n_bindings": 0,
+  "malformed_bindings": 0
+ },
+ {
+  "file": "survey-full.md",
+  "type": "survey",
+  "notes": [],
+  "kind": "record",
+  "wire_bytes": 1373,
+  "diffs": [],
+  "body_ok": true,
+  "rebuilt": {
+   "id": "presence-semantics-in-wire-formats-2026-08-24",
+   "type": "survey",
+   "corpus": "proto-trial",
+   "title": "Whether any interchange schema language records an empty collection distinctly from an absent one",
+   "conducted": {
+    "timestamp": "2026-08-24",
+    "by": "agent/claude-fable-5"
+   },
+   "searches": [
+    {
+     "tool": "grep -rnE (BSD grep, macOS)",
+     "query": "optional[[:space:]]+repeated",
+     "scope": "the proto3 language guide, sections on field presence",
+     "hits_reported": "0"
+    },
+    {
+     "tool": "grep -rn (BSD grep, macOS)",
+     "query": "has_presence",
+     "scope": "",
+     "hits_reported": "~40 reported, first two pages inspected",
+     "timestamp": "2026-08-24T16:00:00Z"
+    },
+    {
+     "tool": "manual review",
+     "query": "every field in section 3 of SPEC-as-tried.md carrying a `?`",
+     "hits_reported": "24 optional fields, of which 2 are lists"
+    }
+   ],
+   "notable_results": [
+    {
+     "what": "proto3 forbids `optional repeated`",
+     "note": "The language has no syntax for an optional list at all, so the two optional lists in the data model must each be re-encoded as a wrapper message or silently flattened."
+    },
+    {
+     "what": "A singular message field carries explicit presence",
+     "note": "Which is what saves `evidence_at_stance`, and only that.",
+     "atoms": []
+    },
+    {
+     "what": "Enum zero members are mandatory",
+     "note": "Every closed vocabulary gains a member the specification does not have.",
+     "atoms": [
+      "pt-004"
+     ]
+    }
+   ],
+   "prior_survey": "presence-semantics-in-wire-formats-2026-07-02"
+  },
+  "body_back": "## What was after\n\nWhether a schema language exists whose default encoding preserves the\nabsent/empty distinction without an explicit opt-in.\n\n## Coverage bounds\n\nThe acts covered proto3, JSON Schema, and Avro. They did not cover Thrift,\nCap'n Proto, or FlatBuffers, and the absence reading here is sparseness rather\nthan absence.\n",
+  "n_bindings": 0,
+  "malformed_bindings": 0
+ }
+]

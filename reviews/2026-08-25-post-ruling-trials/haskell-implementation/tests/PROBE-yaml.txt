@@ -1,0 +1,37 @@
+input                     | yaml text            | Data.Yaml result
+--------------------------+----------------------+---------------------------------
+bare date (value)         | k: 2026-08-23        | key "k" -> String "2026-08-23"
+full timestamp (value)    | k: 2026-08-23T14:02:00Z | key "k" -> String "2026-08-23T14:02:00Z"
+yes                       | k: yes               | key "k" -> Bool True
+no                        | k: no                | key "k" -> Bool False
+on                        | k: on                | key "k" -> Bool True
+off                       | k: off               | key "k" -> Bool False
+null                      | k: null              | key "k" -> Null
+tilde                     | k: ~                 | key "k" -> Null
+empty value               | k:                   | key "k" -> Null
+true                      | k: true              | key "k" -> Bool True
+leading zero 012          | k: 012               | key "k" -> Number 12
+bare year 2018            | k: 2018              | key "k" -> Number 2018
+colon string 12:30:00     | k: 12:30:00          | key "k" -> String "12:30:00"
+version 1.0               | k: 1.0               | key "k" -> Number 1
+version 0.9.0             | k: 0.9.0             | key "k" -> String "0.9.0"
+sexagesimal 1:30          | k: 1:30              | key "k" -> String "1:30"
+hex 0x1F                  | k: 0x1F              | key "k" -> Number 31
+octal 0o17                | k: 0o17              | key "k" -> Number 15
+inf/nan                   | k: .inf              | key "k" -> String ".inf"
+N                         | k: N                 | key "k" -> Bool False
+y                         | k: y                 | key "k" -> Bool True
+quoted year               | k: "2018"            | key "k" -> String "2018"
+KEY bare date             | 2026-08-23: v        | key "2026-08-23" -> String "v"
+KEY yes                   | yes: v               | key "yes" -> String "v"
+KEY no                    | no: v                | key "no" -> String "v"
+KEY on                    | on: v                | key "on" -> String "v"
+KEY null                  | null: v              | key "null" -> String "v"
+KEY 2018                  | 2018: v              | key "2018" -> String "v"
+KEY 012                   | 012: v               | key "012" -> String "v"
+KEY 1.0                   | 1.0: v               | key "1.0" -> String "v"
+KEY 12:30:00              | 12:30:00: v          | key "12:30:00" -> String "v"
+KEY true                  | true: v              | key "true" -> String "v"
+duplicate keys            | k: 1\nk: 2           | key "k" -> Number 2
+anchor + alias            | a: &x hello\nb: *x   | key "a" -> String "hello", key "b" -> String "hello"
+explicit tag              | k: !!str 2018        | key "k" -> String "2018"

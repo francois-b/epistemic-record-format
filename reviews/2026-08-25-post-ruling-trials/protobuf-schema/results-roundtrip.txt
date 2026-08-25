@@ -1,0 +1,61 @@
+==============================================================================
+[OK ] atom-empty-strings.md                            248B
+[OK ] atom-full.md                                     563B
+[LOSS] atom-illegal-vocabulary.md                       254B
+        ! finding_audit[0].verdict: key dropped
+            before: 'FAILED'
+            after : None
+        · note ('enum-illegal', 'erf.v0_9.AuditEntry', 'verdict', 'FAILED')
+[OK ] atom-minimal.md                                  307B
+[FAIL] atom-unquoted-year.md                              -B
+        ! TypeError: bad argument type for built-in operation
+[OK ] claim-argument-edges.md                          717B
+        ~ standings[0].evidence_at_stance.atoms_against: empty list omitted (ERF-55)
+[OK ] claim-evidence-at-stance.md                     1241B
+        ~ standings[2].evidence_at_stance.atoms_for: empty list omitted (ERF-55)
+        ~ standings[2].evidence_at_stance.atoms_against: empty list omitted (ERF-55)
+[LOSS] claim-extension-and-unknown.md                   472B
+        o (root): mapping key order changed
+        o x_review: mapping key order changed
+        ! x_confidence: int -> float
+            before: 3
+            after : 3.0
+        ! x_review.rounds: int -> float
+            before: 2
+            after : 2.0
+        · note ('escape', 'erf.v0_9.Claim', 'x_confidence', 'x_fields')
+        · note ('escape', 'erf.v0_9.Claim', 'x_review', 'x_fields')
+        · note ('escape', 'erf.v0_9.Claim', 'granted', 'unrecognized')
+[OK ] claim-surveys-absent.md                          395B
+[OK ] claim-surveys-empty.md                           616B
+        ~ families: empty list omitted (ERF-55)
+        ~ atoms_for: empty list omitted (ERF-55)
+        ~ atoms_against: empty list omitted (ERF-55)
+        ~ edges: empty list omitted (ERF-55)
+[OK ] corpus.yaml                                       85B
+[OK ] narrative-presence-brief.md                     2413B
+[OK ] opaque-no-type.md                                158B
+        o (root): mapping key order changed
+[OK ] opaque-unknown-type.md                           371B
+        o (root): mapping key order changed
+        o opened: mapping key order changed
+[LOSS] sources.yaml                                    1505B
+        o sources: mapping key order changed
+        o sources.pacioli-1494-geijsbeek: mapping key order changed
+        o sources.pacioli-1494-geijsbeek.citation: mapping key order changed
+        o sources.pacioli-1494-geijsbeek.citation.author[0]: mapping key order changed
+        o sources.pacioli-1494-geijsbeek.citation.translator[0]: mapping key order changed
+        ! sources.pacioli-1494-geijsbeek.citation.issued: int -> float
+            before: 1494
+            after : 1494.0
+        ! sources.pacioli-1494-geijsbeek.citation.chapter-number: int -> float
+            before: 36
+            after : 36.0
+        ! sources.forum-thread-2026-03.x_retrieval_attempts: int -> float
+            before: 3
+            after : 3.0
+        · note ('struct', 'erf.v0_9.Source', 'citation', None)
+        · note ('escape', 'erf.v0_9.Source', 'x_retrieval_attempts', 'x_fields')
+[OK ] survey-full.md                                  1373B
+==============================================================================
+files: 16   losses: 6   hard failures: 1   spec-licensed changes: 7   key-order changes: 10

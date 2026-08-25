@@ -2,13 +2,24 @@
 id: B-48
 kind: defect
 status: open
-priority: P2
+priority: P1
 priority_because: >
   Both reviewers: the class opens with every machine-checkable MUST that
   applies, and ERF-50 to 52 sit in section 6; the fix is an "including".
-basis: reported
+basis: demonstrated
 raised: "backlog verification pass, 2026-08-25"
 verifications:
+  - by: "Go trial, independently, 2026-08-25 post-ruling trials"
+    on: 2026-08-25
+    verdict: accurate
+    note: >
+      A cold implementer put this first of twenty-nine ambiguities. Its
+      reading: under the exhaustive-list reading, ERF-6, ERF-9, ERF-12,
+      ERF-13, ERF-14, ERF-19, ERF-26, ERF-27 and all of section 4.6 fall
+      outside the Validator class, so "a tool that never opens a normalized
+      text and never parses a narrative binding is a fully conforming
+      validator". It also noted the reading is internally strained: ERF-31
+      states a validator duty in a section the class list does not name.
   - by: "claude-opus-5, independent verification of the nine"
     on: 2026-08-25
     verdict: accurate

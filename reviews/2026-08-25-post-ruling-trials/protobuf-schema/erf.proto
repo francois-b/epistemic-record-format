@@ -1,0 +1,548 @@
+// The Epistemic Record Format, expressed as a proto3 wire schema.
+//
+// Built cold from SPEC-as-tried.md (spec_version 0.9.0) alone. No reference
+// implementation, no example corpus, no types/erf.ts was consulted. Where the
+// prose underdetermined an encoding the choice is recorded in ambiguities.md;
+// where proto3 could not express a rule at all it is recorded in
+// what-the-schema-cannot-say.md.
+//
+// READING NOTE ON `optional`:
+// Every `optional` keyword below marks a place where the specification depends
+// on a present/absent distinction that proto3's default (implicit-presence)
+// encoding destroys. Together they are the inventory of that dependency.
+// Count them: each one is a place where a naive proto3 producer would silently
+// conflate "the author said nothing" with "the author said the empty string".
+
+syntax = "proto3";
+
+package erf.v0_9;
+
+import "google/protobuf/struct.proto";
+
+// ---------------------------------------------------------------------------
+// 1. Closed vocabularies (spec section 5)
+//
+// The specification says of these: "Closed sets. A value outside them is a
+// validation failure, not a dialect."
+//
+// proto3 REQUIRES that the first member of every enum have the value 0 and
+// serve as the field's default. That mandatory member is a value outside the
+// spec's sets. Every enum below therefore ships a member the specification
+// does not have, and it is the member a field silently takes when nothing was
+// written. See what-the-schema-cannot-say.md #E1..#E6.
+//
+// The alternative -- aliasing 0 onto a real member, e.g. OBSERVATION = 0 --
+// is worse: it converts an omission into a confident wrong answer rather than
+// into a detectable one. Both options are defects; this schema chooses the
+// detectable one and pays for it with an illegal state.
+// ---------------------------------------------------------------------------
+
+// spec: type EpistemicKind = "observation" | "argument" | "bet" | "commitment";
+enum EpistemicKind {
+  EPISTEMIC_KIND_UNSPECIFIED = 0;  // NOT IN THE SPECIFICATION. proto3 tax.
+  EPISTEMIC_KIND_OBSERVATION = 1;
+  EPISTEMIC_KIND_ARGUMENT = 2;
+  EPISTEMIC_KIND_BET = 3;
+  EPISTEMIC_KIND_COMMITMENT = 4;
+}
+
+// spec: type Stance = "for" | "against" | "withdrawn";
+// ERF-41 computes disposition from stances and asserts "Every input has
+// exactly one reading." STANCE_UNSPECIFIED has no reading.
+enum Stance {
+  STANCE_UNSPECIFIED = 0;  // NOT IN THE SPECIFICATION. Breaks ERF-41 totality.
+  STANCE_FOR = 1;
+  STANCE_AGAINST = 2;
+  STANCE_WITHDRAWN = 3;
+}
+
+// spec: type Relation = "supports" | "assumes" | "decomposes-into"
+//                     | "conflicts-with";
+// Note the hyphens: proto enum members cannot contain them, so the wire name
+// and the YAML name differ and a hand-written mapping table is mandatory.
+enum Relation {
+  RELATION_UNSPECIFIED = 0;  // NOT IN THE SPECIFICATION.
+  RELATION_SUPPORTS = 1;
+  RELATION_ASSUMES = 2;
+  RELATION_DECOMPOSES_INTO = 3;   // YAML: "decomposes-into"
+  RELATION_CONFLICTS_WITH = 4;    // YAML: "conflicts-with"
+}
+
+// spec: type SourceQuality = "high" | "medium" | "low";
+enum SourceQuality {
+  SOURCE_QUALITY_UNSPECIFIED = 0;  // NOT IN THE SPECIFICATION.
+  SOURCE_QUALITY_HIGH = 1;
+  SOURCE_QUALITY_MEDIUM = 2;
+  SOURCE_QUALITY_LOW = 3;
+}
+
+// spec: verdict: "SUPPORTED" | "PARTIAL" | "UNSUPPORTED"
+// ERF-12: "A verdict MUST be exactly one of SUPPORTED, PARTIAL, or
+// UNSUPPORTED. A failed, unparseable, or abandoned audit MUST NOT be written
+// as a verdict [...] Recording a tool failure in the field that holds a
+// judgment makes the two indistinguishable to everything downstream."
+//
+// VERDICT_UNSPECIFIED is precisely the state ERF-12 forbids, and proto3
+// mandates it. See losslessness.md finding F1.
+enum Verdict {
+  VERDICT_UNSPECIFIED = 0;  // FORBIDDEN BY ERF-12. proto3 mandates it anyway.
+  VERDICT_SUPPORTED = 1;
+  VERDICT_PARTIAL = 2;
+  VERDICT_UNSUPPORTED = 3;
+}
+
+// spec section 3, Source.status; ERF-5, ERF-68.
+// A required field (no `?` in the type), so the zero member is again illegal.
+enum SourceStatus {
+  SOURCE_STATUS_UNSPECIFIED = 0;      // NOT IN THE SPECIFICATION.
+  SOURCE_STATUS_SHIPPED = 1;                 // YAML: "shipped"
+  SOURCE_STATUS_SHIPPED_AS_QUOTATION = 2;    // YAML: "shipped-as-quotation"
+  SOURCE_STATUS_NOT_REDISTRIBUTABLE = 3;     // YAML: "not-redistributable"
+  SOURCE_STATUS_ACCESS_RESTRICTED = 4;       // YAML: "access-restricted"
+  SOURCE_STATUS_LICENCE_UNVERIFIED = 5;      // YAML: "licence-unverified"
+}
+
+// ---------------------------------------------------------------------------
+// 2. Shared value objects
+// ---------------------------------------------------------------------------
+
+// spec: interface ActorStamp { timestamp: string; by: Actor }   // RFC 3339
+//
+// `timestamp` is a STRING, deliberately, not google.protobuf.Timestamp.
+// ERF-14 admits "a year, a year and month, or a full date" and forbids stating
+// precision the source did not give. ERF-47 requires comparing stamps OF
+// DIFFERENT PRECISION and resolving an unorderable pair to `stale`.
+// google.protobuf.Timestamp is a normalized instant: it cannot hold "2018" as
+// anything other than 2018-01-01T00:00:00Z, which invents the precision ERF-14
+// forbids and destroys the input ERF-47's rule reads. See finding F3.
+//
+// `by` is an Actor: `human:<id>` | `<producer>/<version>` | `process:<id>`.
+// proto3 has no string-content type. It is a bare string here and the
+// convention lives in code (what-the-schema-cannot-say.md #S1).
+message ActorStamp {
+  string timestamp = 1;
+  string by = 2;
+}
+
+// spec: evidence_at_stance?: { atoms_for: AtomId[]; atoms_against: AtomId[] }
+//
+// THE CENTRAL PRESENCE CASE. ERF-55:
+//   "a mapping that is present and empty asserts existence, per section 3, and
+//    MUST be written. ERF-20's evidence_at_stance is why the distinction is
+//    worth a sentence. Absent, it says the ruler stamped nothing; present and
+//    empty, it says the ruler stamped, and faced no evidence."
+//
+// A singular message field in proto3 HAS explicit presence -- this is the one
+// place proto3's semantics land exactly on the specification's. The two
+// repeated fields inside have implicit presence, which is also exactly right,
+// because ERF-55/ERF-56 make an empty list and an absent list the same fact.
+// So: an EvidenceAtStance that is present and holds two empty lists occupies
+// three wire bytes (tag + length 0) and a reader can tell it from absence.
+// Verified in tests/roundtrip -- see losslessness.md, case P-1.
+message EvidenceAtStance {
+  repeated string atoms_for = 1;      // AtomId
+  repeated string atoms_against = 2;  // AtomId
+}
+
+// spec: interface StandingEntry { timestamp; stance; by: `human:${string}`;
+//                                 why; evidence_at_stance? }
+//
+// ERF-19 requires a full RFC 3339 instant here and forbids a bare date; ERF-39
+// requires a `human:` actor and a non-empty `why`. None of those three is
+// expressible. `why` is a plain string, so "" and absent are one value -- and
+// here that conflation is BENIGN, because ERF-39 makes "" illegal anyway, so
+// the two indistinguishable states are both violations.
+message StandingEntry {
+  string timestamp = 1;
+  Stance stance = 2;
+  string by = 3;    // MUST match `human:` (ERF-21, ERF-39) -- checked in code
+  string why = 4;   // MUST be non-empty (ERF-19, ERF-39) -- checked in code
+  EvidenceAtStance evidence_at_stance = 5;  // explicit presence: see above
+}
+
+// spec: interface AuditEntry { auditor; verdict; timestamp; protocol }
+// ERF-11: "The `auditor` is a bare model or tool identifier (deepseek-v4-pro),
+// deliberately not an `Actor`". So a plain string here is correct, and it is
+// correct for a reason the schema cannot record: the type is the same as
+// ActorStamp.by and the DIFFERENCE between them is the whole point.
+message AuditEntry {
+  string auditor = 1;
+  Verdict verdict = 2;
+  string timestamp = 3;
+  string protocol = 4;
+}
+
+// ---------------------------------------------------------------------------
+// 3. Wrapper messages for OPTIONAL LISTS
+//
+// proto3 forbids `optional repeated`. A repeated field has no presence, full
+// stop. The specification writes two optional lists:
+//
+//   surveys?: SurveyId[]                        (Claim)
+//   notable_results[].atoms?: AtomId[]          (Survey)
+//
+// and elsewhere says (section 3, closing paragraph) "Lists are total in the
+// type and MAY be empty" and (ERF-56) "A reader MUST materialize an omitted
+// list-typed field as an empty list."
+//
+// Those two statements are in tension. If an omitted list IS an empty list,
+// the `?` on `surveys` carries no information and `repeated string` is right.
+// If the `?` carries information, `repeated` erases it and a wrapper is right.
+// proto3 forces the choice into the open; YAML let the spec leave it closed.
+//
+// This schema chooses the wrapper, so the distinction SURVIVES the round trip
+// and can be measured. See ambiguities.md #A1 for what breaks under the other
+// choice, and losslessness.md case P-3 for the measurement.
+// ---------------------------------------------------------------------------
+
+message SurveyIdList {
+  repeated string values = 1;  // SurveyId
+}
+
+message AtomIdList {
+  repeated string values = 1;  // AtomId
+}
+
+// ---------------------------------------------------------------------------
+// 4. The records (spec section 4)
+// ---------------------------------------------------------------------------
+
+// spec section 4.2. ERF-53: an atom's body is empty, "so its file is
+// frontmatter and nothing else". The Atom interface has NO body field, so the
+// empty body is not represented here either -- it is a property of the
+// serialization, not of the record. Note that this makes the Atom the one
+// record type whose interchange form carries a byte range the data model
+// cannot describe.
+message Atom {
+  string id = 1;                     // AtomId. ERF-13: permanent, prefix+number
+  string type = 2;                   // literal "atom". String, not enum: ERF-57
+                                     // requires unknown record TYPES be
+                                     // preserved, so this set is open.
+  string corpus = 3;                 // CorpusId
+  string finding = 4;
+  string quote = 5;                  // ERF-6 verbatim; ERF-52 "[...]" elision
+  string source = 6;                 // SourceId, resolved against the corpus's
+                                     // source list (ERF-4) -- not by the schema
+  SourceQuality source_quality = 7;
+
+  optional string as_of_date = 8;    // ERF-14. PRESENCE REQUIRED: "dated
+                                     // statistics carry it and timeless
+                                     // statements omit it" -- the absence is
+                                     // the assertion.
+  optional string limitations = 9;   // PRESENCE REQUIRED: section 4.2 calls
+                                     // this "the atom's only prose". Absent
+                                     // means no caveat was recorded; "" would
+                                     // mean a caveat was recorded and is blank.
+                                     // The spec never rules on "" (gap G4).
+
+  ActorStamp created = 10;           // required by the type; proto3 cannot say
+  ActorStamp last_modified = 11;     // ERF-48: "A record never edited since
+                                     // minting correctly carries no
+                                     // last_modified at all." Message field,
+                                     // so presence is real. Good.
+  repeated AuditEntry finding_audit = 12;  // ERF-56 names this field by name as
+                                           // the omitted-list case. repeated is
+                                           // exactly right here.
+
+  // ERF-72 extension namespace and ERF-57 unknown-field preservation.
+  // Both are lossy: a map is unordered by proto3 fiat, and Value's only number
+  // type is double. See finding F5.
+  map<string, google.protobuf.Value> x_fields = 100;
+  map<string, google.protobuf.Value> unrecognized = 101;
+}
+
+// spec: edges: { to: ClaimId; relation: Relation }[]  // claim-to-claim only
+message Edge {
+  string to = 1;         // ClaimId
+  Relation relation = 2;
+}
+
+// spec section 4.3.
+message Claim {
+  string id = 1;                  // ClaimId, ERF-36 deployment-unique
+  string type = 2;                // literal "claim"
+  string corpus = 3;              // ERF-17, mutable
+  string title = 4;               // ERF-18, THE normative statement
+  EpistemicKind epistemic_kind = 5;
+  ActorStamp created = 6;
+  ActorStamp last_modified = 7;
+
+  optional string short_name = 8;      // PRESENCE REQUIRED (guidance in 4.3)
+  repeated string families = 9;        // FamilyName
+  repeated string atoms_for = 10;      // ERF-23
+  repeated string atoms_against = 11;  // ERF-23
+
+  SurveyIdList surveys = 12;           // OPTIONAL LIST -- wrapper, see above
+
+  repeated Edge edges = 13;
+  repeated StandingEntry standings = 14;   // ERF-19/40 append-only: unstatable
+  repeated AuditEntry evidence_audit = 15;
+
+  optional string semantic_query = 16; // PRESENCE REQUIRED. "read by machines
+                                       // only [...] may be regenerated freely"
+
+  string body = 17;  // NOT optional, deliberately. In the interchange form
+                     // (ERF-53) the body is the bytes after the closing `---`,
+                     // so an empty body and an absent body ARE the same bytes.
+                     // proto3's implicit presence matches the format exactly
+                     // here. This is the one field where the criticism of
+                     // proto3 lands equally on ERF's own serialization.
+
+  map<string, google.protobuf.Value> x_fields = 100;
+  map<string, google.protobuf.Value> unrecognized = 101;
+}
+
+// spec: interface SearchAct { tool; query; scope?; hits_reported; timestamp? }
+message SearchAct {
+  string tool = 1;             // ERF-26: the concrete instrument, named
+  string query = 2;
+  optional string scope = 3;   // PRESENCE REQUIRED: ERF-26 "An act MAY carry a
+                               // scope naming the restriction that applied" --
+                               // absent means no restriction applied.
+  string hits_reported = 4;    // ERF-27: TEXT, never a number. "~120 reported,
+                               // two pages inspected" is a legal value, and
+                               // "a record MUST NOT state precision the
+                               // instrument did not give" is why an int32 here
+                               // would be a conformance bug, not an
+                               // optimization.
+  optional string timestamp = 5;  // PRESENCE REQUIRED: ERF-28 "absent one, an
+                                  // act inherits the survey's conducted
+                                  // timestamp". Absence is a live inheritance
+                                  // rule, not a missing value.
+}
+
+// spec: notable_results: { what: string; note: string; atoms?: AtomId[] }[]
+message NotableResult {
+  string what = 1;
+  string note = 2;
+  AtomIdList atoms = 3;  // second OPTIONAL LIST. ERF-28 says a notable_results
+                         // entry may gain "its `atoms` once a hit is minted",
+                         // which reads as though absence is a state that
+                         // becomes presence -- an argument for the wrapper.
+}
+
+// spec section 4.5.
+message Survey {
+  string id = 1;              // ERF-28: slug SHOULD end with the conducted date
+  string type = 2;            // literal "survey"
+  string corpus = 3;
+  string title = 4;           // ERF-28: MUST state what was sought
+  ActorStamp conducted = 5;   // machine actors legal here
+  repeated SearchAct searches = 6;         // ERF-28: immutable once conducted
+  repeated NotableResult notable_results = 7;
+  optional string prior_survey = 8;  // PRESENCE REQUIRED: absence means this is
+                                     // not a re-run. SHOULD, not MUST (ERF-28).
+  ActorStamp last_modified = 9;
+  string body = 10;
+
+  map<string, google.protobuf.Value> x_fields = 100;
+  map<string, google.protobuf.Value> unrecognized = 101;
+}
+
+// ---------------------------------------------------------------------------
+// 5. The corpus's own structure: declaration and sources.
+// Neither is a record (spec section 3 comment, section 4.1).
+// ---------------------------------------------------------------------------
+
+// spec: interface CorpusDeclaration { type; id; title; spec_version;
+//                                     classification?; owner? }
+message CorpusDeclaration {
+  string type = 1;           // literal "corpus" (ERF-54)
+  string id = 2;             // CorpusId
+  string title = 3;
+  string spec_version = 4;   // ERF-61 SemVer; ERF-60 hangs on the MAJOR
+  optional string classification = 5;  // PRESENCE REQUIRED: "an opaque label
+                                       // this version records and does not
+                                       // read". A present empty label is a
+                                       // recorded opaque label that happens to
+                                       // be empty; the format does not read it,
+                                       // so it cannot say the two are the same.
+  optional string owner = 6;           // Actor. PRESENCE REQUIRED: absence
+                                       // means no responsible person is named.
+
+  map<string, google.protobuf.Value> x_fields = 100;
+  map<string, google.protobuf.Value> unrecognized = 101;
+}
+
+// spec: interface Received { url?; path?; digest?; timestamp? }
+// ALL FOUR are optional, and each absence is a distinct assertion:
+//   ERF-7:  "A received file has no retrieval locator, so its source carries
+//            no `received`."                      -> absence of the whole msg
+//   ERF-2:  a corpus holding the raw file records `path`; one that does not
+//            holds `url` and `digest` instead.    -> which pair is present IS
+//                                                    the fact being recorded
+//   ERF-71: "a page that differs on every fetch cannot be pinned, and its
+//            source simply carries no digest, which itself tells a reader what
+//            kind of source it was."              -> the ABSENCE IS EVIDENCE
+//
+// That last sentence is the strongest statement of presence-as-data in the
+// document, and it is why every field here carries `optional`.
+message Received {
+  optional string url = 1;
+  optional string path = 2;
+  optional string digest = 3;     // "sha256:<hex>"
+  optional string timestamp = 4;  // ERF-2: MUST be present for a mutable source
+}
+
+// spec section 4.1, interface Source. Not a record.
+message Source {
+  string citation_text = 1;   // ERF-7: MUST NOT contain a URL
+
+  // ERF-8: "When `citation` is present it is canonical". CSL is a CSL-JSON
+  // object. Its aliased type `CSL` is one of the identifiers the spec's inline
+  // mirror explicitly OMITS, so this schema has nothing to build a message
+  // from. google.protobuf.Struct is the only proto3 type that can hold an
+  // arbitrary JSON object.
+  //
+  // Struct is lossy in two ways that bite this exact field:
+  //   (a) its only number type is `double`, so `issued: 1494` returns as
+  //       1494.0 and `chapter-number: 36` as 36.0;
+  //   (b) it is a map, and proto3 declares map ordering undefined.
+  // CSL field names also contain hyphens (publisher-place, container-title),
+  // which are illegal proto identifiers -- so even a hand-written CSL message
+  // would need a rename table. See finding F2.
+  google.protobuf.Struct citation = 2;
+
+  Received received = 3;       // explicit presence, correct per ERF-7
+  SourceStatus status = 4;     // required; zero member illegal (see enums)
+
+  optional string normalized = 5;         // ERF-1, ERF-4
+  optional string normalized_digest = 6;  // ERF-71
+  optional string reason = 7;             // ERF-5: REQUIRED when no normalized
+                                          // text ships. A CONDITIONAL
+                                          // requirement -- unstatable in proto.
+  optional string licence = 8;            // ERF-68 SPDX identifier
+  optional string licence_name = 9;
+  ActorStamp excerpt = 10;                // ERF-69: an ActorStamp. Presence
+                                          // asserts the text is an excerpt.
+  optional string extraction = 11;        // ERF-70: "Both fields are absent
+  optional string normalization = 12;     // when the step did not happen"
+
+  map<string, google.protobuf.Value> x_fields = 100;
+  map<string, google.protobuf.Value> unrecognized = 101;
+}
+
+// spec: interface SourceList { type: "sources"; sources: Record<SourceId, Source> }
+//
+// ERF-3 specifies "a document whose top level is a mapping of EXACTLY TWO KEYS"
+// and goes on to explain that an earlier wording caused an independent
+// implementation to misread the nesting. The `map` below reproduces the
+// specified shape, and pays two prices proto3 does not let it avoid:
+//
+//   ORDERING: proto3 declares map iteration and wire ordering undefined. The
+//   YAML source list has an order a reader sees. It is not recoverable.
+//
+//   DUPLICATES: proto3's map parsing resolves a duplicate key by last-one-wins,
+//   SILENTLY. ERF-3 requires ids "unique within the corpus" and ERF-38 requires
+//   a validator to REJECT duplicates. A validator built on this generated code
+//   cannot see a duplicate: the collision is resolved before any code runs.
+//   See finding F4 and ambiguities.md #A2 for the repeated-entry alternative.
+message SourceList {
+  string type = 1;   // literal "sources"
+  map<string, Source> sources = 2;
+
+  map<string, google.protobuf.Value> x_fields = 100;
+  map<string, google.protobuf.Value> unrecognized = 101;
+}
+
+// ---------------------------------------------------------------------------
+// 6. The narrative (spec section 4.6)
+//
+// ERF-34: "A narrative MUST NOT be modelled as a record: it is a document.
+// [...] It therefore has no interface in the data model of section 3."
+//
+// It nonetheless has typed frontmatter that ERF-34 goes on to name field by
+// field, so it needs a wire shape. What it does NOT have is any way to type its
+// content: "Its narrative bindings are the only structured content in it", and
+// they live inside the prose as HTML comments.
+//
+// The bindings are therefore carried TWICE below: once inside `body`, where
+// they are authoritative and opaque, and once in `bindings`, a PROJECTION that
+// a producer extracts and a consumer must never treat as truth. Modelling them
+// only as `repeated NarrativeBinding` would violate ERF-31 directly -- see the
+// comment on that message.
+// ---------------------------------------------------------------------------
+
+message Narrative {
+  string type = 1;         // literal "narrative" (ERF-34, ERF-54)
+  string title = 2;
+  string corpus = 3;
+  ActorStamp created = 4;  // ERF-34 rules explicitly that this is the full
+                           // stamp, "the same stamp as everywhere else",
+                           // because "Naming the three fields without typing
+                           // them left two readings, and two authors took one
+                           // each."
+  string body = 5;         // AUTHORITATIVE. The prose, bindings embedded.
+
+  // PROJECTION ONLY. Recomputable from `body`; ERF-62's word for this is
+  // "projection: recomputable, derived, never consulted as truth."
+  repeated NarrativeBinding bindings = 6;
+
+  map<string, google.protobuf.Value> unrecognized = 101;
+  // Note: ERF-72 grants the x_ namespace on "any record, declaration, or
+  // source". A narrative is none of the three, so no x_fields map here.
+  // Whether that omission is intended by the spec is ambiguity #A6.
+}
+
+// spec ERF-31 grammar:
+//   narrative-binding ::= "<!--" ws* "claims:" ws+ ids ws+ anchor
+//                         ws+ "bound-at=" date ws* "-->"
+//
+// ERF-31 also rules: "A binding that does not match this grammar MUST be
+// reported, never skipped. A comment opening `<!--` followed by `claims:` IS a
+// narrative binding: recognizing one and validating one are separate acts."
+//
+// A typed message CANNOT hold a binding that fails the grammar -- there is no
+// legal assignment of a malformed comment to (claim_ids, anchor, bound_at). So
+// a schema that models bindings ONLY as typed messages makes a malformed
+// binding UNREPRESENTABLE, which means a producer drops it, which is exactly
+// the failure ERF-31 exists to forbid ("a required part does not make a binding
+// invalid, it makes it invisible"). `raw` and `well_formed` are the price of
+// obeying that rule inside a type system. See finding F6.
+message NarrativeBinding {
+  repeated string claim_ids = 1;   // ids ::= id (ws+ id)* -- whitespace, never
+                                   // commas (ERF-31)
+  string anchor = 2;               // verbatim words, unescaped
+  string bound_at = 3;             // date ::= YYYY-MM-DD (ERF-31, ERF-32)
+  string raw = 4;                  // the comment exactly as it appears. Carried
+                                   // so a malformed binding survives.
+  bool well_formed = 5;            // false => only `raw` is meaningful.
+                                   // A bool at its zero value: proto3 cannot
+                                   // distinguish "not well formed" from "not
+                                   // examined". Chosen anyway; see #A7.
+}
+
+// ---------------------------------------------------------------------------
+// 7. The corpus envelope
+//
+// NOT a specified artifact. The specification's interchange form is one record
+// per FILE (ERF-53) with no container; this envelope exists so a corpus can be
+// round-tripped as a single protobuf message and measured. ERF-54's rule that
+// "no meaning lives in a path" is what makes an unordered envelope legitimate.
+// ---------------------------------------------------------------------------
+
+message Corpus {
+  CorpusDeclaration declaration = 1;  // ERF-54: EXACTLY ONE per corpus
+  SourceList source_list = 2;         // ERF-3
+  repeated Atom atoms = 3;
+  repeated Claim claims = 4;
+  repeated Survey surveys = 5;
+  repeated Narrative narratives = 6;
+
+  // ERF-57: "A consumer MUST preserve unknown fields and unknown record types
+  // as opaque data, MUST report them". An unknown RECORD TYPE has no message to
+  // parse into, so it lands here whole. ERF-54 also requires that a file
+  // carrying NO `type` be ignored AND reported -- also here.
+  repeated OpaqueFile opaque = 7;
+}
+
+message OpaqueFile {
+  string path = 1;               // reported, not meaningful (ERF-54)
+  optional string type_value = 2;  // absent => the file carried no `type` at
+                                   // all, which ERF-54 says puts it outside the
+                                   // corpus. Present => an unrecognized type.
+                                   // The distinction decides which rule applies,
+                                   // so it needs real presence.
+  map<string, google.protobuf.Value> frontmatter = 3;
+  string body = 4;
+}

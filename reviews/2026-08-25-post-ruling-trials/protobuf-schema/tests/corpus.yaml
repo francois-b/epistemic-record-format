@@ -1,0 +1,4 @@
+type: corpus
+id: proto-trial
+title: "A corpus authored to exercise proto3 presence semantics"
+spec_version: 0.9.0

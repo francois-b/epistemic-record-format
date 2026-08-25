@@ -5,12 +5,25 @@ raised:
   on: 2026-08-25
   observation: "Under a YAML 1.1 parser, ids, family names, search queries and hits_reported values silently change type; the `on` key fixed under ERF-58 was one instance of a general class"
 basis: demonstrated
+priority_note: >
+  ship-blocker for 0.9 — confirmed independently by a second trial. The
+  protobuf harness failed to load ERF-14's own worked example: `as_of_date:
+  2018` is JSON number grammar, so ERF-65 makes it an integer into a string
+  field. `spec_version: 1.0` breaks ERF-61 the same way, parsing as a number
+  that renders back as `1` with the minor version gone.
 specified:
   by: null
   on: null
   requirement: "ERF-27, ERF-65, ERF-14"
   claim: null
-verifications: []
+verifications:
+  - by: "Protobuf trial, independently, 2026-08-25"
+    on: 2026-08-25
+    verdict: accurate
+    note: >
+      Reached the same defect from a different direction and found a case
+      this finding missed: `spec_version: 1.0` silently loses its minor
+      version, which ERF-61's version discipline rests on.
 outcome: open
 ---
 

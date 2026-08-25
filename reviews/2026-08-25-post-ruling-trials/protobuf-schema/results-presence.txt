@@ -1,0 +1,88 @@
+
+P-1  evidence_at_stance: absent vs present-and-empty (ERF-55, ERF-20)
+---------------------------------------------------------------------
+  PRESERVED HasField after a full wire round trip
+            [False, True, True]
+  MEASURED  bytes for an EvidenceAtStance carrying two empty lists
+            0 bytes of content; the parent spends 2 bytes to say 'present'
+
+P-2  optional scalar: absent vs present-and-empty (`optional` keyword)
+----------------------------------------------------------------------
+  PRESERVED with `optional`: HasField after round trip
+            absent=False  empty=True  bytes differ by 2
+  DESTROYED CONTROL, implicit presence (no `optional`): same two states
+            bytes identical: True; has_presence=False; a reader cannot ask, and there is no API to ask with
+
+P-3  optional LIST: `surveys?: SurveyId[]` (proto3 forbids `optional repeated`)
+-------------------------------------------------------------------------------
+  PRESERVED WRAPPER encoding (chosen): three-state survives
+            absent/empty/full -> [False, True, True]
+  DESTROYED PLAIN `repeated` encoding (the alternative)
+            `repeated` has no presence at all: absent and empty are the same zero bytes. proto3 offers no third option.
+
+P-4  enum zero: does it create a state the specification lacks?
+---------------------------------------------------------------
+  ILLEGAL-STATE Claim.epistemic_kind (EpistemicKind)
+            zero member 'EPISTEMIC_KIND_UNSPECIFIED'; has_presence=False; omitted and zero are the same 0 bytes
+  ILLEGAL-STATE StandingEntry.stance (Stance)
+            zero member 'STANCE_UNSPECIFIED'; has_presence=False; omitted and zero are the same 0 bytes
+  ILLEGAL-STATE Edge.relation (Relation)
+            zero member 'RELATION_UNSPECIFIED'; has_presence=False; omitted and zero are the same 0 bytes
+  ILLEGAL-STATE Atom.source_quality (SourceQuality)
+            zero member 'SOURCE_QUALITY_UNSPECIFIED'; has_presence=False; omitted and zero are the same 0 bytes
+  ILLEGAL-STATE AuditEntry.verdict (Verdict)
+            zero member 'VERDICT_UNSPECIFIED'; has_presence=False; omitted and zero are the same 0 bytes
+  ILLEGAL-STATE Source.status (SourceStatus)
+            zero member 'SOURCE_STATUS_UNSPECIFIED'; has_presence=False; omitted and zero are the same 0 bytes
+
+P-5  source list as map<string, Source>: ordering and duplicates
+----------------------------------------------------------------
+  REORDERED key order after a wire round trip
+            in  ['zeta', 'alpha', 'mu', 'beta']
+            out ['zeta', 'mu', 'beta', 'alpha']
+            out ['zeta', 'mu', 'beta', 'alpha']
+            out ['zeta', 'mu', 'beta', 'alpha']
+  UNSTABLE  is the order at least STABLE across PROCESSES?
+            5 distinct orderings from 6 separate runs of identical code on identical input: ['alpha,zeta,mu,beta', 'beta,alpha,mu,zeta', 'beta,mu,alpha,zeta', 'beta,zeta,alpha,mu', 'zeta,alpha,mu,beta']. Within one process the order is fixed; across processes the map's hash seed moves, so serializing one corpus today and again tomorrow produces different bytes and a different YAML document.
+  UNGUARANTEED what proto3 GUARANTEES about that order
+            Nothing. The language spec declares wire ordering and iteration order of map fields undefined. The instability above is that licence being exercised, not a bug.
+  UNDETECTABLE two map entries with the SAME key arriving on the wire
+            1 entry survives, citation_text='SECOND'; the collision is resolved by the parser, silently, before any validator runs
+
+P-6  CSL citation through google.protobuf.Struct (ERF-8)
+--------------------------------------------------------
+  LOST      integer fidelity
+            in  issued=1494 chapter-number=36
+            out issued=1494.0 chapter-number=36.0
+  STRUCTURAL why a hand-written CSL message is not the escape
+            CSL field names contain hyphens (chapter-number, publisher-place, container-title). A proto identifier cannot. Any typed CSL message needs a rename table the specification does not supply, and CSL-JSON is open-ended, so the table can never be complete.
+
+P-7  unknown fields: what proto3 retention does and does not buy
+----------------------------------------------------------------
+  PRESERVED an unknown WIRE field survives a proto->proto round trip
+            True  (proto3 retains unknown fields since 3.5)
+  USELESS-HERE what that is worth for a YAML corpus
+            Nothing. A YAML key has a NAME, not a field number. There is no wire field to retain because the value never reached the wire: the reader must decide where to put `granted:` before serializing anything. Preservation requires an explicitly declared map, which is what `unrecognized` is.
+
+P-8  narrative bindings
+-----------------------
+  PRESERVED recognized vs well formed
+            2 recognized, 1 malformed and carried anyway in `raw`
+  OPAQUE    what the schema knows about a binding inside `body`
+            Nothing. `body` is a string. Every ERF-31/32/33/51 operation re-parses prose at read time; the .proto contributes no constraint whatever.
+
+Schema size
+-----------
+  messages defined      : 20  (15 from the data model, 5 scaffolding proto3 forced)
+  fields defined        : 123
+  enums defined         : 6
+  `optional` scalars    : 21   <- explicit-presence opt-ins
+  singular message flds : 15   <- presence for free
+  repeated fields       : 20
+  map fields            : 15   <- ordering + duplicates lost
+  of which:
+    data-model fields   : 91
+    machinery fields    : 32   <- escape hatches, wrappers, envelope; none in the spec
+
+==========================================================================
+Counter({'ILLEGAL-STATE': 6, 'PRESERVED': 5, 'DESTROYED': 2, 'MEASURED': 1, 'REORDERED': 1, 'UNSTABLE': 1, 'UNGUARANTEED': 1, 'UNDETECTABLE': 1, 'LOST': 1, 'STRUCTURAL': 1, 'USELESS-HERE': 1, 'OPAQUE': 1})
