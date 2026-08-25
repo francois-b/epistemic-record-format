@@ -391,12 +391,14 @@ export function loadCorpus(dir: string): LoadedCorpus {
     checkBareIds(arr<string>(data["surveys"]), id, "surveys", findings);
     checkBareIds(arr<{ to?: string }>(data["edges"]).map((e) => String(e?.to ?? "")), id, "edges", findings);
     // `ERF-19`: a standing carries a full RFC 3339 instant, never a bare
-    // date, because this is the only ordered ledger in the format. Read from
-    // the RAW frontmatter: YAML coerces both forms to a Date, so the parsed
-    // value cannot tell a bare date from a full instant.
-    const standingsBlock = /^standings:\s*$([\s\S]*?)(?=^\S|\Z)/m.exec(raw)?.[1] ?? "";
-    for (const m of standingsBlock.matchAll(/\{\s*timestamp:\s*([^,}]+)/g)) {
-      const ts = (m[1] ?? "").trim();
+    // date, because this is the only ordered ledger in the format. Checked
+    // on the PARSED entries: under ERF-65's JSON schema a timestamp stays a
+    // string, so no raw-text reading is needed. (The previous raw-frontmatter
+    // regex only matched flow-style entries, so a block-style standing with a
+    // bare date passed unexamined; found by an adversarial fixture from the
+    // v0.9 stress battery, lane 4.)
+    for (const st of arr<{ timestamp?: unknown }>(data["standings"])) {
+      const ts = String(st?.timestamp ?? "").trim();
       if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(ts)) {
         findings.push({
           record: id,

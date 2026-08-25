@@ -11,7 +11,7 @@
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { loadCorpus, shipsWithCorpus } from "./corpus.ts";
+import { loadCorpus } from "./corpus.ts";
 import { claimsUsingAtom } from "./compute.ts";
 import {
   renderAtom, renderCapture, renderClaim, renderHealth, renderIndex,
@@ -40,7 +40,8 @@ function main(argv: string[]): number {
 
   const captureText = (atomId: string): string | null => {
     const src = c.sources.get(c.atoms.get(atomId)?.source ?? "");
-    if (!src || !shipsWithCorpus(src) || !src.path) return null;
+    // A held capture is checkable regardless of its shipping status (ERF-50).
+    if (!src?.path) return null;
     const p = join(corpusDir, src.path);
     return existsSync(p) ? readFileSync(p, "utf8") : null;
   };

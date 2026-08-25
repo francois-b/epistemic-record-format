@@ -109,7 +109,13 @@ export function resolvable(atomId: string, c: LoadedCorpus): { ok: boolean; why:
   // Reporting both as "no capture recorded" collapses the distinction the
   // rule is for.
   if (!src) return { ok: false, why: "the atom names no source the source list holds, which is a defect in the corpus rather than a statement about this atom (ERF-4)" };
-  if (shipsWithCorpus(src) && src.path) return { ok: true, why: "captured copy travels with the corpus" };
+  // Held is what decides whether backing can be opened; the status decides
+  // what may TRAVEL. A local working corpus legitimately holds a capture for
+  // a source it may never redistribute, and ERF-50 makes the check
+  // re-runnable by anyone holding the captures, saying nothing about
+  // shipping. (The earlier gate on shipping status silently skipped checks a
+  // holder was entitled to run; found by the v0.9 stress battery, lane 4.)
+  if (src.path) return { ok: true, why: "captured copy is held with the corpus" };
   return { ok: false, why: src.reason ?? `capture recorded as absent, status: ${src.status}` };
 }
 
