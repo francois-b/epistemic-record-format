@@ -9,4 +9,7 @@ source_quality: high
 as_of_date: '2026-07-16'
 limitations: 'Forward guidance stated at the time of the release, not a realized outcome for the third quarter.'
 created: {timestamp: '2026-08-25', by: 'agent/claude-sonnet-5'}
+finding_audit:
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
 ---

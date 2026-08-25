@@ -9,4 +9,7 @@ source_quality: high
 as_of_date: '2026-07-29'
 limitations: 'Guidance, not an actual; the $175 billion figure reflects a lease-classification effect (finance to operating) rather than a change in total planned investment.'
 created: {timestamp: '2026-08-25', by: 'agent/claude-sonnet-5'}
+finding_audit:
+  - {auditor: gemini-3.5-flash, verdict: PARTIAL, timestamp: '2026-08-25', protocol: capex-audit-v1}
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
 ---

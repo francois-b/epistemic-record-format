@@ -8,4 +8,7 @@ source: bear-mit-nanda-genai-divide-2025
 source_quality: high
 as_of_date: '2025-07'
 created: {timestamp: '2026-08-25', by: 'agent/claude-sonnet-5'}
+finding_audit:
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
 ---

@@ -9,4 +9,7 @@ source_quality: medium
 as_of_date: '2025-12-03'
 limitations: 'Two-hop relay: Cahn cites Ben Thompson''s analysis of TSMC''s revenue-to-capex ratio; neither the exact date of Thompson''s original piece nor TSMC''s primary financial data is shown in this capture.'
 created: {timestamp: '2026-08-25', by: 'agent/claude-sonnet-5'}
+finding_audit:
+  - {auditor: gemini-3.5-flash, verdict: PARTIAL, timestamp: '2026-08-25', protocol: capex-audit-v1}
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
 ---

@@ -9,4 +9,7 @@ source_quality: medium
 as_of_date: '2026-04-09'
 limitations: 'Jassy''s own characterization of demand backing; the letter does not itemize which specific customer agreements are completed, unannounced, or in process, so the claimed coverage of the $200 billion figure cannot be verified from this text alone.'
 created: {timestamp: '2026-08-25', by: 'agent/claude-sonnet-5'}
+finding_audit:
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
 ---

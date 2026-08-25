@@ -9,4 +9,7 @@ source_quality: high
 as_of_date: '2026-07-15'
 limitations: 'The unit denominated by ''capacity of around 65'' / ''around 130'' is not restated in this excerpt beyond the tool category (EUV / DUV immersion); the further 2028 increases are described as under investigation rather than committed.'
 created: {timestamp: '2026-08-25', by: 'agent/claude-sonnet-5'}
+finding_audit:
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
 ---

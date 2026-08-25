@@ -9,4 +9,7 @@ source_quality: medium
 as_of_date: '2025-07-21'
 limitations: 'Zitron''s own aggregate calculation across five companies'' stated capex plans and reported AI revenue; the underlying per-company sourcing and definition of ''AI revenue'' are not shown in this excerpt.'
 created: {timestamp: '2026-08-25', by: 'agent/claude-sonnet-5'}
+finding_audit:
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
 ---

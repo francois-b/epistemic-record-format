@@ -9,4 +9,7 @@ source_quality: high
 as_of_date: '2026-06-30'
 limitations: 'The attribution of the property-and-equipment increase to ''investments in artificial intelligence'' is Amazon''s own characterization; the release does not break out AI-specific capex from total property-and-equipment spend.'
 created: {timestamp: '2026-08-25', by: 'agent/claude-sonnet-5'}
+finding_audit:
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
 ---

@@ -9,4 +9,7 @@ source_quality: high
 as_of_date: '2026-05-31'
 limitations: 'The $260 billion figure is future lease commitments with commencement dates through fiscal 2029, not yet recognized as balance-sheet liabilities or capex.'
 created: {timestamp: '2026-08-25', by: 'agent/claude-sonnet-5'}
+finding_audit:
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
 ---

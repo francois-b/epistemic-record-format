@@ -9,4 +9,7 @@ source_quality: low
 as_of_date: '2025-01'
 limitations: 'The $10 billion OpenAI-Azure figure and the discounted-pricing characterization are relayed by Zitron from The Information, an intermediary source not itself captured in this batch; the original reporting and its sourcing could not be verified against a primary document.'
 created: {timestamp: '2026-08-25', by: 'agent/claude-sonnet-5'}
+finding_audit:
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
 ---

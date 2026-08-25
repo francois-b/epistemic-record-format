@@ -9,4 +9,7 @@ source_quality: medium
 as_of_date: '2024-06-20'
 limitations: 'The estimate rests on Cahn''s own multiplier methodology (2x for total data-center cost, 2x again for resale margin) applied to NVIDIA''s forecast revenue, not on directly reported industry revenue figures.'
 created: {timestamp: '2026-08-25', by: 'agent/claude-sonnet-5'}
+finding_audit:
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
 ---

@@ -9,4 +9,7 @@ source_quality: medium
 as_of_date: '2026-06-10'
 limitations: 'The $75 billion figure is Oracle''s own compilation, disclosed alongside its own characterization of the financing benefit; not broken out by counterparty or independently audited in this excerpt.'
 created: {timestamp: '2026-08-25', by: 'agent/claude-sonnet-5'}
+finding_audit:
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
 ---

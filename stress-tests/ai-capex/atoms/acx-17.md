@@ -9,4 +9,7 @@ source_quality: medium
 as_of_date: '2024-06-25'
 limitations: 'A qualitative judgment about AI''s technical design and cost-effectiveness relative to the early internet, not a quantified comparison.'
 created: {timestamp: '2026-08-25', by: 'agent/claude-sonnet-5'}
+finding_audit:
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: '2026-08-25', protocol: capex-audit-v1}
 ---
