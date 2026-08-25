@@ -71,7 +71,7 @@ product documentation, and one quotes a documentation site whose content
 carries no stated licence at all. Unverified is not permission, so nothing
 shipped for them.
 
-`captures.yaml` records every atom either way, with a path and a licence
+`sources.yaml` records every source either way, with a path and a licence
 where the copy travels, and with a status and a reason where it does not. A
 missing entry would be indistinguishable from an oversight, which is why
 absence is written down rather than left silent. The viewer reads that file

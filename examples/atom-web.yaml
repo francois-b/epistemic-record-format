@@ -1,8 +1,8 @@
-# A standalone atom record (SPEC.md, section 4.2) with a web-native
-# source: `fetched_url` records where the capture was taken (here a
-# stable arXiv address), while `citation_text` stays a human-readable
-# citation and is never a URL (ERF-7). The backslash in the quote is
-# verbatim from the source abstract; capture fidelity beats cleanup.
+# A standalone atom record (SPEC.md, section 4.2) quoting a web-native
+# work. The atom names its source by id (ERF-4); the source entry carries
+# the citation and the retrieval locator (`source-web.yaml`). The
+# backslash in the quote is verbatim from the source abstract; capture
+# fidelity beats cleanup.
 type: atom
 corpus: knowledge-work-governance
 id: kwg-038
@@ -16,9 +16,7 @@ quote: >-
   models than outcome supervision. We use our state-of-the-art PRM to
   solve 78.2\% of problems from a representative subset of the MATH test
   set.
-citation_text: >-
-  Lightman et al., "Let's Verify Step by Step" (arXiv 2305.20050)
-fetched_url: "https://arxiv.org/abs/2305.20050"
+source: lightman-2023-verify
 source_quality: high
 as_of_date: "2023-05-31"
 created: {timestamp: 2026-07-19, by: "agent/claude-fable-5"}

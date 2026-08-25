@@ -1,7 +1,8 @@
 requirement: ERF-4
 record: fx-001
-field: captures.yaml
+field: source
 because: >
-  Absence must be explicit. A mapping is checkable only when it is complete,
-  because a validator can tell a recorded absence from an omission and cannot
-  tell an omission from an oversight.
+  Every atom names its source, and the named id must exist in the corpus's
+  source list. Absence must be explicit: a list is checkable only when it is
+  complete, because a validator can tell a recorded absence from an omission
+  and cannot tell an omission from an oversight.

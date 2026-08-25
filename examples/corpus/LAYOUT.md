@@ -18,7 +18,7 @@ claims/<id>.md         one file per claim
 surveys/<id>.md        one file per survey
 narratives/<slug>.md   prose documents, with bindings to claims
 captures/<slug>.txt    the immutable copies quotes are checked against
-captures.yaml          atom id to capture path
+sources.yaml           the source list: each work's citation, locator, and capture
 ```
 
 ## Why one file per record
@@ -30,14 +30,15 @@ interchange form (`ERF-53`); a store may group records or hold bodies as
 fields so long as everything round-trips, but this corpus takes the
 plainest option, so the mapping from record to file is one to one.
 
-## Why captures sit apart, with a mapping file
+## Why sources sit apart, in one list
 
-An atom names its source in `citation_text` and, where a fetch happened,
-in `fetched_url`. Neither field says where the saved copy lives. That
-separation is deliberate: a citation identifies a work, a locator retrieves
-one copy of it, and a storage path is neither. `captures.yaml` holds the
-atom-to-copy mapping so the record stays about evidence and the storage
-question stays a storage matter.
+An atom names its source by id and states its finding, its quote, and its
+own quality judgment; the work's citation, retrieval locator, licence, and
+capture live once on the source entry in `sources.yaml`, shared by every
+atom that quotes it. The separation is deliberate twice over: a citation
+identifies a work, a locator retrieves one copy of it, and a storage path
+is neither; and a fact about the work stated once cannot drift into
+disagreeing copies on three atoms.
 
 ## What this corpus demonstrates only partly
 

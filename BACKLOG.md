@@ -14,6 +14,9 @@ Decisions already taken against something are not here. Those live in
 
 | Deferred | Trigger |
 |:--|:--|
+| Cross-deployment identity (was `ERF-16`, retired 2026-08-24) | Two parties sharing records whose ids may collide. |
+| A classification wall: machine-checked citation direction between corpora (was `ERF-45`, retired 2026-08-24) | A second deployment that needs the check and cannot carry it as its own policy, or a leak a policy-side wall failed to stop. |
+| A corpus registry as a specified artifact (was `ERF-64`, retired 2026-08-24) | A tool that must discover corpora it was not pointed at. |
 | Non-text evidence payloads (measurement, table, image) | The first non-text atom in real work. |
 | Per-attachment evidence roles | The first atom that must sit in both evidence lists at once. |
 | Atom lifecycle (`withdrawn`, `superseded_by`) | The first bad atom found after citation. Also where an undercutting defeater would be expressed. |

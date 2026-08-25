@@ -102,12 +102,15 @@ export function disposition(claim: Claim): DispositionReading {
  * a better example than compliance would be.
  */
 export function resolvable(atomId: string, c: LoadedCorpus): { ok: boolean; why: string } {
-  const cap = c.captures.get(atomId);
-  // `ERF-4` exists so these two are distinguishable. An atom with no entry
-  // is a defect in the mapping; an atom with a recorded absence is a corpus
-  // saying, deliberately, that this capture could not travel. Reporting both
-  // as "no capture recorded" collapsed the distinction the rule was for.
-  if (!cap) return { ok: false, why: "no entry in the capture mapping, which is a defect in the mapping rather than a statement about this atom (ERF-4)" };
+  const src = c.sources.get(c.atoms.get(atomId)?.source ?? "");
+  // `ERF-4` exists so these are distinguishable. An atom naming no listed
+  // source is a defect in the corpus; a source with a recorded absence is a
+  // corpus saying, deliberately, that this capture could not travel.
+  // Reporting both as "no capture recorded" collapses the distinction the
+  // rule is for.
+  if (!src) return { ok: false, why: "the atom names no source the source list holds, which is a defect in the corpus rather than a statement about this atom (ERF-4)" };
+  const cap = src.capture;
+  if (!cap) return { ok: false, why: "the source records no capture entry (ERF-4)" };
   if (shipsWithCorpus(cap) && cap.path) return { ok: true, why: "captured copy travels with the corpus" };
   return { ok: false, why: cap.reason ?? `capture recorded as absent, status: ${cap.status}` };
 }

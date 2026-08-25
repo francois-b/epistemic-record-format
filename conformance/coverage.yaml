@@ -18,7 +18,7 @@ requirements:
     untestable-by-design: how a capture is made and dated is a producer practice, not a property of a loaded record
   ERF-3:
     tests: [fixtures/valid/minimal]
-    note: the mapping lives beside the corpus, never on the atom
+    note: the source list lives beside the corpus, never on the atom
   ERF-4:
     tests: [fixtures/invalid/atom-absent-from-mapping]
   ERF-5:

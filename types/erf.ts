@@ -127,18 +127,14 @@ export interface Atom {
   /** Corpus prefix + number, e.g. kwg-117. */
   id: AtomId;
   type: "atom";
-  /** Confidentiality tier (ERF-54). */
+  /** The corpus this record belongs to (ERF-54). */
   corpus: CorpusId;
   /** One sentence: what the quote shows; audited per ERF-11. */
   finding: string;
   /** Verbatim from the capture; `[...]` marks elision (ERF-6). */
   quote: string;
-  /** Human-readable citation; never contains a URL (ERF-7). */
-  citation_text: string;
-  /** Canonical when present; `citation_text` renders from it (ERF-8). */
-  citation?: CSL;
-  /** The locator actually retrieved; absent for received files. */
-  fetched_url?: string;
+  /** The source quoted, named in the corpus's source list (ERF-4). */
+  source: SourceId;
   source_quality: SourceQuality;
   /** The date the FACT is true of, distinct from when it was recorded. */
   as_of_date?: string;
@@ -234,6 +230,20 @@ export interface CorpusDeclaration {
 
 /** One row of the deployment's corpus registry (ERF-64). */
 /** One row of the per-corpus capture mapping (ERF-3, ERF-4, ERF-5). */
+/** A source's id: its key in the corpus's source list (ERF-3). */
+export type SourceId = string;
+
+export interface Source {
+  /** Identifies the work; never contains a URL (ERF-7). */
+  citation_text: string;
+  /** Canonical when present; `citation_text` renders from it (ERF-8). */
+  citation?: CSL;
+  /** The locator actually retrieved; absent for received files. */
+  fetched_url?: string;
+  /** The saved copy, or the recorded absence (ERF-4, ERF-5). */
+  capture: CaptureEntry;
+}
+
 export interface CaptureEntry {
   status:
     | "shipped"                 // ships under a licence that permits it (ERF-68)
@@ -258,8 +268,6 @@ export interface CaptureEntry {
   source_locator?: string;
   /** The source artifact's digest, algorithm named: "sha256:<hex>" (ERF-71). */
   source_digest?: string;
-  /** Human-readable note on what the capture is. */
-  source?: string;
 }
 
 export interface Converter {

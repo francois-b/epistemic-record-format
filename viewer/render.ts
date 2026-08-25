@@ -184,7 +184,7 @@ export function renderIndex(c: LoadedCorpus): string {
     const d = disposition(cl).disposition;
     dispCounts.set(d, (dispCounts.get(d) ?? 0) + 1);
   }
-  const shipped = [...c.captures.values()].filter((x) => shipsWithCorpus(x)).length;
+  const shipped = [...c.sources.values()].filter((s) => shipsWithCorpus(s.capture)).length;
   const body = `
 <h1>${esc(c.manifest.title)}</h1>
 <p class="sub">Corpus <span class="id">${esc(c.manifest.id)}</span> &middot;
@@ -203,7 +203,7 @@ ${c.manifest.classification ? `classification ${esc(c.manifest.classification)} 
 <tr><td>Claims</td><td>${c.claims.size}</td><td>${
   [...dispCounts].map(([d, n]) => `${n} ${d}`).join(", ") || "none"}</td></tr>
 <tr><td>Surveys</td><td>${c.surveys.size}</td><td>absence, density, and closed-corpus readings</td></tr>
-<tr><td>Captures</td><td>${shipped} of ${c.captures.size}</td><td>shipped with the corpus</td></tr>
+<tr><td>Sources</td><td>${c.sources.size}</td><td>captures shipped for ${shipped}</td></tr>
 </table>
 
 <h2>Claims</h2>
@@ -335,7 +335,8 @@ ${md(cl.body)}`;
 // ----------------------------------------------------------------- atom
 export function renderAtom(a: Atom, c: LoadedCorpus, users: string[]): string {
   const r = resolvable(a.id, c);
-  const cap = c.captures.get(a.id);
+  const src = c.sources.get(a.source);
+  const cap = src?.capture;
   const body = `
 <h1><span class="id">${esc(a.id)}</span></h1>
 <p class="sub">Atom &middot; source quality ${esc(a.source_quality)}${a.as_of_date ? ` &middot; as of ${esc(a.as_of_date)}` : ""}</p>
@@ -345,7 +346,7 @@ export function renderAtom(a: Atom, c: LoadedCorpus, users: string[]): string {
 
 <h3>Quote</h3>
 <blockquote class="q">${esc(a.quote.trim())}</blockquote>
-<p class="sub">${esc(a.citation_text)}${a.fetched_url ? ` &middot; <a href="${esc(a.fetched_url)}">${esc(a.fetched_url)}</a>` : ""}</p>
+<p class="sub">${esc(src?.citation_text ?? `(source ${a.source} not in the source list)`)}${src?.fetched_url ? ` &middot; <a href="${esc(src.fetched_url)}">${esc(src.fetched_url)}</a>` : ""}</p>
 
 ${r.ok
   ? `<div class="okbox">The captured copy travels with this corpus. <a href="capture-${esc(a.id)}.html">See the quote in its capture</a>.</div>`
@@ -398,7 +399,8 @@ function locateForHighlight(raw: string, seg: string): [number, number] | null {
 // -------------------------------------------------------------- capture
 export function renderCapture(a: Atom, c: LoadedCorpus, captureText: string | null): string {
   const chk = quoteCheck(a, captureText);
-  const cap = c.captures.get(a.id);
+  const src = c.sources.get(a.source);
+  const cap = src?.capture;
   let shown = "";
   let highlightNote = "";
   if (captureText !== null) {
@@ -425,7 +427,7 @@ export function renderCapture(a: Atom, c: LoadedCorpus, captureText: string | nu
   }
   const body = `
 <h1>Capture for <span class="id">${esc(a.id)}</span></h1>
-<p class="sub">${esc(a.citation_text)}</p>
+<p class="sub">${esc(src?.citation_text ?? `(source ${a.source} not in the source list)`)}</p>
 
 ${chk.state === "pass" ? `<div class="okbox"><b>Quote check passes.</b><br>${esc(chk.detail)}</div>` : ""}
 ${chk.state === "fail" ? `<div class="warnbox"><b>Quote check fails.</b><br>${esc(chk.detail)}</div>` : ""}
@@ -499,7 +501,7 @@ ${list(unaudited.map((a) => `<a href="atom-${esc(a.id)}.html"><span class="id">$
 ${list(failed.map((x) => `<a href="capture-${esc(x.a.id)}.html"><span class="id">${esc(x.a.id)}</span></a> ${esc(x.chk.detail)}`))}
 
 <h2>Quote checks that cannot run here</h2>
-${list(uncheckable.map((x) => `<a href="capture-${esc(x.a.id)}.html"><span class="id">${esc(x.a.id)}</span></a> ${esc(c.captures.get(x.a.id)?.reason ?? x.chk.detail)}`))}
+${list(uncheckable.map((x) => `<a href="capture-${esc(x.a.id)}.html"><span class="id">${esc(x.a.id)}</span></a> ${esc(c.sources.get(x.a.source)?.capture?.reason ?? x.chk.detail)}`))}
 
 <h2>References that do not resolve</h2>
 ${list(dangling.map(esc))}

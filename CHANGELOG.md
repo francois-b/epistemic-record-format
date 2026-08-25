@@ -6,6 +6,44 @@ are never reused, and every change lands here with a date.
 
 ## Unreleased
 
+### 2026-08-24 — the source becomes a corpus artifact
+
+The format's section 4.1 was titled "The source" and defined no source:
+a work's identity lived on each atom (`citation_text`, `citation`,
+`fetched_url`) and its capture lived in a mapping keyed by atom id, so a
+work quoted by three atoms was described three times and the descriptions
+were free to disagree. The live practice showed the symptom (one page
+graded differently by two atoms, byte-identical capture entries repeated
+per atom, "same source and same reason as kwg-014" written in prose
+because the structure had no way to say it), and the classical diagnosis
+is an update anomaly: an attribute stored off its entity.
+
+The source is now the fourth corpus artifact, beside the declaration and
+the capture entry. `sources.yaml` lists each work once (`ERF-3`):
+citation, retrieval locator, and capture together, keyed by a source id
+unique within the corpus. The atom names its source (`source`, `ERF-4`)
+and keeps `source_quality`, deliberately: the grade is a judgment about
+how much weight the attester's word carries for this finding (`ERF-9`,
+`ERF-10`), so two atoms may legitimately grade one source differently,
+and the spec now says so where it says what the atom carries. `ERF-7`
+and `ERF-8` move to the source with their ids and their meaning intact;
+`ERF-5`, `ERF-68`, and `ERF-71` reword from "entry" to "source". The
+`CaptureEntry.source` prose note is gone, made redundant by the source's
+own citation.
+
+The example corpus's nine atoms now share five sources, which is the
+deduplication demonstrated rather than asserted; its four shipped
+captures carry `shipped-as-quotation` with `excerpt: true`, exercising
+2026-08-24's capture requirements. Standalone examples gain
+`source-book.yaml` (a scanned public-domain PDF converted by a named
+deterministic tool, locator and digest pinned, the full ERF-69/70/71
+chain) and `source-web.yaml` (a withheld capture with its reason);
+`atom-book.yaml` and `atom-web.yaml` slim down to match. Every fixture
+migrates; `atom-absent-from-mapping` now asserts an atom naming a source
+the list does not hold, and the URL fixture asserts `ERF-7` on the
+source. The backlog gains the three re-add triggers the pare-down owed:
+cross-deployment identity, the classification wall, and the registry.
+
 ### 2026-08-24 — the container layer pares down to the corpus
 
 Realm, the corpus registry, and the classification wall leave v1, by

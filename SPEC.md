@@ -44,7 +44,7 @@ Conformance is claimed per class, not against the whole document:
   (section 3) and its record type's requirements (section 4).
 - Corpus: a collection of records under one declaration. Binds the
   invariants (section 6) and the corpus artifacts: the declaration
-  (`ERF-59`), the authoritative home (`ERF-62`), and the capture mapping
+  (`ERF-59`), the authoritative home (`ERF-62`), and the source list
   (`ERF-3`, `ERF-4`, `ERF-5`).
 - Producer: a tool or process that writes records. Binds the serialization
   rules (section 7) and the producer SHOULDs of section 4 (for example
@@ -145,12 +145,10 @@ interface AuditEntry { auditor: string;
 interface Atom {
   id: AtomId;                  // corpus prefix + number, e.g. kwg-117
   type: "atom";
-  corpus: CorpusId;            // confidentiality tier
+  corpus: CorpusId;            // the corpus this record belongs to
   finding: string;             // one sentence: what the quote shows
   quote: string;               // verbatim from the capture; [...] marks an omission
-  citation_text: string;       // human-readable citation; never contains a URL
-  citation?: CSL;              // canonical when present; citation_text renders from it
-  fetched_url?: string;        // the locator actually retrieved; absent for received files
+  source: SourceId;            // the source quoted, per the corpus's source list (ERF-4)
   source_quality: SourceQuality;
   as_of_date?: string;         // the date the FACT is true of
   limitations?: string;        // recorded caveat about the evidence
@@ -201,7 +199,8 @@ interface Survey {
 }
 
 // Corpus artifacts (not records): the corpus declaration and one entry of
-// the capture mapping (ERF-3, ERF-4, ERF-5, ERF-59).
+// the source list (ERF-3, ERF-4, ERF-5, ERF-59). A source is identified by
+// its key in that list and shared by every atom that quotes it.
 
 interface CorpusDeclaration {
   id: CorpusId;
@@ -211,13 +210,20 @@ interface CorpusDeclaration {
   owner?: Actor;
 }
 
-interface CaptureEntry {                     // one row of the capture mapping
+interface Source {                           // one entry of the source list
+  citation_text: string;       // identifies the work; never a URL (ERF-7)
+  citation?: CSL;              // canonical when present (ERF-8)
+  fetched_url?: string;        // the locator retrieved; absent for received files
+  capture: CaptureEntry;       // the saved copy, or the recorded absence
+}
+
+interface CaptureEntry {                     // a source's capture, or its absence
   status: "shipped"                          // under a licence (ERF-68)
         | "shipped-as-quotation"             // under none (ERF-68, ERF-69)
         | "not-redistributable"              // copyright forbids it (ERF-5)
         | "access-restricted"                // an agreement forbids it (ERF-5)
         | "licence-unverified";              // rights unestablished (ERF-5)
-  path: string | null;         // relative to the mapping file; null when absent
+  path: string | null;         // relative to the source list; null when absent
   reason?: string;             // REQUIRED when no capture ships (ERF-5)
   licence?: string;            // SPDX identifier where one applies (ERF-68)
   licence_name?: string;       // the licence's plain name
@@ -225,7 +231,6 @@ interface CaptureEntry {                     // one row of the capture mapping
   converter?: Converter;       // absent when the source was already text (ERF-70)
   source_locator?: string;     // immutable locator for the source (ERF-71)
   source_digest?: string;      // "sha256:<hex>", algorithm named (ERF-71)
-  source?: string;             // human-readable note on what the capture is
 }
 
 interface Converter {                        // how a source became this text
@@ -251,7 +256,7 @@ is bound by the data model alone, with advice in the section named.
 | `type`, `corpus` | `ERF-54` |
 | `finding`, `finding_audit` | `ERF-11`, `ERF-12`; guidance in 4.2 |
 | `quote` | `ERF-6`, `ERF-52` |
-| `citation_text`, `citation`, `fetched_url` | `ERF-7`, `ERF-8` |
+| `source` | `ERF-4` |
 | `source_quality` | `ERF-9`, `ERF-10` |
 | `as_of_date`, `limitations` | `ERF-14` |
 | `created`, `last_modified` | `ERF-47`, `ERF-48`, `ERF-58` |
@@ -279,6 +284,15 @@ is bound by the data model alone, with advice in the section named.
 | `searches` (each act's `tool`, `query`, `scope`, `hits_reported`, `timestamp`) | `ERF-26`, `ERF-27`, `ERF-28` |
 | `notable_results` | `ERF-27` |
 | `last_modified` | `ERF-28`, `ERF-48` |
+
+| Source field (corpus artifact, not a record) | Constrained by |
+|:--|:--|
+| `citation_text`, `citation`, `fetched_url` | `ERF-7`, `ERF-8` |
+| `capture.status`, `capture.path`, `capture.reason` | `ERF-4`, `ERF-5` |
+| `capture.licence`, `capture.licence_name` | `ERF-68` |
+| `capture.excerpt` | `ERF-69` |
+| `capture.converter` | `ERF-70` |
+| `capture.source_locator`, `capture.source_digest` | `ERF-71` |
 
 How records are found: atoms are retrieved by embedding `finding` and
 `quote`. The finding is written to be checkable away from its source,
@@ -308,10 +322,41 @@ conformance means.
 ### 4.1 The source
 
 A source is whatever a quote came from: a web page, a received report, a
-transcript, a book. The format never reads a source. It reads the *capture*,
-the copy saved when the source was first read, which is what makes a check
+transcript, a book. Sources are corpus artifacts, not records: each is
+listed once in the corpus's source list and shared by every atom that
+quotes it, which is what keeps one work's citation, locator, licence, and
+capture stated in one place rather than repeated on each atom and free to
+drift apart. The format never reads a source. It reads the *capture*, the
+copy saved when the source was first read, which is what makes a check
 re-runnable years later and what turns a dead link into weakened provenance
 rather than a broken check.
+
+```yaml
+sources:
+  pacioli-1494-geijsbeek:
+    citation_text: "Luca Pacioli, Particularis de Computis et Scripturis
+      (Venice, 1494), ch. 36, trans. Geijsbeek 1914"
+    citation:
+      type: book
+      author: [{family: Pacioli, given: Luca}]
+      title: "Particularis de Computis et Scripturis"
+      publisher-place: Venice
+      issued: 1494
+      chapter-number: 36
+      translator: [{family: Geijsbeek, given: John B.}]
+    fetched_url: "https://archive.org/details/ancientdoubleent00geij"
+    capture:
+      status: shipped-as-quotation
+      path: captures/pacioli-1494-geijsbeek.md
+      excerpt: true
+      converter: {tool: "pymupdf4llm 0.3.4", deterministic: true}
+      source_locator: "https://archive.org/download/ancientdoubleent00geijuoft/ancientdoubleent00geijuoft.pdf"
+      source_digest: "sha256:05e58ce3f2589584d7d36446c46e2f74ab14f33ee6d1f0f20ef5e21c2aeaf2aa"
+```
+
+Where a source has no `citation` block, write `citation_text` as "Author,
+Title (venue, year), locator when it matters"; the upgrade path to
+exactness is the citation block.
 
 Capture when you first read something. Legacy material is captured the next
 time it is read or used, and its atoms are minted then; a corpus is not
@@ -323,16 +368,18 @@ evidence about today's page rather than about what was read.
 - **ERF-2** A received file (report, transcript) is immutable: it MUST be
   retained as received, and a revision arriving later MUST be a new source,
   never an overwrite. A web page is mutable: its capture MUST be dated.
-- **ERF-3** The capture's location MUST be recorded in a per-corpus
-  mapping from atom id to capture, not on the atom. The fetch date lives
-  with the capture. The mapping is a YAML document under the rules of
-  section 7, each entry following the `CaptureEntry` shape of section 3.
-- **ERF-4** Every atom MUST have an entry in that mapping. An entry
-  either gives the capture's path or records that no capture is held and
-  why. Absence MUST be explicit: a mapping is checkable only when it is
-  complete, because a validator can tell a recorded absence from an
-  omission and cannot tell an omission from an oversight.
-- **ERF-5** An entry recording an absence MUST carry a `status` from a
+- **ERF-3** A corpus MUST keep a source list: a YAML document under the
+  rules of section 7, each entry following the `Source` shape of section
+  3, keyed by a source id unique within the corpus. A source's citation,
+  locator, and capture live on the source, not on the atom; the fetch date
+  lives with the capture.
+- **ERF-4** Every atom MUST name its source (`source`), and the named id
+  MUST exist in the corpus's source list. Every source MUST either give
+  its capture's path or record that no capture is held and why. Absence
+  MUST be explicit: a source list is checkable only when it is complete,
+  because a validator can tell a recorded absence from an omission and
+  cannot tell an omission from an oversight.
+- **ERF-5** A source recording an absence MUST carry a `status` from a
   closed set and a human-readable `reason`. The set in use is
   `not-redistributable` (copyright permits reading but not republication),
   `access-restricted` (an agreement accepted to obtain the source forbids
@@ -344,7 +391,7 @@ evidence about today's page rather than about what was read.
   not answered by the fact that a passage is short. The vocabulary is
   provisional and grows by a demonstrated instance rather than by
   anticipation.
-- **ERF-68** An entry whose capture ships SHOULD name the licence that
+- **ERF-68** A source whose capture ships SHOULD name the licence that
   permits it, as an SPDX licence identifier where the licence has one, with
   the licence's plain name alongside because an identifier does not explain
   itself. An identifier matches or it does not; two captures under
@@ -375,7 +422,7 @@ evidence about today's page rather than about what was read.
   same choice `ERF-26` makes for a search act, and for the same reason: no
   standard defines a faithful text projection of a PDF or a web page, and a
   named instrument is reproducible where an unnamed transformation is not.
-- **ERF-71** An entry whose capture is an excerpt or a conversion SHOULD
+- **ERF-71** A source whose capture is an excerpt or a conversion SHOULD
   record an immutable locator for the source artifact and that artifact's
   cryptographic digest, naming the algorithm. Together they close the step
   the format cannot otherwise check: a reader who retrieves the artifact
@@ -398,17 +445,7 @@ finding: "Pacioli's 1494 treatise states the double-entry rule
   and once as a credit."
 quote: "All entries made in the ledger have to be double entries --
   that is, if you make one creditor, you must make some one debtor."
-citation_text: "Luca Pacioli, Particularis de Computis et Scripturis
-  (Venice, 1494), ch. 36, trans. Geijsbeek 1914"
-citation:
-  type: book
-  author: [{family: Pacioli, given: Luca}]
-  title: "Particularis de Computis et Scripturis"
-  publisher-place: Venice
-  issued: 1494
-  chapter-number: 36
-  translator: [{family: Geijsbeek, given: John B.}]
-fetched_url: "https://archive.org/details/ancientdoubleent00geij"
+source: pacioli-1494-geijsbeek
 source_quality: high
 created: {timestamp: 2026-07-19, by: "agent/claude-fable-5"}
 finding_audit:
@@ -429,11 +466,15 @@ time scope, and it hedges exactly as hard as the source does ("states", not
 "proves"). Compression is a defect. Redundancy that makes a finding
 checkable away from its context is doing work, not padding.
 
-Where an atom has no `citation` block, write `citation_text` as "Author,
-Title (venue, year), locator when it matters"; the upgrade path to
-exactness is the citation block. Where `source_quality` is `medium` or
-`low`, put the reason in `limitations`, so a reader learns what is thin
-rather than only that something is.
+The atom names its source and keeps its own `source_quality`, and the
+split is deliberate: identity, locator, licence, and capture describe the
+work and live once on the source (section 4.1), while the grade is a
+judgment about how much weight the attester's word carries *for this
+finding* (`ERF-9`, `ERF-10`), so two atoms may legitimately grade one
+source differently: the same document can carry a first-hand fact and a
+relayed one. Where `source_quality` is `medium` or `low`, put the reason
+in `limitations`, so a reader learns what is thin rather than only that
+something is.
 
 The caveat field is named `limitations` rather than "warrant" deliberately:
 in Toulmin's vocabulary a warrant is the licence from evidence to claim,
@@ -449,11 +490,11 @@ only prose.
 - **ERF-6** The `quote` MUST be verbatim from the capture. An omission
   inside a quote MUST be written `[...]`; bare `...` is reserved for dots
   the source itself contains.
-- **ERF-7** `citation_text` MUST NOT contain a URL. A citation identifies
-  a work; a locator retrieves one copy. The retrieved locator is
-  `fetched_url`; a web-native work's own identity MAY appear as
-  `citation.URL`. A received file has no retrieval locator, so its atoms
-  carry no `fetched_url`.
+- **ERF-7** A source's `citation_text` MUST NOT contain a URL. A citation
+  identifies a work; a locator retrieves one copy. The retrieved locator
+  is the source's `fetched_url`; a web-native work's own identity MAY
+  appear as `citation.URL`. A received file has no retrieval locator, so
+  its source carries no `fetched_url`.
 - **ERF-8** When `citation` is present it is canonical: it MUST carry
   everything the rendered `citation_text` string shows, chapter,
   translator, and edition included, and `citation_text` MUST be rendered
@@ -1195,7 +1236,7 @@ below that threshold.
   sources are, in general, copyrighted third-party works; whether a given
   capture ships with a shared or published corpus is a licence and
   deployment question the format records rather than rules on. The capture
-  mapping holds the judgment either way: a shipped capture names its
+  source list holds the judgment either way: a shipped capture names its
   licence (`ERF-68`), a withheld one records the reason (`ERF-5`). The
   honest scope of re-checkability follows: anyone holding the corpus *and
   a capture* can re-run that atom's mechanical check; a recipient of the

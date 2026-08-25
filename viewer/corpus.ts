@@ -10,9 +10,9 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, basename } from "node:path";
 import yaml from "js-yaml";
-import type { Atom, Claim, Survey, CaptureEntry, CorpusDeclaration } from "../types/erf.ts";
+import type { Atom, Claim, Survey, CaptureEntry, Source, CorpusDeclaration } from "../types/erf.ts";
 
-export type { CaptureEntry, CorpusDeclaration };
+export type { CaptureEntry, Source, CorpusDeclaration };
 
 /** A place where the corpus and the normative model disagree. */
 export interface ConformanceFinding {
@@ -51,7 +51,7 @@ export interface LoadedCorpus {
   claims: Map<string, Claim>;
   surveys: Map<string, Survey>;
   narratives: Narrative[];
-  captures: Map<string, CaptureEntry>;
+  sources: Map<string, Source>;
   findings: ConformanceFinding[];
 }
 
@@ -153,8 +153,8 @@ function requireFields(
  * consumers, and this loader plays both roles.
  */
 export const KNOWN_FIELDS: Record<string, Set<string>> = {
-  atom: new Set(["id", "type", "corpus", "finding", "quote", "citation_text",
-    "citation", "fetched_url", "source_quality", "as_of_date", "limitations",
+  atom: new Set(["id", "type", "corpus", "finding", "quote", "source",
+    "source_quality", "as_of_date", "limitations",
     "created", "last_modified", "finding_audit"]),
   claim: new Set(["id", "type", "corpus", "title", "epistemic_kind", "created",
     "last_modified", "short_name", "families", "atoms_for", "atoms_against",
@@ -350,9 +350,8 @@ export function loadCorpus(dir: string): LoadedCorpus {
     if (!rec) continue;
     const { data } = rec;
     const id = String(data["id"] ?? basename(f, ".md"));
-    requireFields(data, id, ["id", "type", "corpus", "finding", "quote", "citation_text", "source_quality", "created"], findings);
+    requireFields(data, id, ["id", "type", "corpus", "finding", "quote", "source", "source_quality", "created"], findings);
     checkKnownFields(data, id, "atom", findings);
-    checkCitationText(data, id, findings);
     checkStampOrder(data, id, findings);
     const fa = arr<{ verdict?: unknown }>(data["finding_audit"]);
     // `ERF-12`: the verdict union is compile-time only, and YAML is cast
@@ -515,35 +514,51 @@ export function loadCorpus(dir: string): LoadedCorpus {
     for (const id of claims.keys()) visit(id, []);
   }
 
-  // ---- captures ----------------------------------------------------------
-  const captures = new Map<string, CaptureEntry>();
-  const capPath = join(dir, "captures.yaml");
-  if (existsSync(capPath)) {
-    const doc = yaml.load(readFileSync(capPath, "utf8"), YAML_OPTS) as { captures?: Record<string, CaptureEntry> };
-    for (const [k, v] of Object.entries(doc?.captures ?? {})) captures.set(k, v);
+  // ---- sources ------------------------------------------------------------
+  // `ERF-3`: the source list. A source is a corpus artifact: identified by
+  // its key here, shared by every atom that quotes it, carrying the work's
+  // citation, locator, and capture in one place.
+  const sources = new Map<string, Source>();
+  const srcPath = join(dir, "sources.yaml");
+  if (existsSync(srcPath)) {
+    const doc = yaml.load(readFileSync(srcPath, "utf8"), YAML_OPTS) as { sources?: Record<string, Source> };
+    for (const [k, v] of Object.entries(doc?.sources ?? {})) sources.set(k, v);
   }
 
-  // `ERF-4`: every atom has an entry, and an absence is recorded explicitly.
-  // The rule exists so a validator can tell a recorded absence from an
-  // omission, which is the distinction `resolvable` could not previously make.
-  for (const id of atoms.keys()) {
-    const cap = captures.get(id);
+  for (const [sid, src] of sources) {
+    // `ERF-7`: a citation identifies a work; a locator retrieves one copy.
+    checkCitationText(src as unknown as Record<string, unknown>, sid, findings);
+    const cap = src.capture;
     if (!cap) {
       findings.push({
-        record: id,
-        field: "captures.yaml",
-        detail: "no entry in the capture mapping. Every atom MUST have one, "
-          + "giving a path or an explicit absence with a reason (ERF-4), so "
-          + "that an omission is distinguishable from a recorded absence.",
+        record: sid,
+        field: "sources.yaml",
+        detail: "source has no capture entry; every source records a capture "
+          + "or an explicit absence with a reason (ERF-4).",
       });
     } else if (!shipsWithCorpus(cap) && !cap.reason) {
       findings.push({
-        record: id,
-        field: "captures.yaml",
+        record: sid,
+        field: "sources.yaml",
         detail: `capture status ${cap.status} carries no reason (ERF-5)`,
       });
     }
   }
 
-  return { manifest, atoms, claims, surveys, narratives, captures, findings };
+  // `ERF-4`: every atom names a source that exists. Explicitness is the
+  // rule's point: a validator can tell a recorded absence from an omission
+  // and cannot tell an omission from an oversight.
+  for (const [id, a] of atoms) {
+    if (!a.source) continue; // absence already reported by requireFields
+    if (!sources.has(a.source)) {
+      findings.push({
+        record: id,
+        field: "source",
+        detail: `names source ${a.source}, which the source list does not `
+          + "hold (ERF-4).",
+      });
+    }
+  }
+
+  return { manifest, atoms, claims, surveys, narratives, sources, findings };
 }

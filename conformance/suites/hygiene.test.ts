@@ -51,8 +51,26 @@ test("the example corpus loads with no conformance finding", () => {
 test("every standalone example carries only defined fields and legal values", () => {
   const dir = join(REPO, "examples");
   const VERDICTS = new Set(["SUPPORTED", "PARTIAL", "UNSUPPORTED"]);
+  const SOURCE_FIELDS = new Set(["id", "citation_text", "citation", "fetched_url", "capture"]);
+  const CAPTURE_FIELDS = new Set(["status", "path", "reason", "licence",
+    "licence_name", "excerpt", "converter", "source_locator", "source_digest"]);
   for (const name of readdirSync(dir).filter((f) => f.endsWith(".yaml"))) {
     const doc = yaml.load(readFileSync(join(dir, name), "utf8"), { schema: yaml.JSON_SCHEMA }) as Record<string, unknown>;
+    if (name.startsWith("source-")) {
+      // A source is a corpus artifact, not a record (section 4.1): no type,
+      // no corpus, no created. Its roster is the Source shape plus an id,
+      // which standalone store form carries as a field.
+      for (const key of Object.keys(doc)) {
+        assert.ok(SOURCE_FIELDS.has(key) || key.startsWith("x_"), `${name}: "${key}" is not a defined source field (ERF-55)`);
+      }
+      const cap = (doc["capture"] ?? {}) as Record<string, unknown>;
+      for (const key of Object.keys(cap)) {
+        assert.ok(CAPTURE_FIELDS.has(key) || key.startsWith("x_"), `${name}: capture."${key}" is not a defined field (ERF-55)`);
+      }
+      const ct = String(doc["citation_text"] ?? "");
+      assert.ok(!/:\/\//.test(ct), `${name}: citation_text carries a URL (ERF-7)`);
+      continue;
+    }
     const kind = String(doc["type"]);
     const known = KNOWN_FIELDS[kind];
     assert.ok(known, `${name}: type "${kind}" is not a record type`);
