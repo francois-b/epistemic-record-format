@@ -7,7 +7,7 @@ model: claude-opus-5[1m]
 
 # The v0.9 stress-battery report
 
-Eleven agent runs across four lanes, all behind the purity boundary
+Fourteen agent runs across four lanes, all behind the purity boundary
 (SPEC.md and lane materials only, never the fixtures, viewer, examples, or
 the spec's history), executed 2026-08-25 per
 `stress-test-battery-v0.9.md`. Full findings with evidence:
