@@ -308,5 +308,5 @@ export interface Excerpt {
 // malformed one.
 //
 // Optional fields (`?`) are different in kind. They assert existence when
-// present: a `citation` means structure exists, a `fetched` means a
+// present: a `citation` means structure exists, a `received` means a
 // fetch happened, a `last_modified` means an edit happened.

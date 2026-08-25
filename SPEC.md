@@ -256,7 +256,7 @@ interface Excerpt {                          // the one attributed step (ERF-69)
 
 Lists are total in the type and MAY be empty; empty lists are omitted in
 serialization (section 7). Optional fields (`?`) assert existence when
-present: a `citation` means structure exists, a `fetched` means a fetch
+present: a `citation` means structure exists, a `received` means a fetch
 happened, a `last_modified` means an edit happened.
 
 ### 3.1 Field reference
@@ -360,14 +360,17 @@ sources:
       issued: 1494
       chapter-number: 36
       translator: [{family: Geijsbeek, given: John B.}]
-    fetched:
+    received:
       url: "https://archive.org/download/ancientdoubleent00geijuoft/ancientdoubleent00geijuoft.pdf"
+      path: raw/pacioli-1494-geijsbeek.pdf
       digest: "sha256:05e58ce3f2589584d7d36446c46e2f74ab14f33ee6d1f0f20ef5e21c2aeaf2aa"
+      on: 2026-08-23
     status: shipped-as-quotation
     normalized: normalized/pacioli-1494-geijsbeek.md
-    excerpt: true
+    normalized_digest: "sha256:1b9a0c47d3e8f5a2c6b4e09f7d132a8be5c40f6719d2ab83c5e7104f9a6d2b3e"
     extraction: "pymupdf4llm 0.3.4"
-    cleanup: "pandoc 3.1.11 --wrap=none"
+    normalization: "pandoc 3.1.11 --wrap=none"
+    excerpt: {by: "agent/claude-sonnet-5", on: 2026-08-23}
 ```
 
 Where a source has no `citation` block, write `citation_text` as "Author,
@@ -486,10 +489,10 @@ is evidence about today's page rather than about what was read.
 > step. An author who needs one runs it, reads the result, and authors the
 > normalized text from what they read, which is what it already is.
 - **ERF-71** A source whose normalized text is an excerpt or a conversion SHOULD
-  carry `fetched.digest`, the cryptographic digest of the retrieved
+  carry `received.digest`, the cryptographic digest of the retrieved
   artifact with the algorithm named ("sha256:<hex>"). The locator and the
   digest together close the step the format cannot otherwise check: a
-  reader who retrieves the artifact at `fetched.url` confirms from the
+  reader who retrieves the artifact at `received.url` confirms from the
   digest that it is the one the author held, and re-runs the conversion
   under `ERF-70` to confirm the excerpt occurs in it. A digest is worth
   recording only where the location serves stable bytes; a page that
@@ -557,10 +560,10 @@ only prose.
   the source itself contains.
 - **ERF-7** A source's `citation_text` MUST NOT contain a URL. A citation
   identifies a work; a locator retrieves one copy. The retrieved locator
-  is `fetched.url`, and it names the artifact actually retrieved (the
+  is `received.url`, and it names the artifact actually retrieved (the
   file, not a landing page describing it); a web-native work's own
   identity MAY appear as `citation.URL`. A received file has no retrieval
-  locator, so its source carries no `fetched`.
+  locator, so its source carries no `received`.
 - **ERF-8** When `citation` is present it is canonical: it MUST carry
   everything the rendered `citation_text` string shows, chapter,
   translator, and edition included, and `citation_text` MUST be rendered

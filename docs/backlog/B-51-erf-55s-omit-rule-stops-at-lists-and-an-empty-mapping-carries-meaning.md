@@ -11,6 +11,18 @@ verifications:
     on: 2026-08-25
     verdict: unverified
     note: "raised while verifying other entries; needs a check by a hand that did not raise it"
+  - by: "gemini-3.5-flash via mods, adversarial refutation prompt"
+    on: 2026-08-25
+    verdict: accurate
+    note: >
+      Returned `inaccurate` against the title, and its reasoning confirms the
+      entry's actual claim. It argues the distinction IS expressible today,
+      because ERF-55 says lists and nothing authorizes omitting an empty
+      mapping, so `{}` present asserts existence under section 3. That
+      refutes "inexpressible", which the entry never claimed: its
+      priority_because reads "expressible today and undefended". Recorded
+      accurate on the narrower claim, and the refutation narrows the fix from
+      a new representation to one clause.
 ---
 
 # B-51 · `ERF-55`'s omit rule stops at lists, and one empty mapping carries meaning
