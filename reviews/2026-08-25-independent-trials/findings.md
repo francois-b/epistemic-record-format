@@ -1,11 +1,11 @@
 ---
-title: "Stress-battery findings, running tally"
-status: complete — all lanes landed; consolidated in battery-report-2026-08-25.md
+title: "Findings from the independent trials"
+status: complete; consolidated in README.md
 generated: 2026-08-25
 model: claude-opus-5[1m]
 ---
 
-# Findings so far (lanes 1, 3b, 4 landed)
+# Findings so far (trials 1, 3b, 4 landed)
 
 ## Reference-implementation bugs, fixed and committed
 
@@ -14,14 +14,14 @@ model: claude-opus-5[1m]
   entries; a block-style standing with a bare date passed unexamined. Our
   own fixture is flow-style, so the suite never noticed: a same-hand
   fixture hiding a same-hand bug. Rewritten onto parsed entries, which
-  ERF-65's JSON schema makes sufficient. (Lane 4, fixture i01.)
+  ERF-65's JSON schema makes sufficient. (Trial 4, fixture i01.)
 - **R2. Held conflated with shippable.** The viewer gated quote checks
   and backing resolvability on shipping status, so a locally held capture
   for a `not-redistributable` source was never checked, against `ERF-50`
   ("re-runnable by anyone holding the corpus and its captures", silent on
   shipping). A working corpus legitimately holds captures it may never
   redistribute. Fixed: held (a `path`) decides checkability; status
-  decides travel. (Lane 4, fixtures i09/i10, which only surfaced after
+  decides travel. (Trial 4, fixtures i09/i10, which only surfaced after
   this fix let their checks run.)
 
 ## Spec errata candidates (operator to rule; not yet applied)
@@ -29,14 +29,14 @@ model: claude-opus-5[1m]
 - **S1. The declaration and source list have no anchored filenames.**
   `ERF-59` requires "a declaration, a YAML document" and `ERF-3` a source
   list, but neither names a file, and nothing fixes the corpus directory
-  layout. Lane 4 independently wrote `declaration.yaml` where the
-  reference expects `corpus.yaml`; lane 1 independently listed the same
+  layout. Trial 4 independently wrote `declaration.yaml` where the
+  reference expects `corpus.yaml`; trial 1 independently listed the same
   gap as its top ambiguity (its A4), noting a validator cannot even
   decide what the corpus IS. Two conforming implementations cannot read
   each other's corpora today. Candidate fix: name the interchange
   filenames in section 7.
 - **S2. `as_of_date` has neither a stated format nor stated semantics.**
-  Format: lane 1 requires a full date; the example corpus carries
+  Format: trial 1 requires a full date; the example corpus carries
   year-only ("2018"); capex batches 1 and 2 independently wrote
   year-month, five instances. Candidate fix: admit reduced precision.
   Semantics, found by batch 3 reading its predecessors: the two batch
@@ -45,25 +45,25 @@ model: claude-opus-5[1m]
   "the date the FACT is true of". A second sentence naming the
   convention for period figures and for forward guidance (batch 1 used
   the issue date for forecasts) would close it.
-- **S3. `ERF-35`'s scope is ambiguous** (lane 1 A2): "every reference
+- **S3. `ERF-35`'s scope is ambiguous** (trial 1 A2): "every reference
   MUST resolve" against an enumerated four fields; `prior_survey`,
   `notable_results[].atoms`, and `evidence_at_stance` ids may or may not
   be allowed to dangle.
-- **S4. `ERF-32` vs the `ERF-31` grammar** (lane 1 A1): `bound-at` is a
+- **S4. `ERF-32` vs the `ERF-31` grammar** (trial 1 A1): `bound-at` is a
   MUST in ERF-32 while the grammar marks it optional, and ERF-32 defines
   handling for its own violation state (indeterminate staleness).
   Candidate fix: state plainly that the grammar admits what ERF-32 then
   reports, or reconcile.
-- **S5. `ERF-43` vs `ERF-49` at the flag boundary** (lane 1 A3, lane 4
+- **S5. `ERF-43` vs `ERF-49` at the flag boundary** (trial 1 A3, trial 4
   undecidable 4): whether a premise closure includes its own root decides
   which rule fires, and whether "flag" outcomes keep a corpus in the
   "loads with zero findings" class needs one sentence.
 - **S6. `ERF-51` names normative case files a standalone SPEC.md reader
-  cannot obtain** (lane 1 F31): the conformance cases govern where prose
+  cannot obtain** (trial 1 F31): the conformance cases govern where prose
   and case disagree, but they live in the repository, not the document.
   Publication packaging question.
-- **S7. `ERF-51` step f under-specified — now demonstrated live** (lane
-  1 A8, predicted; lane 2 friction 2, adjacent; capex atom acx-110, the
+- **S7. `ERF-51` step f under-specified — now demonstrated live** (trials
+  1 A8, predicted; trial 2 friction 2, adjacent; capex atom acx-110, the
   proof). "A space before punctuation": the reference reads it as one
   literal space; batch 4's from-prose implementation read it as
   whitespace generally. A quote reading `compute" ... used` against a
@@ -75,7 +75,7 @@ model: claude-opus-5[1m]
   conformance case pinning the line-wrapped-ellipsis pair; the reference
   and the case file change together.
 - **S8. Structural: `ERF-40` and `ERF-48`'s append-only exception are
-  untestable from any single corpus snapshot** (lane 4 undecidable 5):
+  untestable from any single corpus snapshot** (trial 4 undecidable 5):
   both constrain transitions between states. Candidate: note in section 6
   that these bind the substrate history (`ERF-63` already implies it).
 - **S9. Example-corpus nit: the narrative carries `type: narrative`,
@@ -84,19 +84,19 @@ model: claude-opus-5[1m]
 
 - **S10. `ERF-34`'s guidance says a narrative is "authored by a person
   and never generated"; the practice the format itself describes has LLMs
-  draft while people judge, and lane 2's narrative was LLM-drafted with
+  draft while people judge, and trial 2's narrative was LLM-drafted with
   the attribution disclosed.** Candidate fix: the binding fact is
   attribution, not authorship; soften the guidance to say who wrote it is
-  recorded, not legislated. (Lane 2, its sharpest tension.)
+  recorded, not legislated. (Trial 2, its sharpest tension.)
 - **S11. One `converter` per source cannot describe a mixed-extraction
   artifact**: Jefferson's Notes PDF has clean embedded text plus a
-  fold-out table with no OCR layer at all. Lane 2 disclosed the split in
+  fold-out table with no OCR layer at all. Trial 2 disclosed the split in
   prose and marked the whole source non-deterministic, which works but is
   not an answer the spec gives.
 - **S12. Three normalization edge cases from real captures**: a
   hyphen-space-newline that step 7's literal wording does not cover; a
   spurious OCR line-leading hyphen that steps 10/11 fuse into an
-  unrelated word (both lane 2); and a hyphenated compound or em dash
+  unrelated word (both trial 2); and a hyphenated compound or em dash
   sitting exactly at a capture's line-wrap, which step 7's join silently
   mangles against a hand-typed verbatim quote (capex batch 5, two
   near-misses caught by the author's checker). Candidate conformance
@@ -107,18 +107,18 @@ model: claude-opus-5[1m]
   paragraph broke an anchor across a line-wrap.
 - **S14. The interchange file grammar is shown, never stated.** `ERF-53`
   says "YAML frontmatter plus markdown body"; the closing delimiter
-  appears only in an example. Lane 2 wrote claims as one YAML document
+  appears only in an example. Trial 2 wrote claims as one YAML document
   with `body:` as a field and no closing delimiter, and BOTH validators
-  failed to read them (the reference with a finding, lane 1 silently).
+  failed to read them (the reference with a finding, trial 1 silently).
   Candidate fix: state the file grammar in section 7.
 - **S15. Unrecognized files are droppable without a trace.** The
-  reference silently ignored lane 2's `narrative/` directory (it
-  hardcodes `narratives/`; S1's third independent manifestation); lane 1
+  reference silently ignored trial 2's `narrative/` directory (it
+  hardcodes `narratives/`; S1's third independent manifestation); trial 1
   silently skipped the delimiter-less claims. Candidate: a validator
   SHOULD report files and directories it scanned but did not recognize,
   extending `ERF-57`'s conduct to the corpus scan.
 
-## Lane 2 (Buffon) cross-validation result
+## Trial 2 (Buffon) cross-validation result
 
 Corpus built cold: 4 sources (2 scanned archive.org PDFs with converter
 and digest, 1 federal letter, 1 recorded absence), 9 atoms, 5 claims
@@ -178,7 +178,7 @@ job in other hands.
 - **S21. The narrative's frontmatter fields are named but untyped.**
   `ERF-34` requires title, corpus, and created, and, having ruled the
   narrative has no interface in the data model, types none of them: the
-  closing author wrote `created` as a bare date, lane 1's validator
+  closing author wrote `created` as a bare date, trial 1's validator
   expects an ActorStamp, both defensible. The `ERF-34` person-authored
   tension also recurred (third independent flag). Candidate: one sentence
   typing the three fields, and the S10 fix.
@@ -193,14 +193,14 @@ job in other hands.
 
 ## Conformance-case candidates (adopt after operator review)
 
-- Lane 4's fixture set: 6 valid, 12 invalid, 4 spirit; cross-run against
+- Trial 4's fixture set: 6 valid, 12 invalid, 4 spirit; cross-run against
   the reference agrees 22/22 after R1/R2. Adopting the set (or its
   non-duplicative subset) fixes the fixtures' same-hand weakness.
-- Lane 1's three smoke corpora, same argument.
-- Lane 2's S12 normalization artifacts as cases; the shimmed Buffon
+- Trial 1's three smoke corpora, same argument.
+- Trial 2's S12 normalization artifacts as cases; the shimmed Buffon
   corpus as a second example corpus or fixture material.
 
-## Cross-implementation result (lane 1)
+## Cross-implementation result (trial 1)
 
 A ~1,100-line Python validator built from SPEC.md alone, purity held.
 Against the reference fixture suite: 19/21 exact agreement, 2 partial
@@ -212,7 +212,7 @@ self-report: 54 of 66 requirements implemented as machine checks, 10
 judged not machine-checkable, largely matching the reference's
 untestable-by-design list.
 
-## Lane 3b (bear-side sources) delivered
+## Trial 3b (bear-side sources) delivered
 
 24 sources, 23 excerpt captures, one contractually restricted absence
 (Apollo/Slok, explicit anti-redistribution terms: the `access-restricted`

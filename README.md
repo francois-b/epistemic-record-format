@@ -56,13 +56,13 @@ Absence is evidenced by surveys; presence by atoms.
 
 ## Seeing it work
 
-[`examples/corpus/`](examples/corpus/) is a small corpus of real records,
+[`examples/corpora/minimal/`](examples/corpora/minimal/) is a small corpus of real records,
 copied from a working practice: nine atoms, six claims, three
 surveys, and a narrative whose passages bind to the claims they rest on. [`viewer/`](viewer/) renders it to static HTML.
 
 ```
 cd viewer && npm install
-npx tsx erf-view.ts ../examples/corpus -o ../examples/site
+npx tsx erf-view.ts ../examples/corpora/minimal -o ../examples/site
 ```
 
 Two things in that corpus are worth knowing before you look. Every claim
@@ -89,7 +89,9 @@ cannot.
 | [`CHANGELOG.md`](CHANGELOG.md) | Change history, newest first. |
 | [`reviews/`](reviews/) | Adversarial review passes, archived verbatim with per-finding adjudications: a disposition of comments, with LLMs among the reviewers. |
 | [`conformance/`](conformance/) | The conformance suite: cases, fixtures, and a coverage map from every requirement to what defends it. |
-| [`examples/`](examples/) | Single-record examples as standalone YAML, plus [`examples/corpus/`](examples/corpus/), a small complete corpus of real records exercising every record type, and [`examples/site/`](examples/site/), that corpus rendered. |
+| [`examples/`](examples/) | Single-record examples as standalone YAML, plus [`examples/corpora/minimal/`](examples/corpora/minimal/), a small complete corpus of real records exercising every record type, and [`examples/site/`](examples/site/), that corpus rendered. |
+| [`reviews/`](reviews/) | Evaluations of the specification itself: adversarial reads, and independent trials that tested the document by building from it. Findings carry dispositions. |
+| [`LAYOUT.md`](LAYOUT.md) | What kinds of things live where, and how a new kind is admitted. |
 | [`viewer/`](viewer/) | `erf-view`, the reference consumer: a TypeScript static-site generator that imports the normative model and computes every derived reading from the specification text. |
 | [`tools/lint-spec-style.py`](tools/lint-spec-style.py) | The style lint the spec itself is held to (requirement-block shape, note form, no em dashes in prose). Run: `python3 tools/lint-spec-style.py`. |
 

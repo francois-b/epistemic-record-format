@@ -17,7 +17,7 @@ import { join } from "node:path";
 import { bindingRe } from "../../viewer/corpus.ts";
 import { REPO, VIEWER } from "../paths.ts";
 
-const CORPUS = join(REPO, "examples", "corpus");
+const CORPUS = join(REPO, "examples", "corpora", "minimal");
 
 function build(): string {
   const out = mkdtempSync(join(tmpdir(), "erf-conformance-"));

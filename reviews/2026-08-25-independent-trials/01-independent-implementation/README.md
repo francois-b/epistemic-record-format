@@ -1,3 +1,23 @@
+# Trial 1: independent implementation
+
+**Question:** can someone build a working validator from the specification
+prose alone?
+
+The agent received `SPEC.md` and nothing else from this repository: no
+reference implementation, no fixtures, no example corpus. It chose its own
+language (Python, against the reference's TypeScript, so that a shared
+idiom could not hide a shared assumption). Afterwards the reference's
+fixtures were run through this validator and this validator over the
+reference's corpus; every disagreement was classified as a specification
+ambiguity, a reference bug, or a bug here.
+
+`ambiguities.md` is the harvest: places where two careful implementers
+would build different validators. `friction-log.md` records every guess
+and re-read along the way. What follows is the agent's own operating
+documentation.
+
+---
+
 ---
 generated: 2026-08-25
 model: claude-fable-5

@@ -43,7 +43,7 @@ test("no pre-flatten requirement id survives outside the history documents", () 
 });
 
 test("the example corpus loads with no conformance finding", () => {
-  const c = loadCorpus(join(REPO, "examples", "corpus"));
+  const c = loadCorpus(join(REPO, "examples", "corpora", "minimal"));
   assert.deepEqual(c.findings, [],
     `the shipped example corpus must be conforming: ${JSON.stringify(c.findings, null, 2)}`);
 });

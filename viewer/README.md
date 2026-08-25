@@ -5,7 +5,7 @@ The reference consumer: renders an ERF corpus as a static site.
 ```
 cd viewer
 npm install
-npx tsx erf-view.ts ../examples/corpus -o ../examples/site
+npx tsx erf-view.ts ../examples/corpora/minimal -o ../examples/site
 ```
 
 Output is self-contained HTML. Inline CSS, no scripts, no external requests,

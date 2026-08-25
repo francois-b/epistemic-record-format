@@ -1,17 +1,17 @@
 ---
-title: "The v0.9 stress-battery report"
-purpose: "Consolidated result of the four-lane battery: what held, what broke, what waits on the operator. The 1.0 call reads from here."
+title: "Independent trials of v0.9: the report"
+purpose: "Consolidated result of the four trials: what held, what broke, what waits on the operator. The 1.0 call reads from here."
 generated: 2026-08-25
 model: claude-opus-5[1m]
 ---
 
-# The v0.9 stress-battery report
+# Independent trials of v0.9: the report
 
-Fourteen agent runs across four lanes, all behind the purity boundary
-(SPEC.md and lane materials only, never the fixtures, viewer, examples, or
+Fourteen agent runs across four trials, all behind the purity boundary
+(SPEC.md and trials materials only, never the fixtures, viewer, examples, or
 the spec's history), executed 2026-08-25 per
-`stress-test-battery-v0.9.md`. Full findings with evidence:
-`findings-2026-08-25.md`. This is the read.
+`method.md`. Full findings with evidence:
+`findings.md`. This is the read.
 
 ## Verdict
 
@@ -21,15 +21,15 @@ independent from-prose implementations essentially intact. **The edges
 leak.** Nearly every defect found is packaging: filenames the spec never
 anchors, a file grammar shown only by example, field formats and types
 left unstated, silent drops where reports were owed. All are small text
-fixes; none touches the data model. The battery found two reference
+fixes; none touches the data model. The trials found two reference
 implementation bugs (both fixed same-day) and twenty-two findings, of
 which roughly a dozen are errata needing an operator ruling.
 
 ## The numbers
 
-- **Cross-implementation agreement**: lane 1's from-prose Python validator
+- **Cross-implementation agreement**: trial 1's from-prose Python validator
   vs the reference, over the reference's 21 fixtures: 19 exact, 2 partial
-  with defensible readings. Lane 4's 22 adversarial fixtures vs the
+  with defensible readings. Trial 4's 22 adversarial fixtures vs the
   reference: 22/22 after the two reference fixes. Quote checks across
   every corpus authored: **185 of 187 agree** (9/9 Buffon, 150/151 capex
   with the one failure kept deliberately as erratum S7's exhibit, 26/27
@@ -48,7 +48,7 @@ which roughly a dozen are errata needing an operator ruling.
   near-reversed finding, two step-7 near-misses. The format's most
   technical section is its most effective quality mechanism in practice.
 
-## What each lane established
+## What each trial established
 
 1. **Validator build**: the spec is implementable cold (~1,100-line
    Python validator, 54 of 66 requirements as machine checks, boundary of
@@ -92,7 +92,7 @@ ran on no claim; a natural next exercise).
 ## Recommendation
 
 Rule on the errata (a single sitting; almost all are one-to-three
-sentence fixes), adopt lane 4's fixture set and lane 1's smoke corpora
+sentence fixes), adopt trial 4's fixture set and trial 1's smoke corpora
 into the conformance suite, fold the S12 artifacts into the normalization
 cases, then perform the standings pass on the capex corpus — the first
 human act in a corpus built entirely by machine authors under this
