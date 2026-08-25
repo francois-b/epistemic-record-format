@@ -62,6 +62,20 @@ Conformance is claimed per class, not against the whole document:
 Strict producers, tolerant consumers: divergence is caught by validators
 and surfaced, never by consumers refusing to read.
 
+**A flag is not a violation.** A validator reports two kinds of thing, and
+they answer different questions. A violation says the corpus does not
+conform. A flag says something here is worth a person's attention, and a
+corpus carrying flags and no violations conforms. Flags exist because
+several conditions this format cares about can arise without anyone editing
+the record that carries them: an atom withdrawn elsewhere strands the
+standing that faced it (`ERF-35`), a claim edited elsewhere ages the
+narrative bound to it (`ERF-32`), a premise retired elsewhere hollows the
+argument above it (`ERF-43`). Making any of those a violation would let one
+person's permitted act make another person's untouched corpus
+non-conforming, so the format flags instead. A consumer MUST NOT present a
+flag as conformance failure, and MUST NOT hide one either: the whole point
+is that someone looks.
+
 **What a consumer rule may say.** This format constrains a consumer's
 fidelity to the record and never its use of the corpus. A rule that says do
 not misrepresent what a record says, or do not lose data in transit, is in
@@ -1046,13 +1060,18 @@ checks the relations no type can see.
   means.
 - **ERF-43** An argument's premise closure, followed transitively (its
   outgoing `assumes` edges and the incoming `supports` edges of other
-  claims, per `ERF-24`), MUST terminate in non-argument leaves. Self-edges
-  MUST NOT exist; `assumes` and `decomposes-into` MUST admit no cycles. A
-  validator MUST flag a closure that terminates in a leaf whose disposition
-  is `retired`: a flag rather than a violation, like `ERF-49`, because a
-  withdrawal elsewhere can create the condition without any edit to the
-  argument, and an act the format permits cannot retroactively make a
-  corpus non-conforming.
+  claims, per `ERF-24`), MUST terminate in non-argument leaves. The closure
+  is what the edges *reach* and does not include the argument itself, so an
+  argument with no premises has an empty closure and satisfies this rule
+  vacuously: what is wrong with such an argument is that nothing backs it,
+  which is `ERF-49`'s flag, not that its closure ends badly. Reading the
+  root into its own closure would make the same record a violation here and
+  a flag there. Self-edges MUST NOT exist; `assumes` and `decomposes-into`
+  MUST admit no cycles. A validator MUST flag a closure that terminates in
+  a leaf whose disposition is `retired`: a flag rather than a violation,
+  like `ERF-49`, because a withdrawal elsewhere can create the condition
+  without any edit to the argument, and an act the format permits cannot
+  retroactively make a corpus non-conforming.
 - **ERF-44** `conflicts-with` MUST be stored once per pair.
 - **ERF-47** Staleness MUST be computed, never stored: a
   `finding_audit`, `evidence_audit`, or narrative binding older than the last change

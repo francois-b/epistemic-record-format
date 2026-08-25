@@ -12,7 +12,7 @@ import type { LoadedCorpus, Narrative } from "./corpus.ts";
 import { bindingCandidateRe, bindingRe, shipsWithCorpus } from "./corpus.ts";
 import {
   backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,
-  evidenceRefsFlagged,
+  evidenceRefsFlagged, retiredPremises,
   disposition, normalizeForCheck, quoteCheck, resolvable, staleAudits,
   staleEvidenceAudit, unbacked,
 } from "./compute.ts";
@@ -520,6 +520,10 @@ ${list(uncheckable.map((x) => `<a href="capture-${esc(x.a.id)}.html"><span class
 
 <h2>References that do not resolve</h2>
 ${list(dangling.map((d) => `<span class="id">${esc(d.record)}</span> <span class="id">${esc(d.field)}</span> ${esc(d.detail)}`))}
+
+<h2>Arguments resting on a premise its holders have withdrawn</h2>
+<p class="sub">Flags, not violations. <span class="id">ERF-43</span>: a withdrawal elsewhere creates this with no edit to the argument.</p>
+${list(retiredPremises(c).map(esc))}
 
 <h2>Files this consumer did not recognize</h2>
 <p class="sub">Reported, not rejected. A tolerant consumer preserves what it cannot interpret and says so; an unrecognized file is not a violation.</p>

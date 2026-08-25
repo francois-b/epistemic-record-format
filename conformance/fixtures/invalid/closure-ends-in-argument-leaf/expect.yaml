@@ -1,0 +1,10 @@
+requirement: ERF-43
+record: fx-upper
+field: edges
+because: >
+  `fx-upper` claims to be grounded, and following its grounding arrives at
+  `fx-lower`, an argument that grounds nothing further. The closure MUST
+  terminate in non-argument leaves, so the violation sits on `fx-upper`.
+  The contrast with valid/premise-less-argument-is-a-flag is the point:
+  `fx-lower` standing alone is a flag, and it is the chain built on it that
+  is wrong rather than the record itself.

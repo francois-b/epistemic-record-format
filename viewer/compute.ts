@@ -286,6 +286,79 @@ export function conflictsFor(claimId: string, c: LoadedCorpus): string[] {
   return [...out];
 }
 
+/**
+ * `ERF-43`: an argument's premise closure, followed transitively through
+ * its outgoing `assumes` edges and other claims' incoming `supports` edges
+ * (`ERF-24`).
+ *
+ * The closure is what the edges REACH and never includes the argument
+ * itself. Ruled 2026-08-25 (B-30): reading the root into its own closure
+ * makes a premise-less argument a violation here and a flag under
+ * `ERF-49`, so the same record would be both conforming and not. Excluded,
+ * it has an empty closure and satisfies this rule vacuously, and what is
+ * wrong with it is that nothing backs it, which is `ERF-49`'s business.
+ */
+export function premiseClosure(root: Claim, c: LoadedCorpus): Set<string> {
+  const seen = new Set<string>();
+  const walk = (id: string): void => {
+    const cl = c.claims.get(id);
+    if (!cl) return;
+    for (const e of cl.edges) {
+      if (e.relation === "assumes" && !seen.has(e.to) && c.claims.has(e.to)) {
+        seen.add(e.to); walk(e.to);
+      }
+    }
+    for (const [other, ocl] of c.claims) {
+      if (seen.has(other) || other === id) continue;
+      if (ocl.edges.some((e) => e.relation === "supports" && e.to === id)) {
+        seen.add(other); walk(other);
+      }
+    }
+  };
+  walk(root.id);
+  seen.delete(root.id);
+  return seen;
+}
+
+/**
+ * `ERF-43`: the closure MUST terminate in non-argument leaves. A leaf is a
+ * member of the closure that reaches no further premises; a leaf that is
+ * itself an `argument` means the chain claims to be grounded and is not.
+ *
+ * The root is not its own leaf, so a premise-less argument does not appear
+ * here. It appears in `unbacked` below, as a flag.
+ */
+export function argumentLeaves(root: Claim, c: LoadedCorpus): string[] {
+  const out: string[] = [];
+  for (const id of premiseClosure(root, c)) {
+    const cl = c.claims.get(id);
+    if (cl?.epistemic_kind !== "argument") continue;
+    if (premiseClosure(cl, c).size === 0) out.push(id);
+  }
+  return out;
+}
+
+/**
+ * `ERF-43`: a validator MUST FLAG a closure terminating in a leaf whose
+ * disposition is `retired`. A flag and not a violation, because a
+ * withdrawal elsewhere creates the condition with no edit to the argument,
+ * and an act the format permits cannot retroactively make a corpus
+ * non-conforming (section 2).
+ */
+export function retiredPremises(c: LoadedCorpus): string[] {
+  const out: string[] = [];
+  for (const cl of c.claims.values()) {
+    if (cl.epistemic_kind !== "argument") continue;
+    for (const id of premiseClosure(cl, c)) {
+      const prem = c.claims.get(id);
+      if (prem && disposition(prem).disposition === "retired") {
+        out.push(`${cl.id} rests on ${id}, whose holders have withdrawn`);
+      }
+    }
+  }
+  return out;
+}
+
 /** `ERF-49`: the computed warning a render shows. An argument's premises
  *  arrive from both sides of the graph (`ERF-24`): its own outgoing
  *  `assumes` edges, and other claims' `supports` edges pointing at it, so

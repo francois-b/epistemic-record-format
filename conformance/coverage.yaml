@@ -118,8 +118,15 @@ requirements:
   ERF-42:
     tests: [disposition, output]
   ERF-43:
-    tests: [fixtures/invalid/self-edge, fixtures/invalid/assumes-cycle, fixtures/invalid/assumes-cycle-two-node]
-    note: the retired-leaf flag has no case yet; it needs a standing to retire a leaf
+    tests: [fixtures/invalid/self-edge, fixtures/invalid/assumes-cycle, fixtures/invalid/assumes-cycle-two-node,
+            fixtures/invalid/closure-ends-in-argument-leaf, fixtures/valid/premise-less-argument-is-a-flag]
+    note: >
+      self-edges, both cycle shapes, and the flag boundary ruled in B-30: a
+      closure ending in an argument leaf is a violation on the claim built
+      on it, while the same premise-less argument standing alone is
+      ERF-49's flag and conforms. The retired-leaf flag is computed by
+      retiredPremises and has no fixture yet; it needs a standing to retire
+      a leaf.
   ERF-44:
     tests: [fixtures/invalid/conflicts-stored-twice]
     note: >

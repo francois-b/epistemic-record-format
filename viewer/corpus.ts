@@ -590,6 +590,44 @@ export function loadCorpus(dir: string): LoadedCorpus {
       }
     }
   }
+  // `ERF-43`: the closure MUST terminate in non-argument leaves. The root is
+  // not its own leaf (B-30), so a premise-less argument is `ERF-49`'s flag
+  // rather than a violation here.
+  for (const [id, cl] of claims) {
+    if (cl.epistemic_kind !== "argument") continue;
+    const reach = new Set<string>();
+    const walk = (from: string): void => {
+      for (const e of claims.get(from)?.edges ?? []) {
+        if (e.relation === "assumes" && claims.has(e.to) && !reach.has(e.to)) {
+          reach.add(e.to); walk(e.to);
+        }
+      }
+      for (const [other, ocl] of claims) {
+        if (other === from || reach.has(other)) continue;
+        if (ocl.edges.some((e) => e.relation === "supports" && e.to === from)) {
+          reach.add(other); walk(other);
+        }
+      }
+    };
+    walk(id);
+    reach.delete(id);
+    const leaves = [...reach].filter((r) => {
+      const rc = claims.get(r);
+      if (rc?.epistemic_kind !== "argument") return false;
+      const hasPremise = rc.edges.some((e) => e.relation === "assumes" && claims.has(e.to))
+        || [...claims.values()].some((o) => o.edges.some((e) => e.relation === "supports" && e.to === r));
+      return !hasPremise;
+    });
+    if (leaves.length) {
+      findings.push({
+        record: id,
+        field: "edges",
+        detail: `its premise closure terminates in argument leaves that ground `
+          + `nothing further (${leaves.join(", ")}); a closure MUST terminate in `
+          + `non-argument leaves (ERF-43)`,
+      });
+    }
+  }
   {
     const acyclic = new Set(["assumes", "decomposes-into"]);
     const state = new Map<string, 0 | 1 | 2>(); // 1 = on stack, 2 = done

@@ -109,7 +109,6 @@ Verified accurate, ordered by priority. The specification is wrong, unclear, or 
 
 | id | priority | | basis | verification |
 |---|---|---|---|---|
-| [`B-30`](B-30-erf-43-and-erf-49-collide-at-the-flag-boundary.md) | **P1** | `ERF-43` and `ERF-49` collide at the flag boundary | `reported` | `accurate` |
 | [`B-34`](B-34-the-narrative-anchor-does-not-say-raw-or-reflowed.md) | **P1** | The narrative anchor does not say raw or reflowed | `demonstrated` | `accurate` |
 | [`B-35`](B-35-the-binding-grammar-has-no-escape-for-a-quote-character-in.md) | **P1** | The binding grammar has no escape for a quote character in an anchor | `reported` | `accurate` |
 | [`B-36`](B-36-the-narratives-frontmatter-fields-are-named-but-untyped.md) | **P1** | The narrative's frontmatter fields are named but untyped | `demonstrated` | `accurate` |
