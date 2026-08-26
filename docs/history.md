@@ -20,8 +20,8 @@ have to reconstruct it from a changelog.
 For what the format deliberately will not do, see `non-goals.md`. For what
 it does not do yet, see `backlog/`. For the traditions it draws on, see
 `influences.md`. The dated narrative of the 0.9.0 work, one entry per change,
-is the last section of this file; the terse record of the same version is
-`../CHANGELOG.md`.
+is the last section of this file; which requirements change in which
+version, from 0.9.0 on, is `../CHANGELOG.md`.
 
 ## Origin
 
