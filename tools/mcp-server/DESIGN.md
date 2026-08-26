@@ -73,7 +73,8 @@ wrote. Every refusal names the requirement. Nothing writes a raw file.
 | `erf_survey_record(id, title, notable_results?, coverage_bounds, from_log?: date \| searches?: [...])` | writes the survey; `searches` come from the research log for the given day or from the argument | no acts at all (`ERF-26`); `hits_reported` missing |
 | `erf_narrative_bind(narrative, anchor, claims, replace?: true)` | inserts the `YAMLB-1` marker after the passage ending with `anchor`, `bound-at` today; with `replace`, rewrites the marker already on that passage | anchor not found or found twice; a claim id unresolved |
 | `erf_narrative_check(narrative?)` | unresolved ids, stale bindings, broken anchors, malformed candidates (`ERF-31/32/33`) | never |
-| `erf_record_read(id)` / `erf_record_list(type?)` | returns a record / lists ids and titles | unknown id |
+| `erf_source_read(id, find?)` | the source entry and its held normalized text, whole when short, else windows around `find` under the fold | unknown source |
+| `erf_record_read(id)` / `erf_record_list(type?)` | returns a record (or a source) / lists ids and titles | unknown id |
 
 Not in v0: `erf_search` (closed loop), `erf_render_site`, the MCP App,
 finding and evidence audits, excerpts (`ERF-69`), PDF extraction, the

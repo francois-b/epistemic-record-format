@@ -185,6 +185,17 @@ test("brain layout: records go under wiki/, held texts under source/", async () 
   assert.match(T.corpusCheck(c).text, /1 atoms, 1 claims/);
 });
 
+test("source_read: the held text, and windows around a phrase under the fold", async () => {
+  const c = fresh();
+  writeFileSync(join(c.dir, "memo.md"), "Preamble.\n\nThe recorded total was seventeen units, and the ledger agreed.\n");
+  await T.sourceAdd(c, { id: "memo", citation_text: "Internal memo, 2026", path: "memo.md" });
+  assert.match(T.sourceRead(c, { id: "memo" }).text, /chars held[\s\S]*seventeen units/);
+  assert.match(T.sourceRead(c, { id: "memo", find: "seventeen units" }).text, /1 match/);
+  assert.match(T.sourceRead(c, { id: "memo", find: "eighteen units" }).text, /no match/);
+  assert.match(T.recordRead(c, { id: "memo" }).text, /^source memo/);
+  assert.throws(() => T.sourceRead(c, { id: "nope" }), /no source nope/);
+});
+
 test("record_read and record_list", () => {
   const c = fresh();
   assert.match(T.recordList(c, { type: "claim" }).text, /^claim /m);

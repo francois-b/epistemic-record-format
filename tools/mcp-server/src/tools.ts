@@ -305,11 +305,31 @@ export function narrativeCheck(c: Corpus, a: { narrative?: string }): Result {
 
 // ---------- reading ----------
 
+/** A source entry and its held normalized text: the whole text when short, else windows around `find`, else the opening. */
+export function sourceRead(c: Corpus, a: { id: string; find?: string; window?: number }): Result {
+  readDeclaration(c);
+  const src = readSourceList(c)[a.id];
+  if (!src) throw new Refusal(`no source ${a.id}; known: ${Object.keys(readSourceList(c)).join(", ") || "none"}`);
+  const head = `source ${a.id} [${src.status}] ${src.citation_text}` + (src.received?.url ? `\nurl: ${src.received.url}` : "") + (src.normalized ? `\nnormalized: ${src.normalized}` : "");
+  if (!src.normalized || !existsSync(join(c.dir, src.normalized))) return { text: `${head}\n(no held text; quotes from this source cannot be checked)` };
+  const text = readFileSync(join(c.dir, src.normalized), "utf8");
+  const w = Math.min(Math.max(a.window ?? 600, 100), 4000);
+  if (a.find) {
+    const h = normalizeForCheck(text), q = normalizeForCheck(a.find);
+    const hits: string[] = []; let from = 0;
+    while (hits.length < 5) { const at = findWholeWords(h, q, from); if (at < 0) break; hits.push(h.slice(Math.max(0, at - w / 2), Math.min(h.length, at + q.length + w / 2)).replace(/\s+/g, " ").trim()); from = at + q.length; }
+    return { text: hits.length ? `${head}\n${hits.length} match(es) for "${a.find}" (text shown folded, as the quote check reads it):\n\n` + hits.map((x, i) => `[${i + 1}] …${x}…`).join("\n\n") : `${head}\nno match for "${a.find}" under the fold` };
+  }
+  const cap = 6000;
+  return { text: `${head}\n${text.length} chars held${text.length > cap ? `; first ${cap} shown, use find to see more` : ""}:\n\n${text.slice(0, cap)}` };
+}
+
 export function recordRead(c: Corpus, a: { id: string }): Result {
   for (const t of ["claim", "atom", "survey", "narrative"]) {
     const p = recordFiles(c, t).get(a.id);
     if (p) return { text: readFileSync(p, "utf8") };
   }
+  if (readSourceList(c)[a.id]) return sourceRead(c, { id: a.id });
   throw new Refusal(`no record with id ${a.id}`);
 }
 
