@@ -143,7 +143,7 @@ conducted: {timestamp: "2026-08-22", by: "agent/claude-fable-5"}
 searches:
   - tool: "grep -rnE (BSD grep, macOS)"
     query: "^granted:|^  granted:"
-    scope: "all *.md under the seven registered corpus [private claims dir]/ homes"
+    scope: "all *.md under the seven registered corpus claims folders"
     hits_reported: "0"
 notable_results:
   - what: "The claims-tree doc-class granted dimension"
