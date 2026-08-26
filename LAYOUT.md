@@ -19,11 +19,12 @@ of a thing belongs in its README, not in its path.
 **Normative.** The specification and the data model it defines. Changing
 these changes what conformance means.
 
-- `SPEC.md` — the specification: the model, and the obligations on acts
+- `SPEC.md` — the specification: the obligations on acts, and the rules over more than one record
+- `erf.schema.json` — the data model, JSON Schema 2020-12, normative
 - `bindings/` — one document per wire, each normative for any corpus
   exchanged in it; `bindings/yaml-markdown.md` is the interchange default.
   `SPEC.md` section 7 says what every binding must satisfy
-- `types/erf.ts` — the normative data model; `SPEC.md` section 3 mirrors it
+- `types/erf.ts` — a TypeScript rendering of the schema for the reference implementation; not normative, held to the schema by a gate
 
 **Instruments.** Permanent, versioned alongside the requirements, aimed at
 a stranger checking their own work.

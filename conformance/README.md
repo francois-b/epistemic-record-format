@@ -30,6 +30,17 @@ can implement it. These cases are the thing a second implementer clones and
 runs against their own code without asking the author anything. If they
 cannot, this is one person's tooling with a specification attached.
 
+## The attack suite
+
+`cases/quote-check.yaml` carries, under the heading marked F-016, the
+quotations a source never said that once passed the quote check: a number
+cut at its decimal point, a negation dropped at a hyphen, a word halved at
+a soft hyphen, two paragraphs spliced into one sentence, `3*4` read as
+`34`. Every implementation MUST fail each of them, and it is the first
+thing to run, because the quote check is what the rest of the format rests
+on. The suite is standing: every trial that finds a new way through adds
+its case here, and a case is never removed.
+
 ## A failing test is a finding
 
 **Do not edit an expectation to make a test pass.** If a case fails, either

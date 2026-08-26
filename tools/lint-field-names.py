@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-The two normative surfaces must name the same fields.
+Every field the model declares is discussed in SPEC.md.
 
 `SPEC.md` and `types/erf.ts` are both normative, and on 2026-08-25 they
 disagreed for a day: the source rework renamed `fetched` to `received` and

@@ -91,6 +91,18 @@ to `bindings/yaml-markdown.md` keeping their ids. Eighteen mixed
 requirements are listed there for splitting in 0.10, when the model becomes
 a JSON Schema and a SQL binding is drafted from the relational trial.
 
+## The model as a schema, added 2026-08-25
+
+Ruled after the long spec was measured: the data model is `erf.schema.json`
+(JSON Schema 2020-12), normative and tested by a gate over every valid
+fixture; the TypeScript mirror left `SPEC.md`; twenty-one shape
+requirements collapsed to a sentence and a schema pointer; `ERF-31` split
+and the binding took its first own id; the day's rationale was trimmed
+from the computed rules. `SPEC.md` went from 1,568 lines to the count in
+`CHANGELOG.md`. What remains before the push: a cold Rust validator built
+from the new text, the top-down corpus on the author's essay validated by
+it, and the attack suite named.
+
 ## Sequence
 
 1. ~~Rule `F-003`.~~ Done.

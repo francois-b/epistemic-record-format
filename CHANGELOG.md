@@ -24,6 +24,29 @@ record. All three numbers are published rather than hidden: this is a draft
 meant to be implemented against and argued with, and what is known to be
 unresolved, unverified, or untested is part of what it says.
 
+### 2026-08-25 — the data model becomes a schema, and the spec gets shorter
+
+The operator measured the specification at 1,568 lines after the day's
+rulings, most of the growth rationale written inside requirements, and
+asked where the stricter data model had gone. It had been sequenced after
+the first publication, on an argument about id stability that had the cost
+backwards: ids are stable from publication, so the cheapest moment to
+change the model's form is before it.
+
+`erf.schema.json` is now the normative data model, JSON Schema 2020-12,
+thirty-two definitions discriminated by `type`. It carries what prose
+carried badly: the three actor forms as disjoint patterns, the closed
+vocabularies, the date precisions, SemVer, the source list's nesting, and
+the conditional that a shipping source names its normalized text while an
+absent one names its reason. A gate validates every valid fixture and the
+example corpus against it, and a second gate holds `types/erf.ts` to it;
+the TypeScript rendering is no longer normative and the mirror left
+section 3. Twenty-one shape requirements collapsed to one MUST, a *Shape*
+pointer, and the rationale a schema cannot hold. `ERF-31` split, its
+HTML-comment grammar and recognition becoming the binding's own `YAMLB-1`.
+The rationale the day's rulings had written into `ERF-35`, `41`, `43`,
+`51` and `52` moved out or was cut, every MUST kept.
+
 ### 2026-08-25 — the second cold pass: eight fabrications through the first fix
 
 Two more cold implementations, Python and Swift, read the corrected text and

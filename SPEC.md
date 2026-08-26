@@ -865,20 +865,17 @@ All machine-checkable. Types express what types can express; the validator
 checks the relations no type can see.
 
 - **ERF-35** A reference asserting a *current* relationship MUST resolve
-  within the deployment (the corpora read and cited together):
-  `atoms_for`, `atoms_against`, `edges.to`, `surveys`, `prior_survey`, and
-  each `notable_results` entry's `atoms` name existing records. Ids are
-  deployment-unique (`ERF-36`), so one lookup serves every record type.
+  within the deployment, the corpora read and cited together: `atoms_for`,
+  `atoms_against`, `edges.to`, `surveys`, `prior_survey` and each
+  `notable_results` entry's `atoms` name existing records, and ids are
+  deployment-unique (`ERF-36`), so one lookup serves every type. A
+  reference recording a *past state* MUST NOT be a violation when it fails
+  to resolve, and a validator MUST flag it instead: `evidence_at_stance`
+  names what a ruler faced at the moment of ruling, and a corpus changing
+  afterwards is a permitted act that cannot make it non-conforming. The
+  test for any later id-bearing field is whether it asserts something now
+  or records something then.
 
-  A reference recording a *past state* MUST NOT be a violation when it
-  fails to resolve, and a validator MUST flag it instead. `ERF-20`'s
-  `evidence_at_stance` names the evidence a ruler faced at the moment of
-  ruling, and a corpus changing afterwards is an act the format permits,
-  so it cannot retroactively make the corpus non-conforming. This is the
-  distinction `ERF-43` draws for a retired leaf and `ERF-33` for a
-  narrative binding, and it decides how any later id-bearing field is
-  treated: ask whether the reference asserts something now or records
-  something then.
 - **ERF-36** Every record id MUST be unique across every corpus in the
   deployment, regardless of record type: one atom, claim, or survey may
   hold a given id, and no second record of any type may repeat it.
@@ -898,57 +895,44 @@ checks the relations no type can see.
   the same sense, which is why `ERF-48` can exempt appends to all three
   from re-stamping.
 - **ERF-41** Disposition MUST be computed, never stored, from the current
-  stances alone, meaning each person's newest entry. With no standings at
-  all the disposition is `proposal`. Otherwise discard every current stance
-  of `withdrawn`, because withdrawal is exit rather than opposition, and
-  read what remains: nothing remaining means `retired`; all `for` means
-  `active`; all `against` means `rejected`; both `for` and `against`
-  remaining means `contested`. A standing is admitted to this computation
-  only when its `stance` is in that vocabulary, its `timestamp` is an
-  instant (`ERF-19`) and its `by` is a `human:` actor (`ERF-21`); any
-  other entry is a producer error, MUST be reported, and is treated as
-  though it had never been written, so the person's previous admissible
-  entry, if any, stays their newest. `ERF-57` obliges a consumer to load
-  such a record, and a reading it cannot compute is one it would otherwise
-  invent. Where one person's newest entries share an instant, the later in
-  the ledger is current and a validator MUST flag the collision:
-  `standings` is an ordered list in the model (`ERF-40`), so its order is
-  a fact about the corpus and not about any binding's bytes. With that,
-  every input has exactly one reading. No stance outranks another and the format supplies no tie-break: `contested`
-  is the terminal reading of a disagreement, not a state resolved by
-  arithmetic. What any particular use requires of a
-  disposition is not specified here: the format computes the reading and a
-  consumer decides what to do with it.
+  stances alone, each person's newest admissible entry. No standings:
+  `proposal`. Otherwise discard every current `withdrawn`, withdrawal
+  being exit and not opposition, and read the rest: none remaining,
+  `retired`; all `for`, `active`; all `against`, `rejected`; both,
+  `contested`. An entry is admissible when its `stance` is in the
+  vocabulary, its `timestamp` is an instant (`ERF-19`) and its `by` is a
+  `human:` actor (`ERF-21`); any other entry is a producer error, MUST be
+  reported, and is treated as never written, so the person's previous
+  admissible entry stays their newest. Where one person's newest entries
+  share an instant, the later in the ledger is current and a validator
+  MUST flag the collision: `standings` is an ordered list in the model
+  (`ERF-40`), so its order is a fact about the corpus and not about bytes.
+  Every input then has exactly one reading. No stance outranks another
+  and there is no tie-break: `contested` is the terminal reading of a
+  disagreement, and what a use requires of a disposition is the
+  consumer's to decide.
 - **ERF-42** `rejected` and `retired` MUST NOT be conflated. A rejected
   claim is one every current holder judges false; a retired claim is one
   every current holder has left. Both are terminal readings and neither is
   a deletion; a consumer presenting them identically MUST say which it
   means.
-- **ERF-43** An argument's premise closure, followed transitively (its
-  outgoing `assumes` edges and the incoming `supports` edges of other
-  claims, per `ERF-24`), MUST terminate in non-argument leaves. The closure
-  is what the edges *reach* and does not include the argument itself, so an
-  argument with no premises has an empty closure and satisfies this rule
-  vacuously: what is wrong with such an argument is that nothing backs it,
-  which is `ERF-49`'s flag, not that its closure ends badly. Reading the
-  root into its own closure would make the same record a violation here and
-  a flag there. Self-edges MUST NOT exist, in any of the four relations.
-  The premise relation over all claims MUST admit no cycles, where `X
-  assumes Y` and `Y supports X` both make `Y` a premise of `X` (`ERF-24`),
-  whether or not any argument's closure reaches the cycle: a chain of
-  premises that returns to its own argument grounds nothing. A premise id
-  that resolves to nothing is `ERF-35`'s violation and is absent from the
-  relation. `decomposes-into` MUST admit no cycles likewise. The closure
-  is followed over distinct claims, a claim reached twice being visited
-  once, so that a validator terminates on any input, conforming or not.
-  `supports` was absent from the prohibition while present in the closure,
-  and two mutually supporting arguments made a literal traversal run
-  forever. A validator MUST flag a closure that contains a claim whose
-  disposition is `retired`, a leaf or not, because a retired premise
-  hollows every argument above it: a flag rather than a violation,
-  like `ERF-49`, because a withdrawal elsewhere can create the condition
-  without any edit to the argument, and an act the format permits cannot
-  retroactively make a corpus non-conforming.
+- **ERF-43** An argument's premise closure, followed transitively through
+  its outgoing `assumes` edges and the incoming `supports` edges of other
+  claims (`ERF-24`), MUST terminate in non-argument leaves. The closure is
+  what the edges reach and excludes the argument itself, so a premise-less
+  argument has an empty closure and satisfies this vacuously; what is
+  wrong with it is `ERF-49`'s flag. Self-edges MUST NOT exist in any
+  relation. The premise relation over all claims MUST admit no cycles, `X
+  assumes Y` and `Y supports X` both making `Y` a premise of `X`, whether
+  or not any closure reaches the cycle; a premise id that resolves to
+  nothing is `ERF-35`'s violation and is absent from the relation;
+  `decomposes-into` MUST admit no cycles likewise. The closure is followed
+  over distinct claims, a claim reached twice visited once, so that a
+  validator terminates on any input. A validator MUST flag a closure
+  containing a claim whose disposition is `retired`, leaf or not: a
+  retired premise hollows every argument above it, and it is a flag
+  because a withdrawal elsewhere creates the condition with no edit to the
+  argument.
 - **ERF-44** `conflicts-with` MUST be stored once per pair.
 - **ERF-47** Staleness MUST be computed, never stored: a
   `finding_audit`, `evidence_audit`, or narrative binding older than the last change
@@ -986,8 +970,8 @@ checks the relations no type can see.
   normalized texts; it MUST run as a gate at minting and after any transform that
   moves atoms between homes.
 - **ERF-51** Normalization MUST be this ordered sequence, applied
-  identically to the quote and to the normalized text, so that two conforming tools
-  reach the same verdict on the same pair:
+  identically to the quote and to the normalized text, so that two
+  conforming tools reach the same verdict on the same pair:
 
   1. Unicode NFC, then remove every format character (Unicode General
      Category `Cf`: the soft hyphen, the zero-width space, the joiners).
@@ -998,55 +982,33 @@ checks the relations no type can see.
      space, except a run holding a blank line, which is a paragraph
      boundary and collapses to U+2029 PARAGRAPH SEPARATOR; then trim.
 
-  Case MUST NOT be folded. Case is part of a verbatim quote, and folding it
-  lets a mis-cased quote pass a check whose whole job is fidelity.
-
-  Three steps, and each earns its place by describing a difference the
-  author did not introduce. NFC because an editor may silently compose or
-  decompose an accented letter, and the two spellings are one character by
-  definition. Format characters go because they are invisible and
-  untypeable, an extractor's artifact that a PDF's hyphenation leaves by
-  the thousand; left in, each one was a legal place to cut a word in half
-  and quote the fragment. The marker rule is CommonMark's own for `_`,
-  approximated for the other two: it stops `3*4` folding to `34`, a number
-  the source never held. The paragraph boundary stops a quote from
-  splicing the end of one paragraph to the start of the next, or a heading
-  to the prose under it, as if the source had said them in one breath. A
+  Case MUST NOT be folded: case is part of a verbatim quote, and folding
+  it lets a mis-cased quote pass a check whose whole job is fidelity. A
   word character is a letter, digit or combining mark (Unicode `L`, `N`,
-  `M`). NFC and not NFKC, which was the first choice: NFKC is a
-  package of compatibility folds, and among the ligatures and fullwidth
-  forms an extractor emits, it also folds characters an author retypes,
-  the long s of a pre-1800 scan to a modern s and the ellipsis to three
-  periods, which `ERF-52` requires to be matched literally. Measured over
-  164 quotes in three corpora, NFC and NFKC gave identical verdicts, and
-  the only compatibility characters present were 684 long-s glyphs in two
-  scans. A ligature or a fullwidth form in extracted text is the extraction
-  tool's output, and decomposing it is that tool's job (`ERF-70`) or the
-  normalization tool's (`normalization`), both of which the source names. The emphasis markers because the
-  normalized text is markdown and the quote is the prose inside it, so a source that
-  italicises a word mid-sentence yields `*however*` in one and `however` in
-  the other. Whitespace because line structure differs between a text and
-  a quoted span and always will.
+  `M`).
 
-> *Note (non-normative):* on what this sequence deliberately does not do,
-> and why the list is short. An earlier version folded typographic quotes
-> to straight ones, folded seven dash variants to a hyphen, joined words
-> broken across lines, and removed spaces before punctuation: seventeen
-> steps repairing layout damage and forgiving retyped characters. Two
-> things killed them. The character folds were unfinishable, covering the
-> Anglophone set and not French guillemets, German low quotes, CJK corner
-> brackets, fullwidth forms, or two-em dashes, so a French source failed a
-> format that claimed to fold quotation marks. And they were forgiving the
-> wrong thing: the normalized text is what the check runs against, so an author who
-> retypes rather than copies is guessing at their own evidence, and a
-> failure telling them to copy is the correct answer. Measured over 160
-> atoms in three corpora, dropping the folds newly failed four, and every
-> one was a real transcription divergence the folding had concealed.
-> Layout repair moved to where it belongs, a named tool in the pipeline
-> (`ERF-70`), rather than a rule guessing at information the extractor
-> discarded. Which glyph a source used is a fact about the source; a
-> consumer that wants it normalized does so at read time, as it does with
-> every other reading the format computes rather than stores.
+  Each step describes a difference the author did not introduce. NFC
+  because an editor may silently compose or decompose an accented letter;
+  NFC and not NFKC because NFKC also folds characters an author retypes,
+  the long s and the ellipsis, which `ERF-52` matches literally, and a
+  ligature in extracted text is the extraction tool's to decompose
+  (`ERF-70`). Format characters because they are invisible and
+  untypeable, and each one was a place to cut a word in half. The marker
+  rule because the normalized text is markdown and the quote is the prose
+  inside it; keeping a marker between two word characters stops `3*4`
+  folding to `34`. The paragraph boundary because splicing two paragraphs,
+  or a heading to its prose, says the source spoke them in one breath.
+
+> *Note (non-normative):* an earlier sequence had seventeen steps, folding
+> quotation marks and dashes, joining broken words, removing spaces before
+> punctuation. The folds were unfinishable across scripts and forgave the
+> wrong thing: the normalized text is what the check runs against, so an
+> author who retypes rather than copies is guessing at their own evidence,
+> and a failure telling them to copy is the correct answer. Layout repair
+> moved to a named tool in the pipeline (`ERF-70`). The 2026-08-25 trials
+> then showed the three steps were necessary and not sufficient, which is
+> where the format characters, the marker rule and the paragraph boundary
+> came from; `CHANGELOG.md` has the measurements.
 
   These assume text or markdown, which is what normalized text always is:
   it is authored, not converted at check time. Where the source was a
@@ -1063,39 +1025,27 @@ checks the relations no type can see.
   its exact behavior: where a reading of the prose and a case disagree, the
   case governs, and a conforming implementation reproduces every pair.
 - **ERF-52** Only the exact marker `[...]` MUST be treated as an
-  omission, and it is the only wildcard. A bare `...` and a bare `…` are literal source
-  characters and MUST be matched literally (`ERF-6`). The quote MUST be
-  split on `[...]` BEFORE normalization, because normalization may fold or
-  strip brackets and would otherwise destroy the marker; each span is then
-  normalized independently. Every non-empty span MUST occur in the
-  normalized text, in order and without overlap, **and as whole words**:
-  where a span begins with a word character, the character before its
-  occurrence MUST NOT be a word character or a word-internal one, and
-  where it ends with one, the character after MUST NOT be either. A
+  omission, and it is the only wildcard; a bare `...` or `…` is a literal
+  source character (`ERF-6`). The quote MUST be split on `[...]` BEFORE
+  normalization, because normalization would otherwise fold the marker,
+  and each span normalized independently. Every non-empty span MUST occur
+  in the normalized text, in order, without overlap, and as whole words:
+  where a span begins or ends with a word character, the character beside
+  it in the text MUST NOT be a word character or a word-internal one. A
   character is **word-internal** when it joins two word characters: `.`,
-  `,`, `:` or `/` between digits (`12.5`, `1,000`, `12:30`); an apostrophe
-  between letters (`board's`); a hyphen between word characters
-  (`non-binding`). So `Revenue fell 12` does not occur in `Revenue fell
-  12.5 percent`, `The board` does not occur in `The board's own review`,
-  and `binding, and management did not recommend` does not occur in `the
-  plan was non-binding, and management did not recommend`, each of which
-  a plain letters-and-digits boundary passed while changing what the
-  source said. A span that opens or closes on any other character is
-  unconstrained on that side, because that character is the boundary. A
-  span never crosses a paragraph boundary (`ERF-51` step 3) unless the
-  quote holds the same blank line. Without this rule the check is substring containment, and
-  `The cat[...]sat` passes against a text reading "The catapult was heavy.
-  Someone eventually sat": an atom attributing to a source words it never
-  contained, with a green check. Trimming each span (`ERF-51` step 3) is
-  what removed the whitespace that had made it a whole word at its edge.
-  The rule applies at every span edge and not only beside an elision,
-  because quoting `cat` out of `catapult` is the same fabrication without
-  the marker, and a verbatim quotation (`ERF-6`) is a run of whole words
-  from the source. A quote whose spans are all empty MUST fail rather than
-  trivially pass. The text between two
-  spans is unbounded by design: an elision marker is the author's assertion
-  that they removed material, and whether the removal misleads is a
-  judgment for the audit, not a distance a validator can measure.
+  `,`, `:` or `/` between digits (`12.5`, `1,000`), an apostrophe between
+  letters (`board's`), a hyphen between word characters (`non-binding`).
+  So `Revenue fell 12` does not occur in `Revenue fell 12.5 percent`, and
+  `binding, and management did not recommend` does not occur in `the plan
+  was non-binding, and management did not recommend`. A span opening or
+  closing on any other character is unconstrained on that side, that
+  character being the boundary, and no span crosses a paragraph boundary
+  (`ERF-51`) unless the quote holds the same blank line. A quote whose
+  spans are all empty MUST fail rather than trivially pass. The text
+  between two spans is unbounded by design: an elision marker is the
+  author's assertion that they removed material, and whether the removal
+  misleads is a judgment for the audit, not a distance a validator can
+  measure.
 > *Note (non-normative):* on enforcing uniqueness. Detection belongs to the
 > validator, prevention at mint to the producer, and concurrent minting to
 > neither: two writers, or two git branches, can mint the same next number
