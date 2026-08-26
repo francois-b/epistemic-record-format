@@ -24,3 +24,13 @@ verifications:
 ## Proposed resolution
 
 Either `ERF-47` covers surveys, or `ERF-28` stops claiming it.
+
+## Consolidation note (2026-08-26)
+
+Still live at HEAD. `ERF-28` still closes with "Staleness of a claim's
+survey backing is computed from `conducted` timestamps, never stored",
+and `ERF-47`, rewritten on 2026-08-26 to name what each audit kind
+judged, enumerates a `finding_audit`, an `evidence_audit` and a narrative
+binding, with surveys in none of them. `B-69` (definitions repeated) lists
+the same sentence as a restatement of `ERF-47`; one ruling on the
+sentence settles both, and this entry is the one that asks for it.

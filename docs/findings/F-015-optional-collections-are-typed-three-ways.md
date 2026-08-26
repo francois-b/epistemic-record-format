@@ -22,10 +22,24 @@ verifications:
     on: 2026-08-25
     verdict: accurate
     note: >
-    Both trials hit it. Protobuf could not express it at all: proto3
-    forbids `optional repeated` outright, so the two readings produce
-    schemas that are not wire-compatible at that field.
-outcome: open
+      Both trials hit it. Protobuf could not express it at all: proto3
+      forbids `optional repeated` outright, so the two readings produce
+      schemas that are not wire-compatible at that field.
+outcome: closed
+resolution_note: >
+  Stale at HEAD (closed at the consolidation pass, claude-fable-5,
+  2026-08-26). The TypeScript mirror that carried `surveys?:` left section
+  3 on 2026-08-25 and is no longer normative; the schema, which is, types
+  every list the same way and says so on each: `surveys` is "Total in the
+  model; omitted on the wire when empty (ERF-55, ERF-56)", the same words
+  as `atoms_for`. ERF-56 at HEAD: "A reader MUST materialize an omitted
+  list-typed field as an empty list, because presence means what it says:
+  an omitted list means none, never unknown". The rule this decided
+  behaviour for, ERF-49, was retired on 2026-08-26; unbacked is now a
+  section 2 definition read from the fields ("carries no `atoms_for`, no
+  `surveys`"), so the reading that never fired the flag has no `?` left to
+  read. `types/erf.ts` still writes `surveys?: SurveyId[]`, a rendering
+  held to the schema by a gate that binds nothing.
 ---
 
 # F-015 · Optional collections are typed inconsistently, and `ERF-49` depends on it

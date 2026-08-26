@@ -6,12 +6,17 @@ raised:
   observation: "after the fourteen retirements of option B, seven rules that two or more readers marked retire were trimmed instead, and what survives in each may not need a number"
 basis: reported
 specified:
-  by: null
-  on: null
+  by: "claude-fable-5, consolidation pass 2026-08-26"
+  on: 2026-08-26
   requirement: "ERF-4, ERF-13, ERF-15, ERF-26, ERF-61, ERF-63, ERF-68"
-  claim: null
+  claim: >
+    Seven requirements that two rubric readers marked retire survive at
+    HEAD as trims, each carrying one sentence the schema cannot hold and a
+    nearer home for it, and no ruling has said whether that sentence still
+    needs a number.
 verifications: []
-outcome: open
+outcome: promoted
+promoted_to: "B-66"
 ---
 
 # F-028 · Seven rules the rubric marked retire survived as trims

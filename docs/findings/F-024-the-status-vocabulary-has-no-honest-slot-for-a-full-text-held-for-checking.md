@@ -6,12 +6,17 @@ raised:
   observation: "a 1,100-word essay held in full for the quote check is not a short quotation, yet shipped-as-quotation is the only status that lets a normalized text exist under no licence; 24 of 31 sources used it and most are a stretch"
 basis: demonstrated
 specified:
-  by: null
-  on: null
-  requirement: "ERF-68, section 5 status vocabulary"
-  claim: null
+  by: "claude-fable-5, consolidation pass 2026-08-26"
+  on: 2026-08-26
+  requirement: "ERF-68, section 5 status vocabulary, schema Source.status"
+  claim: >
+    The only status that lets a normalized text be held under no licence,
+    shipped-as-quotation, is scoped by ERF-68 to a short quotation, and the
+    format's checks require holding the text, so a text held in full for
+    checking has no status that describes it honestly.
 verifications: []
-outcome: open
+outcome: promoted
+promoted_to: "B-64"
 ---
 
 # F-024 · The status vocabulary has no honest slot for a full text held for checking

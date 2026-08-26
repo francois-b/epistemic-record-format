@@ -6,12 +6,18 @@ raised:
   observation: "Two implementations, on failing to parse one structural file, reported every atom in the corpus as naming a source that does not exist"
 basis: demonstrated
 specified:
-  by: null
-  on: null
-  requirement: null
-  claim: null
+  by: "claude-fable-5, consolidation pass 2026-08-26"
+  on: 2026-08-26
+  requirement: "ERF-54, ERF-57, section 1 (what a consumer rule may say)"
+  claim: >
+    No requirement says that a consumer which cannot interpret a document
+    it recognizes must report that document rather than the records that
+    depend on it; ERF-31, ERF-33 and ERF-57 each state the rule for one
+    narrower case, and two implementations reported one unreadable source
+    list as 151 findings against correct atoms.
 verifications: []
-outcome: open
+outcome: promoted
+promoted_to: "B-58"
 ---
 
 # F-006 · A validator that cannot read a file blames the records instead

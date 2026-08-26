@@ -19,3 +19,16 @@ The guidance says a narrative is "authored by a person and never generated." Thr
 ## Proposed resolution
 
 Operator ruling. The recommendation on file is to soften to attribution rather than restriction.
+
+## Consolidation note (2026-08-26)
+
+Still live at HEAD, with one correction to where it points. `ERF-34` was
+retired on 2026-08-26 as a shape rule the schema holds; the sentence this
+entry is about survives twice, in the section 4.6 preamble ("It is prose,
+authored by a person and never generated") and, softened, in the schema's
+`Narrative` description ("prose someone wrote"). Both are guidance or
+description and bind nothing, so the priority stands. The ruling is now
+on a paragraph rather than a requirement, and on whether the schema
+description should say "authored by" at all. The three capex narratives
+stamped `agent/claude-sonnet-5` remain the demonstration. Related:
+`B-67` (attribution of act rules) is the same instinct applied to MUSTs.

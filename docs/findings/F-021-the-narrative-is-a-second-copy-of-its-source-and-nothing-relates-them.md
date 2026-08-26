@@ -6,12 +6,17 @@ raised:
   observation: "In a corpus whose subject is one document, the narrative holds the essay's prose and the source list holds the same prose as normalized text; no rule relates the two, so the narrative can drift from the source it was minted from"
 basis: demonstrated
 specified:
-  by: null
-  on: null
-  requirement: "ERF-34, ERF-32, ERF-1"
-  claim: null
+  by: "claude-fable-5, consolidation pass 2026-08-26"
+  on: 2026-08-26
+  requirement: "schema Narrative (ERF-34 is retired), ERF-32, ERF-1"
+  claim: >
+    The Narrative definition has no field relating a narrative to a source,
+    so in a corpus whose narrative is copied from a source's normalized
+    text nothing can detect the two diverging, and nothing can tell an atom
+    quoting the narrative's own source from independent backing.
 verifications: []
-outcome: open
+outcome: promoted
+promoted_to: "B-61"
 ---
 
 # F-021 · The narrative is a second copy of its source, and nothing relates them

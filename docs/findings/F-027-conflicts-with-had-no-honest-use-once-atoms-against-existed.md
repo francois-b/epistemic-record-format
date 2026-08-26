@@ -6,12 +6,17 @@ raised:
   observation: "every real disagreement in a 32-claim corpus was recorded as atoms_against under ERF-23, and conflicts-with was never the honest choice; the field may be doing no work"
 basis: demonstrated
 specified:
-  by: null
-  on: null
-  requirement: "ERF-23"
-  claim: null
+  by: "claude-fable-5, consolidation pass 2026-08-26"
+  on: 2026-08-26
+  requirement: "section 5 relations, ERF-44, ERF-23"
+  claim: >
+    The conflicts-with relation has a definition, a storage rule (ERF-44)
+    and a conformance case, and no live corpus in the repository carries an
+    instance of it, the one corpus built to exercise disagreement having
+    routed every disagreement to atoms_against under ERF-23.
 verifications: []
-outcome: open
+outcome: promoted
+promoted_to: "B-65"
 ---
 
 # F-027 · `conflicts-with` had no honest use once `atoms_against` existed

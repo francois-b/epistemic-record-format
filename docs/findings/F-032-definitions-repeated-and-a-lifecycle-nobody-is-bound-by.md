@@ -6,12 +6,17 @@ raised:
   observation: "the same definition appears under two or three numbers, and one rule carries a lifecycle clause with no party bound by it"
 basis: reported
 specified:
-  by: null
-  on: null
+  by: "claude-fable-5, consolidation pass 2026-08-26"
+  on: 2026-08-26
   requirement: "ERF-24, ERF-43, ERF-9, ERF-10, ERF-28, ERF-47, ERF-48, ERF-72, ERF-57"
-  claim: null
+  claim: >
+    The premise definition is stated in three places, ERF-10 restates half
+    of ERF-9, ERF-28 restates ERF-47 and ERF-48, ERF-57 restates the
+    Consumer class, and ERF-72 carries a lifecycle clause that binds no
+    party the format defines; all five are present at HEAD.
 verifications: []
-outcome: open
+outcome: promoted
+promoted_to: "B-69"
 ---
 
 # F-032 · Definitions repeated, and a lifecycle nobody is bound by

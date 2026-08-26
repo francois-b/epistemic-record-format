@@ -6,12 +6,17 @@ raised:
   observation: "A cross-vendor audit returned PARTIAL on 46 of 123 findings, the finding claiming more than its quote carries; section 4.2 gives four sentences to the one act with no mechanical check behind it"
 basis: demonstrated
 specified:
-  by: null
-  on: null
-  requirement: "section 4.2, ERF-24"
-  claim: null
+  by: "claude-fable-5, consolidation pass 2026-08-26"
+  on: 2026-08-26
+  requirement: "section 4.2 (guidance, non-normative)"
+  claim: >
+    Section 4.2's guidance on writing a finding names no concrete way a
+    finding overreaches its quote, and the one measured audit found that
+    overreach on 46 of 123 atoms, so the format's shortest guidance sits on
+    its highest-failure act.
 verifications: []
-outcome: open
+outcome: promoted
+promoted_to: "B-63"
 ---
 
 # F-023 · PARTIAL verdicts run at a third, and the craft guidance is four sentences

@@ -6,12 +6,28 @@ raised:
   observation: "Every capture file in both authored corpora opens with a YAML header duplicating its source-list entry; the format specifies no such header, and in five files it does not parse"
 basis: demonstrated
 specified:
-  by: null
-  on: null
-  requirement: null
-  claim: null
+  by: "claude-fable-5, consolidation pass 2026-08-26"
+  on: 2026-08-26
+  requirement: "ERF-1, ERF-69, ERF-70"
+  claim: >
+    ERF-1 defines the normalized text by the pipeline that produces it and
+    no requirement states what it may contain beyond the work's text, so a
+    producer-invented metadata header is neither forbidden nor stripped
+    before the fold, and sits inside the haystack the quote check reads.
 verifications: []
-outcome: open
+outcome: closed
+resolution_note: >
+  Absorbed into B-57 with F-026, which is the same missing sentence seen
+  from the other side: a header is producer metadata inside the normalized
+  text, footnote markers are site apparatus inside it, and one rule on what
+  a normalized text may hold beyond the work's text settles both. The
+  header exhibit no longer exists on disk at HEAD (neither authored
+  corpus's normalized texts open with frontmatter now), which is why F-026,
+  whose exhibit survives, carries the promotion. The parse failures were
+  the header's and go with it; the duplication of the source list is the
+  same point. Checked at HEAD before closing: the reference's quoteCheck
+  folds the normalized text whole, and no sentence in SPEC.md says a
+  normalized text is the text alone.
 ---
 
 # F-004 · Capture files carry a metadata header the format never specifies

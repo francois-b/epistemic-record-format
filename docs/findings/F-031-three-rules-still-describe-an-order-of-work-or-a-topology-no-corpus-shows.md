@@ -6,12 +6,17 @@ raised:
   observation: "after ERF-1 and ERF-50 lost their workflow gates, three rules still prescribe when a tool acts or how a deployment is arranged, which no corpus state can exhibit"
 basis: reported
 specified:
-  by: null
-  on: null
-  requirement: "ERF-50, ERF-60, ERF-62"
-  claim: null
+  by: "claude-fable-5, consolidation pass 2026-08-26"
+  on: 2026-08-26
+  requirement: "ERF-60, ERF-62 (ERF-50's gate wording is gone at HEAD)"
+  claim: >
+    ERF-60 prescribes that a validator reads spec_version before anything
+    else, an order it cannot follow under content-based discovery, and
+    ERF-62 describes a deployment's arrangement that no exchanged corpus
+    can exhibit; neither sentence constrains corpus state.
 verifications: []
-outcome: open
+outcome: promoted
+promoted_to: "B-68"
 ---
 
 # F-031 · Three rules still describe an order of work or a topology no corpus shows

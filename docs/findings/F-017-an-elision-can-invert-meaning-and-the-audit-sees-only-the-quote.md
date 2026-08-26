@@ -6,12 +6,18 @@ raised:
   observation: "`The board did [...] approve the acquisition.` passes against `The board did not approve the acquisition.`; the mechanical check catches a fabricated string and cannot catch a fabricated meaning"
 basis: demonstrated
 specified:
-  by: null
-  on: null
-  requirement: "ERF-52, ERF-24, ERF-11"
-  claim: null
+  by: "claude-fable-5, consolidation pass 2026-08-26"
+  on: 2026-08-26
+  requirement: "ERF-52, ERF-11, ERF-24"
+  claim: >
+    ERF-52 assigns the judgment of whether an elision misleads to the
+    audit, and neither ERF-11 nor ERF-24 requires the auditor of an atom
+    whose quote carries `[...]` to read the elided span in the normalized
+    text, so the only check that could catch a meaning-inverting elision
+    is not obliged to look.
 verifications: []
-outcome: open
+outcome: promoted
+promoted_to: "B-59"
 ---
 
 # F-017 · An elision can invert meaning, and the audit sees only the quote

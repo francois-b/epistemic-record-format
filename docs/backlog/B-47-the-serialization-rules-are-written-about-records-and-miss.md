@@ -24,3 +24,17 @@ verifications:
 ## Proposed resolution
 
 Scope section 7 to files rather than records, or say which rules reach the non-record files.
+
+## Consolidation note (2026-08-26)
+
+Narrowed at HEAD, not resolved. The three rules moved to the binding on
+2026-08-25 and their subjects are now: `ERF-65` "Frontmatter MUST parse"
+(unscoped, so it reaches every file with frontmatter); `ERF-67` "a file
+MUST be UTF-8 encoded" (every file), with "A record body is CommonMark"
+still record-scoped; `ERF-66` "A record's frontmatter MUST NOT contain a
+duplicate key, an anchor, an alias, or an explicit tag" (records only).
+The residual is therefore `ERF-66`, which is the rule the entry called
+"the narrowest and most consequential": on a literal read the source
+list and the declaration may carry a duplicate key, and two parsers may
+legally disagree about them. One word ("A document's frontmatter") is the
+fix; the priority stands because that is the interoperability case.

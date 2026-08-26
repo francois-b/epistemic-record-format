@@ -6,12 +6,24 @@ raised:
   observation: "every essay assertion needed an atom saying the essay asserts it, ERF-10 grades such a discourse atom high, and at the claim level one high atom for and nine against reads as a contest when the one for is only evidence that the author said it"
 basis: demonstrated
 specified:
-  by: null
-  on: null
-  requirement: "ERF-10, ERF-23, ERF-9"
-  claim: null
+  by: "claude-fable-5, consolidation pass 2026-08-26"
+  on: 2026-08-26
+  requirement: "ERF-10, ERF-23, schema Narrative"
+  claim: >
+    ERF-10 correctly grades a recorded identified utterance high, and
+    nothing in the model can mark an atom as the proponent's own statement
+    or flag a claim whose only atoms for quote the narrative's source,
+    because no field says which source that is.
 verifications: []
-outcome: open
+outcome: closed
+resolution_note: >
+  Absorbed into B-61 with F-021. The flag this finding asks for (a claim
+  whose every atom for comes from the narrative's own source) is decidable
+  only once a narrative can name its source, which is F-021's gap; the two
+  are one missing field seen from two sides, and the craft-guidance
+  fallback this finding also offers is recorded in B-61 as the alternative.
+  Checked at HEAD before closing: the Narrative definition carries `type`,
+  `title`, `corpus`, `created`, `body` and nothing relating it to a source.
 ---
 
 # F-025 · An atom recording the proponent's own assertion reads as backing

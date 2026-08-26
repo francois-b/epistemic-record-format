@@ -6,12 +6,17 @@ raised:
   observation: "all four readers marked fifteen requirements as MUSTs no validator can decide; Pro says downgrade to SHOULD, the others say rewrite; the rules do not name whose duty they are"
 basis: reported
 specified:
-  by: null
-  on: null
-  requirement: "ERF-2, ERF-6, ERF-8, ERF-9, ERF-10, ERF-14, ERF-18, ERF-23, ERF-24, ERF-25, ERF-27, ERF-28, ERF-48, ERF-69, ERF-70"
-  claim: null
+  by: "claude-fable-5, consolidation pass 2026-08-26"
+  on: 2026-08-26
+  requirement: "ERF-2, ERF-6, ERF-8, ERF-9, ERF-10, ERF-14, ERF-18, ERF-23, ERF-24, ERF-25, ERF-27, ERF-28, ERF-69, ERF-70 (ERF-48 left the list on 2026-08-26 under F-030)"
+  claim: >
+    Fourteen requirements state a MUST that only a producer or an auditor
+    can honour and do not name the conformance class they bind, so a
+    validator reading them cannot tell an undecidable rule from its own
+    omission; the fix is attribution, not downgrade.
 verifications: []
-outcome: open
+outcome: promoted
+promoted_to: "B-67"
 ---
 
 # F-029 · Fifteen MUSTs only a producer or auditor can honour read as validator rules

@@ -22,10 +22,24 @@ verifications:
     on: 2026-08-25
     verdict: accurate
     note: >
-    The trial modelled it as `Presence a = Missing | ExplicitNull | Given a`
-    and demonstrated the three reporting distinctly, which no other
-    implementation of this format does.
-outcome: open
+      The trial modelled it as `Presence a = Missing | ExplicitNull | Given a`
+      and demonstrated the three reporting distinctly, which no other
+      implementation of this format does.
+outcome: closed
+resolution_note: >
+  Stale at HEAD (closed at the consolidation pass, claude-fable-5,
+  2026-08-26). The third wire state is no longer admissible. The schema
+  types EvidenceAtStance as an object with additionalProperties false, so
+  an explicit null fails ERF-73 ("Every document a corpus holds MUST
+  validate against `erf.schema.json`"); ERF-65 says "An empty scalar
+  resolves to `null`", so `evidence_at_stance:` with no value is that null
+  and is a violation, not a state. YAMLB-2 fixes the spelling of the
+  remaining two: "an optional mapping that is present and empty MUST be
+  written as `{}`, because presence asserts existence and
+  `evidence_at_stance: {}` is a different fact from its absence". Missing
+  and `{}` are distinguishable under every idiomatic decoder the finding
+  names; only missing and null collapse, and null is now a producer error
+  a validator reports before any of the format's rules run.
 ---
 
 # F-014 · `evidence_at_stance` has three wire states, and readers collapse two

@@ -6,12 +6,17 @@ raised:
   observation: "6 of 22 elisions in the corpus exist only to step over Wikipedia footnote markers such as [12] left in the normalized text, so a marker ERF-52 defines as asserting removed material is asserting nothing"
 basis: demonstrated
 specified:
-  by: null
-  on: null
-  requirement: "ERF-52, ERF-51, ERF-69"
-  claim: null
+  by: "claude-fable-5, consolidation pass 2026-08-26"
+  on: 2026-08-26
+  requirement: "ERF-69, ERF-70 (the producer's side); ERF-52 (what the marker asserts)"
+  claim: >
+    No requirement says a normalized text carries the work's text and not
+    its apparatus, so a producer may keep footnote markers the work's prose
+    does not contain, and a quote spanning one must elide it, making
+    ERF-52's marker assert a removal that removed nothing.
 verifications: []
-outcome: open
+outcome: promoted
+promoted_to: "B-57"
 ---
 
 # F-026 · The elision marker was used to route around apparatus in the normalized text

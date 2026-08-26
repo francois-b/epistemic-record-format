@@ -1,8 +1,12 @@
 ---
 id: B-43
 kind: defect
-status: open
+status: contested
 priority: P3
+contested_because: >
+  Verified inaccurate on 2026-08-25 and folded into B-24 (closed); at HEAD
+  the schema states which precision is legal where, so the residual is
+  gone too. Marked so the index shows it where a disputed entry belongs.
 priority_because: "Fable: ERF-19 already says a bare date is correct where nothing is ordered; the residual is the type comment. Fold into B-24."
 basis: reported
 raised: "trial 5 (Rust), 2026-08-25"
@@ -19,6 +23,13 @@ verifications:
     on: 2026-08-25
     verdict: unverified
     note: "raised while verifying the queue; needs a check by someone who did not raise it"
+  - by: "claude-fable-5, consolidation pass 2026-08-26"
+    on: 2026-08-26
+    verdict: stale
+    note: >
+      The residual the 2026-08-25 verifier left ("the type comment") is
+      answered by the schema: DateOrInstant on every stamp, Instant on a
+      standing, AsOfDate on an atom's as_of_date.
 ---
 
 # B-43 · Timestamps: the type says instant, every example writes a bare date
@@ -28,3 +39,14 @@ The data model comments `ActorStamp.timestamp` as RFC 3339, and every example in
 ## Proposed resolution
 
 State which precisions are legal where, once.
+
+## Consolidation note (2026-08-26)
+
+Status set to `contested` to match the `inaccurate` verdict already on
+record. At HEAD the question "which precisions are legal where" is the
+schema's, stated on the definitions: `DateOrInstant` ("A date where
+nothing is ordered, an instant where something is"), `StandingEntry.timestamp`
+typed `Instant` ("a full instant with time and offset, never a bare date,
+because this is the format's only ordered ledger"), and `AsOfDate` ("A
+year, a year and month, or a full date"). Nothing is left to fold into
+`B-24`, which is closed.

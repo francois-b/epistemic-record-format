@@ -6,12 +6,18 @@ raised:
   observation: "ERF-69's fidelity check requires the normalized text to occur in the whole extracted source, which a two-passage excerpt never does, so every excerpt is silently one contiguous span"
 basis: demonstrated
 specified:
-  by: null
-  on: null
-  requirement: "ERF-69, ERF-3"
-  claim: null
+  by: "claude-fable-5, consolidation pass 2026-08-26"
+  on: 2026-08-26
+  requirement: "ERF-69 (ERF-3 is retired; its one-entry-per-work rule is the schema's SourceList)"
+  claim: >
+    ERF-69's fidelity test requires the normalized text to occur as one
+    string in the normalization of the whole extracted source, which makes
+    every excerpt one contiguous passage without saying so, and the
+    SourceList's one entry per work leaves no other way to hold two
+    passages of one work.
 verifications: []
-outcome: open
+outcome: promoted
+promoted_to: "B-60"
 ---
 
 # F-019 · An excerpt must be one contiguous passage, and nothing says so
