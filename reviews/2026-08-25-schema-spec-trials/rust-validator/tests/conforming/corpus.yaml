@@ -1,0 +1,6 @@
+type: corpus
+id: ledger-discipline
+title: "Ledger discipline: a worked corpus for the Epistemic Record Format"
+spec_version: "0.9.0"
+owner: "human:fb"
+classification: "public"

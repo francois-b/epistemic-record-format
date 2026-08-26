@@ -1,0 +1,5 @@
+type: corpus
+id: erf-52-quote-not-verbatim
+title: "A corpus that violates ERF-52"
+spec_version: "0.9.0"
+owner: "human:fb"

@@ -1,0 +1,5 @@
+type: corpus
+id: erf-03-no-source-list
+title: "A corpus that violates ERF-3"
+spec_version: "0.9.0"
+owner: "human:fb"

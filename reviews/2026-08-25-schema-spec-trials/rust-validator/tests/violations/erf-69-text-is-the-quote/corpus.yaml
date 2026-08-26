@@ -1,0 +1,5 @@
+type: corpus
+id: erf-69-text-is-the-quote
+title: "A corpus that violates ERF-69"
+spec_version: "0.9.0"
+owner: "human:fb"

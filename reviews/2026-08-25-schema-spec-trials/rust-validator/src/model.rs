@@ -13,6 +13,7 @@ macro_rules! closed {
             pub fn parse(s: &str) -> Option<Self> {
                 match s { $( $lit => Some($name::$variant), )* _ => None }
             }
+            #[allow(dead_code)]
             pub fn as_str(&self) -> &'static str {
                 match self { $( $name::$variant => $lit, )* }
             }
@@ -158,8 +159,10 @@ impl StandingEntry {
 #[derive(Debug, Clone)]
 pub struct AuditEntry {
     pub auditor: String,
+    #[allow(dead_code)]
     pub verdict: Option<Verdict>,
     pub timestamp: Option<Stamp>,
+    #[allow(dead_code)]
     pub timestamp_raw: String,
     pub protocol: String,
 }
@@ -183,6 +186,10 @@ pub struct File {
     /// model has one (section 3)
     pub value: Value,
     pub body: Option<String>,
+    /// how many lines of the file precede the body, so narrative-binding
+    /// diagnostics can name a line in the file rather than in the body
+    pub body_line_offset: usize,
+    #[allow(dead_code)]
     pub corpus_dir: usize,
 }
 

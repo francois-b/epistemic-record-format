@@ -1,0 +1,5 @@
+type: corpus
+id: erf-48-backwards-stamp
+title: "A corpus that violates ERF-48"
+spec_version: "0.9.0"
+owner: "human:fb"

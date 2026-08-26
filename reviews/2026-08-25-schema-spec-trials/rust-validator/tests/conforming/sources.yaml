@@ -1,0 +1,34 @@
+type: sources
+sources:
+  pacioli-1494-geijsbeek:
+    citation_text: "Luca Pacioli, Particularis de Computis et Scripturis
+      (Venice, 1494), ch. 36, trans. Geijsbeek 1914"
+    citation:
+      type: book
+      author: [{family: Pacioli, given: Luca}]
+      title: "Particularis de Computis et Scripturis"
+      publisher-place: Venice
+      issued: 1494
+      chapter-number: 36
+      translator: [{family: Geijsbeek, given: "John B."}]
+    received:
+      path: raw/pacioli-1494-geijsbeek.txt
+      digest: "sha256:21776832e5615120533284c30487fd65173d5ecb8132e66912770fad0b0f8abd"
+      timestamp: "2026-08-23"
+    status: shipped-as-quotation
+    normalized: normalized/pacioli-1494-geijsbeek.md
+    normalized_digest: "sha256:31fa4887b89eeaca402eeeb8fa5293c8db873da5702d0fea0079b7d78636662a"
+    excerpt: {timestamp: "2026-08-23", by: "human:fb"}
+  bouet-2026-ledger-note:
+    citation_text: "Francois Bouet, Why the ledger balances (working note, 2026)"
+    status: shipped
+    licence: "CC0-1.0"
+    licence_name: "Creative Commons Zero v1.0 Universal"
+    normalized: normalized/bouet-2026-ledger-note.md
+    normalized_digest: "sha256:7d171e1dd5c754845b7625fb07217a56467a047ef62c24b800f2dd96eef04f37"
+  acme-2026-reconciliation-whitepaper:
+    citation_text: "Acme Ledger Systems, Reconciliation at Scale
+      (vendor white paper, 2026)"
+    status: not-redistributable
+    reason: "Copyright permits reading and not republication; the quotation
+      route of ERF-69 stays open, and this corpus has not taken it."

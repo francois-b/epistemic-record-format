@@ -1,0 +1,5 @@
+type: corpus
+id: yamlb-1-bad-grammar
+title: "A corpus that violates YAMLB-1"
+spec_version: "0.9.0"
+owner: "human:fb"

@@ -1,0 +1,5 @@
+type: corpus
+id: erf-70-unnamed-extraction
+title: "A corpus that violates ERF-70"
+spec_version: "0.9.0"
+owner: "human:fb"

@@ -31,7 +31,8 @@ pub struct Loaded {
     pub value: Value,
     pub diags: Vec<YamlDiag>,
     /// Paths whose scalar arrived as a non-string because YAML resolution said
-    /// so (ERF-65). Cross-referenced against the model's string-typed fields.
+    /// so (ERF-65). The model's string-typed verdict comes from schema.rs.
+    #[allow(dead_code)]
     pub non_string_paths: Vec<(String, usize)>,
 }
 

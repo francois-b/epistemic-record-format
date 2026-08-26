@@ -17,7 +17,9 @@ pub struct Binding {
 
 #[derive(Debug)]
 pub struct BadCandidate {
+    #[allow(dead_code)]
     pub start: usize,
+    #[allow(dead_code)]
     pub end: usize,
     pub line: usize,
     pub why: String,

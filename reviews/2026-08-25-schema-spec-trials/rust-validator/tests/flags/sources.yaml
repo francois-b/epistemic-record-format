@@ -1,0 +1,15 @@
+type: sources
+sources:
+  note:
+    citation_text: "A note on parity, www.example.org (2026)"
+    status: shipped
+    normalized: normalized/note.md
+    received:
+      url: "https://example.org/notes/parity.html"
+    extraction: "pandoc 3.1.11"
+  thin:
+    citation_text: "A source whose normalized text is the quote and nothing more"
+    status: shipped
+    licence: "CC0-1.0"
+    licence_name: "Creative Commons Zero v1.0 Universal"
+    normalized: normalized/thin.md

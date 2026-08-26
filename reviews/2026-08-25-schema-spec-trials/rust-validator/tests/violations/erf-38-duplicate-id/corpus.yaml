@@ -1,0 +1,5 @@
+type: corpus
+id: erf-38-duplicate-id
+title: "A corpus that violates ERF-38"
+spec_version: "0.9.0"
+owner: "human:fb"

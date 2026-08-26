@@ -1,0 +1,5 @@
+type: corpus
+id: erf-53-atom-with-body
+title: "A corpus that violates ERF-53"
+spec_version: "0.9.0"
+owner: "human:fb"

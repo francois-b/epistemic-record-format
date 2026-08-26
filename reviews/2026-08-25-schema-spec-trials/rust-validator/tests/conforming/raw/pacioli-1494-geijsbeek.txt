@@ -1,0 +1,14 @@
+OF THE WAY TO DRAW UP THE TRIAL BALANCE OF THE LEDGER
+
+Before we go further we must explain how the entries are to be balanced.
+
+All entries made in the ledger have to be double entries -- that is, if you
+make one creditor, you must make some one debtor. The trial balance must be
+equal, that is, the debits must equal the credits, and if they do not the
+book is wrong.
+
+You must always take care to see that the debit side agrees with the credit
+side, for otherwise there would be a mistake in your ledger.
+
+Of this we shall speak more fully in the following chapter, which treats of
+the closing of the books at the end of the year.

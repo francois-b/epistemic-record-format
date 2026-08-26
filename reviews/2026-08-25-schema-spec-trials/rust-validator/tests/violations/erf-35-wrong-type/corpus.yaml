@@ -1,0 +1,5 @@
+type: corpus
+id: erf-35-wrong-type
+title: "A corpus that violates ERF-35"
+spec_version: "0.9.0"
+owner: "human:fb"

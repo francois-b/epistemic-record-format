@@ -1,0 +1,5 @@
+type: corpus
+id: fabrication-suite
+title: "An attack suite: attempts to make a false quotation pass the check"
+spec_version: "0.9.0"
+owner: "human:fb"

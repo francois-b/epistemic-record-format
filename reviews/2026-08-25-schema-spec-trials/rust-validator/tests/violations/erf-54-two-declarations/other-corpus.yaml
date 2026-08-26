@@ -1,0 +1,4 @@
+type: corpus
+id: erf-54-two-declarations
+title: "A second declaration of the same corpus"
+spec_version: "0.9.0"

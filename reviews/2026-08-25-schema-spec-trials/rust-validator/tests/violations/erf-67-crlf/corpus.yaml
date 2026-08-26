@@ -1,0 +1,5 @@
+type: corpus
+id: erf-67-crlf
+title: "A corpus that violates ERF-67"
+spec_version: "0.9.0"
+owner: "human:fb"

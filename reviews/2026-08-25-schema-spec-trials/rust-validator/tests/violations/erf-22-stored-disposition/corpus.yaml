@@ -1,0 +1,5 @@
+type: corpus
+id: erf-22-stored-disposition
+title: "A corpus that violates ERF-55"
+spec_version: "0.9.0"
+owner: "human:fb"

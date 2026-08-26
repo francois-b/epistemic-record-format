@@ -1,0 +1,11 @@
+type: sources
+sources:
+  note:
+    citation_text: "A note that arrived as a PDF (2026)"
+    status: shipped
+    licence: "CC0-1.0"
+    licence_name: "Creative Commons Zero v1.0 Universal"
+    received:
+      path: raw/note.pdf
+      timestamp: "2026-08-19"
+    normalized: normalized/note.md

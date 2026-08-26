@@ -1,0 +1,4 @@
+type: corpus
+id: erf-60-unsupported-major
+title: "A corpus declaring a major version this validator does not support"
+spec_version: "2.0.0"
