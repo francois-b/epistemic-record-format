@@ -16,15 +16,15 @@ the change history is in `CHANGELOG.md`; how the format got this way is
 deliberately does not do is `docs/purpose.md`, what was ruled out is
 `docs/non-goals.md`, and what it does not do yet is `docs/backlog/`.
 
-**What is normative.** Four things, and nothing else: this document; the
-data model, [`erf.schema.json`](erf.schema.json) (section 3); a binding
-document, for any corpus exchanged in that binding
-([`bindings/yaml-markdown.md`](bindings/yaml-markdown.md) today); and the
-two case files beside this document that `ERF-51` names, each line of
-which is a requirement stated as data: an input and the verdict a
-conforming implementation MUST return. Everything else in this repository,
-the reference implementation, the fixtures, the type rendering, the trials
-and the history, is an instrument or a record and binds nothing.
+**What is normative.** Three things, and nothing else: this document; the
+data model, [`erf.schema.json`](erf.schema.json) (section 3); and a
+binding document, for any corpus exchanged in that binding
+([`bindings/yaml-markdown.md`](bindings/yaml-markdown.md) today). Where a
+rule leans on a standard, CommonMark, Unicode, RFC 3339, CSL, SemVer,
+SPDX, the standard is cited and governs its own ground. Everything else in
+this repository, the reference implementation, the conformance suite and
+its case files, the type rendering, the trials and the history, is an
+instrument or a record and binds nothing.
 
 ## 1. Scope and conformance
 
@@ -292,9 +292,11 @@ is evidence about today's page rather than about what was read.
 - **ERF-1** A source's *normalized text* MUST exist before any check runs
   against it, and checks MUST run against that text, never the live web. It
   is the output of the corpus's text pipeline: the raw file as received,
-  then extraction to markdown, then a passage selected from it, then
-  normalization. Where a source arrives already as clean markdown the
-  pipeline is empty and the normalized text is the file itself.
+  then extraction to CommonMark, then a passage selected from it, then
+  normalization. Normalized text is CommonMark (`ERF-67`), which is what
+  the fold of `ERF-51` renders. Where a source arrives already as clean
+  CommonMark the pipeline is empty and the normalized text is the file
+  itself.
 - **ERF-2** A raw file is immutable: a revision arriving later MUST be a
   new source, never an overwrite. A corpus that holds the raw file records
   where, in `received.path`; a corpus that does not holds `received.url` and
@@ -430,7 +432,11 @@ only prose.
 
 - **ERF-6** The `quote` MUST be verbatim from the source's normalized text. An omission
   inside a quote MUST be written `[...]`; bare `...` is reserved for dots
-  the source itself contains.
+  the source itself contains. A producer MUST take a quote
+  from the normalized text by copying, a substring operation performed by
+  a tool, and MUST NOT regenerate it: an author that retypes, an LLM
+  above all, tidies what it retypes, and a tidied quote is the author
+  guessing at their own evidence. The check exists to say so.
 - **ERF-7** `citation_text` MUST NOT contain a URL. *Shape:
   `Source.citation_text`.* A citation identifies a work; a locator
   retrieves one copy, and that is `received.url`, naming the artifact
@@ -894,43 +900,35 @@ checks the relations no type can see.
   the source's normalized text) MUST be re-runnable by anyone holding the corpus and its
   normalized texts; it MUST run as a gate at minting and after any transform that
   moves atoms between homes.
-- **ERF-51** Normalization MUST be this ordered sequence, applied
-  identically to the quote and to the normalized text, so that two
-  conforming tools reach the same verdict on the same pair:
+- **ERF-51** Normalization MUST be this sequence, applied identically to
+  the quote and to the normalized text, so that two conforming tools reach
+  the same verdict on the same pair:
 
-  1. Unicode NFC, then remove every format character (Unicode General
-     Category `Cf`: the soft hyphen, the zero-width space, the joiners).
-  2. Remove a run of one marker, `*`, `_` or `` ` `` repeated, that is
-     left-flanking or right-flanking but not both, in CommonMark's sense:
-     left-flanking when the next character is not whitespace and is
-     either not punctuation or preceded by whitespace or punctuation;
-     right-flanking is the mirror. A run that is both (`MAX_LEN`, `3*4`)
-     or neither (`a * b`) is text and stays. One pass, decided against
-     the text as it entered the step: `**bold**`, `*however*,` and
-     `**text.** Next` all fold.
-  3. Collapse each whitespace run (Unicode `White_Space`) to a single
-     space, except a run holding a blank line, which is a paragraph
-     boundary and collapses to U+2029 PARAGRAPH SEPARATOR; then trim.
+  1. Render the text as CommonMark (`ERF-1`, `ERF-67`) to its plain text:
+     the literal content of every text and code node, a link's text, an
+     image's description, nothing for raw HTML, a soft or hard line break
+     as one space; each leaf block (a paragraph, a heading, a list item's
+     content, a code block) separated from the next by U+2029 PARAGRAPH
+     SEPARATOR.
+  2. Unicode NFC (UAX #15), then remove every code point carrying the
+     Unicode property `Default_Ignorable_Code_Point`: the soft hyphen, the
+     zero-width space, the joiners, the byte-order mark.
+  3. Collapse each run of Unicode `White_Space` to a single space, and
+     trim.
 
   Case MUST NOT be folded: case is part of a verbatim quote, and folding
-  it lets a mis-cased quote pass a check whose whole job is fidelity. A
-  word character is a letter, digit or combining mark (Unicode `L`, `N`,
-  `M`).
+  it lets a mis-cased quote pass a check whose whole job is fidelity.
 
-  Each step describes a difference the author did not introduce. NFC
-  because an editor may silently compose or decompose an accented letter;
-  NFC and not NFKC because NFKC also folds characters an author retypes,
-  the long s and the ellipsis, which `ERF-52` matches literally, and a
-  ligature in extracted text is the extraction tool's to decompose
-  (`ERF-70`). Format characters because they are invisible and
-  untypeable, and each one was a place to cut a word in half. The marker
-  rule because the normalized text is markdown and the quote is the prose
-  inside it, and CommonMark's flanking rule is what decides which marker
-  is markup: it keeps `3*4` from folding to `34` and lets a bold run that
-  ends in punctuation fold, which an honest quote copied from a rendered
-  page depends on. Two simpler approximations each failed such a quote. The paragraph boundary because splicing two paragraphs,
-  or a heading to its prose, says the source spoke them in one breath.
-
+  Each step is a standard's, not this format's, and that is the point.
+  Rendering is what the reader saw, and CommonMark decides what is markup
+  exactly, where every approximation in prose failed an honest quote.
+  Ignorable code points are invisible and untypeable, an extractor's
+  artifact that a PDF's hyphenation leaves by the thousand. NFC makes a
+  composed and a decomposed accent one character. The block separator
+  stops a quote splicing the end of one paragraph, or a heading, to the
+  prose after it as if the source had said them in one breath. The
+  conformance suite carries case files for this sequence; they test an
+  implementation and bind nothing, since the standards named here do.
 > *Note (non-normative):* an earlier sequence had seventeen steps, folding
 > quotation marks and dashes, joining broken words, removing spaces before
 > punctuation. The folds were unfinishable across scripts and forgave the
@@ -962,20 +960,18 @@ checks the relations no type can see.
   normalization, because normalization would otherwise fold the marker,
   and each span normalized independently. Every non-empty span MUST occur
   in the normalized text, in order, without overlap, and as whole words:
-  where a span begins or ends with a word character, the character beside
-  it in the text MUST NOT be a word character or a word-internal one. A
-  character is **word-internal** when it joins two word characters: `.`,
-  `,`, `:` or `/` between digits (`12.5`, `1,000`), an apostrophe between
-  letters (`board's`), a hyphen between word characters (`non-binding`).
-  So `Revenue fell 12` does not occur in `Revenue fell 12.5 percent`, and
-  `binding, and management did not recommend` does not occur in `the plan
-  was non-binding, and management did not recommend`. The elision marker
-  is not a boundary: the test reads the character beside the span *in the
-  text*, whatever sat beside it in the quote, so `[...]binding, and
-  management` fails against the same source. A span opening or
-  closing on any other character is unconstrained on that side, that
-  character being the boundary, and no span crosses a paragraph boundary
-  (`ERF-51`) unless the quote holds the same blank line. A quote whose
+  each span's start and end MUST fall on a word boundary of the normalized
+  text under UAX #29's default rules, with one departure this format
+  states: a hyphen (`-`, U+2010, U+2011) between two letters or digits
+  does not break a word, so `binding, and management did not recommend`
+  does not occur in `the plan was non-binding, and management did not
+  recommend`. UAX #29 already reads `12.5`, `1,000` and `board's` as single
+  words, so `Revenue fell 12` does not occur in `Revenue fell 12.5
+  percent`. The elision marker is not a boundary: the test reads the
+  normalized text on either side of the span, whatever sat beside it in
+  the quote. No span crosses a paragraph separator (`ERF-51`) unless the
+  quote holds the same break.
+(`ERF-51`) unless the quote holds the same blank line. A quote whose
   spans are all empty MUST fail rather than trivially pass. The text
   between two spans is unbounded by design: an elision marker is the
   author's assertion that they removed material, and whether the removal
@@ -1187,6 +1183,10 @@ below that threshold.
 - RFC 3339, *Date and Time on the Internet: Timestamps*
 - RFC 2119 and RFC 8174 (BCP 14), requirement key words
 - CommonMark 0.31.2: spec.commonmark.org
+- UAX #15, *Unicode Normalization Forms*, and UAX #29, *Unicode Text
+  Segmentation*, default word boundary rules
+- Unicode Character Database, `Default_Ignorable_Code_Point`
+  (DerivedCoreProperties)
 - Semantic Versioning 2.0.0: semver.org
 - RFC 3629, *UTF-8, a transformation format of ISO 10646* (STD 63)
 - SPDX License List: spdx.org/licenses

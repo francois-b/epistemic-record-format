@@ -1,4 +1,5 @@
-# ERF-50 and ERF-52: the mechanical quote check. Normative (ERF-51).
+# ERF-50 and ERF-52: the mechanical quote check. An instrument: the standards
+# ERF-51 and ERF-52 cite govern; these pairs check an implementation applied them.
 #
 # One case per record: a `#` line naming it, optional `#` note lines, then
 # REQUIREMENT <TAB> EXPECT <TAB> QUOTE <TAB> CAPTURE, where EXPECT is pass,
@@ -45,9 +46,10 @@ ERF-52	fail	[...]	any capture at all
 #   The capture italicises a word and wraps a line inside the quoted span. Both differences are ones the author did not introduce, which is what the three surviving steps are for.
 ERF-51	pass	The reported total was 17 units.	The *reported* total\n  was 17 units.
 
-# a capture carrying markdown link syntax no longer passes
-#   Layout and markup repair left the normalization sequence on 2026-08-25 and became a capture-time act under ERF-70. A capture still carrying link syntax inside the quoted span is a capture that was not cleaned, and the check says so rather than guessing.
-ERF-51	fail	The reported total was 17.	The [reported total](https://ex.test/data) was 17.
+# a capture carrying markdown link syntax folds to the link's text, and passes
+#   CommonMark renders the link to its text, which is what the reader saw; the old
+#   rule left the syntax in place and the quote failed.
+ERF-51	pass	The reported total was 17.	The [reported total](https://ex.test/data) was 17.
 
 # a retyped curly apostrophe fails
 #   The sequence folds no typographic characters. An author who retypes rather than copies is guessing at their own evidence, and the failure tells them to copy from the capture. Measured over 160 atoms in three corpora, this newly failed four, and every one was a real transcription divergence the folding had concealed.

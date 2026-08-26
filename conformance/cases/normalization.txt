@@ -1,12 +1,12 @@
-# ERF-51 normalization cases. Normative (ERF-51).
+# ERF-51 normalization cases. An instrument: the standards ERF-51 cites govern;
+# these pairs check that an implementation applied them.
 #
 # Format, after the model of Unicode's NormalizationTest.txt: one case per
 # line, RAW <TAB> EXPECTED. Blank lines and lines opening with # are ignored.
 # \n in either column means a newline, \t a tab; nothing else is escaped.
 #
-# The sequence is three steps, applied identically to a quote and to a
-# capture: NFC, remove markdown emphasis and code markers, collapse
-# whitespace. Case is never folded.
+# The sequence: render as CommonMark plain text, NFC and drop
+# Default_Ignorable code points, collapse White_Space. Case is never folded.
 #
 # A failing line is a finding about the implementation, not a licence to
 # edit the expectation. See README.md.
@@ -29,17 +29,18 @@ a soft­hyphen and a zero​width space vanish	a softhyphen and a zerowidth spac
 # The capture is markdown; the quote is the prose inside it.
 the *efficient* classification	the efficient classification
 MAX_LEN keeps its underscore, 3*4 its star	MAX_LEN keeps its underscore, 3*4 its star
-# A marker between two word characters stays even where CommonMark would
-# pair it (a*b*c is emphasis there). The approximation errs toward keeping
-# text, which is the safe direction for a fidelity check.
 **Epistemic types for text.** Mainstream tools	Epistemic types for text. Mainstream tools
-an emphasized full stop 12*.*5 folds	an emphasized full stop 12.5 folds
-a footnote star after 40%* goes, a * b stays	a footnote star after 40% goes, a * b stays
+12*.*5 stays: the first star is not left-flanking	12*.*5 stays: the first star is not left-flanking
+an unmatched star after 40%* stays, a * b stays	an unmatched star after 40%* stays, a * b stays
+- a list marker is structure, not text	a list marker is structure, not text
+# a heading marker too	a heading marker too
+[link text](https://example.org) folds to its text	link text folds to its text
+an entity a &amp; b folds	an entity a & b folds
 *however*, with a comma	however, with a comma
 a _stressed_ word	a stressed word
 inline `code` here	inline code here
 **bold** and __also bold__	bold and also bold
-a*b*c	a*b*c
+a*b*c	abc
 
 # --- 3. whitespace collapse and trim --------------------------------------
   leading and trailing space  	leading and trailing space

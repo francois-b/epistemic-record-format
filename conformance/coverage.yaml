@@ -156,7 +156,7 @@ requirements:
   ERF-50:
     tests: [quote-check, output]
   ERF-51:
-    tests: [normalization, quote-check, erf-cases-quote-check]
+    tests: [normalization, quote-check, cases/quote-check]
   ERF-52:
     tests: [quote-check, fixtures/invalid/quote-all-empty-spans, fixtures/invalid/quote-spans-out-of-order, erf-cases-quote-check]
     note: >

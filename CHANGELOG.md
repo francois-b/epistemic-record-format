@@ -24,6 +24,36 @@ record. All three numbers are published rather than hidden: this is a draft
 meant to be implemented against and argued with, and what is known to be
 unresolved, unverified, or untested is part of what it says.
 
+### 2026-08-26 — the fold leans on the standards, and the normative surface closes
+
+The operator asked why the format was specifying Unicode and CommonMark in
+its own words, and it was. The marker rule had been approximated twice, on
+word characters and then on whitespace, each approximation failing an
+honest quote, and the whole-words rule carried a private list of
+word-internal characters that was a subset of a Unicode standard. `ERF-51`
+is now four citations: render as CommonMark plain text, leaf blocks
+separated by a paragraph separator; NFC; drop `Default_Ignorable_Code_Point`;
+collapse `White_Space`. `ERF-52`'s word test is UAX #29's default rules
+with one stated departure, a hyphen between two letters or digits. Measured
+across all four corpora, 302 atoms and 57 anchors: every verdict identical.
+
+Three expectations in the case file flipped, each CommonMark being right
+where the approximation was wrong: `a*b*c` is emphasis; an unmatched star
+is literal; a list or heading marker is structure, not text; a link folds
+to its text. With the behaviour determined by named standards, the two case
+files are instruments again and return to `conformance/cases/`; the clause
+that let a case govern over the prose is gone. The preamble now states what
+is normative and closes it at three: this document, the schema, and a
+binding.
+
+`ERF-6` gains the producer's duty the measurements had been pointing at all
+day: a quote is taken from the normalized text by copying, a substring
+operation performed by a tool, and never regenerated, because an author
+that retypes tidies. `ERF-49` is retired: the schema has no field for
+whether a claim is backed, so the rule forbade nothing, and *unbacked* is a
+term in section 2, read from a claim's fields, a state and not a fault, in
+a format whose rules describe a corpus whatever order it was built in.
+
 ### 2026-08-25 — the data model becomes a schema, and the spec gets shorter
 
 The operator measured the specification at 1,568 lines after the day's

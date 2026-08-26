@@ -4,6 +4,7 @@
  * projection over records the corpus already holds.
  */
 import type { Atom, Claim, StandingEntry } from "../types/erf.ts";
+import * as commonmark from "commonmark";
 import type { ConformanceFinding, LoadedCorpus } from "./corpus.ts";
 import { bindingCandidates, shipsWithCorpus } from "./corpus.ts";
 
@@ -200,33 +201,81 @@ export function backing(claim: Claim, c: LoadedCorpus): BackingReading {
  * requirement to say so.
  */
 export function normalizeForCheck(s: string): string {
-  return s
-    // 1. NFC, then drop format characters (soft hyphen, zero-width space,
-    //    joiners): invisible, untypeable, an extractor's artifact. Left in,
-    //    they were legal places to cut a word in half (F-016).
-    .normalize("NFC")
-    .replace(/\p{Cf}/gu, "")
-    // 2. CommonMark's flanking rule, one pass. A run is left-flanking when
-    //    the next character is not whitespace and is either not punctuation
-    //    or preceded by whitespace or punctuation; right-flanking is the
-    //    mirror. A run that is exactly one of the two is a delimiter and
-    //    goes (`*however*,` and `**text.**` both fold); a run that is both
-    //    (`MAX_LEN`, `3*4`) or neither (`a * b`) is text and stays.
-    //    Approximating this twice, on word characters and then on
-    //    whitespace, each failed an honest quote (F-016, F-018).
-    .replace(/([*_`])\1*/gu, (m, _c, at: number, str: string) => {
-      const prev = str[at - 1] ?? "", next = str[at + m.length] ?? "";
-      const ws = (ch: string) => ch === "" || /\s/u.test(ch);
-      const punct = (ch: string) => /[\p{P}\p{S}]/u.test(ch);
-      const left = !ws(next) && (!punct(next) || ws(prev) || punct(prev));
-      const right = !ws(prev) && (!punct(prev) || ws(next) || punct(next));
-      return left !== right ? "" : m;
-    })
-    // 3. Whitespace (Unicode White_Space) runs to one space, except a run
-    //    holding a blank line, which is a paragraph boundary and folds to
-    //    U+2029 so a span cannot be spliced across two paragraphs (F-016).
-    .replace(/\s+/g, (run) => (/\n[^\S\n]*\n/.test(run) ? " " : " "))
-    .trim();
+  // 1. CommonMark to plain text (ERF-51 step 1): what a reader saw. Leaf
+  //    blocks are separated by U+2029 so a span cannot be spliced across
+  //    two of them.
+  const blocks = commonmarkBlocks(s);
+  return blocks
+    .map((b) => b
+      // 2. NFC, then every Default_Ignorable code point goes: soft hyphens,
+      //    zero-width spaces, joiners, the BOM.
+      .normalize("NFC")
+      .replace(/\p{Default_Ignorable_Code_Point}/gu, "")
+      // 3. White_Space runs to one space, then trim. U+2029 is kept as the
+      //    block separator, so a folded text folds to itself.
+      .replace(/[^\S\u2029]+/gu, " ")
+      .replace(/\s*\u2029\s*/gu, "\u2029")
+      .trim())
+    .filter((b) => b.length > 0)
+    .join("\u2029");
+}
+
+/**
+ * CommonMark rendered to plain text, one string per leaf block, using the
+ * reference parser. Text and code nodes contribute their literal content, a
+ * link its text, an image its description, raw HTML nothing, and a soft or
+ * hard line break one space (ERF-51 step 1).
+ */
+function commonmarkBlocks(md: string): string[] {
+  const out: string[] = [];
+  const inline = (n: commonmark.Node): string => {
+    let t = "";
+    for (let ch = n.firstChild; ch; ch = ch.next) {
+      switch (ch.type) {
+        case "text": case "code": t += ch.literal ?? ""; break;
+        case "softbreak": case "linebreak": t += " "; break;
+        case "html_inline": break;
+        default: t += inline(ch);
+      }
+    }
+    return t;
+  };
+  const walk = (n: commonmark.Node): void => {
+    for (let ch = n.firstChild; ch; ch = ch.next) {
+      switch (ch.type) {
+        case "paragraph": case "heading": out.push(inline(ch)); break;
+        case "code_block": out.push(ch.literal ?? ""); break;
+        case "html_block": case "thematic_break": break;
+        default: walk(ch); // block_quote, list, item, document
+      }
+    }
+  };
+  walk(new commonmark.Parser().parse(md));
+  return out;
+}
+
+/**
+ * `ERF-52`: word boundaries under UAX #29's default rules, via the runtime's
+ * segmenter, with the format's one stated departure: a hyphen between two
+ * letters or digits does not break a word, so `binding` does not begin a
+ * word inside `non-binding`. Boundaries are cached per text.
+ */
+const segmenter = new Intl.Segmenter("en", { granularity: "word" });
+const boundaryCache = new Map<string, Set<number>>();
+function wordBoundaries(hay: string): Set<number> {
+  const hit = boundaryCache.get(hay); if (hit) return hit;
+  const segs = [...segmenter.segment(hay)];
+  const b = new Set<number>([0, hay.length]);
+  for (const sg of segs) b.add(sg.index);
+  for (let i = 1; i + 1 < segs.length; i++) {
+    const sg = segs[i]!;
+    if (/^[-‐‑]$/.test(sg.segment) && segs[i - 1]!.isWordLike && segs[i + 1]!.isWordLike) {
+      b.delete(sg.index); b.delete(sg.index + 1);
+    }
+  }
+  if (boundaryCache.size > 512) boundaryCache.clear();
+  boundaryCache.set(hay, b);
+  return b;
 }
 
 export type QuoteCheck = { state: "pass" | "fail" | "uncheckable"; detail: string };
@@ -250,49 +299,11 @@ export function quoteCheck(atom: Atom, captureText: string | null): QuoteCheck {
   return { state: "pass", detail: "the normalized quote occurs in the capture" };
 }
 
-/** A letter, digit, or combining mark: the characters a word is made of. */
-const WORD = /[\p{L}\p{N}\p{M}]/u;
-const DIGIT = /\p{N}/u;
-const LETTER = /[\p{L}\p{M}]/u;
-
-/**
- * `ERF-52`: a character is word-internal when it joins two word characters:
- * `.` `,` `:` `/` between digits (`12.5`, `1,000`, `12:30`), an apostrophe
- * between letters (`board's`), a hyphen between word characters
- * (`non-binding`). A span may not begin or end beside one. Without this,
- * `Revenue fell 12` passed against `12.5 percent` and `binding, and ...`
- * against `non-binding, and ...`, both green (F-016).
- */
-function wordInternal(hay: string, at: number): boolean {
-  const c = hay[at] ?? "", p = hay[at - 1] ?? "", n = hay[at + 1] ?? "";
-  if (!p || !n) return false;
-  if (".,:/".includes(c)) return DIGIT.test(p) && DIGIT.test(n);
-  if (c === "'" || c === "’") return LETTER.test(p) && LETTER.test(n);
-  if (c === "-" || c === "‐" || c === "‑") return WORD.test(p) && WORD.test(n);
-  return false;
-}
-
-/**
- * `ERF-52`: a span occurs only at word boundaries. Where the span begins
- * with a word character, the character before the match must not be one;
- * where it ends with a word character, the character after must not be
- * one. Plain substring containment let `The cat[...]sat` pass against
- * "The catapult ... sat", because trimming each span had removed the
- * whitespace that made it a whole word at its edge (F-008, found by the Go
- * trial). A span opening or closing on punctuation is unconstrained on
- * that side: the punctuation itself is the boundary.
- */
 export function findWholeWords(hay: string, needle: string, from: number): number {
-  const headIsWord = WORD.test(needle[0] ?? "");
-  const tailIsWord = WORD.test(needle[needle.length - 1] ?? "");
+  const b = wordBoundaries(hay);
   let at = hay.indexOf(needle, from);
   while (at >= 0) {
-    const before = at === 0 ? "" : hay[at - 1]!;
-    const afterAt = at + needle.length;
-    const after = hay[afterAt] ?? "";
-    const okHead = !headIsWord || before === "" || (!WORD.test(before) && !wordInternal(hay, at - 1));
-    const okTail = !tailIsWord || after === "" || (!WORD.test(after) && !wordInternal(hay, afterAt));
-    if (okHead && okTail) return at;
+    if (b.has(at) && b.has(at + needle.length)) return at;
     at = hay.indexOf(needle, at + 1);
   }
   return -1;
