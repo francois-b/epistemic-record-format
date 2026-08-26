@@ -34,6 +34,5 @@ declined on has changed, which is itself worth a dated entry.
 Elsewhere in the repository: [`../CHANGELOG.md`](../CHANGELOG.md) is what
 changed and when, [`../LAYOUT.md`](../LAYOUT.md) is what lives where, and
 [`../reviews/`](../reviews/) holds evaluations of the specification itself.
-- **How do we publish 0.9?** [publishing-0.9.md](publishing-0.9.md)
 - **How does a corpus become files?** [../bindings/yaml-markdown.md](../bindings/yaml-markdown.md), the interchange default. `SPEC.md` section 7 says what any binding must satisfy.
 - **What does a record look like?** [../erf.schema.json](../erf.schema.json), the data model, normative. `SPEC.md` section 3 says how to read it.

@@ -21,9 +21,9 @@ verifications:
     on: 2026-08-25
     verdict: accurate
     note: >
-    Confirmed in SPEC.md: ERF-41 reads "Every input has exactly one
-    reading" and its enumeration covers three stance values. Nothing states
-    what an unrecognised stance contributes to the computation.
+      Confirmed in SPEC.md: ERF-41 reads "Every input has exactly one
+      reading" and its enumeration covers three stance values. Nothing states
+      what an unrecognised stance contributes to the computation.
 outcome: promoted
 promoted_to: "ERF-41, ruled directly 2026-08-25"
 ---

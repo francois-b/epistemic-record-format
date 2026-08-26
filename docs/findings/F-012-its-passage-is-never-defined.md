@@ -19,9 +19,9 @@ verifications:
     on: 2026-08-25
     verdict: accurate
     note: >
-    Confirmed in SPEC.md. Both trials chose 'since the previous binding'
-    and both recorded the choice as unforced; the Go trial exposed all
-    three readings behind a flag rather than pick one silently.
+      Confirmed in SPEC.md. Both trials chose 'since the previous binding'
+      and both recorded the choice as unforced; the Go trial exposed all
+      three readings behind a flag rather than pick one silently.
 outcome: promoted
 promoted_to: "ERF-31, ruled directly 2026-08-25"
 ---

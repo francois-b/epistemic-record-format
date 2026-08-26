@@ -104,7 +104,7 @@ dated, requirement-by-requirement log in `friction-log.md`.
   descriptive framing ("authored by a person and never generated," section
   4.6's lead-in, non-binding per section 4's own preamble) sits in real
   tension with how the operating environment's own practice actually works
-  (a house rule there: the agent drafts, the operator gates and owns).
+  (a house rule: the agent drafts, the operator gates and owns).
   The spec gets to choose either stance -- narratives are strictly
   human-typed, full stop; or narratives may be LLM-drafted under an
   operator's name, the way that environment already treats every other

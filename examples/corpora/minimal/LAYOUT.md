@@ -17,8 +17,8 @@ atoms/<id>.md          one file per atom
 claims/<id>.md         one file per claim
 surveys/<id>.md        one file per survey
 narratives/<slug>.md   prose documents, with bindings to claims
-captures/<slug>.txt    the immutable copies quotes are checked against
-sources.yaml           the source list: each work's citation, locator, and capture
+normalized/<slug>.txt  the normalized texts quotes are checked against
+sources.yaml           the source list: each work's citation, locator, and normalized text
 ```
 
 ## Why one file per record
@@ -42,6 +42,7 @@ disagreeing copies on three atoms.
 
 ## What this corpus demonstrates only partly
 
-Four of its nine captures ship; the licences of the rest permit reading
-but not republication. See `README.md` for the split and what it costs
-the demonstration.
+Two of its five sources ship their normalized text, which is what backs
+four of its nine atoms; the licences of the rest permit reading but not
+republication. See `README.md` for the split and what it costs the
+demonstration.

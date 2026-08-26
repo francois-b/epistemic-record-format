@@ -21,10 +21,10 @@ verifications:
     on: 2026-08-25
     verdict: accurate
     note: >
-    Confirmed in SPEC.md: ERF-53 reads 'every record round-trips'.
-    Measured by the trial: `chapter-number: 36` returned `36.0` and
-    `issued: 1494` returned `1494.0` through a store that claims ERF-53
-    conformance, silently breaking the field ERF-8 calls canonical.
+      Confirmed in SPEC.md: ERF-53 reads 'every record round-trips'.
+      Measured by the trial: `chapter-number: 36` returned `36.0` and
+      `issued: 1494` returned `1494.0` through a store that claims ERF-53
+      conformance, silently breaking the field ERF-8 calls canonical.
 outcome: promoted
 promoted_to: "ERF-53, ruled directly 2026-08-25"
 ---

@@ -7,6 +7,11 @@ last_updated: 2026-08-25
 
 # Backlog
 
+A long queue here is the findings pipeline working rather than a sign the
+format is unstable: an entry exists because somebody looked, wrote down what
+they saw, and had it checked by a second hand, which is a count of attention
+paid and not of defects loose in the specification.
+
 Everything this format does not do yet, plus everything a reader has told it
 is wrong. One queue, because both need the same governance before they reach
 a decision: an accurate description, a stated basis, and someone other than

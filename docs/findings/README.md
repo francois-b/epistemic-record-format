@@ -72,6 +72,7 @@ verified:                       # gate 3, by a third hand
   verdict: accurate | stale | inaccurate | duplicate | already-closed
 outcome: open | promoted | closed
 promoted_to: "B-40"             # when it becomes a backlog entry
+ruling_now_in: ""               # when the id it was promoted to has since retired
 closed_because: ""              # when it does not
 ```
 

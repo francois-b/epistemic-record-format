@@ -20,8 +20,8 @@ verifications:
     on: 2026-08-25
     verdict: accurate
     note: >
-    Run against the reference: normalizeForCheck(U+2026) and
-    normalizeForCheck("...") both return "..." and compare equal.
+      Run against the reference: normalizeForCheck(U+2026) and
+      normalizeForCheck("...") both return "..." and compare equal.
 outcome: promoted
 promoted_to: "ERF-51, ruled directly 2026-08-25"
 ---

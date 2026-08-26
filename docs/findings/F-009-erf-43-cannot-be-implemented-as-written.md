@@ -20,10 +20,10 @@ verifications:
     on: 2026-08-25
     verdict: accurate
     note: >
-    Confirmed in SPEC.md: the cycle prohibition names exactly two
-    relations, and the closure definition draws in incoming `supports`.
-    The reference implementation terminates only because it carries a
-    visited set the specification does not authorise.
+      Confirmed in SPEC.md: the cycle prohibition names exactly two
+      relations, and the closure definition draws in incoming `supports`.
+      The reference implementation terminates only because it carries a
+      visited set the specification does not authorise.
 outcome: promoted
 promoted_to: "ERF-43, ruled directly 2026-08-25"
 ---

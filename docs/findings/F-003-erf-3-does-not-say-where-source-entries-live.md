@@ -24,6 +24,7 @@ verifications:
       both structures are permitted.
 outcome: promoted
 promoted_to: "ERF-3, ruled directly 2026-08-25"
+ruling_now_in: "`ERF-3` was retired 2026-08-26; the ruling stands in the schema's `SourceList` definition and in section 1 of `bindings/yaml-markdown.md`"
 resolution_note: >
   Three hands, none of them the raiser's: raised by claude-opus-5,
   specified by gemini-3.5-flash, verified by Gemini 3.1 Pro via a different

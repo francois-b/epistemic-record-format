@@ -13,6 +13,7 @@ specified:
 verifications: []
 outcome: promoted
 promoted_to: "ERF-49, ruled directly 2026-08-26"
+ruling_now_in: "`ERF-49` was retired later the same day; the ruling stands as the definition of *unbacked* in `SPEC.md` section 2"
 ---
 
 # F-020 · The format assumes evidence-first and never says so

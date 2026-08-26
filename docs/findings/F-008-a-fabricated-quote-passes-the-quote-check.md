@@ -20,9 +20,9 @@ verifications:
     on: 2026-08-25
     verdict: accurate
     note: >
-    Run against the reference: quote `The cat[...]sat` against the text
-    "The catapult was heavy. Someone eventually sat on the mat beside it."
-    returns PASS.
+      Run against the reference: quote `The cat[...]sat` against the text
+      "The catapult was heavy. Someone eventually sat on the mat beside it."
+      returns PASS.
 outcome: promoted
 promoted_to: "ERF-52, ruled directly 2026-08-25"
 ---
