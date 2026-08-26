@@ -4,7 +4,7 @@
 <title>Corpus health</title>
 <link rel="stylesheet" href="assets/erf.css"></head>
 <body>
-<nav class="topbar"><a href="index.html">ERF example corpus</a><a href="health.html">health</a></nav>
+<nav class="topbar"><a href="index.html">ERF example corpus</a><a href="sources.html">sources</a><a href="health.html">health</a></nav>
 <main>
 <h1>Corpus health</h1>
 <p class="sub">Every line below is computed from the records at render time. None of it is stored, and none of it is a judgment: these are the questions a validator can answer mechanically.</p>
@@ -27,6 +27,10 @@
 <h2>References that do not resolve</h2>
 <p class="sub">None.</p>
 
+<h2>Two standings by one person at one instant</h2>
+<p class="sub">Flags. <span class="id">ERF-41</span>: the later in the ledger is current, and a person should say which they meant.</p>
+<p class="sub">None.</p>
+
 <h2>Anchors that no longer occur in their passage</h2>
 <p class="sub">Flags, not violations. <span class="id">ERF-31</span>: the anchor is folded under <span class="id">ERF-51</span>, same as the quote check, so a hand-wrapped line is not what broke it. Someone edited the prose.</p>
 <p class="sub">None.</p>
@@ -34,6 +38,12 @@
 <h2>Arguments resting on a premise its holders have withdrawn</h2>
 <p class="sub">Flags, not violations. <span class="id">ERF-43</span>: a withdrawal elsewhere creates this with no edit to the argument.</p>
 <p class="sub">None.</p>
+
+
+
+<h2>Retrievals with no date</h2>
+<p class="sub">Flags. <span class="id">ERF-2</span>: a web page differs between fetches, and without <span class="id">received.timestamp</span> nothing says which version was read.</p>
+<ul class="plain"><li>ragas-faithfulness-docs: received.url with no received.timestamp; nothing says which version was read</li><li>guru-verification-docs: received.url with no received.timestamp; nothing says which version was read</li><li>w3c-prov-dm-2013: received.url with no received.timestamp; nothing says which version was read</li><li>w3c-prov-o-2013: received.url with no received.timestamp; nothing says which version was read</li></ul>
 
 <h2>Files this consumer did not recognize</h2>
 <p class="sub">Reported, not rejected. A tolerant consumer preserves what it cannot interpret and says so; an unrecognized file is not a violation.</p>
@@ -43,7 +53,19 @@
 <p class="sub">Flags, not violations. <span class="id">ERF-35</span>: a reference recording a past state cannot be made wrong by a later act the format permits.</p>
 <p class="sub">None.</p>
 
+<h2>Verdicts older than what they judged</h2>
+<p class="sub">Flags, not violations. <span class="id">ERF-47</span>: staleness is computed and
+never stored. A <span class="id">finding_audit</span> judged its atom, an
+<span class="id">evidence_audit</span> judged the claim and the atoms attached to it, so an
+atom edited or attached after the audit makes it stale. Where two stamps differ in precision and
+cannot be ordered, the comparison resolves to stale: a check that cannot tell says look, never
+rest.</p>
+<p class="sub">None.</p>
+
 <h2>Narrative bindings whose freshness cannot be told</h2>
+<p class="sub">Flags, not violations. <span class="id">ERF-32</span>: a binding is stale when the
+claim it names moved after the binding was made, and <span class="id">indeterminate</span> where
+the comparison cannot be run at all. Neither may be shown as current.</p>
 <p class="sub">None.</p>
 
 <h2>Records that do not match the normative model</h2>

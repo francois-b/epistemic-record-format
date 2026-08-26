@@ -81,6 +81,9 @@ li.claim a.head:hover { color:var(--accent); }
   margin:1.2em 0; font-size:.9em; color:var(--good); }
 blockquote.q { margin:.6em 0 1.2em; padding:.7em 1em; background:var(--codebg);
   border-left:2px solid var(--accent); font-size:.95em; }
+/* A quote keeps its own paragraph breaks, since ERF-52 makes one part of
+   what the quote asserts; the last one needs no trailing space. */
+blockquote.q p:last-child { margin-bottom:0; }
 table { border-collapse:collapse; width:100%; font-size:.86em;
   font-family:var(--sans); margin:.6em 0 1.6em; }
 th, td { text-align:left; padding:.42em .6em; border-bottom:1px solid var(--rulelt);

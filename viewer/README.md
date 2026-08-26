@@ -13,20 +13,28 @@ so it opens from disk and hosts anywhere.
 
 ## Why TypeScript
 
-The specification names `types/erf.ts` as the normative data model, and this
-tool imports it directly. That import is the point. A reader written in
-another language would be a parallel reimplementation that could drift from
-the model silently; this one stops compiling when the model changes, so the
-demonstration and the specification cannot disagree without somebody noticing.
+The normative data model is [`erf.schema.json`](../erf.schema.json), a JSON
+Schema 2020-12 document (`SPEC.md` section 3). `types/erf.ts` is a
+TypeScript rendering of that schema for this implementation, held to it by a
+gate and normative for nothing. This tool uses both, at two levels: it
+imports the types, so a change to the model stops it compiling rather than
+letting the demonstration drift from the specification in silence, and it
+validates every document it reads against the schema itself at load time, so
+a divergence the types cannot express is reported at the field
+(`ERF-73`). The type check alone was not enough: until 2026-08-25 the loader
+compared against a hand-kept field roster, and a source list carrying a
+quoted `'on'` key in place of `timestamp` loaded clean here and was caught
+by somebody else's validator.
 
-`npx tsc --noEmit` type-checks the viewer and the normative model together
+`npx tsc --noEmit` type-checks the viewer and the type rendering together
 under `strict`.
 
 ## Dependencies
 
-One runtime dependency, `js-yaml`, for the frontmatter. Development
-dependencies are `tsx` to run TypeScript directly, `typescript` for the
-type check, and the two `@types` packages.
+Three at runtime: `js-yaml` for the frontmatter, `ajv` for the schema, and
+`commonmark` for the render step `ERF-51` opens with. Development
+dependencies are `tsx` to run TypeScript directly, `typescript` for the type
+check, and the `@types` packages.
 
 ## What it computes, and from where
 
@@ -40,9 +48,15 @@ of whether the rules are implementable as written.
 | Disposition, with an explanation | `ERF-41` |
 | Whether a reader can resolve a claim's backing | the viewer's own choice |
 | The mechanical quote check | `ERF-50`, `ERF-51`, `ERF-52` |
-| Stale verdicts and stale narrative bindings | `ERF-47`, `ERF-32` |
-| The unbacked warning | `ERF-49` |
+| Stale finding verdicts, stale backing verdicts, stale narrative bindings | `ERF-47`, `ERF-32` |
+| The unbacked reading, and whether anyone stands on it anyway | `SPEC.md` section 2, *unbacked* |
 | References that do not resolve | `ERF-35` |
+| Evidence a standing faced that the corpus no longer holds | `ERF-35`, flagged |
+| Arguments resting on a premise its holders withdrew | `ERF-43`, flagged |
+| Anchors that no longer occur in their passage | `ERF-31`, flagged |
+| Two standings by one person at one instant | `ERF-41`, flagged |
+| Retrievals with no date | `ERF-2`, flagged |
+| Files it did not recognize, and content from a newer minor | `ERF-57`, `ERF-60` |
 
 ## Normalization is the specification's, exactly
 
@@ -56,17 +70,28 @@ is `ERF-52`, split before normalizing.
 
 ## Views
 
-- **Index** what the corpus holds, and every record by type
-- **Narrative** the prose, with bound passages marked and linked to claims
+- **Index** the corpus declaration read out in full, what the corpus holds,
+  and every record by type
+- **Narrative** the prose, with bound passages marked, linked to their
+  claims, and carrying the binding's staleness where it is not current
 - **Claim** disposition and why it computes that way, evidence for and
-  against, coverage, relations, and the standings ledger
-- **Atom** finding, quote, citation, quality, limitations, verdicts, and
-  every claim that leans on it
-- **Capture** the captured copy with the quote highlighted, or an honest
-  statement of why the check cannot run here
+  against, coverage, relations (including conflicts declared on the other
+  side of the pair), and the standings ledger
+- **Atom** finding, quote, the quote check's own verdict, citation, quality,
+  limitations, audit verdicts, every claim that leans on it, and the source
+  entry with its status, licence, retrieval date and pipeline tools
+- **Capture** the source's normalized text with the quote highlighted, or an
+  honest statement of why the check cannot run here
+- **Sources** every work the corpus quotes, split by whether its text
+  travels, each with the citation, the locator, the licence judgment, the
+  digests, and the atoms that quote it
 - **Health** claims with no evidence, uncited atoms, unaudited atoms, failed
-  and unrunnable quote checks, dangling references, and records that diverge
-  from the normative model
+  and unrunnable quote checks, dangling references, every computed flag, and
+  records that diverge from the normative model
+
+`--link "Label=href"` adds an entry to every page's topbar, which is how a
+render dropped under a larger site points back at it. The viewer is told
+where it was published; it never guesses.
 
 One reading in that table is not a rule of the format. Showing whether a
 reader can resolve a claim's backing was a numbered requirement until 2026-08-23,

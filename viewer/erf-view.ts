@@ -2,12 +2,16 @@
 /**
  * erf-view: render an ERF corpus as a static site.
  *
- *     npx tsx erf-view.ts <corpus-dir> -o <out-dir>
+ *     npx tsx erf-view.ts <corpus-dir> -o <out-dir> [--link "Label=href" ...]
  *
  * The reference consumer. It reads only the textual form the specification
  * defines, computes every derived reading at render time, and writes
  * self-contained HTML with no external requests: the stylesheet it writes
  * beside the pages carries its own font faces as data URIs.
+ *
+ * `--link` adds one entry to every page's topbar, which is how a render
+ * dropped under a larger site points back at it. The viewer is told; it
+ * never guesses where it was published.
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -15,7 +19,7 @@ import { loadCorpus } from "./corpus.ts";
 import { claimsUsingAtom } from "./compute.ts";
 import {
   renderAtom, renderCapture, renderClaim, renderHealth, renderIndex,
-  renderNarrative, renderSurvey, stylesheet,
+  renderNarrative, renderSources, renderSurvey, setSiteLinks, stylesheet,
 } from "./render.ts";
 
 function main(argv: string[]): number {
@@ -25,10 +29,20 @@ function main(argv: string[]): number {
   const outDir = resolve(oi >= 0 ? (args[oi + 1] ?? "site") : "site");
 
   if (!args[0] || !existsSync(join(corpusDir, "corpus.yaml"))) {
-    console.error("usage: erf-view <corpus-dir> -o <out-dir>");
+    console.error("usage: erf-view <corpus-dir> -o <out-dir> [--link \"Label=href\"]");
     console.error("  <corpus-dir> must contain corpus.yaml");
     return 2;
   }
+
+  const links: { label: string; href: string }[] = [];
+  for (const [i, a] of args.entries()) {
+    if (a !== "--link") continue;
+    const raw = args[i + 1] ?? "";
+    const at = raw.indexOf("=");
+    if (at <= 0) { console.error(`--link wants "Label=href", got ${JSON.stringify(raw)}`); return 2; }
+    links.push({ label: raw.slice(0, at), href: raw.slice(at + 1) });
+  }
+  setSiteLinks(links);
 
   const c = loadCorpus(corpusDir);
   mkdirSync(outDir, { recursive: true });
@@ -50,16 +64,18 @@ function main(argv: string[]): number {
   const users = claimsUsingAtom(c);
 
   write("index.html", renderIndex(c));
+  write("sources.html", renderSources(c));
   write("health.html", renderHealth(c, captureText));
   for (const n of c.narratives) write(`narrative-${n.slug}.html`, renderNarrative(n, c));
   for (const cl of c.claims.values()) write(`claim-${cl.id}.html`, renderClaim(cl, c));
   for (const s of c.surveys.values()) write(`survey-${s.id}.html`, renderSurvey(s, c));
   for (const a of c.atoms.values()) {
-    write(`atom-${a.id}.html`, renderAtom(a, c, users.get(a.id) ?? []));
-    write(`capture-${a.id}.html`, renderCapture(a, c, captureText(a.id)));
+    const text = captureText(a.id);
+    write(`atom-${a.id}.html`, renderAtom(a, c, users.get(a.id) ?? [], text));
+    write(`capture-${a.id}.html`, renderCapture(a, c, text));
   }
 
-  const pages = 2 + c.narratives.length + c.claims.size
+  const pages = 3 + c.narratives.length + c.claims.size
     + c.surveys.size + c.atoms.size * 2;
   console.log(`${c.manifest.id}: ${pages} pages -> ${outDir}`);
   console.log(`  ${c.atoms.size} atoms, ${c.claims.size} claims, ${c.surveys.size} surveys`);

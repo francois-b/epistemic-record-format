@@ -8,7 +8,7 @@
     "erf-view": "./erf-view.ts"
   },
   "scripts": {
-    "build": "tsx erf-view.ts ../examples/corpus -o ../examples/site",
+    "build": "tsx erf-view.ts ../examples/corpora/minimal -o ../examples/site",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

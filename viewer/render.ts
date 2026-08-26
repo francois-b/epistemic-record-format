@@ -8,7 +8,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Atom, Claim, Survey } from "../types/erf.ts";
-import type { LoadedCorpus, Narrative } from "./corpus.ts";
+import type { LoadedCorpus, Narrative, Source } from "./corpus.ts";
 import { bindingCandidates, bindingRe, shipsWithCorpus } from "./corpus.ts";
 import {
   backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,
@@ -92,6 +92,9 @@ li.claim a.head:hover { color:var(--accent); }
   margin:1.2em 0; font-size:.9em; color:var(--good); }
 blockquote.q { margin:.6em 0 1.2em; padding:.7em 1em; background:var(--codebg);
   border-left:2px solid var(--accent); font-size:.95em; }
+/* A quote keeps its own paragraph breaks, since ERF-52 makes one part of
+   what the quote asserts; the last one needs no trailing space. */
+blockquote.q p:last-child { margin-bottom:0; }
 table { border-collapse:collapse; width:100%; font-size:.86em;
   font-family:var(--sans); margin:.6em 0 1.6em; }
 th, td { text-align:left; padding:.42em .6em; border-bottom:1px solid var(--rulelt);
@@ -153,19 +156,46 @@ export const stylesheet = (): string => fontFaceCss() + "\n" + CSS;
 const esc = (s: unknown): string =>
   String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c] as string));
 
+/**
+ * Links a host site adds to every page's topbar, so a render dropped under a
+ * larger site can point back at it. The viewer knows nothing about where it
+ * is published, which is why these arrive from the caller rather than being
+ * written here; with none set, a render is exactly what it was before.
+ */
+export interface SiteLink { label: string; href: string }
+let siteLinks: SiteLink[] = [];
+export function setSiteLinks(links: SiteLink[]): void { siteLinks = links; }
+
 function page(title: string, bodyHtml: string, manifestTitle: string): string {
+  const extra = siteLinks
+    .map((l) => `<a href="${esc(l.href)}">${esc(l.label)}</a>`).join("");
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <link rel="stylesheet" href="assets/erf.css"></head>
 <body>
-<nav class="topbar"><a href="index.html">${esc(manifestTitle)}</a><a href="health.html">health</a></nav>
+<nav class="topbar"><a href="index.html">${esc(manifestTitle)}</a><a href="sources.html">sources</a><a href="health.html">health</a>${extra}</nav>
 <main>${bodyHtml}</main>
 <footer>Rendered by <span class="id">erf-view</span>, the reference consumer for the
 Epistemic Record Format. Every reading on these pages is computed from the records at
 render time and stored nowhere.</footer>
 </body></html>`;
+}
+
+/**
+ * A quote, with its own paragraph breaks kept.
+ *
+ * `ERF-52` makes a break part of what the quote asserts: a span may not
+ * cross a paragraph boundary of the source unless the quote holds the same
+ * one, so a quote spanning two paragraphs is making a claim about the
+ * source's structure. HTML collapses newlines, so a render that escapes the
+ * string and stops shows that quote as one paragraph and loses the
+ * distinction the check turns on.
+ */
+function quoteHtml(quote: string): string {
+  return quote.trim().split(/\n\s*\n/)
+    .map((p) => `<p>${esc(p.trim())}</p>`).join("");
 }
 
 /** Turn the small subset of markdown these records use into HTML. */
@@ -189,11 +219,28 @@ export function renderIndex(c: LoadedCorpus): string {
     dispCounts.set(d, (dispCounts.get(d) ?? 0) + 1);
   }
   const shipped = [...c.sources.values()].filter((s) => shipsWithCorpus(s)).length;
+  // The declaration, read out in full. It is what makes a received corpus
+  // self-describing, so a reader should see every field it carries rather
+  // than the two the page happened to need. `classification` is an opaque
+  // label the format records and never reads.
+  const decl = c.manifest as unknown as Record<string, unknown>;
+  const declRow = (k: string, v: unknown) =>
+    v === undefined || v === null || v === "" ? ""
+      : `<tr><td><span class="id">${esc(k)}</span></td><td>${esc(v)}</td></tr>`;
   const body = `
 <h1>${esc(c.manifest.title)}</h1>
 <p class="sub">Corpus <span class="id">${esc(c.manifest.id)}</span> &middot;
 ${c.manifest.classification ? `classification ${esc(c.manifest.classification)} &middot;
 ` : ""}conforms to ERF ${esc(c.manifest.spec_version)}</p>
+
+<h2>The declaration</h2>
+<p class="sub">One document per corpus carries <span class="id">type: corpus</span>
+(<span class="id">ERF-54</span>). Everything a reader needs to know about the corpus as a
+whole is in it, and nothing here is computed.</p>
+<table><tr><th>Field</th><th>Value</th></tr>
+${["id", "title", "spec_version", "owner", "classification"].map((k) => declRow(k, decl[k])).join("")}
+${Object.keys(decl).filter((k) => !["type", "id", "title", "spec_version", "owner", "classification"].includes(k))
+  .map((k) => declRow(k, decl[k])).join("")}</table>
 
 <h2>Narratives</h2>
 <ul class="plain">${c.narratives.map((n) =>
@@ -207,7 +254,7 @@ ${c.manifest.classification ? `classification ${esc(c.manifest.classification)} 
 <tr><td>Claims</td><td>${c.claims.size}</td><td>${
   [...dispCounts].map(([d, n]) => `${n} ${d}`).join(", ") || "none"}</td></tr>
 <tr><td>Surveys</td><td>${c.surveys.size}</td><td>absence, density, and closed-corpus readings</td></tr>
-<tr><td>Sources</td><td>${c.sources.size}</td><td>captures shipped for ${shipped}</td></tr>
+<tr><td><a href="sources.html">Sources</a></td><td>${c.sources.size}</td><td>${shipped} ship their normalized text; ${c.sources.size - shipped} record why none is held</td></tr>
 </table>
 
 <h2>Claims</h2>
@@ -289,7 +336,10 @@ export function renderNarrative(n: Narrative, c: LoadedCorpus): string {
         : "";
       return '<span class="bindnote">rests on ' + links + note + "</span>";
     });
-  const body = `<p class="sub">Narrative &middot; highlighted passages carry a binding to a claim</p>${html}`;
+  // The page carried no heading at all until 2026-08-26, so a reader
+  // arriving from a link had the narrative's title only in the browser tab.
+  const body = `<h1>${esc(n.title)}</h1>
+<p class="sub">Narrative &middot; ${n.bindings.length} narrative binding${n.bindings.length === 1 ? "" : "s"} &middot; highlighted passages carry one</p>${html}`;
   return page(n.title, body, c.manifest.title);
 }
 
@@ -357,9 +407,23 @@ ${md(cl.body)}`;
 }
 
 // ----------------------------------------------------------------- atom
-export function renderAtom(a: Atom, c: LoadedCorpus, users: string[]): string {
+export function renderAtom(
+  a: Atom, c: LoadedCorpus, users: string[], normalizedText: string | null = null,
+): string {
   const r = resolvable(a.id, c);
   const src = c.sources.get(a.source);
+  // `ERF-50`: the mechanical check is re-runnable by anyone holding the
+  // corpus and its normalized texts, so the atom's own page states its
+  // result rather than making a reader open a second page to find out. The
+  // three states are distinct and none of them may be shown as another: a
+  // check that cannot run is not a check that passed.
+  const chk = quoteCheck(a, normalizedText);
+  const CHK: Record<string, [string, string]> = {
+    pass: ["okbox", "<b>Quote check passes.</b>"],
+    fail: ["warnbox", "<b>Quote check fails.</b>"],
+    uncheckable: ["warnbox", "<b>The quote check cannot run here.</b>"],
+  };
+  const [chkClass, chkHead] = CHK[chk.state]!;
   const body = `
 <h1><span class="id">${esc(a.id)}</span></h1>
 <p class="sub">Atom &middot; source quality ${esc(a.source_quality)}${a.as_of_date ? ` &middot; as of ${esc(a.as_of_date)}` : ""}</p>
@@ -368,12 +432,13 @@ export function renderAtom(a: Atom, c: LoadedCorpus, users: string[]): string {
 <p>${esc(a.finding)}</p>
 
 <h3>Quote</h3>
-<blockquote class="q">${esc(a.quote.trim())}</blockquote>
-<p class="sub">${esc(src?.citation_text ?? `(source ${a.source} not in the source list)`)}${src?.received ? ` &middot; <a href="${esc(src.received.url)}">${esc(src.received.url)}</a>` : ""}</p>
+<blockquote class="q">${quoteHtml(a.quote)}</blockquote>
+<p class="sub">${esc(src?.citation_text ?? `(source ${a.source} not in the source list)`)}${src?.received?.url ? ` &middot; <a href="${esc(src.received.url)}">${esc(src.received.url)}</a>` : ""}</p>
 
-${r.ok
-  ? `<div class="okbox">The captured copy travels with this corpus. <a href="capture-${esc(a.id)}.html">See the quote in its capture</a>.</div>`
-  : `<div class="warnbox"><b>The captured copy is not here.</b><br>${esc(r.why)}<br>The mechanical check cannot run for this reader, so nothing on this page should be read as verified. <a href="capture-${esc(a.id)}.html">What that means</a>.</div>`}
+<div class="${chkClass}">${chkHead}<br>${esc(chk.detail)}
+ &middot; <a href="capture-${esc(a.id)}.html">${chk.state === "uncheckable" ? "What that means" : "See the quote in the source's text"}</a></div>
+
+${r.ok ? "" : `<div class="warnbox"><b>The source's normalized text is not held here.</b><br>${esc(r.why)}<br>Nothing on this page should be read as verified.</div>`}
 
 ${a.limitations ? `<h3>Limitations</h3><p>${esc(a.limitations.trim())}</p>` : ""}
 
@@ -390,8 +455,103 @@ ${users.length === 0
   ? `<p class="sub">Nothing cites this atom.</p>`
   : `<ul class="plain">${users.map((id) =>
       `<li><a href="claim-${esc(id)}.html">${esc(c.claims.get(id)?.title ?? id)}</a></li>`).join("")}</ul>`}
-${src ? `<p class="sub">Capture status: <span class="id">${esc(src.status)}</span></p>` : ""}`;
+
+<h3>The source</h3>
+${src ? sourceTable(a.source, src) : `<p class="sub">The source list holds no entry for <span class="id">${esc(a.source)}</span>, which is a defect in the corpus (<span class="id">ERF-4</span>).</p>`}`;
   return page(a.id, body, c.manifest.title);
+}
+
+/**
+ * One source's entry, read out: its identity, its locator, the judgment
+ * about whether its text may travel, and the tools that produced that text.
+ *
+ * `ERF-68` requires a shipped text to name the licence permitting it, and
+ * section 5's status vocabulary carries the redistribution judgment either
+ * way; a viewer that shows the text and not the basis on which it travels
+ * has dropped the half a reader would need to do the same. `ERF-70`'s tool
+ * names and `ERF-71`'s digest are what make the excerpt reproducible, so
+ * they are shown rather than summarised.
+ */
+function sourceTable(id: string, s: Source): string {
+  const ex = s.excerpt;
+  const row = (k: string, v: string) => v ? `<tr><td>${k}</td><td>${v}</td></tr>` : "";
+  // `ERF-68`: a shipped text names the licence that permits it, as an SPDX
+  // identifier where one exists; a text shipping under no licence at all
+  // travels as a short quotation and says so in its status. So an absent
+  // licence is a gap on `shipped` and the expected state on
+  // `shipped-as-quotation`, and a viewer that showed both the same way
+  // would report the format working correctly as a defect.
+  const licence = s.licence
+    ? `<span class="id">${esc(s.licence)}</span>${s.licence_name ? ` &middot; ${esc(s.licence_name)}` : ""}`
+    : s.licence_name
+      ? `${esc(s.licence_name)} <span class="t gap">no SPDX identifier named</span>`
+      : s.status === "shipped-as-quotation"
+        ? `<span class="t">none, and none is expected: the text travels as a short quotation under no licence (ERF-68)</span>`
+        : s.status === "shipped"
+          ? `<span class="t gap">none named, though the text ships (ERF-68)</span>`
+          : "";
+  return `<table>
+${row("Source id", `<span class="id">${esc(id)}</span>`)}
+${row("Citation", esc(s.citation_text))}
+${row("Retrieved from", s.received?.url ? `<a href="${esc(s.received.url)}">${esc(s.received.url)}</a>` : "")}
+${row("Retrieved on", s.received?.timestamp
+    ? esc(s.received.timestamp)
+    : s.received?.url ? `<span class="t gap">not recorded (ERF-2)</span>` : "")}
+${row("Digest of what arrived", esc(s.received?.digest ?? ""))}
+${row("Status", `<span class="id">${esc(s.status)}</span>`)}
+${row("Licence", licence)}
+${row("Why no text is held", esc(s.reason ?? ""))}
+${row("Normalized text", s.normalized ? `<span class="id">${esc(s.normalized)}</span>` : "")}
+${row("Digest of that text", esc(s.normalized_digest ?? ""))}
+${row("Passage selected by", ex ? `${esc(ex.by)}, ${esc(ex.timestamp)}` : s.normalized ? `<span class="t">held as the whole work, not an excerpt</span>` : "")}
+${row("Extracted with", esc(s.extraction ?? ""))}
+${row("Normalized with", esc(s.normalization ?? ""))}
+</table>`;
+}
+
+// -------------------------------------------------------------- sources
+/**
+ * The source list, whole. A source is not a record and nobody asserts one,
+ * but it carries the citation, the locator, the licence judgment and the
+ * normalized text: the entire verifiability chain (`ERF-53`). A consumer
+ * that never shows it leaves a reader unable to tell a text withheld on a
+ * recorded reason from one nobody looked for.
+ */
+export function renderSources(c: LoadedCorpus): string {
+  const byId = new Map<string, string[]>();
+  for (const a of c.atoms.values()) byId.set(a.source, [...(byId.get(a.source) ?? []), a.id]);
+  const ships = [...c.sources].filter(([, s]) => shipsWithCorpus(s));
+  const withheld = [...c.sources].filter(([, s]) => !shipsWithCorpus(s));
+  const entry = ([id, s]: [string, Source]) => {
+    const atoms = byId.get(id) ?? [];
+    return `<li id="${esc(id)}"><b>${esc(s.citation_text)}</b>
+<div class="tags"><span class="t">${esc(id)}</span><span class="sep">&middot;</span><span class="t${shipsWithCorpus(s) ? "" : " gap"}">${esc(s.status)}</span><span class="sep">&middot;</span><span class="t">${atoms.length} atom${atoms.length === 1 ? "" : "s"}</span></div>
+${sourceTable(id, s)}
+${atoms.length
+      ? `<p class="sub">Quoted by ${atoms.map((a) => `<a href="atom-${esc(a)}.html"><span class="id">${esc(a)}</span></a>`).join(", ")}</p>`
+      : `<p class="sub">No atom quotes this source. It is listed, which is what lets a reader tell a source that was looked at from one that was never found.</p>`}
+</li>`;
+  };
+  const body = `
+<h1>Sources</h1>
+<p class="sub">${c.sources.size} works. A source is not a record: nobody asserts one, so it
+carries no created stamp, no standings and no disposition. What it carries is the citation, the
+locator, the licence judgment, and the normalized text every quote against it is checked
+against.</p>
+
+<h2>Texts that travel with this corpus (${ships.length})</h2>
+<p class="sub"><span class="id">shipped</span> means a licence permits the text to be
+republished; <span class="id">shipped-as-quotation</span> means it travels as a short quotation
+under none (<span class="id">ERF-68</span>, <span class="id">ERF-69</span>). The mechanical
+quote check runs here for every atom quoting one of these.</p>
+<ul class="plain">${ships.map(entry).join("")}</ul>
+
+<h2>Texts that do not travel (${withheld.length})</h2>
+<p class="sub">Each records a reason rather than being left out, because a validator can tell a
+recorded absence from an omission and cannot tell an omission from an oversight
+(<span class="id">ERF-4</span>).</p>
+<ul class="plain">${withheld.map(entry).join("")}</ul>`;
+  return page("Sources", body, c.manifest.title);
 }
 
 /**
@@ -442,29 +602,29 @@ export function renderCapture(a: Atom, c: LoadedCorpus, captureText: string | nu
       shown = esc(captureText);
       if (chk.state === "pass") {
         highlightNote = "The check passes on normalized text, but the quote does "
-          + "not appear literally in the raw capture, so there is no span to mark. "
+          + "not appear literally in the held text, so there is no span to mark. "
           + "The check is the authority here; the highlight is a convenience.";
       }
     }
   }
   const body = `
-<h1>Capture for <span class="id">${esc(a.id)}</span></h1>
+<h1>The source's text, and <span class="id">${esc(a.id)}</span>'s quote inside it</h1>
 <p class="sub">${esc(src?.citation_text ?? `(source ${a.source} not in the source list)`)}</p>
 
 ${chk.state === "pass" ? `<div class="okbox"><b>Quote check passes.</b><br>${esc(chk.detail)}</div>` : ""}
 ${chk.state === "fail" ? `<div class="warnbox"><b>Quote check fails.</b><br>${esc(chk.detail)}</div>` : ""}
 ${chk.state === "uncheckable" ? `<div class="warnbox"><b>The check cannot run here.</b><br>${esc(chk.detail)}${
-  src?.reason ? `<br><br>${esc(src.reason)}` : ""}<br><br>This is not a defect in the record. The atom names its source and its locator, and the check runs wherever the captured copy is held. It cannot run in a published copy that may not carry someone else's text, and saying so is this viewer's choice, in preference to quietly showing the claim as backed.</div>` : ""}
+  src?.reason ? `<br><br>${esc(src.reason)}` : ""}<br><br>This is not a defect in the record. The atom names its source and its locator, and the check runs wherever the source's normalized text is held. It cannot run in a published copy that may not carry someone else's text, and saying so is this viewer's choice, in preference to quietly showing the claim as backed.</div>` : ""}
 
 <h3>The quote</h3>
-<blockquote class="q">${esc(a.quote.trim())}</blockquote>
+<blockquote class="q">${quoteHtml(a.quote)}</blockquote>
 
 ${highlightNote ? `<p class="sub">${esc(highlightNote)}</p>` : ""}
 ${captureText !== null
-  ? `<h3>The captured copy</h3><pre class="capture">${shown}</pre>`
+  ? `<h3>The source's normalized text</h3><pre class="capture">${shown}</pre>`
   : ""}
 <p class="sub"><a href="atom-${esc(a.id)}.html">Back to the atom</a></p>`;
-  return page(`capture ${a.id}`, body, c.manifest.title);
+  return page(`the text behind ${a.id}`, body, c.manifest.title);
 }
 
 // --------------------------------------------------------------- survey
@@ -557,7 +717,24 @@ ${list(c.unrecognized.map((u) => `<span class="id">${esc(u.path)}</span> ${u.typ
 <p class="sub">Flags, not violations. <span class="id">ERF-35</span>: a reference recording a past state cannot be made wrong by a later act the format permits.</p>
 ${list(staleEvidence.map(esc))}
 
+<h2>Verdicts older than what they judged</h2>
+<p class="sub">Flags, not violations. <span class="id">ERF-47</span>: staleness is computed and
+never stored. A <span class="id">finding_audit</span> judged its atom, an
+<span class="id">evidence_audit</span> judged the claim and the atoms attached to it, so an
+atom edited or attached after the audit makes it stale. Where two stamps differ in precision and
+cannot be ordered, the comparison resolves to stale: a check that cannot tell says look, never
+rest.</p>
+${list([
+  ...[...c.atoms.values()].filter((a) => staleAudits(a)).map((a) =>
+    `<a href="atom-${esc(a.id)}.html"><span class="id">${esc(a.id)}</span></a> a finding verdict predates the atom's last change`),
+  ...[...c.claims.values()].filter((cl) => staleEvidenceAudit(cl, c)).map((cl) =>
+    `<a href="claim-${esc(cl.id)}.html">${esc(cl.title)}</a> a backing verdict predates the claim or one of its atoms`),
+])}
+
 <h2>Narrative bindings whose freshness cannot be told</h2>
+<p class="sub">Flags, not violations. <span class="id">ERF-32</span>: a binding is stale when the
+claim it names moved after the binding was made, and <span class="id">indeterminate</span> where
+the comparison cannot be run at all. Neither may be shown as current.</p>
 ${list(c.narratives.flatMap((n) => n.bindings.map((b) => {
   const st = bindingStaleness(b.boundAt, b.claims, c);
   return st.state === "current" ? null
@@ -570,6 +747,6 @@ ${c.findings.length === 0
   ? `<p class="sub">None. Every record carries the fields the data model requires.</p>`
   : `<table><tr><th>Record</th><th>Field</th><th>Detail</th></tr>${c.findings.map((f) =>
       `<tr><td><span class="id">${esc(f.record)}</span></td><td><span class="id">${esc(f.field)}</span></td><td>${esc(f.detail)}</td></tr>`).join("")}</table>
-     <p class="sub">Most of these are the serialization rule meeting the type: <span class="id">ERF-55</span> requires empty lists to be omitted, while the model types them as always present. A loader materializes them; a reader should know that is happening.</p>`}`;
+     <p class="sub">Each is a producer error the data model catches (<span class="id">ERF-73</span>), reported at the field and never a reason to refuse the corpus: a consumer preserves what it does not recognize and says so (<span class="id">ERF-57</span>).</p>`}`;
   return page("Corpus health", body, c.manifest.title);
 }

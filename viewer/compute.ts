@@ -150,8 +150,8 @@ export function resolvable(atomId: string, c: LoadedCorpus): { ok: boolean; why:
   // re-runnable by anyone holding the captures, saying nothing about
   // shipping. (The earlier gate on shipping status silently skipped checks a
   // holder was entitled to run; found by the v0.9 stress battery, lane 4.)
-  if (src.normalized) return { ok: true, why: "captured copy is held with the corpus" };
-  return { ok: false, why: src.reason ?? `capture recorded as absent, status: ${src.status}` };
+  if (src.normalized) return { ok: true, why: "the source's normalized text is held with the corpus" };
+  return { ok: false, why: src.reason ?? `no normalized text is held; status: ${src.status}` };
 }
 
 export interface BackingReading {
@@ -282,7 +282,7 @@ export type QuoteCheck = { state: "pass" | "fail" | "uncheckable"; detail: strin
 
 export function quoteCheck(atom: Atom, captureText: string | null): QuoteCheck {
   if (captureText === null) {
-    return { state: "uncheckable", detail: "the captured copy is not present, so the check cannot run here" };
+    return { state: "uncheckable", detail: "the source's normalized text is not held here, so the check cannot run" };
   }
   const hay = normalizeForCheck(captureText);
   // `ERF-52`: only [...] elides. Bare ... and … are literal source text.
@@ -293,10 +293,10 @@ export function quoteCheck(atom: Atom, captureText: string | null): QuoteCheck {
   let cursor = 0;
   for (const p of parts) {
     const at = findWholeWords(hay, p, cursor);
-    if (at < 0) return { state: "fail", detail: "a segment of the quote does not occur in the capture as whole words" };
+    if (at < 0) return { state: "fail", detail: "a segment of the quote does not occur in the source's normalized text as whole words" };
     cursor = at + p.length;
   }
-  return { state: "pass", detail: "the normalized quote occurs in the capture" };
+  return { state: "pass", detail: "the normalized quote occurs in the source's normalized text" };
 }
 
 export function findWholeWords(hay: string, needle: string, from: number): number {
