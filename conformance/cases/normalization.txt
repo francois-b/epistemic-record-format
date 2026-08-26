@@ -23,14 +23,20 @@ The eﬃcient classiﬁcation of ﬁnancial records	The eﬃcient classiﬁcatio
 ｆｕｌｌｗｉｄｔｈ stays	ｆｕｌｌｗｉｄｔｈ stays
 the aſſertion, long s preserved	the aſſertion, long s preserved
 an ellipsis … is not three periods	an ellipsis … is not three periods
+a soft­hyphen and a zero​width space vanish	a softhyphen and a zerowidth space vanish
 
 # --- 2. markdown emphasis and code markers --------------------------------
 # The capture is markdown; the quote is the prose inside it.
 the *efficient* classification	the efficient classification
+MAX_LEN keeps its underscore, 3*4 its star	MAX_LEN keeps its underscore, 3*4 its star
+# A marker between two word characters stays even where CommonMark would
+# pair it (a*b*c is emphasis there). The approximation errs toward keeping
+# text, which is the safe direction for a fidelity check.
+a footnote star 40%* stays, a * b stays	a footnote star 40%* stays, a * b stays
 a _stressed_ word	a stressed word
 inline `code` here	inline code here
 **bold** and __also bold__	bold and also bold
-a*b*c	abc
+a*b*c	a*b*c
 
 # --- 3. whitespace collapse and trim --------------------------------------
   leading and trailing space  	leading and trailing space

@@ -1,0 +1,7 @@
+requirement: ERF-31
+record: fx-narrative
+field: bindings
+because: >
+  The first candidate has no `-->`. Its extent is the rest of its line, it
+  is reported, and the second binding stays visible rather than being
+  swallowed as comment text (F-016).

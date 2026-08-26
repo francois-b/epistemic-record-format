@@ -155,3 +155,80 @@ cases:
     quote: "The catapult[...]sat on the mat"
     capture: "The catapult was heavy. Someone eventually sat on the mat beside it."
     expect: pass
+
+  # --- F-016: the second cold pass, eight fabrications through the first
+  # whole-words rule. Each is a quote the source never said, green before.
+  - name: a number truncated at its decimal point fails
+    requirement: ERF-52
+    quote: "Revenue fell 12"
+    capture: "Revenue fell 12.5 percent this year."
+    expect: fail
+  - name: a number truncated at a thousands separator fails
+    requirement: ERF-52
+    quote: "the loss reached $1,000"
+    capture: "the loss reached $1,000,000 by June."
+    expect: fail
+  - name: a negation dropped at a hyphen fails
+    requirement: ERF-52
+    note: the meaning inverts; the hyphen joins two word characters and is word-internal.
+    quote: "binding, and management did not recommend proceeding"
+    capture: "the plan was non-binding, and management did not recommend proceeding"
+    expect: fail
+  - name: a possessive cut at the apostrophe fails
+    requirement: ERF-52
+    quote: "The board"
+    capture: "The board's own review found nothing."
+    expect: fail
+  - name: a soft hyphen inside a word is not a boundary
+    requirement: ERF-51
+    note: U+00AD is a format character and is removed in step 1, so the word is whole again.
+    quote: "The cat"
+    capture: "The cat\u00adapult was heavy."
+    expect: fail
+  - name: a zero-width space inside a word is not a boundary
+    requirement: ERF-51
+    quote: "Availability is region"
+    capture: "Availability is region\u200blocked in three markets."
+    expect: fail
+  - name: a heading spliced to the paragraph under it fails
+    requirement: ERF-51
+    note: the blank line is a paragraph boundary and folds to U+2029.
+    quote: "Field notes, 1912 The catapult was heavy"
+    capture: "# Field notes, 1912\n\nThe catapult was heavy."
+    expect: fail
+  - name: two paragraphs spliced into one sentence fail
+    requirement: ERF-51
+    quote: "sat on the wreckage. Revenue fell"
+    capture: "Someone eventually sat on the wreckage.\n\nRevenue fell 12.5 percent."
+    expect: fail
+  - name: a multiplication folded into a number fails
+    requirement: ERF-51
+    note: the star has word characters on both sides and stays; `34` is a number the source never held.
+    quote: "34 reviewer-hours"
+    capture: "It took 3*4 reviewer-hours."
+    expect: fail
+  - name: an identifier with its underscore removed fails
+    requirement: ERF-51
+    quote: "MAXLEN"
+    capture: "The constant MAX_LEN bounds it."
+    expect: fail
+  - name: emphasis markers still fold away
+    requirement: ERF-51
+    quote: "it was, however, heavy"
+    capture: "it was, *however*, heavy"
+    expect: pass
+  - name: a quote ending on a whole number before a period passes
+    requirement: ERF-52
+    quote: "fell 12.5 percent"
+    capture: "Revenue fell 12.5 percent. Then it rose."
+    expect: pass
+  - name: a quote holding the same paragraph break passes
+    requirement: ERF-51
+    quote: "sat on the wreckage.\n\nRevenue fell"
+    capture: "Someone eventually sat on the wreckage.\n\nRevenue fell 12.5 percent."
+    expect: pass
+  - name: a non-breaking space and an ordinary one are one whitespace
+    requirement: ERF-51
+    quote: "twelve percent"
+    capture: "It fell twelve\u00a0percent."
+    expect: pass

@@ -13,7 +13,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import yaml from "js-yaml";
 import { loadCorpus } from "../../viewer/corpus.ts";
-import { brokenAnchors, danglingRefs, evidenceRefsFlagged, quoteCheck } from "../../viewer/compute.ts";
+import { brokenAnchors, danglingRefs, disposition, evidenceRefsFlagged, quoteCheck, standingTies } from "../../viewer/compute.ts";
 import { FIXTURES } from "../paths.ts";
 
 interface Expectation {
@@ -144,6 +144,27 @@ test("an anchor found only in an earlier passage is flagged", () => {
   const flags = brokenAnchors(c);
   assert.equal(flags.length, 1, `expected the second binding flagged, got ${JSON.stringify(flags)}`);
   assert.match(flags[0], /fx-second/);
+});
+
+test("a binding after a code span mentioning the opener is still recognized", () => {
+  const c = loadCorpus(join(FIXTURES, "valid", "binding-after-a-code-span"));
+  assert.deepEqual(c.findings, []);
+  assert.equal(c.narratives[0]?.bindings.length, 2, "a raw scan would have swallowed the first binding");
+  assert.deepEqual(brokenAnchors(c), []);
+});
+
+test("a malformed candidate closes no passage and is not the haystack", () => {
+  const c = loadCorpus(join(FIXTURES, "invalid", "malformed-candidate-does-not-close-a-passage"));
+  assert.equal(c.findings.length, 1, "the malformed candidate is reported");
+  assert.match(c.findings[0]!.detail, /ERF-31/);
+  assert.deepEqual(brokenAnchors(c), [], "the second anchor occurs above the malformed candidate, inside its passage");
+});
+
+test("two standings at one instant: the later in the ledger is current, and it is flagged", () => {
+  const c = loadCorpus(join(FIXTURES, "valid", "standing-tie-at-one-instant"));
+  assert.deepEqual(c.findings, []);
+  assert.equal(disposition(c.claims.get("fx-claim")!).disposition, "rejected");
+  assert.equal(standingTies(c).length, 1);
 });
 
 test("invalid fixtures are rejected, each citing its requirement", async (t) => {

@@ -1,0 +1,6 @@
+requirement: ERF-31
+record: fx-narrative
+field: bindings
+because: >
+  The keyword is `claims:`; an id that resolves to an atom is a defect in
+  the narrative, not a resolution (F-016).

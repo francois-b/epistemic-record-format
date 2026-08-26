@@ -1,0 +1,5 @@
+type: corpus
+id: fx-empty-anchor
+title: "A binding with an empty anchor"
+spec_version: "0.9.0"
+classification: public

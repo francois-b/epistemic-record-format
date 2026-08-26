@@ -89,7 +89,7 @@ requirements:
   ERF-31:
     tests: [output, fixtures/invalid/binding-without-bound-at,
             fixtures/valid/anchor-spans-a-line-wrap, fixtures/valid/anchor-with-escaped-quote,
-            fixtures/valid/anchor-broken-by-an-edit, fixtures/valid/anchor-in-an-earlier-passage]
+            fixtures/valid/anchor-broken-by-an-edit, fixtures/valid/anchor-in-an-earlier-passage, fixtures/invalid/binding-empty-anchor, fixtures/invalid/binding-unterminated, fixtures/invalid/binding-names-an-atom, fixtures/valid/binding-after-a-code-span, fixtures/invalid/malformed-candidate-does-not-close-a-passage]
     note: >
       the binding grammar through the shared bindingRe, plus the recognition
       rule: a candidate that fails the grammar is reported rather than
@@ -125,7 +125,7 @@ requirements:
   ERF-40:
     untestable-by-design: verified against substrate history, which a loaded corpus does not carry
   ERF-41:
-    tests: [disposition, fixtures/invalid/standing-unknown-stance]
+    tests: [disposition, fixtures/invalid/standing-unknown-stance, fixtures/valid/standing-tie-at-one-instant]
   ERF-42:
     tests: [disposition, output]
   ERF-43:
@@ -156,7 +156,7 @@ requirements:
   ERF-50:
     tests: [quote-check, output]
   ERF-51:
-    tests: [normalization, quote-check]
+    tests: [normalization, quote-check, cases/quote-check]
   ERF-52:
     tests: [quote-check, fixtures/invalid/quote-all-empty-spans, fixtures/invalid/quote-spans-out-of-order, cases/quote-check]
     note: >

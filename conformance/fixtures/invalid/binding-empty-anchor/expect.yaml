@@ -1,0 +1,7 @@
+requirement: ERF-31
+record: fx-narrative
+field: bindings
+because: >
+  `anchor ::= '"' char+ '"'`: an empty anchor would satisfy the
+  occurrence test against every passage and exempt the binding from the
+  check that is the anchor's whole purpose (F-016).

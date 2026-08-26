@@ -87,7 +87,7 @@ Raised but not yet checked by anyone other than whoever raised them. **Not ready
 
 | id | priority | | basis | verification |
 |---|---|---|---|---|
-| [`B-40`](B-40-erf-53s-round-trip-clause-has-no-definition-of-loss.md) | **P2** | `ERF-53`'s round-trip clause has no definition of loss | `demonstrated` | `accurate` · `unverified` ⚠ split |
+| [`B-40`](B-40-erf-53s-round-trip-clause-has-no-definition-of-loss.md) | **closed** | `ERF-53`'s round-trip clause has no definition of loss | `demonstrated` | `accurate` · `unverified` ⚠ split |
 | [`B-41`](B-41-basic-rules-have-no-requirement-number-to-cite.md) | **P3** | Basic rules have no requirement number to cite | `demonstrated` | `accurate` · `unverified` ⚠ split |
 | [`B-42`](B-42-the-deployment-has-no-identity.md) | **P3** | The deployment has no identity | `demonstrated` | `duplicate` · `unverified` ⚠ split |
 | [`B-43`](B-43-timestamps-the-type-says-instant-every-example-writes-a-ba.md) | **P3** | Timestamps: the type says instant, every example writes a bare date | `reported` | `inaccurate` · `unverified` ⚠ split |

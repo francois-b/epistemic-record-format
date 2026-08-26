@@ -42,7 +42,38 @@ export interface Narrative {
  * comments leaked into the page. One grammar, one definition.
  */
 export function bindingRe(): RegExp {
-  return /<!--\s*claims:\s*([^"]+?)\s*"((?:[^"\\]|\\.)*)"\s+bound-at=(\d{4}-\d{2}-\d{2})\s*-->/g;
+  return /<!--\s*claims:\s*([^"<>]+?)\s*"((?:[^"\\]|\\.)+)"\s+bound-at=(\d{4}-\d{2}-\d{2})\s*-->/g;
+}
+
+export interface BindingCandidate { index: number; end: number; text: string; terminated: boolean }
+
+/**
+ * `ERF-31`'s recognition, made precise (F-016). A candidate is `<!--` then
+ * `claims:` found OUTSIDE fenced code blocks and inline code spans, since a
+ * document explaining bindings mentions `<!--` in a code span and a raw scan
+ * then swallows the next real binding as comment text. It is delimited at
+ * the first `-->` BEFORE the grammar is applied, so a greedy `ids` can never
+ * eat the next binding; an unterminated one runs to the end of its line, so
+ * the bindings after it stay visible, and is reported.
+ */
+export function bindingCandidates(body: string): BindingCandidate[] {
+  let masked = body.replace(/(^|\n)(```|~~~)[^\n]*\n[\s\S]*?\n\2[^\n]*(?=\n|$)/g, (m) => m.replace(/[^\n]/g, " "));
+  masked = masked.replace(/(`+)(?!`)[\s\S]*?[^`]\1(?!`)/g, (m) => m.replace(/[^\n]/g, " "));
+  const out: BindingCandidate[] = [];
+  const open = /<!--\s*claims:/g;
+  let m: RegExpExecArray | null;
+  while ((m = open.exec(masked)) !== null) {
+    const close = masked.indexOf("-->", m.index + m[0].length);
+    const reopen = masked.indexOf("<!--", m.index + m[0].length);
+    const eol = masked.indexOf("\n", m.index);
+    // Terminated only by a `-->` that comes before the next `<!--`: a
+    // binding missing its close would otherwise swallow the next one.
+    const terminated = close >= 0 && (reopen < 0 || close < reopen);
+    const end = terminated ? close + 3 : (eol < 0 ? masked.length : eol);
+    out.push({ index: m.index, end, text: body.slice(m.index, end), terminated });
+    open.lastIndex = end;
+  }
+  return out;
 }
 
 /**
@@ -65,9 +96,6 @@ export function unescapeAnchor(raw: string): string {
  * from the narrative. Ruled 2026-08-25 on making `bound-at` mandatory,
  * which is what exposed that the anchor had had the same hole all along.
  */
-export function bindingCandidateRe(): RegExp {
-  return /<!--\s*claims:[\s\S]*?-->/g;
-}
 
 export interface LoadedCorpus {
   manifest: CorpusDeclaration;
@@ -576,17 +604,22 @@ export function loadCorpus(dir: string): LoadedCorpus {
     const slug = basename(f, ".md");
     // Recognize first (`ERF-31`), then validate. A candidate that fails the
     // grammar is reported, never skipped.
-    const cand = bindingCandidateRe();
-    let c: RegExpExecArray | null;
-    while ((c = cand.exec(body)) !== null) {
-      const strict = bindingRe();
-      const m = strict.exec(c[0]);
+    for (const c of bindingCandidates(body)) {
+      if (!c.terminated) {
+        findings.push({
+          record: slug, field: "bindings",
+          detail: `a narrative binding opens and never closes; its extent is the rest of its line, `
+            + `so later bindings stay visible: ${c.text.slice(0, 90)} (ERF-31)`,
+        });
+        continue;
+      }
+      const m = bindingRe().exec(c.text);
       if (!m) {
         findings.push({
           record: slug,
           field: "bindings",
           detail: `a narrative binding does not match the grammar and names claims that `
-            + `would otherwise vanish from the narrative: ${c[0].slice(0, 90)} (ERF-31)`,
+            + `would otherwise vanish from the narrative: ${c.text.slice(0, 90)} (ERF-31)`,
         });
         continue;
       }
@@ -595,22 +628,26 @@ export function loadCorpus(dir: string): LoadedCorpus {
         anchor: unescapeAnchor(m[2] ?? ""),
         boundAt: m[3],
         index: c.index,
-        end: c.index + c[0].length,
+        end: c.end,
       });
     }
-    // `ERF-34`: the three frontmatter fields, typed. Naming them without
-    // typing them left two readings and two authors took one each (B-36).
+    // `ERF-31`: the keyword is `claims:`; an id resolving to a record of
+    // another type is a defect in the narrative, reported at the narrative.
+    for (const b of bindings) {
+      for (const cid of b.claims) {
+        if (!claims.has(cid) && (atoms.has(cid) || surveys.has(cid))) {
+          findings.push({ record: slug, field: "bindings", detail: `binds ${cid}, which is not a claim (ERF-31)` });
+        }
+      }
+    }
+    // `ERF-34`: the three frontmatter fields, typed (B-36).
     for (const k of ["title", "corpus", "created"]) {
       if (data[k] === undefined) {
-        findings.push({
-          record: slug, field: k,
-          detail: `a narrative MUST carry ${k} in its frontmatter (ERF-34)`,
-        });
+        findings.push({ record: slug, field: k, detail: `a narrative MUST carry ${k} in its frontmatter (ERF-34)` });
       }
     }
     const cr = data["created"] as { timestamp?: unknown; by?: unknown } | undefined;
-    if (data["created"] !== undefined
-        && (typeof cr !== "object" || cr === null || !cr.timestamp || !cr.by)) {
+    if (data["created"] !== undefined && (typeof cr !== "object" || cr === null || !cr.timestamp || !cr.by)) {
       findings.push({
         record: slug, field: "created",
         detail: `created is the {timestamp, by} stamp every created thing in this `

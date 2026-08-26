@@ -54,14 +54,20 @@ any other way provided it round-trips without loss, is `ERF-53` in
   disposition depend on how a weekday name sorts. A producer SHOULD quote
   a timestamp regardless, so that a reader on a legacy schema still
   receives a string. Where the model types
-  a field as a string and its bare spelling would resolve to another type
-  under this schema, a producer MUST quote it: `as_of_date: "2018"`,
-  `hits_reported: "0"`, `spec_version: "0.9.0"`, and a source id or family
-  name such as `"012"` or `"no"`. A bare year is JSON number grammar, so
-  the schema that stops the timestamp hazard does not stop this one, and
-  `spec_version: 1.0` arrives as a number that renders back as `1` with
-  the minor version gone. A validator MUST report a string-typed field that
-  arrived as any other type.
+  a field as a string and its bare spelling resolves to another type under
+  this schema, which is `true`, `false`, `null` and JSON's number grammar,
+  a producer MUST quote it: `as_of_date: "2018"`, `hits_reported: "0"`,
+  `hits_reported: "1e3"`, `spec_version: "1.0"`. A bare year is JSON number
+  grammar, so the schema that stops the timestamp hazard does not stop
+  this one, and `spec_version: 1.0` arrives as a number that renders back
+  as `1` with the minor version gone. Spellings a legacy YAML 1.1 reader
+  retypes and this schema does not, `012`, `no`, `on`, `0.9.0`, a producer
+  SHOULD quote as well, since most readers a file meets are legacy ones.
+  String-typed means every field section 3 types as a string, every id
+  and family name, and every source id; `citation` is typed by CSL and
+  outside this rule. An empty scalar resolves to `null`. A validator MUST
+  report a string-typed field that arrived as any other type, and the
+  report is a violation.
 
 ## 4. Keys and structure
 

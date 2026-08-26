@@ -24,6 +24,34 @@ record. All three numbers are published rather than hidden: this is a draft
 meant to be implemented against and argued with, and what is known to be
 unresolved, unverified, or untested is part of what it says.
 
+### 2026-08-25 — the second cold pass: eight fabrications through the first fix
+
+Two more cold implementations, Python and Swift, read the corrected text and
+attacked the quote check. The whole-words rule had stopped `The cat[...]sat`
+and nothing else: `Revenue fell 12` passed against `12.5 percent`, `The
+board` against `The board's`, `binding, and management did not recommend`
+against `non-binding, and management did not recommend`, a soft hyphen or a
+zero-width space was a legal place to cut a word in half, a heading could be
+spliced to the paragraph under it, and `3*4` folded to `34`. Every one was
+run against the reference and returned green before it was ruled on.
+
+`ERF-51` now drops format characters, keeps a marker that has word
+characters on both sides or neither, and folds a blank line to a paragraph
+boundary no span crosses. `ERF-52` defines a word-internal character and
+forbids a span edge beside one. `ERF-31`'s `id` can no longer eat the next
+binding, its anchor is non-empty, recognition follows CommonMark past code
+spans, and an unterminated candidate stops at its line. `ERF-41` admits a
+standing only when well formed and breaks a same-instant tie by ledger
+order, which is model data. `ERF-43` is global and reaches retired premises
+anywhere in the closure. `ERF-65`'s examples now satisfy its own condition
+under the schema it mandates. `ERF-53`'s loss reaches opaque values, list
+order, narrative frontmatter, and the bytes of held files. Conformance to
+the model and conformance to a binding are named as two things.
+
+Measured: 164 real quotes, two newly failing, both honest quotations across
+a paragraph break written as one paragraph, left as the measurement they
+are. Fourteen new conformance cases, six new fixtures, suite 185 green.
+
 ### 2026-08-25 — the model is separated from its wire, and seven blockers close
 
 Two cold implementations (Go, Haskell), a protobuf schema exercise and a

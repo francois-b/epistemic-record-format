@@ -9,10 +9,10 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Atom, Claim, Survey } from "../types/erf.ts";
 import type { LoadedCorpus, Narrative } from "./corpus.ts";
-import { bindingCandidateRe, bindingRe, shipsWithCorpus } from "./corpus.ts";
+import { bindingCandidates, bindingRe, shipsWithCorpus } from "./corpus.ts";
 import {
   backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,
-  brokenAnchors, evidenceRefsFlagged, retiredPremises,
+  brokenAnchors, evidenceRefsFlagged, retiredPremises, standingTies,
   disposition, normalizeForCheck, quoteCheck, resolvable, staleAudits,
   staleEvidenceAudit, unbacked,
 } from "./compute.ts";
@@ -253,14 +253,20 @@ export function renderNarrative(n: Narrative, c: LoadedCorpus): string {
   // the narrative silently. A candidate that fails the grammar is rendered
   // as a broken binding instead.
   const stale = new Map<string, { state: string; why: string }>();
-  text = text.replace(bindingCandidateRe(), (whole: string) => {
-    const m = bindingRe().exec(whole);
-    if (!m) return "@@BADNOTE@@" + whole.replace(/[@]/g, "") + "@@ENDBADNOTE@@";
-    const list = (m[1] ?? "").trim().split(/\s+/).filter(Boolean);
-    const key = list.join(" ");
-    stale.set(key, bindingStaleness(m[3], list, c));
-    return "@@NOTE@@" + key + "@@ENDNOTE@@";
-  });
+  const corpus = c;
+  for (const cand of [...bindingCandidates(text)].reverse()) {
+    const m = cand.terminated ? bindingRe().exec(cand.text) : null;
+    let repl: string;
+    if (!m) {
+      repl = "@@BADNOTE@@" + cand.text.replace(/[@]/g, "") + "@@ENDBADNOTE@@";
+    } else {
+      const list = (m[1] ?? "").trim().split(/\s+/).filter(Boolean);
+      const key = list.join(" ");
+      stale.set(key, bindingStaleness(m[3], list, corpus));
+      repl = "@@NOTE@@" + key + "@@ENDNOTE@@";
+    }
+    text = text.slice(0, cand.index) + repl + text.slice(cand.end);
+  }
 
   let html = md(text);
   html = html
@@ -520,6 +526,10 @@ ${list(uncheckable.map((x) => `<a href="capture-${esc(x.a.id)}.html"><span class
 
 <h2>References that do not resolve</h2>
 ${list(dangling.map((d) => `<span class="id">${esc(d.record)}</span> <span class="id">${esc(d.field)}</span> ${esc(d.detail)}`))}
+
+<h2>Two standings by one person at one instant</h2>
+<p class="sub">Flags. <span class="id">ERF-41</span>: the later in the ledger is current, and a person should say which they meant.</p>
+${list(standingTies(c).map(esc))}
 
 <h2>Anchors that no longer occur in their passage</h2>
 <p class="sub">Flags, not violations. <span class="id">ERF-31</span>: the anchor is folded under <span class="id">ERF-51</span>, same as the quote check, so a hand-wrapped line is not what broke it. Someone edited the prose.</p>

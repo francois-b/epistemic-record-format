@@ -1,0 +1,5 @@
+type: corpus
+id: fx-unterminated
+title: "A binding that never closes"
+spec_version: "0.9.0"
+classification: public

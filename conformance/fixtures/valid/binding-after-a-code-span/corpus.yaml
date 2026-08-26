@@ -1,0 +1,5 @@
+type: corpus
+id: fx-code-span
+title: "A binding after a code span that mentions the opener"
+spec_version: "0.9.0"
+classification: public

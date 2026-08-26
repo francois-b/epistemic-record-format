@@ -1,0 +1,7 @@
+requirement: ERF-31
+record: fx-narrative
+field: bindings
+because: >
+  The middle candidate has no anchor and fails the grammar. It is reported,
+  it closes no passage, and the last binding's anchor is found above it,
+  which the dedicated test asserts (F-016).

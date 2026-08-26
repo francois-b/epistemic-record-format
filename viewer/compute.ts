@@ -5,7 +5,7 @@
  */
 import type { Atom, Claim, StandingEntry } from "../types/erf.ts";
 import type { ConformanceFinding, LoadedCorpus } from "./corpus.ts";
-import { bindingCandidateRe, shipsWithCorpus } from "./corpus.ts";
+import { bindingCandidates, shipsWithCorpus } from "./corpus.ts";
 
 export type Disposition =
   | "proposal" | "active" | "contested" | "rejected" | "retired";
@@ -29,18 +29,45 @@ function instant(v: unknown): number {
 
 /** `ERF-41`'s vocabulary. A stance outside it is left out of the computation. */
 const STANCES = new Set(["for", "against", "withdrawn"]);
+const INSTANT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
+
+/**
+ * `ERF-41`: a standing is admitted to the computation only when its stance
+ * is in the vocabulary, its timestamp is an instant (`ERF-19`) and its `by`
+ * is a `human:` actor (`ERF-21`). A malformed entry is a producer error the
+ * loader reports; here it is as though it had never been written, so the
+ * person's previous admissible entry stays their newest (F-011, F-016).
+ */
+export function admissible(s: StandingEntry): boolean {
+  return STANCES.has(String(s.stance)) && INSTANT.test(String(s.timestamp)) && String(s.by).startsWith("human:");
+}
 
 export function currentStances(standings: StandingEntry[]): StandingEntry[] {
   const newest = new Map<string, StandingEntry>();
   for (const s of standings) {
-    // `ERF-41`: an unrecognised stance is a producer error the loader
-    // reports; here it is treated as though the entry were absent, so the
-    // disposition is defined for every input (F-011).
-    if (!STANCES.has(String(s.stance))) continue;
+    if (!admissible(s)) continue;
     const prev = newest.get(s.by);
-    if (!prev || instant(s.timestamp) > instant(prev.timestamp)) newest.set(s.by, s);
+    // A later entry at the same instant is current: `standings` is an
+    // ordered ledger in the model (`ERF-40`), so "later in the list" is a
+    // fact about the model and not about bytes. `standingTies` flags it.
+    if (!prev || instant(s.timestamp) >= instant(prev.timestamp)) newest.set(s.by, s);
   }
   return [...newest.values()];
+}
+
+/** `ERF-41`: two entries by one person at one instant. Flagged; the later in the ledger is current. */
+export function standingTies(c: LoadedCorpus): string[] {
+  const out: string[] = [];
+  for (const [id, cl] of c.claims) {
+    const seen = new Map<string, number>();
+    for (const s of cl.standings ?? []) {
+      if (!admissible(s)) continue;
+      const k = `${s.by} at ${s.timestamp}`;
+      seen.set(k, (seen.get(k) ?? 0) + 1);
+    }
+    for (const [k, n] of seen) if (n > 1) out.push(`${id}: ${n} entries by ${k}; the later in the ledger is current`);
+  }
+  return out;
 }
 
 export interface DispositionReading {
@@ -174,15 +201,24 @@ export function backing(claim: Claim, c: LoadedCorpus): BackingReading {
  */
 export function normalizeForCheck(s: string): string {
   return s
-    // 1. Unicode NFKC: an extractor emits compatibility characters nobody
-    //    types, and an editor may silently decompose them.
+    // 1. NFC, then drop format characters (soft hyphen, zero-width space,
+    //    joiners): invisible, untypeable, an extractor's artifact. Left in,
+    //    they were legal places to cut a word in half (F-016).
     .normalize("NFC")
-    // 2. Markdown emphasis and code markers: the capture is markdown and
-    //    the quote is the prose inside it.
-    .replace(/[*_`]/g, "")
-    // 3. Whitespace runs, then trim: line structure differs between a
-    //    capture and a quoted span and always will.
-    .replace(/\s+/g, " ")
+    .replace(/\p{Cf}/gu, "")
+    // 2. A marker with a word character on exactly one side is a flanking
+    //    delimiter and goes (`*however*`); with word characters on both
+    //    sides (`MAX_LEN`, `3*4`) or neither (`a * b`, a footnote star) it
+    //    is text and stays. CommonMark's own rule, approximated (F-016).
+    .replace(/([*_`])\1*/gu, (m, _c, at: number, str: string) => {
+      const l = /[\p{L}\p{N}\p{M}]/u.test(str[at - 1] ?? "");
+      const r = /[\p{L}\p{N}\p{M}]/u.test(str[at + m.length] ?? "");
+      return l !== r ? "" : m;
+    })
+    // 3. Whitespace (Unicode White_Space) runs to one space, except a run
+    //    holding a blank line, which is a paragraph boundary and folds to
+    //    U+2029 so a span cannot be spliced across two paragraphs (F-016).
+    .replace(/\s+/g, (run) => (/\n[^\S\n]*\n/.test(run) ? " " : " "))
     .trim();
 }
 
@@ -209,6 +245,25 @@ export function quoteCheck(atom: Atom, captureText: string | null): QuoteCheck {
 
 /** A letter, digit, or combining mark: the characters a word is made of. */
 const WORD = /[\p{L}\p{N}\p{M}]/u;
+const DIGIT = /\p{N}/u;
+const LETTER = /[\p{L}\p{M}]/u;
+
+/**
+ * `ERF-52`: a character is word-internal when it joins two word characters:
+ * `.` `,` `:` `/` between digits (`12.5`, `1,000`, `12:30`), an apostrophe
+ * between letters (`board's`), a hyphen between word characters
+ * (`non-binding`). A span may not begin or end beside one. Without this,
+ * `Revenue fell 12` passed against `12.5 percent` and `binding, and ...`
+ * against `non-binding, and ...`, both green (F-016).
+ */
+function wordInternal(hay: string, at: number): boolean {
+  const c = hay[at] ?? "", p = hay[at - 1] ?? "", n = hay[at + 1] ?? "";
+  if (!p || !n) return false;
+  if (".,:/".includes(c)) return DIGIT.test(p) && DIGIT.test(n);
+  if (c === "'" || c === "’") return LETTER.test(p) && LETTER.test(n);
+  if (c === "-" || c === "‐" || c === "‑") return WORD.test(p) && WORD.test(n);
+  return false;
+}
 
 /**
  * `ERF-52`: a span occurs only at word boundaries. Where the span begins
@@ -220,15 +275,16 @@ const WORD = /[\p{L}\p{N}\p{M}]/u;
  * trial). A span opening or closing on punctuation is unconstrained on
  * that side: the punctuation itself is the boundary.
  */
-function findWholeWords(hay: string, needle: string, from: number): number {
+export function findWholeWords(hay: string, needle: string, from: number): number {
   const headIsWord = WORD.test(needle[0] ?? "");
   const tailIsWord = WORD.test(needle[needle.length - 1] ?? "");
   let at = hay.indexOf(needle, from);
   while (at >= 0) {
     const before = at === 0 ? "" : hay[at - 1]!;
-    const after = hay[at + needle.length] ?? "";
-    const okHead = !headIsWord || before === "" || !WORD.test(before);
-    const okTail = !tailIsWord || after === "" || !WORD.test(after);
+    const afterAt = at + needle.length;
+    const after = hay[afterAt] ?? "";
+    const okHead = !headIsWord || before === "" || (!WORD.test(before) && !wordInternal(hay, at - 1));
+    const okTail = !tailIsWord || after === "" || (!WORD.test(after) && !wordInternal(hay, afterAt));
     if (okHead && okTail) return at;
     at = hay.indexOf(needle, at + 1);
   }
@@ -393,13 +449,24 @@ export function brokenAnchors(c: LoadedCorpus): string[] {
     // Markers inside the slice are stripped: a malformed candidate between
     // two bindings must not serve as the haystack for either.
     const ordered = [...n.bindings].sort((a, b) => a.index - b.index);
+    const cands = bindingCandidates(n.body);
     let prevEnd = 0;
     for (const b of ordered) {
-      const passage = n.body.slice(prevEnd, b.index);
+      // A malformed candidate inside the slice is blanked, never used as
+      // haystack, and does not close a passage: only a binding does (F-016).
+      let passage = n.body.slice(prevEnd, b.index);
+      for (const c of cands) {
+        if (c.index >= prevEnd && c.end <= b.index) {
+          const s0 = c.index - prevEnd, e0 = c.end - prevEnd;
+          passage = passage.slice(0, s0) + " ".repeat(e0 - s0) + passage.slice(e0);
+        }
+      }
       prevEnd = b.end;
-      const hay = normalizeForCheck(passage.replace(bindingCandidateRe(), " "));
+      const hay = normalizeForCheck(passage);
       const needle = normalizeForCheck(b.anchor);
-      if (needle && !hay.includes(needle)) {
+      // The anchor is a verbatim quotation of its passage and meets the
+      // quote's test: the fold, and whole words.
+      if (needle && findWholeWords(hay, needle, 0) < 0) {
         out.push(`${n.slug}: anchor "${b.anchor}" no longer occurs in the passage `
           + `(claims ${b.claims.join(", ")})`);
       }

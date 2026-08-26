@@ -59,9 +59,13 @@ Conformance is claimed per class, not against the whole document:
   record-type requirements of section 4 (the quote check, the verdict and
   stance vocabularies, ids, dates, search acts, narrative bindings), the
   serialization rules of section 7, and the declaration and source list
-  named under the Corpus class. The list illustrates the duty and does not
-  bound it: a tool that never opens a normalized text or parses a
-  narrative binding is not a validator.
+  named under the Corpus class. A MUST is machine-checkable when its truth
+  is decidable from the corpus and the files it holds alone, without a
+  network, a judgment, or a second party. The list illustrates the duty
+  and does not bound it: a tool that never opens a normalized text or
+  parses a narrative binding is not a validator. A validator MUST name the
+  requirements it does not check, and a deployment-wide check (`ERF-36`,
+  `ERF-38`) run over a single corpus MUST be named as partial.
 
 Strict producers, tolerant consumers: divergence is caught by validators
 and surfaced, never by consumers refusing to read.
@@ -140,9 +144,11 @@ shown here.
 
 The normative data model is the file `types/erf.ts`. The TypeScript below
 is an inline mirror of that file, kept in sync by hand; it omits the
-file's header comments and its identifier alias definitions (`AtomId`,
-`ClaimId`, `SurveyId`, `SourceId`, `CorpusId`, `FamilyName`, `CSL`); where the two
-differ, the file governs. YAML examples elsewhere are informative.
+file's header comments and its identifier alias definitions, which are
+these: `AtomId`, `ClaimId`, `SurveyId`, `SourceId`, `CorpusId` and
+`FamilyName` are strings, and `CSL` is a CSL-JSON item, an object whose
+fields CSL types and this format does not. Where the two differ, the file
+governs. YAML examples elsewhere are informative.
 Object-shape unions are deliberately absent; the only unions are
 string-literal value sets.
 
@@ -921,11 +927,21 @@ narrative-binding ::= "<!--" ws* "claims:" ws+ ids ws+ anchor
                       ws+ "bound-at=" date ws* "-->"
 date     ::= YYYY "-" MM "-" DD
 ids      ::= id (ws+ id)*
-id       ::= one or more characters, none of them whitespace or '"'
-anchor   ::= '"' char* '"'
+id       ::= one or more characters, none of them whitespace, '"', '<' or '>'
+anchor   ::= '"' char+ '"'
 char     ::= any character other than '"' and '\', or one of the
              two-character escapes '\"' and '\\'
+ws       ::= any Unicode White_Space character, line breaks included
 ```
+
+  The grammar is applied to a comment already delimited: recognition finds
+  `<!--` followed by `claims:` where CommonMark would read an HTML comment,
+  never inside a code span or a code block, and runs it to the first `-->`
+  before the grammar sees it, so that a greedy `ids` cannot eat the next
+  binding. A candidate whose first `-->` comes after another `<!--`, or
+  never, is unterminated: it extends to the end of its own line, so the
+  bindings after it stay visible, and it is reported. The escapes are
+  decoded before the anchor is folded. Every id MUST resolve to a claim.
 
   Every part is required. Ids are separated by whitespace, never by commas,
   because a comma inside an unquoted list invites a parser to guess.
@@ -941,7 +957,10 @@ char     ::= any character other than '"' and '\', or one of the
   binding's passage is the text from the end of the previous binding's
   marker, or the start of the body where there is none, to the start of
   its own marker: a binding closes the passage above it (section 2), and
-  the previous binding closed the one before. Nothing wider serves. The
+  the previous binding closed the one before. A candidate that fails the
+  grammar is not a binding, closes nothing, and is blanked out of
+  whichever passage holds it. The anchor meets the test a quote meets
+  (`ERF-52`): the fold, and whole words. Nothing wider serves. The
   whole body as the passage makes the check nearly vacuous, since an
   anchor lifted from anywhere in a long document matches and the
   mechanism that exists to detect moved prose then detects almost nothing;
@@ -1099,12 +1118,18 @@ checks the relations no type can see.
   of `withdrawn`, because withdrawal is exit rather than opposition, and
   read what remains: nothing remaining means `retired`; all `for` means
   `active`; all `against` means `rejected`; both `for` and `against`
-  remaining means `contested`. A standing whose `stance` is outside that
-  vocabulary is a producer error (`ERF-55`), MUST be reported, and MUST be
-  left out of this computation as though the entry were absent: `ERF-57`
-  obliges a consumer to load such a record, and a reading it cannot
-  compute is one it would otherwise invent. With that, every input has
-  exactly one reading. No stance outranks another and the format supplies no tie-break: `contested`
+  remaining means `contested`. A standing is admitted to this computation
+  only when its `stance` is in that vocabulary, its `timestamp` is an
+  instant (`ERF-19`) and its `by` is a `human:` actor (`ERF-21`); any
+  other entry is a producer error, MUST be reported, and is treated as
+  though it had never been written, so the person's previous admissible
+  entry, if any, stays their newest. `ERF-57` obliges a consumer to load
+  such a record, and a reading it cannot compute is one it would otherwise
+  invent. Where one person's newest entries share an instant, the later in
+  the ledger is current and a validator MUST flag the collision:
+  `standings` is an ordered list in the model (`ERF-40`), so its order is
+  a fact about the corpus and not about any binding's bytes. With that,
+  every input has exactly one reading. No stance outranks another and the format supplies no tie-break: `contested`
   is the terminal reading of a disagreement, not a state resolved by
   arithmetic. What any particular use requires of a
   disposition is not specified here: the format computes the reading and a
@@ -1122,16 +1147,20 @@ checks the relations no type can see.
   vacuously: what is wrong with such an argument is that nothing backs it,
   which is `ERF-49`'s flag, not that its closure ends badly. Reading the
   root into its own closure would make the same record a violation here and
-  a flag there. Self-edges MUST NOT exist. The premise relation MUST admit
-  no cycles, where `X assumes Y` and `Y supports X` both make `Y` a premise
-  of `X` (`ERF-24`): a chain of premises that returns to its own argument
-  grounds nothing. `decomposes-into` MUST admit no cycles likewise. The
-  closure is followed over distinct claims, a claim reached twice being
-  visited once, so that a validator terminates on any input, conforming or
-  not. `supports` was absent from the prohibition while present in the
-  closure, and two mutually supporting arguments made a literal traversal
-  run forever. A validator MUST flag a closure that terminates in
-  a leaf whose disposition is `retired`: a flag rather than a violation,
+  a flag there. Self-edges MUST NOT exist, in any of the four relations.
+  The premise relation over all claims MUST admit no cycles, where `X
+  assumes Y` and `Y supports X` both make `Y` a premise of `X` (`ERF-24`),
+  whether or not any argument's closure reaches the cycle: a chain of
+  premises that returns to its own argument grounds nothing. A premise id
+  that resolves to nothing is `ERF-35`'s violation and is absent from the
+  relation. `decomposes-into` MUST admit no cycles likewise. The closure
+  is followed over distinct claims, a claim reached twice being visited
+  once, so that a validator terminates on any input, conforming or not.
+  `supports` was absent from the prohibition while present in the closure,
+  and two mutually supporting arguments made a literal traversal run
+  forever. A validator MUST flag a closure that contains a claim whose
+  disposition is `retired`, a leaf or not, because a retired premise
+  hollows every argument above it: a flag rather than a violation,
   like `ERF-49`, because a withdrawal elsewhere can create the condition
   without any edit to the argument, and an act the format permits cannot
   retroactively make a corpus non-conforming.
@@ -1175,9 +1204,14 @@ checks the relations no type can see.
   identically to the quote and to the normalized text, so that two conforming tools
   reach the same verdict on the same pair:
 
-  1. Unicode NFC.
-  2. Remove the markdown emphasis and code markers `*`, `_`, and `` ` ``.
-  3. Collapse whitespace runs to a single space, then trim.
+  1. Unicode NFC, then remove every format character (Unicode General
+     Category `Cf`: the soft hyphen, the zero-width space, the joiners).
+  2. Remove a marker `*`, `_` or `` ` `` that has a word character on
+     exactly one side; keep one that has word characters on both sides
+     (`MAX_LEN`, `3*4`) or on neither (`a * b`, a lone footnote star).
+  3. Collapse each whitespace run (Unicode `White_Space`) to a single
+     space, except a run holding a blank line, which is a paragraph
+     boundary and collapses to U+2029 PARAGRAPH SEPARATOR; then trim.
 
   Case MUST NOT be folded. Case is part of a verbatim quote, and folding it
   lets a mis-cased quote pass a check whose whole job is fidelity.
@@ -1185,7 +1219,16 @@ checks the relations no type can see.
   Three steps, and each earns its place by describing a difference the
   author did not introduce. NFC because an editor may silently compose or
   decompose an accented letter, and the two spellings are one character by
-  definition. NFC and not NFKC, which was the first choice: NFKC is a
+  definition. Format characters go because they are invisible and
+  untypeable, an extractor's artifact that a PDF's hyphenation leaves by
+  the thousand; left in, each one was a legal place to cut a word in half
+  and quote the fragment. The marker rule is CommonMark's own for `_`,
+  approximated for the other two: it stops `3*4` folding to `34`, a number
+  the source never held. The paragraph boundary stops a quote from
+  splicing the end of one paragraph to the start of the next, or a heading
+  to the prose under it, as if the source had said them in one breath. A
+  word character is a letter, digit or combining mark (Unicode `L`, `N`,
+  `M`). NFC and not NFKC, which was the first choice: NFKC is a
   package of compatibility folds, and among the ligatures and fullwidth
   forms an extractor emits, it also folds characters an author retypes,
   the long s of a pre-1800 scan to a modern s and the ellipsis to three
@@ -1241,11 +1284,21 @@ checks the relations no type can see.
   strip brackets and would otherwise destroy the marker; each span is then
   normalized independently. Every non-empty span MUST occur in the
   normalized text, in order and without overlap, **and as whole words**:
-  where a span begins with a letter, digit, or combining mark, the
-  character before its occurrence MUST NOT be one, and where it ends with
-  one, the character after MUST NOT be one. A span that opens or closes on
-  punctuation is unconstrained on that side, because the punctuation is
-  the boundary. Without this rule the check is substring containment, and
+  where a span begins with a word character, the character before its
+  occurrence MUST NOT be a word character or a word-internal one, and
+  where it ends with one, the character after MUST NOT be either. A
+  character is **word-internal** when it joins two word characters: `.`,
+  `,`, `:` or `/` between digits (`12.5`, `1,000`, `12:30`); an apostrophe
+  between letters (`board's`); a hyphen between word characters
+  (`non-binding`). So `Revenue fell 12` does not occur in `Revenue fell
+  12.5 percent`, `The board` does not occur in `The board's own review`,
+  and `binding, and management did not recommend` does not occur in `the
+  plan was non-binding, and management did not recommend`, each of which
+  a plain letters-and-digits boundary passed while changing what the
+  source said. A span that opens or closes on any other character is
+  unconstrained on that side, because that character is the boundary. A
+  span never crosses a paragraph boundary (`ERF-51` step 3) unless the
+  quote holds the same blank line. Without this rule the check is substring containment, and
   `The cat[...]sat` passes against a text reading "The catapult was heavy.
   Someone eventually sat": an atom attributing to a source words it never
   contained, with a green check. Trimming each span (`ERF-51` step 3) is
@@ -1285,8 +1338,12 @@ checks the relations no type can see.
 ## 7. Serialization and bindings
 
 A corpus is exchanged in a **binding**: a named, versioned document that
-says how the model of section 3 maps to bytes. Conformance is a property
-of a corpus as loaded into the model, and is the same in every binding.
+says how the model of section 3 maps to bytes. Conformance to the model
+is a property of a corpus as loaded into it, and is the same in every
+binding; conformance to a binding is a property of the bytes, checked by
+that binding's own rules (in the default binding, encoding, parsing and
+key structure). A validator for a binding checks both and says which it
+is reporting.
 Every binding MUST round-trip a corpus through the model without changing
 any record, any field, or any verdict (`ERF-53`); a binding that cannot is
 not one. The YAML/Markdown binding, version 1
@@ -1313,10 +1370,13 @@ renumbers nothing.
   way it likes, body as one more field, many records in one collection
   document, rows in a database, provided every file the corpus holds
   round-trips through the model without loss. Loss is any difference,
-  after loading, in a value the model types or in a narrative's text: two
-  forms are equivalent when they load to the same model instance, and a
-  store that returns `chapter-number: 36.0` for `36` has lost, whatever
-  its own types say. "Every file" and not "every record": the source list
+  after loading, in anything a file carried: a value the model types, an
+  opaque value the model preserves (`citation`'s CSL fields, extension
+  and unknown fields, `ERF-57`), the order of any list, a narrative's
+  frontmatter and text, or the bytes of a held raw or normalized file,
+  which is where every quote-check verdict lives. Two forms are equivalent
+  when they load to the same instance so defined, and a store that returns
+  `chapter-number: 36.0` for `36` has lost, whatever its own types say. "Every file" and not "every record": the source list
   carries the digests, the licence judgments and the normalized-text
   paths, the whole verifiability chain, and it is not a record. How
   records are grouped in a store carries no meaning, because each record
