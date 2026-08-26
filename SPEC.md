@@ -39,7 +39,7 @@ types of section 3 under the invariants of section 6. The specification is
 written to be handed to an implementer (human or LLM) to build from, or
 diffed against an existing system requirement by requirement.
 
-Requirements are numbered (the schema (`Source.citation_text`)) and use RFC 2119 keywords: MUST
+Requirements are numbered (`ERF-n`) and use RFC 2119 keywords: MUST
 (violation means non-conformance), SHOULD (default with legitimate
 exceptions; a departing system should know and say so), MAY (declared
 option; differing here is flavor, not divergence). Passages set as notes
@@ -252,7 +252,7 @@ is bound by the data model alone, with advice in the section named.
 |:--|:--|
 | `id`, `title`, `spec_version`, `owner`, `classification` (declaration) | schema `CorpusDeclaration`; `ERF-54`, `ERF-60`, `ERF-61` |
 | `citation_text`, `citation` | the schema (`Source.citation_text`), `ERF-8` |
-| `received.url`, `received.path`, `received.digest`, `received.timestamp` | `ERF-2`, the schema (`Source.citation_text`), `ERF-71` |
+| `received.url`, `received.path`, `received.digest`, `received.timestamp` | `ERF-2`, the schema (`Received`), `ERF-71` |
 | `status`, `normalized`, `normalized_digest`, `reason` | `ERF-1`, `ERF-4`, the status vocabulary (section 5), `ERF-71` |
 | `licence`, `licence_name` | `ERF-68` |
 | `excerpt.by`, `excerpt.timestamp` | `ERF-69` |
