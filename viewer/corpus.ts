@@ -2,10 +2,11 @@
  * Loading an ERF corpus from the textual form, and checking what was read
  * against the normative data model.
  *
- * The types come from `../types/erf.ts`, which the specification names as
- * normative. That import is the point of writing this in TypeScript: if the
- * model changes, this file stops compiling, so the reference consumer cannot
- * quietly drift from the specification it is supposed to demonstrate.
+ * The types come from `../types/erf.ts`, a rendering of erf.schema.json
+ * that tools/lint-schema-types.py holds to the schema. That import is the
+ * point of writing this in TypeScript: if the model changes, this file stops
+ * compiling, so the reference consumer cannot quietly drift from the
+ * specification it is supposed to demonstrate.
  */
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";

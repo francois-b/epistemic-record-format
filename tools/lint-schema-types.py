@@ -50,6 +50,43 @@ for m in re.finditer(r"^export interface (\w+) \{(.*?)^\}", ts, re.S | re.M):
         if sch_req and not ts_req:
             problems.append(f"{name}.{f}: required in the schema, optional in erf.ts")
 
+# Beyond field sets: every object definition needs an interface (or a named
+# alias to one), every enum definition needs a union alias with the same
+# members, an enum on a property needs the same members on the field, and a
+# field's kind (list, object, scalar) must agree. Added 2026-08-26 after the
+# gate passed with Narrative missing from erf.ts entirely.
+ts_ifaces = {m.group(1): m.group(2) for m in re.finditer(r"^export interface (\w+) \{(.*?)^\}", ts, re.S | re.M)}
+ts_aliases = {m.group(1): m.group(2).strip() for m in re.finditer(r"^export type (\w+)\s*=\s*(.*?);", ts, re.S | re.M)}
+def union_members(expr):
+    return set(re.findall(r'"([^"]+)"', expr))
+for name, d in schema.items():
+    if d.get("type") == "object" and "properties" in d:
+        if name not in ts_ifaces and not (name in ts_aliases and ts_aliases[name] in ts_ifaces):
+            problems.append(f"{name}: object definition in the schema, no interface in erf.ts")
+    if "enum" in d:
+        if name not in ts_aliases:
+            problems.append(f"{name}: enum definition in the schema, no type alias in erf.ts")
+        elif union_members(ts_aliases[name]) != set(d["enum"]):
+            problems.append(f"{name}: enum members differ: schema {sorted(d['enum'])}, erf.ts {sorted(union_members(ts_aliases[name]))}")
+    for f, pv in d.get("properties", {}).items():
+        body = ts_ifaces.get(name)
+        if body is None: continue
+        m = re.search(r"^\s*%s\??:\s*(.+?);" % re.escape(f), body, re.S | re.M)
+        if not m: continue
+        expr = re.sub(r"//.*", "", m.group(1)).strip()
+        if "enum" in pv and union_members(expr) != set(pv["enum"]):
+            problems.append(f"{name}.{f}: enum members differ: schema {sorted(pv['enum'])}, erf.ts {sorted(union_members(expr))}")
+        sch_kind = pv.get("type") or ("ref" if "$ref" in pv else None)
+        if sch_kind == "array" and not expr.endswith("[]"):
+            problems.append(f"{name}.{f}: a list in the schema, not a list in erf.ts ({expr})")
+        if sch_kind in ("string", "object") and expr.endswith("[]"):
+            problems.append(f"{name}.{f}: a {sch_kind} in the schema, a list in erf.ts")
+        if sch_kind == "ref":
+            target = pv["$ref"].split("/")[-1]
+            tdef = schema.get(target, {})
+            if tdef.get("type") == "object" and "properties" in tdef and not (expr == target or expr.startswith("{") or expr in ts_aliases):
+                problems.append(f"{name}.{f}: the schema refers to {target}, erf.ts has {expr}")
+
 if problems:
     print("schema vs types: the two disagree\n")
     for p in problems: print("  " + p)

@@ -7,6 +7,14 @@
  * is required. Until 2026-08-25 this file was normative and SPEC.md mirrored
  * it by hand; the two drifted for a day (F-005), which is why the schema now
  * owns the shape and this file follows.
+ *
+ * Using the model from another TypeScript project: this file is not
+ * published as a package. Generate types from the schema instead, which
+ * cannot drift from it:
+ *
+ *     npx json-schema-to-typescript erf.schema.json > erf.d.ts
+ *
+ * or copy this file; it is Apache-2.0 like the rest of the code.
  */
 
 export type AtomId = string;
@@ -17,7 +25,7 @@ export type ClaimId = string;
 /** Same deployment namespace; slug SHOULD end with the conducted date (ERF-28). */
 export type SurveyId = string;
 
-/** A corpus id, per the corpus declaration (ERF-59). */
+/** A corpus id, per the corpus declaration (`CorpusDeclaration`, ERF-73). */
 export type CorpusId = string;
 
 /** A recorded topic-family name. */
@@ -59,22 +67,19 @@ export interface ActorStamp {
   by: Actor;
 }
 
-/** One line of the append-only doxastic ledger (ERF-19, ERF-21). */
+/** One line of the append-only standings ledger (ERF-40, ERF-41). */
 export interface StandingEntry {
   /** A full RFC 3339 instant with time and offset, never a bare date
-   *  (ERF-19). This is the only ordered ledger in the format, so it is
-   *  the only place precision is mandatory. */
+   *  (the schema's `Instant`). This is the only ordered ledger in the
+   *  format, so it is the only place precision is mandatory. */
   timestamp: string;
   stance: Stance;
-  /** Only people take stances (ERF-21). */
+  /** Only people take stances (the schema's `HumanActor`). */
   by: `human:${string}`;
   /** Required; an entry without a reason is a toggle, not a judgment. */
   why: string;
   /** What the ruler faced at ruling time, by id (ERF-20). */
-  evidence_at_stance?: {
-    atoms_for: AtomId[];
-    atoms_against: AtomId[];
-  };
+  evidence_at_stance?: EvidenceAtStance;
 }
 
 /** One search act within a survey (ERF-27). Named for what a
@@ -96,17 +101,40 @@ export interface SearchAct {
   timestamp?: string;
 }
 
+/** What a standing entry faced at ruling time (ERF-20). Present and empty
+ *  means stamped and faced nothing; absent means never stamped (ERF-56). */
+export interface EvidenceAtStance {
+  atoms_for: AtomId[];
+  atoms_against: AtomId[];
+}
+
+/** An audit verdict (ERF-11). */
+export type Verdict = "SUPPORTED" | "PARTIAL" | "UNSUPPORTED";
+
 /** One recorded audit judgment (ERF-11, section 4.4). */
 export interface AuditEntry {
   /** A bare model or tool identifier, read together with `protocol`.
    *  Deliberately not an `Actor`: an audit entry names the instrument
    *  that rendered a verdict, not a role in the practice (ERF-11). */
   auditor: string;
-  verdict: "SUPPORTED" | "PARTIAL" | "UNSUPPORTED";
+  verdict: Verdict;
   timestamp: string;
   /** The versioned procedure that produced the verdict; verdicts under
    *  different protocols are not comparable. */
   protocol: string;
+}
+
+/** One typed relation from a claim to another claim (section 5). */
+export interface Edge {
+  to: ClaimId;
+  relation: Relation;
+}
+
+/** One curated result of a survey; `atoms` names the atoms it minted. */
+export interface NotableResult {
+  what: string;
+  note: string;
+  atoms?: AtomId[];
 }
 
 // ---------------------------------------------------------------------------
@@ -166,8 +194,8 @@ export interface Claim {
   surveys?: SurveyId[];
   /** Typed relations to other claims, claim-to-claim only
    *  (section 5, ERF-43, ERF-44). */
-  edges: { to: ClaimId; relation: Relation }[];
-  /** Append-only; per-person; humans only (ERF-19, ERF-21). */
+  edges: Edge[];
+  /** Append-only; per-person; humans only (ERF-40, the schema's `HumanActor`). */
   standings: StandingEntry[];
   /** Does the evidence carry the claim (section 4.4). */
   evidence_audit: AuditEntry[];
@@ -194,7 +222,7 @@ export interface Survey {
   searches: SearchAct[];
   /** The curated subset worth recording; entries mint atoms when a hit
    *  deserves quoting (ERF-27). */
-  notable_results: { what: string; note: string; atoms?: AtomId[] }[];
+  notable_results: NotableResult[];
   /** The predecessor record when the same sought is searched again. */
   prior_survey?: SurveyId;
   /** Record-keeping edits only (a transfer, a body note, an atom link
@@ -210,7 +238,7 @@ export interface Survey {
 // and its sources (ERF-73). Neither is a record.
 // ---------------------------------------------------------------------------
 
-/** The corpus declaration (ERF-59). */
+/** The corpus declaration; a corpus has exactly one (ERF-54). */
 export interface CorpusDeclaration {
   /** How a consumer finds this file: discovery is by content, never by
    *  filename or directory (ERF-54). */
@@ -219,13 +247,23 @@ export interface CorpusDeclaration {
   title: string;
   /** SemVer; what MAJOR and MINOR mean is change control's. */
   spec_version: string;
-  /** Opaque label; the format records it and does not read it (ERF-59). */
+  /** Opaque label; the format records it and does not read it. */
   classification?: string;
   owner?: Actor;
 }
 
-/** A source's id: its key in the corpus's source list (ERF-3). */
+/** A source's id: its key in the corpus's source list (`SourceList`). */
 export type SourceId = string;
+
+/** A narrative: prose whose passages bind to claims (section 4.6). The
+ *  bindings live in the body as markers, not in fields (ERF-31). */
+export interface Narrative {
+  type: "narrative";
+  title: string;
+  corpus: CorpusId;
+  created: ActorStamp;
+  body: string;
+}
 
 export interface SourceList {
   /** How a consumer finds this file (ERF-54). */
@@ -234,7 +272,7 @@ export interface SourceList {
 }
 
 export interface Source {
-  /** Identifies the work; never contains a URL (ERF-7). */
+  /** Identifies the work; never contains a URL (the schema's pattern; ERF-8). */
   citation_text: string;
   /** Canonical when present; `citation_text` renders from it (ERF-8). */
   citation?: CSL;
@@ -243,16 +281,16 @@ export interface Source {
   status:
     | "shipped"                 // ships under a licence that permits it (ERF-68)
     | "shipped-as-quotation"    // ships as a short quotation, under no licence (ERF-68, ERF-69)
-    | "not-redistributable"     // copyright forbids republication (ERF-5)
-    | "access-restricted"       // an access agreement forbids extraction (ERF-5)
-    | "licence-unverified";     // rights could not be established (ERF-5)
+    | "not-redistributable"     // copyright forbids republication (section 5)
+    | "access-restricted"       // an access agreement forbids extraction (section 5)
+    | "licence-unverified";     // rights could not be established (section 5)
   /** The text quotes are checked against: the pipeline's output, relative
    *  to the source list (ERF-1). */
   normalized?: string;
   /** "sha256:<hex>" of that file, so a reader can confirm the bytes the
    *  checks ran against (ERF-71). */
   normalized_digest?: string;
-  /** REQUIRED when no normalized text ships (ERF-5). */
+  /** REQUIRED when no normalized text ships (the schema's status conditional). */
   reason?: string;
   /** SPDX identifier where one applies (ERF-68). */
   licence?: string;
@@ -279,7 +317,7 @@ export interface Received {
   /** "sha256:<hex>", when the location serves stable bytes (ERF-71). */
   digest?: string;
   /** The date it arrived. REQUIRED when the location is mutable (ERF-2).
-   *  Named `timestamp` because `ERF-58` says the event-time key is
+   *  Named `timestamp` because the schema names the event-time key
    *  `timestamp` everywhere, and because YAML 1.1 resolves the bare key
    *  `on` to the boolean true: a Python reader on either PyYAML loader
    *  gets `{True: ...}` and cannot reach the field by name. This project
@@ -298,7 +336,7 @@ export type Excerpt = ActorStamp;
 // the file, and the two differ on purpose.
 //
 // List-typed fields are required here because a loaded record always has
-// them. In a file they are omitted when empty (ERF-55), and a reader
+// them. In a file they are omitted when empty (YAMLB-2), and a reader
 // materializes an omitted list as an empty one (ERF-56). An omitted list
 // means none, never unknown. This includes `finding_audit`: an atom nobody
 // has audited yet is a complete record whose audit list is empty, not a
