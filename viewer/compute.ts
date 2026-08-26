@@ -392,9 +392,9 @@ export function conflictsFor(claimId: string, c: LoadedCorpus): string[] {
  * The closure is what the edges REACH and never includes the argument
  * itself. Ruled 2026-08-25 (B-30): reading the root into its own closure
  * makes a premise-less argument a violation here and a flag under
- * `ERF-49`, so the same record would be both conforming and not. Excluded,
+ * section 2, unbacked, so the same record would be both conforming and not. Excluded,
  * it has an empty closure and satisfies this rule vacuously, and what is
- * wrong with it is that nothing backs it, which is `ERF-49`'s business.
+ * wrong with it is that nothing backs it, which is section 2, unbacked's business.
  */
 export function premiseClosure(root: Claim, c: LoadedCorpus): Set<string> {
   const seen = new Set<string>();
@@ -518,7 +518,7 @@ export function retiredPremises(c: LoadedCorpus): string[] {
   return out;
 }
 
-/** `ERF-49`: the computed warning a render shows. An argument's premises
+/** section 2, unbacked: the computed warning a render shows. An argument's premises
  *  arrive from both sides of the graph (`ERF-24`): its own outgoing
  *  `assumes` edges, and other claims' `supports` edges pointing at it, so
  *  both are consulted before calling it unbacked. */
@@ -545,7 +545,7 @@ export function unbacked(claim: Claim, c?: LoadedCorpus): boolean {
   return false;
 }
 
-/** Whether anyone currently stands on the claim; qualifies `ERF-49`'s flag. */
+/** Whether anyone currently stands on the claim; qualifies section 2, unbacked's flag. */
 export function stoodOn(claim: Claim): boolean {
   return currentStances(claim.standings).length > 0;
 }

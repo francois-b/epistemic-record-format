@@ -35,6 +35,12 @@ something in that corpus, and the ones that weren't were reversed.
 
 ## The subtraction ledger
 
+- **`ERF-49`, unbacked as a validator duty**: retired 2026-08-26. It said
+  a claim must not store whether it is backed, and the schema has no such
+  field, so it forbade nothing; what remained was a definition, and
+  "unbacked" is now a term in section 2. The consumer's reading of it is
+  unchanged.
+
 The format's field roster and vocabularies were reached by subtraction:
 candidates were admitted only on a demonstrated need (a "forcing
 instance") and retired on demonstrated non-use. The ledger, with the

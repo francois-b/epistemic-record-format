@@ -12,5 +12,5 @@ The recorded total is seventeen units.
 ## Working notes
 
 Written from the narrative down, before any evidence was sought. No atoms,
-no survey, no standing: an unsearched proposal, which `ERF-49` flags as
-such so the author can see the list of them.
+no survey, no standing: an unsearched proposal, which section 2 defines as
+such so a consumer can show the author the list of them.

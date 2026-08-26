@@ -23,22 +23,22 @@ const claim = (over: Partial<Claim>): Claim => ({
 const corpusWith = (...claims: Claim[]) =>
   ({ claims: new Map(claims.map((c) => [c.id, c])) }) as never;
 
-test("ERF-49: an observation someone stands on with no atoms and no surveys is unbacked", () => {
+test("unbacked: an observation someone stands on with no atoms and no surveys is unbacked", () => {
   assert.equal(unbacked(claim({})), true);
 });
 
-test("ERF-49: a survey alone backs an observation", () => {
+test("unbacked: a survey alone backs an observation", () => {
   assert.equal(unbacked(claim({ surveys: ["s-1"] })), false);
 });
 
-test("ERF-49: unbacked is read from the corpus, stood on or not", () => {
+test("unbacked (section 2) is read from the corpus, stood on or not", () => {
   // Ruled 2026-08-26: a proposal awaiting its search is unbacked and
   // conforms, and a consumer may show it. The stance qualifies the
-  // display; it no longer gates the reading.
+  // display; it does not gate the reading.
   assert.equal(unbacked(claim({ standings: [] })), true);
 });
 
-test("ERF-49: an argument with an outgoing assumes edge is backed", () => {
+test("unbacked: an argument with an outgoing assumes edge is backed", () => {
   const a = claim({ epistemic_kind: "argument", edges: [{ to: "p", relation: "assumes" }] });
   assert.equal(unbacked(a, corpusWith(a)), false);
 });
@@ -49,7 +49,7 @@ test("ERF-49/ERF-24: an argument backed only by an incoming supports edge is bac
   assert.equal(unbacked(a, corpusWith(a, premise)), false);
 });
 
-test("ERF-49: an argument with no premises on either side is unbacked", () => {
+test("unbacked: an argument with no premises on either side is unbacked", () => {
   const a = claim({ epistemic_kind: "argument" });
   assert.equal(unbacked(a, corpusWith(a)), true);
 });

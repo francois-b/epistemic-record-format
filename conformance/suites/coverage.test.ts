@@ -56,6 +56,9 @@ test("a retired id is not silently refilled", () => {
   // ERF-30 required a narrative to comprise prose plus a claims-tree
   // document, retired 2026-08-23: a claims-tree is one practice's doc class,
   // not something the format needs.
+  // ERF-49 said a claim must not store whether it is backed, retired
+  // 2026-08-26: the schema has no such field, so the rule forbade nothing,
+  // and "unbacked" is a defined term in section 2.
   // ERF-45 was the classification wall, retired 2026-08-24: a rule about
   // who may cite what is a policy, and v1 struck policies.
   // ERF-46 was title/body agreement, retired 2026-08-24 into ERF-18's
@@ -63,7 +66,7 @@ test("a retired id is not silently refilled", () => {
   // reading, and authoring judgment is not numbered. Retired ids are never
   // reused, so a reappearance would mean the numbering discipline broke
   // rather than that a rule came back.
-  for (const id of ["ERF-16", "ERF-29", "ERF-30", "ERF-45", "ERF-46", "ERF-64"]) {
+  for (const id of ["ERF-16", "ERF-29", "ERF-30", "ERF-45", "ERF-46", "ERF-49", "ERF-64"]) {
     assert.ok(!specRequirements().includes(id), `${id} is retired and must not reappear`);
     assert.ok(!(id in coverage()), `coverage names retired ${id}`);
   }

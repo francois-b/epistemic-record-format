@@ -318,8 +318,8 @@ ${b.presentableAsBacked
   : `<div class="warnbox"><b>Shown as a position, not as backed evidence.</b><br>${esc(b.note)}. The viewer will not present a claim as backed to a reader who cannot open the backing.</div>`}
 
 ${unbacked(cl, c) ? (stoodOn(cl)
-  ? `<div class="warnbox">Unbacked, and someone stands on it: no evidence of the kind its epistemic kind owes (<span class="id">ERF-49</span>).</div>`
-  : `<div class="warnbox">Unbacked and unsearched: neither atoms nor a survey yet (<span class="id">ERF-49</span>).</div>`) : ""}
+  ? `<div class="warnbox">Unbacked, and someone stands on it: no evidence of the kind its epistemic kind owes (<span class="id">section 2, unbacked</span>).</div>`
+  : `<div class="warnbox">Unbacked and unsearched: neither atoms nor a survey yet (<span class="id">section 2, unbacked</span>).</div>`) : ""}
 
 ${cl.atoms_for.length ? `<h3>Evidence for</h3><table><tr><th>Atom</th><th>Finding</th><th>Quality</th><th>Reader</th></tr>${cl.atoms_for.map(atomRow).join("")}</table>` : ""}
 ${cl.atoms_against.length ? `<h3>Evidence against</h3><table><tr><th>Atom</th><th>Finding</th><th>Quality</th><th>Reader</th></tr>${cl.atoms_against.map(atomRow).join("")}</table>` : ""}

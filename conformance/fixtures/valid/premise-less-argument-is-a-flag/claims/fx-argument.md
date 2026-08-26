@@ -20,5 +20,5 @@ The recorded total cannot be reconciled with the ledger.
 This argument has no premises: no outgoing `assumes` edge, and no claim
 supports it. Its premise closure is therefore empty and `ERF-43` is
 satisfied vacuously, because the root is not its own leaf. What is wrong
-with it is that nothing backs it, which is `ERF-49`'s flag. A flag is not a
+with it is that nothing backs it, which is unbacked (section 2), a reading and not a fault. A flag is not a
 violation (section 2), so this corpus conforms.

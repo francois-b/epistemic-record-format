@@ -20,7 +20,7 @@ an embargo-dating extension field on its declaration.
 
 `atoms_for` is correctly absent: a survey evidences coverage, not
 presence, and per ERF-25 this universal negative is audited as scoped
-rather than as proved. `surveys` is non-empty, so ERF-49's unbacked
+rather than as proved. `surveys` is non-empty, so the unbacked
 flag does not apply even though `atoms_for` is empty. The seven-corpus
 universe is closed and fully enumerated, which is the case the
 non-normative note under ERF-28 calls conclusive rather than

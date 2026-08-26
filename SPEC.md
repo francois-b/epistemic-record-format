@@ -131,6 +131,16 @@ shown here.
 - *deployment*: the set of corpora read and cited together, under one
   operator or organization. Record ids are unique within a deployment
   (`ERF-36`); between two deployments a bare id promises nothing.
+- *unbacked*: a reading of a claim's fields, never a field. A claim is
+  unbacked when it carries no `atoms_for`, no `surveys` and, for an
+  argument, no premises (`ERF-24`). It is a state and not a fault: a claim
+  written before its evidence is sought is unbacked and conforms, and a
+  corpus built from its narrative down is mostly unbacked for most of its
+  life. The rules of this format describe a corpus's state, whatever
+  order it was built in. Read the same way: no atoms and no survey means
+  unsearched; a survey and no atoms means searched and nothing found,
+  which is what a survey records (section 4.5). A consumer that shows
+  unbacked claims says whether anyone stands on each.
 - *disposition*: the computed reading of a claim's standings, one of
   `proposal`, `active`, `contested`, `rejected`, `retired` (`ERF-41`).
   Never a stored field.
@@ -195,7 +205,7 @@ is bound by the data model alone, with advice in the section named.
 | `type` | `ERF-54` |
 | `corpus` | `ERF-17` |
 | `title`, `body` | `ERF-18` |
-| `epistemic_kind` | `ERF-24`, `ERF-49` |
+| `epistemic_kind` | `ERF-24` |
 | `atoms_for`, `atoms_against` | `ERF-23` |
 | `surveys` | `ERF-25` |
 | `edges` | `ERF-43`, `ERF-44` |
@@ -260,7 +270,6 @@ reads the source's *normalized text*, which is what makes a check
 re-runnable years later and what turns a dead link into weakened provenance
 rather than a broken check. A worked source entry is in the binding
 document (section 7).
-
 
 Where a source has no `citation` block, write `citation_text` as "Author,
 Title (venue, year), locator when it matters"; the upgrade path to
@@ -333,7 +342,6 @@ is evidence about today's page rather than about what was read.
   performs it by obtaining the file at `received.url`, confirming
   `received.digest`, and re-running the tools of `ERF-70`.
 
-
 - **ERF-70** Where normalized text was produced from a raw file in another
   format,
   the source MUST name the extracting tool and its exact version
@@ -382,8 +390,6 @@ is evidence about today's page rather than about what was read.
 
 One piece of evidence: a verbatim quote, a finding, and the trail. A
 worked atom is in the binding document.
-
-
 
 **Writing one well.** The schema checks structure; it cannot check craft.
 A good finding is one sentence a stranger could check: it states what the
@@ -480,6 +486,7 @@ only prose.
   the date it was made, since what is true of that date is that someone
   expected it. `limitations` records the caveat about the evidence,
   whatever its kind.
+
 ### 4.3 The claim
 
 A statement that can be true or false, one a person could stand behind or
@@ -490,7 +497,6 @@ what the evidence says is recorded in `atoms_for` and `atoms_against`.
 Evidence against a claim weakens its position, never its identity: it is the
 same statement, standing in a worse light. A worked claim is in the
 binding document.
-
 
 The example ships as a proposal: no one has stood behind it, so its
 `standings` ledger is empty and therefore omitted from the file
@@ -617,7 +623,6 @@ cannot disconfirm a gap claim, because what disconfirms it is a found
 source, and a found source is atom-shaped; that is why a claim carries one
 `surveys` list and no against side. A worked survey is in the binding
 document.
-
 
 **Writing one well.** How often a fruitful survey is re-run is a question
 for whoever runs the practice, not for the format. Describe the search in
@@ -837,7 +842,7 @@ checks the relations no type can see.
   claims (`ERF-24`), MUST terminate in non-argument leaves. The closure is
   what the edges reach and excludes the argument itself, so a premise-less
   argument has an empty closure and satisfies this vacuously; it is
-  unbacked, which `ERF-49` reads and a consumer may show. Self-edges MUST NOT exist in any
+  unbacked (section 2), which a consumer may show. Self-edges MUST NOT exist in any
   relation. The premise relation over all claims MUST admit no cycles, `X
   assumes Y` and `Y supports X` both making `Y` a premise of `X`, whether
   or not any closure reaches the cycle; a premise id that resolves to
@@ -876,20 +881,6 @@ checks the relations no type can see.
 > unnecessary re-audit; under-stamping shows a current verdict on a finding
 > that has since moved, which is the failure that matters.
 
-- **ERF-49** A claim MUST NOT store whether it is backed; that is read
-  from what it carries. Any claim carries its evidence in `atoms_for`,
-  `atoms_against` and `surveys`; an `argument` carries premises as well,
-  the claims it `assumes` and the claims that `support` it (`ERF-24`). A
-  claim with no `atoms_for`, no `surveys` and, for an argument, no
-  premises is *unbacked*. Unbacked is a state and not a fault: a claim
-  written before its evidence is sought is unbacked and conforms, and a
-  corpus built from its narrative down is mostly unbacked for most of its
-  life. A consumer MAY show the unbacked claims, and one that does says
-  whether anyone stands on each, because a proposal awaiting its search
-  and a ruling with nothing under it are different things to look at.
-  Whether a claim was searched is read the same way: no atoms and no
-  survey means unsearched; a survey and no atoms means searched and
-  nothing found, which is what a survey records (section 4.5).
 - **ERF-50** The mechanical quote check (the normalized quote occurs in
   the source's normalized text) MUST be re-runnable by anyone holding the corpus and its
   normalized texts; it MUST run as a gate at minting and after any transform that
@@ -1115,6 +1106,7 @@ raw or normalized, and are the model's.
   reader under-interprets but never misreads. *Shape: `SemVer`.* The
   changed-meaning clause is what `ERF-60`'s refusal exists for: a field
   that stays parseable while its semantics move announces nothing.
+
 ## 8. Storage
 
 - **ERF-62** A corpus MUST have exactly one authoritative home. Every

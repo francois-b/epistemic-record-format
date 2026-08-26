@@ -153,9 +153,6 @@ requirements:
     note: >
       the statically checkable half; that a stamp advances on each edit is a
       property of history a loaded corpus does not carry
-  ERF-49:
-    tests: [computed, fixtures/valid/unsearched-proposal-is-flagged]
-    note: both kinds, and the ERF-24 premise direction for arguments
   ERF-50:
     tests: [quote-check, output]
   ERF-51:
