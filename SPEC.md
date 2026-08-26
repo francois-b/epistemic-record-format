@@ -142,144 +142,35 @@ shown here.
 
 ## 3. Data model (normative)
 
-The normative data model is the file `types/erf.ts`. The TypeScript below
-is an inline mirror of that file, kept in sync by hand; it omits the
-file's header comments and its identifier alias definitions, which are
-these: `AtomId`, `ClaimId`, `SurveyId`, `SourceId`, `CorpusId` and
-`FamilyName` are strings, and `CSL` is a CSL-JSON item, an object whose
-fields CSL types and this format does not. Where the two differ, the file
-governs. YAML examples elsewhere are informative.
-Object-shape unions are deliberately absent; the only unions are
-string-literal value sets.
+The data model is [`erf.schema.json`](erf.schema.json), a JSON Schema
+2020-12 document at the root of this repository, and it is normative: a
+file conforms to the model when it validates against the schema, with its
+markdown body attached as `body` where the model has one (a claim, a
+survey, a narrative). The schema describes the JSON data model, not any
+wire; every binding (section 7) maps onto it. It carries the shape rules
+this document once stated in prose: which fields exist and which are
+required, the closed vocabularies, the three actor forms and their
+disjointness, the precisions a date may take, and the conditional that a
+source which ships names its normalized text while one which does not
+names its reason. Where a requirement below is marked *Shape*, the schema
+holds the enforceable form and the requirement holds the reason.
 
-```ts
-type EpistemicKind  = "observation" | "argument" | "bet" | "commitment";
-type Stance         = "for" | "against" | "withdrawn";
-type Relation       = "supports" | "assumes" | "decomposes-into"
-                    | "conflicts-with";
-type SourceQuality  = "high" | "medium" | "low";
-type Actor  = `human:${string}` | `${string}/${string}` | `process:${string}`;
+What a schema cannot say lives in sections 4 to 7: anything about more
+than one record (references resolving, ids unique, the premise relation
+acyclic), anything computed rather than stored (disposition, staleness,
+the quote check), and every obligation on an act (verbatim, as the
+instrument reported it, only a person takes a stance). Those are the
+format's argument, and they are prose because no notation checks them.
 
-interface ActorStamp   { timestamp: string; by: Actor }      // RFC 3339
-interface StandingEntry { timestamp: string; stance: Stance;
-                       by: `human:${string}`; why: string;   // humans only
-                       evidence_at_stance?: {                // what the ruler faced (ERF-20)
-                         atoms_for: AtomId[]; atoms_against: AtomId[] } }
-interface AuditEntry { auditor: string;
-                       verdict: "SUPPORTED" | "PARTIAL" | "UNSUPPORTED";
-                       timestamp: string; protocol: string }
-
-interface Atom {
-  id: AtomId;                  // corpus prefix + number, e.g. kwg-117
-  type: "atom";
-  corpus: CorpusId;            // the corpus this record belongs to
-  finding: string;             // one sentence: what the quote shows
-  quote: string;               // verbatim from the normalized text; [...] elides
-  source: SourceId;            // the source quoted, per the corpus's source list (ERF-4)
-  source_quality: SourceQuality;
-  as_of_date?: string;         // the date the FACT is true of (ERF-14)
-  limitations?: string;        // recorded caveat about the evidence
-  created: ActorStamp;
-  last_modified?: ActorStamp;
-  finding_audit: AuditEntry[]; // judgment verdicts, recorded per auditor
-}
-
-interface Claim {
-  id: ClaimId;                 // unique across the deployment's corpora
-  type: "claim";
-  corpus: CorpusId;            // the corpus this record belongs to; mutable
-  title: string;               // THE claim statement (normative)
-  epistemic_kind: EpistemicKind;
-  created: ActorStamp;
-  last_modified?: ActorStamp;
-  short_name?: string;         // compact spoken name
-  families: FamilyName[];      // recorded membership for exact pulls
-  atoms_for: AtomId[];
-  atoms_against: AtomId[];
-  surveys?: SurveyId[];        // absence/coverage backing (section 4.5)
-  edges: { to: ClaimId; relation: Relation }[];   // claim-to-claim only
-  standings: StandingEntry[];  // append-only; per-person; humans only
-  evidence_audit: AuditEntry[]; // does the evidence carry the claim (section 4.4)
-  semantic_query?: string;     // pre-authored evidence-search key; see 3.1
-  body: string;                // SHOULD open by restating title; then working notes
-}
-
-interface SearchAct {
-  tool: string;                // the concrete instrument, named
-  query: string;               // in the tool's own terms
-  scope?: string;              // restriction, when one applied
-  hits_reported: string;       // yield as the instrument reported it
-  timestamp?: string;          // when acts span sittings
-}
-
-interface Survey {
-  id: SurveyId;                // same namespace; slug SHOULD end with date
-  type: "survey";
-  corpus: CorpusId;
-  title: string;               // what the survey sought
-  conducted: ActorStamp;       // machine actors legal; judgment stays on claims
-  searches: SearchAct[];       // immutable once conducted (ERF-28)
-  notable_results: { what: string; note: string; atoms?: AtomId[] }[];
-  prior_survey?: SurveyId;     // re-run linkage
-  last_modified?: ActorStamp;  // record-keeping edits only; the acts never change
-  body: string;
-}
-
-// Beside the records, a corpus has structure of its own: its declaration
-// and its sources (ERF-3, ERF-4, ERF-5, ERF-59). Neither is a record. A
-// source is identified by its key in the source list and shared by every
-// atom that quotes it.
-
-interface CorpusDeclaration {
-  type: "corpus";              // how a consumer finds it (ERF-54)
-  id: CorpusId;
-  title: string;
-  spec_version: string;        // SemVer (ERF-61)
-  classification?: string;     // opaque label; the format does not read it
-  owner?: Actor;
-}
-
-interface SourceList {                       // the document holding them
-  type: "sources";             // how a consumer finds it (ERF-54)
-  sources: Record<SourceId, Source>;
-}
-
-interface Source {                           // one entry of the source list
-  citation_text: string;       // identifies the work; never a URL (ERF-7)
-  citation?: CSL;              // canonical when present (ERF-8)
-  received?: Received;         // the raw file, as it arrived (ERF-2, ERF-7)
-  status: "shipped"                          // under a licence (ERF-68)
-        | "shipped-as-quotation"             // under none (ERF-68, ERF-69)
-        | "not-redistributable"              // copyright forbids it (ERF-5)
-        | "access-restricted"                // an agreement forbids it (ERF-5)
-        | "licence-unverified";              // rights unestablished (ERF-5)
-  normalized?: string;         // the text quotes are checked against (ERF-1)
-  normalized_digest?: string;  // "sha256:<hex>" of that file (ERF-71)
-  reason?: string;             // REQUIRED when no normalized text ships (ERF-5)
-  licence?: string;            // SPDX identifier where one applies (ERF-68)
-  licence_name?: string;       // the licence's plain name
-  excerpt?: Excerpt;           // who selected the passage, and when (ERF-69)
-  extraction?: string;         // the tool that produced markdown from raw (ERF-70)
-  normalization?: string;      // the tool that cleaned that markdown (ERF-70)
-}
-
-interface Received {                         // the raw file, as it arrived
-  url?: string;                // where it came from, when it came from the web
-  path?: string;               // where the corpus holds it, when it holds it
-  digest?: string;             // "sha256:<hex>", when the bytes are stable
-  timestamp?: string;          // the date it was received (ERF-2, ERF-58)
-}
-
-// Excerpt is an ActorStamp: the one attributed step of the pipeline
-// (ERF-69) records who selected the passage and when, like any other act.
-
-
-```
-
-Lists are total in the type and MAY be empty; empty lists are omitted in
-serialization (section 7). Optional fields (`?`) assert existence when
+The six kinds of file, discriminated by `type`: `atom`, `claim` and
+`survey` are records; `corpus` is the declaration, `sources` the source
+list, `narrative` a document. Lists are total in the model and MAY be
+omitted on the wire when empty; a reader materializes them (`ERF-55`,
+`ERF-56`). A field the schema does not require asserts existence when
 present: a `citation` means structure exists, a `received` means a fetch
-happened, a `last_modified` means an edit happened.
+happened, a `last_modified` means an edit happened. `types/erf.ts` is a
+TypeScript rendering of the schema for the reference implementation, held
+to it by a gate, and is not normative.
 
 ### 3.1 Field reference
 

@@ -616,7 +616,7 @@
         },
         "body": {
           "type": "string",
-          "description": "The markdown body: the proposition, then working notes."
+          "description": "The markdown body: the proposition, then working notes. Part of the model instance; on the wire it is the file body (ERF-53)."
         }
       },
       "additionalProperties": false,
@@ -631,7 +631,8 @@
         "corpus",
         "title",
         "epistemic_kind",
-        "created"
+        "created",
+        "body"
       ],
       "description": "One statement a person could stand behind or dispute (section 4.3)."
     },
@@ -674,7 +675,8 @@
           "$ref": "#/$defs/ActorStamp"
         },
         "body": {
-          "type": "string"
+          "type": "string",
+          "description": "What was sought and what was found, in prose (ERF-28). Part of the model instance; on the wire it is the file body."
         }
       },
       "additionalProperties": false,
@@ -689,7 +691,8 @@
         "corpus",
         "title",
         "conducted",
-        "searches"
+        "searches",
+        "body"
       ],
       "description": "A search act recorded as evidence of absence (section 4.5)."
     },
@@ -791,7 +794,8 @@
         "type",
         "title",
         "corpus",
-        "created"
+        "created",
+        "body"
       ],
       "description": "A document, not a record (ERF-34)."
     }

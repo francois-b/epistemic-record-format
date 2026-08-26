@@ -1,23 +1,14 @@
 /**
- * The Epistemic Record Format (ERF): normative data model.
- * v0.9.0, 2026-08-25. Draft; not yet published.
+ * A TypeScript rendering of erf.schema.json for the reference implementation.
  *
- * This file is the normative data model of the specification (SPEC.md,
- * section 3, which carries an inline mirror of it; where the two differ,
- * this file governs).
- *
- * Field names are snake_case in these interfaces, a stated deviation from
- * TypeScript idiom (SPEC.md section 3.2): serialization fidelity outranks
- * style, and every example stays copy-pasteable between the spec and a
- * file. Object-shape unions are deliberately absent; the only unions are
- * string-literal value sets.
+ * NOT NORMATIVE. The data model is erf.schema.json (SPEC.md section 3).
+ * This file is held to it by tools/lint-schema-types.py, which fails when an
+ * interface here and a definition there disagree on a field or on whether it
+ * is required. Until 2026-08-25 this file was normative and SPEC.md mirrored
+ * it by hand; the two drifted for a day (F-005), which is why the schema now
+ * owns the shape and this file follows.
  */
 
-// ---------------------------------------------------------------------------
-// Identifiers
-// ---------------------------------------------------------------------------
-
-/** Corpus prefix plus sequence, e.g. "kwg-117". Never renamed, never reused. */
 export type AtomId = string;
 
 /** Unique across the deployment's corpora; encodes no location (ERF-36). */
