@@ -1,0 +1,5 @@
+type: corpus
+id: fixture-unsearched
+title: "A proposal nobody has searched for yet"
+spec_version: "0.9.0"
+classification: public

@@ -836,8 +836,8 @@ checks the relations no type can see.
   its outgoing `assumes` edges and the incoming `supports` edges of other
   claims (`ERF-24`), MUST terminate in non-argument leaves. The closure is
   what the edges reach and excludes the argument itself, so a premise-less
-  argument has an empty closure and satisfies this vacuously; what is
-  wrong with it is `ERF-49`'s flag. Self-edges MUST NOT exist in any
+  argument has an empty closure and satisfies this vacuously; it is
+  unbacked, which `ERF-49` reads and a consumer may show. Self-edges MUST NOT exist in any
   relation. The premise relation over all claims MUST admit no cycles, `X
   assumes Y` and `Y supports X` both making `Y` a premise of `X`, whether
   or not any closure reaches the cycle; a premise id that resolves to
@@ -876,11 +876,20 @@ checks the relations no type can see.
 > unnecessary re-audit; under-stamping shows a current verdict on a finding
 > that has since moved, which is the failure that matters.
 
-- **ERF-49** A validator MUST flag as unbacked an `observation` someone
-  stands on with empty `atoms_for` and empty `surveys`, and such an
-  `argument` with no premises, meaning no outgoing `assumes` edge and no
-  incoming `supports` edge (`ERF-24`). The computed warning a render
-  shows.
+- **ERF-49** A claim MUST NOT store whether it is backed; that is read
+  from what it carries. Any claim carries its evidence in `atoms_for`,
+  `atoms_against` and `surveys`; an `argument` carries premises as well,
+  the claims it `assumes` and the claims that `support` it (`ERF-24`). A
+  claim with no `atoms_for`, no `surveys` and, for an argument, no
+  premises is *unbacked*. Unbacked is a state and not a fault: a claim
+  written before its evidence is sought is unbacked and conforms, and a
+  corpus built from its narrative down is mostly unbacked for most of its
+  life. A consumer MAY show the unbacked claims, and one that does says
+  whether anyone stands on each, because a proposal awaiting its search
+  and a ruling with nothing under it are different things to look at.
+  Whether a claim was searched is read the same way: no atoms and no
+  survey means unsearched; a survey and no atoms means searched and
+  nothing found, which is what a survey records (section 4.5).
 - **ERF-50** The mechanical quote check (the normalized quote occurs in
   the source's normalized text) MUST be re-runnable by anyone holding the corpus and its
   normalized texts; it MUST run as a gate at minting and after any transform that

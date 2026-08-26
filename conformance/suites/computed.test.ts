@@ -31,8 +31,11 @@ test("ERF-49: a survey alone backs an observation", () => {
   assert.equal(unbacked(claim({ surveys: ["s-1"] })), false);
 });
 
-test("ERF-49: a proposal is never flagged; the warning needs a stance", () => {
-  assert.equal(unbacked(claim({ standings: [] })), false);
+test("ERF-49: unbacked is read from the corpus, stood on or not", () => {
+  // Ruled 2026-08-26: a proposal awaiting its search is unbacked and
+  // conforms, and a consumer may show it. The stance qualifies the
+  // display; it no longer gates the reading.
+  assert.equal(unbacked(claim({ standings: [] })), true);
 });
 
 test("ERF-49: an argument with an outgoing assumes edge is backed", () => {

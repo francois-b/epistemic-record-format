@@ -523,12 +523,16 @@ export function retiredPremises(c: LoadedCorpus): string[] {
  *  `assumes` edges, and other claims' `supports` edges pointing at it, so
  *  both are consulted before calling it unbacked. */
 export function unbacked(claim: Claim, c?: LoadedCorpus): boolean {
-  const stood = currentStances(claim.standings).length > 0;
-  if (!stood) return false;
-  if (claim.epistemic_kind === "observation") {
-    return claim.atoms_for.length === 0 && (claim.surveys?.length ?? 0) === 0;
-  }
+  // Fires whether or not anyone stands on the claim (ruled 2026-08-25,
+  // F-020): a corpus built from its narrative down is proposals for most
+  // of its life, and this is the list of the hollow ones. `stoodOn` says
+  // which kind of unbacked a reader is looking at.
+  const noEvidence = claim.atoms_for.length === 0 && (claim.surveys?.length ?? 0) === 0;
+  if (claim.epistemic_kind === "observation") return noEvidence;
   if (claim.epistemic_kind === "argument") {
+    // An argument carries atoms as well as premises; it is unbacked only
+    // with neither.
+    if (!noEvidence) return false;
     const assumes = claim.edges.some((e) => e.relation === "assumes");
     if (assumes) return false;
     if (!c) return claim.edges.length === 0;
@@ -539,6 +543,11 @@ export function unbacked(claim: Claim, c?: LoadedCorpus): boolean {
     return true;
   }
   return false;
+}
+
+/** Whether anyone currently stands on the claim; qualifies `ERF-49`'s flag. */
+export function stoodOn(claim: Claim): boolean {
+  return currentStances(claim.standings).length > 0;
 }
 
 /**

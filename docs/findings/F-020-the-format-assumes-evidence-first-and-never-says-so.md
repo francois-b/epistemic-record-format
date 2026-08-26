@@ -11,7 +11,8 @@ specified:
   requirement: "ERF-55, ERF-56, ERF-49, ERF-47"
   claim: null
 verifications: []
-outcome: open
+outcome: promoted
+promoted_to: "ERF-49, ruled directly 2026-08-26"
 ---
 
 # F-020 · The format assumes evidence-first and never says so
@@ -41,3 +42,28 @@ and gave audits nothing equivalent.
 - Let `ERF-49` fire on a proposal too, as a weaker flag ("no evidence
   yet") distinct from "unbacked and stood on".
 - An audit-time evidence stamp, the audit analogue of `evidence_at_stance`.
+
+## Resolution
+
+Ruled 2026-08-26 by the operator, whose workflow is the top-down one and
+who declined the first candidate outright: the format must not state that
+evidence precedes assertion, because that is false of how it is used. The
+rules describe a corpus's state, whatever order it was built in, and
+`ERF-49` now says so.
+
+Two of the three collisions dissolve on the operator's second point, that
+the interval is derivable. A claim with no atoms and no surveys has not
+been searched; one with a survey and no atoms was searched and nothing was
+found; that is what surveys record, and no claim-side state is needed. The
+audit stamp is declined: a standing is a person's act and cannot be re-run,
+which is why `ERF-20` stamps it, while an audit is an LLM call and can, and
+`ERF-47`'s stale flag is the instruction to run it again.
+
+The one change is a reading, not a state, and not a duty either. The
+operator declined "a validator MUST flag" as presuming a reader who wants
+telling: an unbacked claim conforms. `ERF-49` now says what backing is and
+how it is read from the corpus, that unbacked is a state and not a fault, and
+that a consumer MAY show the list, saying whether anyone stands on each. A
+corpus written from its narrative down is mostly unbacked for most of its
+life, and the list the trial kept outside the format is now something any
+consumer can compute.

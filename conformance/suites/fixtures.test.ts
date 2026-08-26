@@ -13,7 +13,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import yaml from "js-yaml";
 import { loadCorpus } from "../../viewer/corpus.ts";
-import { brokenAnchors, danglingRefs, disposition, evidenceRefsFlagged, quoteCheck, standingTies } from "../../viewer/compute.ts";
+import { brokenAnchors, danglingRefs, disposition, evidenceRefsFlagged, quoteCheck, standingTies, stoodOn, unbacked } from "../../viewer/compute.ts";
 import { FIXTURES } from "../paths.ts";
 
 interface Expectation {
@@ -180,6 +180,14 @@ test("content from a newer minor version is preserved and reported, not rejected
   assert.ok(c.newerMinor, "the loader noticed the newer version");
   assert.equal(c.newerMinor!.fields.length, 1, "the unknown field is reported");
   assert.ok(c.unrecognized.some((u) => u.type === "question"), "the unknown type is reported");
+});
+
+test("an unsearched proposal is flagged, and the flag says nobody stands on it", () => {
+  const c = loadCorpus(join(FIXTURES, "valid", "unsearched-proposal-is-flagged"));
+  const cl = c.claims.get("fx-claim")!;
+  assert.deepEqual(c.findings, []);
+  assert.ok(unbacked(cl, c), "no atoms, no survey: unbacked");
+  assert.ok(!stoodOn(cl), "and a proposal, not a ruling");
 });
 
 test("invalid fixtures are rejected, each citing its requirement", async (t) => {
