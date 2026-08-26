@@ -459,3 +459,13 @@ Spot-checked on five sources spanning both extractors (`fowler-ci`,
 `arxiv-nanopub-claims`): all five reproduced byte for byte, which is what
 ERF-70's determinism requirement asks of the pipeline and what
 `normalized_digest` lets a reader confirm.
+
+
+## Raw captures are not in the repository
+
+`corpus/raw/` holds third-party pages and papers fetched for checking.
+They are not redistributable and were removed from the repository's
+history on 2026-08-26; `corpus/sources.yaml` carries each one's URL and
+digest, so a reader can re-fetch and verify. The essay's own source and
+PDF stay, in `raw/` beside this file. The normalized excerpts under
+`corpus/normalized/` are what the quote check reads.
