@@ -291,9 +291,12 @@ export function quoteCheck(atom: Atom, captureText: string | null): QuoteCheck {
     return { state: "fail", detail: "the quote is nothing but elisions, so it checks nothing" };
   }
   let cursor = 0;
-  for (const p of parts) {
+  for (const [i, p] of parts.entries()) {
     const at = findWholeWords(hay, p, cursor);
-    if (at < 0) return { state: "fail", detail: "a segment of the quote does not occur in the source's normalized text as whole words" };
+    if (at < 0) {
+      const shown = p.length > 80 ? `${p.slice(0, 77)}...` : p;
+      return { state: "fail", detail: `segment ${i + 1} of ${parts.length} does not occur in the source's normalized text as whole words${cursor ? " after the previous segment" : ""}: "${shown}"` };
+    }
     cursor = at + p.length;
   }
   return { state: "pass", detail: "the normalized quote occurs in the source's normalized text" };
@@ -492,8 +495,8 @@ export function brokenAnchors(c: LoadedCorpus): string[] {
       // The anchor is a verbatim quotation of its passage and meets the
       // quote's test: the fold, and whole words.
       if (needle && findWholeWords(hay, needle, 0) < 0) {
-        out.push(`${n.slug}: anchor "${b.anchor}" no longer occurs in the passage `
-          + `(claims ${b.claims.join(", ")})`);
+        out.push(`${n.slug}: anchor "${b.anchor}" does not occur in its passage, the text `
+          + `between the previous binding's marker and this one (claims ${b.claims.join(", ")})`);
       }
     }
   }

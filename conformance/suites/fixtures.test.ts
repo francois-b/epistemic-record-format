@@ -120,7 +120,7 @@ test("an anchor left behind by an edit is flagged, and the corpus still conforms
   assert.deepEqual(c.findings, [], "editing prose is permitted, so this is no violation");
   const flags = brokenAnchors(c);
   assert.equal(flags.length, 1, `expected one flag, got ${JSON.stringify(flags)}`);
-  assert.match(flags[0], /no longer occurs/);
+  assert.match(flags[0], /does not occur in its passage/);
 });
 
 /**

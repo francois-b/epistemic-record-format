@@ -16,15 +16,20 @@ import { quoteCheck, brokenAnchors, evidenceRefsFlagged, retiredPremises, standi
 const dir = process.argv[2];
 if (!dir) { console.error("usage: erf-check <corpus-dir>"); process.exit(2); }
 const c = loadCorpus(dir);
+console.error("# VIOLATION: does not conform. FLAG: look, not a violation. UNCHECKABLE: the text is not held. "
+  + "UNRECOGNIZED: a file that is not a document. NOT-CHECKED: this tool does not decide it.");
 let violations = 0;
+const quote = { pass: 0, fail: 0, uncheckable: 0 };
 for (const f of [...c.findings, ...danglingRefs(c)]) { violations++; console.log(`VIOLATION\t${f.record}\t${f.field}\t${f.detail}`); }
 for (const a of c.atoms.values()) {
   const s = c.sources.get(a.source);
   const p = s?.normalized ? join(dir, s.normalized) : null;
   const r = quoteCheck(a, p && existsSync(p) ? readFileSync(p, "utf8") : null);
+  quote[r.state]++;
   if (r.state === "fail") { violations++; console.log(`VIOLATION\t${a.id}\tquote\t${r.detail} (ERF-50, ERF-52)`); }
   else if (r.state === "uncheckable") console.log(`UNCHECKABLE\t${a.id}\tquote\t${r.detail}`);
 }
+console.log(`QUOTE\t${quote.pass} passed, ${quote.fail} failed, ${quote.uncheckable} uncheckable of ${c.atoms.size} atoms`);
 for (const x of brokenAnchors(c)) console.log(`FLAG\tERF-31\t${x}`);
 for (const x of evidenceRefsFlagged(c)) console.log(`FLAG\tERF-35\t${x}`);
 for (const x of retiredPremises(c)) console.log(`FLAG\tERF-43\t${x}`);

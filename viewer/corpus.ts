@@ -157,18 +157,34 @@ const YAML_OPTS = { schema: yaml.JSON_SCHEMA, json: false } as const;
  */
 const SCHEMA_PATH = join(dirname(fileURLToPath(import.meta.url)), "..", "erf.schema.json");
 const ajv = new Ajv2020({ allErrors: true, strict: true, strictRequired: false });
-const validateModel = ajv.compile(JSON.parse(readFileSync(SCHEMA_PATH, "utf8")));
+const schemaJson = JSON.parse(readFileSync(SCHEMA_PATH, "utf8")) as { $id: string };
+const validateModel = ajv.compile(schemaJson);
+/** The root is a choice over six document types, each declared by `type`. */
+const TYPE_DEFS: Record<string, string> = {
+  atom: "Atom", claim: "Claim", survey: "Survey", corpus: "CorpusDeclaration", sources: "SourceList", narrative: "Narrative",
+};
 
 function checkSchema(instance: unknown, record: string, findings: ConformanceFinding[]): void {
   if (validateModel(instance)) return;
-  for (const e of validateModel.errors ?? []) {
-    // The root is a choice over six types; report the branch's own errors
-    // and skip the "must match exactly one schema" wrapper, which says
-    // nothing a reader can act on.
+  // Dispatch on `type` first: validating against the one branch the document
+  // declares reports that branch's errors alone. Against the root, ajv
+  // reports every branch's errors, and two typos in an atom produced sixty
+  // lines, most of them about claims and surveys (a newcomer trial,
+  // 2026-08-26; the Bitter Lesson trial's F-13).
+  const declared = (instance as { type?: unknown } | null)?.type;
+  const def = typeof declared === "string" ? TYPE_DEFS[declared] : undefined;
+  const branch = def ? ajv.getSchema(`${schemaJson.$id}#/$defs/${def}`) : undefined;
+  let errors = validateModel.errors ?? [];
+  if (branch && !branch(instance)) errors = branch.errors ?? errors;
+  for (const e of errors) {
+    // Skip the "must match exactly one schema" wrapper, which says nothing
+    // a reader can act on.
     if (e.keyword === "oneOf") continue;
     const field = (e.instancePath || "/").replace(/^\//, "").replace(/\//g, ".") || "(record)";
     const extra = e.params && "additionalProperty" in e.params ? ` (${String(e.params.additionalProperty)})` : "";
-    findings.push({ record, field, detail: `${e.message ?? "schema error"}${extra}; the data model is erf.schema.json (ERF-73)` });
+    const hint = e.keyword === "type" && e.params?.type === "string"
+      ? "; a bare year or number in YAML parses as a number, so quote it (ERF-65)" : "";
+    findings.push({ record, field, detail: `${e.message ?? "schema error"}${extra}${hint}; the data model is erf.schema.json (ERF-73)` });
   }
 }
 

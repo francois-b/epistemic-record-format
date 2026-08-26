@@ -83,15 +83,21 @@ copied from a working practice: nine atoms, six claims, three
 surveys, and a narrative whose passages bind to the claims they rest on. [`viewer/`](viewer/) renders it to static HTML.
 
 ```
-cd viewer && npm install
-npx tsx erf-view.ts ../examples/corpora/minimal -o ../examples/site
+npm install                                   # installs the viewer and the conformance suite
+npm run check -- examples/corpora/minimal     # the validator: violations, flags, what it does not check
+npm run view -- examples/corpora/minimal -o examples/site
 ```
+
+`erf-check` is the reference validator, and the first thing to run on a
+corpus you wrote: it prints a line per violation and per flag, a `QUOTE`
+summary of how many quotes checked, and a `NOT-CHECKED` line for each
+requirement it does not decide. Exit 1 on any violation.
 
 Two things in that corpus are worth knowing before you look. Every claim
 computes to `proposal`, because nobody has stood behind any of them and the
 format never infers a position from the strength of the evidence. And the
-captures are mixed on purpose: four of the nine atoms ship their captured
-copy (two W3C documents, whose licence permits it) and the quote check runs
+held texts are mixed on purpose: four of the nine atoms ship their
+normalized text (two W3C documents, whose licence permits it) and the quote check runs
 for them; the other five quote sources whose licences do not permit
 republication, so their checks cannot run here, and the viewer says so on
 every claim leaning on one rather than presenting an unresolvable backing
