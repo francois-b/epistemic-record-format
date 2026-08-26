@@ -28,7 +28,7 @@ covers those; run them alone when only prose changed.
 - [ ] `python3 tools/lint-field-names.py`
 - [ ] `python3 tools/generate-types.py --check`
 - [ ] Generated indexes regenerated, if their inputs moved:
-      `python3 tools/backlog-index.py`, `python3 tools/requirements-index.py`
+      `python3 tools/generate-backlog-index.py`, `python3 tools/generate-requirements-index.py`
 
 If a conformance case failed, say which and what you decided. A failing test
 is a finding about an implementation, never an expectation to edit.

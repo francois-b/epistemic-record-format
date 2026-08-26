@@ -656,7 +656,7 @@ record to every file, because the source list is the verifiability chain
 and is not a record. `ERF-65`, `ERF-66`, `ERF-67` and the YAML half of
 `ERF-53` moved to `bindings/yaml-markdown.md`, ids intact. Eighteen mixed
 requirements are named for splitting in 0.10. YAML was inherited, not
-chosen: `docs/history.md` records no forcing instance behind it, alone
+chosen: `docs/design-history.md` records no forcing instance behind it, alone
 among the format's decisions, and a sourced survey of its costs ships
 beside the binding.
 

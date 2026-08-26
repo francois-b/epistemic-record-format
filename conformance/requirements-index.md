@@ -13,7 +13,7 @@ model: claude-opus-5
 requirement's text, its home and its coverage actually live. Regenerate with:
 
 ```
-python3 tools/requirements-index.py
+python3 tools/generate-requirements-index.py
 ```
 
 The gist column is the requirement's opening, trimmed. It is a finding aid and
@@ -82,7 +82,7 @@ is not repeated down the column.
 
 ## Retired ids
 
-Never reused and never refilled, so that a requirement-by-requirement diff can tell a retired id from a lost one. The rulings are in `../CHANGELOG.md` and `../docs/history.md`.
+Never reused and never refilled, so that a requirement-by-requirement diff can tell a retired id from a lost one. The rulings are in `../CHANGELOG.md` and `../docs/design-history.md`.
 
 | Retired id |
 |---|

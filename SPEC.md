@@ -12,7 +12,7 @@ model: claude-fable-5
 
 Specification, v0.9 (draft). The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way is
-`docs/history.md`, the fields it draws on are `docs/influences.md`, what it
+`docs/design-history.md`, the fields it draws on are `docs/influences.md`, what it
 deliberately does not do is `docs/purpose.md`, what was ruled out is
 `docs/non-goals.md`, and what it does not do yet is `docs/backlog/`.
 
@@ -279,7 +279,7 @@ alike: serialization fidelity outranks TypeScript idiom, so every example
 stays copy-pasteable between this document and a file. Type aliases are
 PascalCase and self-sufficient out of context (`EpistemicKind`, not
 `Kind`). The conventions that govern how future names are chosen are in
-`docs/history.md`; they bind whoever edits this specification, not an
+`docs/design-history.md`; they bind whoever edits this specification, not an
 implementer reading it.
 
 ## 4. Record types
@@ -928,7 +928,7 @@ checks the relations no type can see.
 > moved to a named tool in the pipeline (`ERF-70`). The 2026-08-25 trials
 > then showed the three steps were necessary and not sufficient, which is
 > where the format characters, the marker rule and the paragraph boundary
-> came from; `docs/history.md` has the measurements.
+> came from; `docs/design-history.md` has the measurements.
 
   These assume text or markdown, which is what normalized text always is:
   it is authored, not converted at check time. Where the source was a
@@ -1120,7 +1120,7 @@ raw or normalized, and are the model's.
   reorganized without moving one.
 - The discipline the specification's own editors work under (forcing
   instances, the decision register, the changelog) is stated in
-  `docs/history.md`; it binds whoever amends this document, not an
+  `docs/design-history.md`; it binds whoever amends this document, not an
   implementer reading it.
 
 ## Related formats (non-normative)
@@ -1180,7 +1180,7 @@ below that threshold.
 
 ### Informative
 
-- *How the format got this way*: `docs/history.md`, this repository
+- *How the format got this way*: `docs/design-history.md`, this repository
 - *Influences*: `docs/influences.md`, this repository
 - Gordon and Walton, *The Carneades Argumentation Framework* (CMNA 2006)
 - Nanopublication Guidelines: nanopub.net; Kuhn and Dumontier, *Trusty URIs*

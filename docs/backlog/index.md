@@ -19,7 +19,7 @@ the raiser confirming both.
 
 Nothing here is a promise and nothing is scheduled. **One file per entry,
 in this folder**; this page is generated from them by
-`tools/backlog-index.py` and is never edited by hand.
+`tools/generate-backlog-index.py` and is never edited by hand.
 
 ## What an entry carries
 
@@ -144,7 +144,7 @@ Verified accurate. The format does not do these yet; each names the event that w
 | [`B-06`](B-06-atom-lifecycle-withdrawn-superseded-by.md) | **trigger-driven** | Atom lifecycle (`withdrawn`, `superseded_by`) | `anticipated` | `accurate` |
 | [`B-08`](B-08-content-addressed-record-ids.md) | **trigger-driven** | Content-addressed record ids | `anticipated` | `accurate` |
 | [`B-09`](B-09-canonical-serialization-of-a-record-before-any-hashing.md) | **trigger-driven** | Canonical serialization of a record, before any hashing | `anticipated` | `accurate` |
-| [`B-10`](B-10-a-families-registry-definitions-rename-history.md) | **trigger-driven** | A families registry (definitions, rename history) | `anticipated` | `accurate` |
+| [`B-10`](B-10-a-families-registry-definitions-rename-design-history.md) | **trigger-driven** | A families registry (definitions, rename history) | `anticipated` | `accurate` |
 | [`B-11`](B-11-an-actor-registry.md) | **trigger-driven** | An actor registry | `anticipated` | `accurate` |
 | [`B-12`](B-12-import-provenance-on-copied-records-and-a-declared-decidin.md) | **trigger-driven** | Import provenance on copied records, and a declared deciding actor | `anticipated` | `accurate` |
 
@@ -152,4 +152,4 @@ Verified accurate. The format does not do these yet; each names the event that w
 ---
 
 56 entries, 76 verifications: 37 accurate, 2 duplicate, 1 inaccurate, 8 stale, 28 unverified.
-Regenerate with `python3 tools/backlog-index.py`.
+Regenerate with `python3 tools/generate-backlog-index.py`.

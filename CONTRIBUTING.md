@@ -19,7 +19,7 @@ the shape of that fix.
 
 ## You want the format to do something it does not do yet
 
-That is the backlog, [`docs/backlog/README.md`](docs/backlog/README.md), and a
+That is the backlog, [`docs/backlog/index.md`](docs/backlog/index.md), and a
 proposal reaches it the same way, through `docs/findings/`. Two things the
 queue asks for are easy to miss. A **basis**: `demonstrated` (an artifact
 exists and can be re-run), `reported` (a careful reader judged it and nothing
@@ -55,8 +55,8 @@ python3 tools/lint-spec-style.py SPEC.md
 python3 tools/lint-spec-style.py serialization/yaml-markdown.md
 python3 tools/lint-field-names.py
 python3 tools/generate-types.py --check   # schema/erf.ts is generated; the pre-commit hook in .githooks/ regenerates it
-python3 tools/backlog-index.py         # regenerates docs/backlog/README.md
-python3 tools/requirements-index.py    # regenerates conformance/requirements.md
+python3 tools/generate-backlog-index.py         # regenerates docs/backlog/index.md
+python3 tools/generate-requirements-index.py    # regenerates conformance/requirements-index.md
 ```
 
 **A failing test is a finding, not an expectation to edit.** If a case fails,

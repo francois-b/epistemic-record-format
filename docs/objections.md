@@ -46,14 +46,14 @@ project's own subtraction ledger was built to catch.
 surveys and 71 sources; `grep -l "^standings:" claims/*.md` returns zero.
 `examples/corpora/minimal/` holds 9 atoms and 6 claims; also zero. The
 README states the consequence plainly: "Every claim computes to
-`proposal`, because nobody has stood behind any of them." `docs/history.md`
+`proposal`, because nobody has stood behind any of them." `docs/design-history.md`
 goes further: "The reference practice deliberately does not [keep a
 register of its author's positions]. Its author's positions live outside
 the format, in a separate writing system: 109 essays, each carrying a
 headline position, each revised about once a quarter, none of them leaned
 on as a premise by any claim in any corpus."
 
-The force of this comes from the project's own standard. `docs/history.md`
+The force of this comes from the project's own standard. `docs/design-history.md`
 states that "candidates were admitted only on a demonstrated need (a
 'forcing instance') and retired on demonstrated non-use," and
 `docs/non-goals.md` records the executions: the `question` record type cut
@@ -76,7 +76,7 @@ re-endorsement does not happen.
 **What would have to be true for it to bite.** That the standings ledger
 is a designed field rather than an extracted one: that in the seven
 private corpora behind the format (roughly 740 atoms and 300 claims per
-`docs/history.md`), standings are also rare, or are minted in bursts at
+`docs/design-history.md`), standings are also rare, or are minted in bursts at
 authoring time and never revisited, or contain no withdrawals. The test is
 a published count: standings per claim, the distribution of stance values,
 the number of `withdrawn` entries, and the median gap between a claim's
@@ -89,7 +89,7 @@ including reversals, at a rate that tracks the corpus's size.
 **Where the format stands.** Unanswered, and the strongest objection in
 this document. The specification is coherent about standings and the
 shipped evidence is silent about them. Two mitigations are real but
-partial: `docs/history.md` records why the author's own positions are held
+partial: `docs/design-history.md` records why the author's own positions are held
 outside the format (nothing in that population ever asked for backing or a
 ledger), which is a defensible scoping decision rather than an evasion;
 and the format is explicit that a claim with no standings is a `proposal`
@@ -662,7 +662,7 @@ Fetched or measured 2026-08-26 unless otherwise noted.
 
 **In this repository (measured 2026-08-26).** `README.md`; `SPEC.md`
 sections 1, 2, 4.2, 4.5, 5 and Security Considerations; `docs/purpose.md`;
-`docs/non-goals.md`; `docs/influences.md`; `docs/history.md`;
+`docs/non-goals.md`; `docs/influences.md`; `docs/design-history.md`;
 `examples/corpora/2026-08-26-ai-capex/` (151 atoms, 53 claims, 6 surveys,
 71 sources, 3 narratives); `examples/corpora/minimal/`; the output of
 `npm run check -- examples/corpora/2026-08-26-ai-capex`.

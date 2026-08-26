@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate conformance/requirements.md from the normative documents.
+"""Regenerate conformance/requirements-index.md from the normative documents.
 
 One row per requirement: what it says in a phrase, which conformance class
 binds it where a document says so, and what defends it. Three inputs and no
@@ -52,7 +52,7 @@ model: claude-opus-5
 requirement's text, its home and its coverage actually live. Regenerate with:
 
 ```
-python3 tools/requirements-index.py
+python3 tools/generate-requirements-index.py
 ```
 
 The gist column is the requirement's opening, trimmed. It is a finding aid and
@@ -199,7 +199,7 @@ def main():
         out += ("Never reused and never refilled, so that a "
                 "requirement-by-requirement diff can tell a retired id from a "
                 "lost one. The rulings are in `../CHANGELOG.md` and "
-                "`../docs/history.md`.\n\n")
+                "`../docs/design-history.md`.\n\n")
         out += "| Retired id |\n|---|\n"
         out += "\n".join(f"| `{i}` |" for i in ids) + "\n"
     else:

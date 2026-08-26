@@ -315,7 +315,7 @@ notable_results:
 ## 7. What this serialization costs (non-normative)
 
 YAML was inherited from the working practice the format was extracted from,
-not chosen; `docs/history.md` records that no forcing instance stands
+not chosen; `docs/design-history.md` records that no forcing instance stands
 behind it, alone among the format's decisions. A sourced survey of the case
 against it is at
 `reviews/2026-08-25-post-ruling-trials/yaml-markdown-case-against.md`. In

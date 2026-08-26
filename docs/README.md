@@ -20,7 +20,7 @@ answers a different question, one document per question.
 | [`objections.md`](objections.md) | What is the strongest honest case that this cannot work, or that it reinvents something that already failed? Seven objections grounded in prior art and measurements, each with the condition under which it bites and where the format stands. |
 | [`writing-with-llms.md`](writing-with-llms.md) | What has the field built for writing prose with an LLM when a human is responsible for the result, and where does this format sit among it? |
 | [`influences.md`](influences.md) | Where do these ideas come from, and what does each tradition already own? |
-| [`history.md`](history.md) | Why is this rule the way it is? What was tried, measured, reversed? |
+| [`design-history.md`](design-history.md) | Why is this rule the way it is? What was tried, measured, reversed? |
 
 Two of these are registers rather than essays, and the distinction is the
 point. **`non-goals.md` is a permanent no**: an idea ruled out under the

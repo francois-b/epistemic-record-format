@@ -3,7 +3,7 @@
 > **Version 0.9, not yet 1.0.** The format is under stress test as of
 > August 2026: cold implementations, cold authoring trials and adversarial
 > reads against the specification alone, with what they found recorded in
-> `reviews/`, `docs/findings/` and `docs/history.md`. Requirement ids are
+> `reviews/`, `docs/findings/` and `docs/design-history.md`. Requirement ids are
 > stable from this version on; the text is not final.
 
 ![Spec version 0.9.0 draft](https://img.shields.io/badge/spec-0.9.0%20draft-1f6feb)
@@ -20,7 +20,7 @@ conformance suite, and a real corpus you can read.
 [**Read the specification**](SPEC.md) ·
 [Data model](schema/erf.schema.json) ·
 [Serialization](serialization/yaml-markdown.md) ·
-[Every requirement, indexed](conformance/requirements.md) ·
+[Every requirement, indexed](conformance/requirements-index.md) ·
 [Contributing](CONTRIBUTING.md)
 
 **See it work:** a rendered site (the case for the format plus the 151-atom
@@ -56,7 +56,7 @@ in the reference implementation within the hour, a hole in the quote check
 that let a fabricated quotation pass, a requirement that could not be
 implemented as written, and two that contradicted each other. Every one was
 ruled and pinned with a conformance case the same day; the record is in
-`reviews/`, `docs/findings/` and `docs/history.md`. What remains open is
+`reviews/`, `docs/findings/` and `docs/design-history.md`. What remains open is
 published in `docs/backlog/` with a priority and a verification on each
 entry. 1.0 waits on implementations other than the author's.
 Forty-nine requirements, three of them with no conformance fixture and
@@ -162,9 +162,9 @@ checks it.
 | [`SPEC.md`](SPEC.md) | What are the rules? Record types, numbered requirements (RFC 2119), vocabularies, invariants, serialization. |
 | [`schema/`](schema/) | What are the shapes? `erf.schema.json`, the normative data model, JSON Schema 2020-12; `SPEC.md` section 3 says how to read it. Beside it, `erf.ts` is generated from the schema (never edited; a pre-commit hook regenerates it and the suite checks it), not normative. |
 | [`docs/purpose.md`](docs/purpose.md) | **What does this format do, and what does it deliberately refuse to do?** |
-| [`docs/`](docs/) | Why is a rule the way it is (`history.md`), was an idea already declined (`non-goals.md`), will it ever do X (`backlog/`), where do the ideas come from (`influences.md`). |
+| [`docs/`](docs/) | Why is a rule the way it is (`design-history.md`), was an idea already declined (`non-goals.md`), will it ever do X (`backlog/`), where do the ideas come from (`influences.md`). |
 | [`examples/`](examples/) | What does it look like in use? [`examples/records/`](examples/records/), one record per type in the interchange form, and [`examples/corpora/minimal/`](examples/corpora/minimal/), a complete small corpus; `npm run view -- examples/corpora/minimal -o <dir>` renders it. |
-| [`conformance/`](conformance/) | Does my implementation obey the rules? Cases, fixtures, a map from every requirement to what defends it, and [`requirements.md`](conformance/requirements.md), that map as one page. |
+| [`conformance/`](conformance/) | Does my implementation obey the rules? Cases, fixtures, a map from every requirement to what defends it, and [`requirements-index.md`](conformance/requirements-index.md), that map as one page. |
 | [`validator/`](validator/) | What does one implementation look like? One folder per serialization, one per language under it: [`yaml-markdown/typescript/`](validator/yaml-markdown/typescript/) is `erf-check`, the reference validator, which loads a corpus against the schema and computes every derived reading from the specification text. The conformance suite tests this code. |
 | [`tools/viewer/`](tools/viewer/) | What does a corpus look like rendered? `erf-view`, the reference consumer, a static-site renderer over the validator. |
 | [`reviews/`](reviews/) | Does the document itself work? Evaluations of the specification: adversarial reads, and independent trials that tested it by building from it. |
