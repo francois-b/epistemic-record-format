@@ -6,7 +6,7 @@ binds it where a document says so, and what defends it. Three inputs and no
 judgment of its own:
 
   SPEC.md                    the requirement text, and the retired-id list
-  serialization/yaml-markdown.md  the requirements that moved to the binding
+  serialization/yaml-markdown.md  the requirements that moved to the serialization
   conformance/coverage.yaml  the coverage state of each
 
 The class column is filled only where a document names the class. Section 1's

@@ -66,7 +66,7 @@ is not repeated down the column.
 | [`ERF-50`](../SPEC.md#erf-50) | The mechanical quote check (the normalized quote occurs in the source's normalized text) MUST be re-runnable by anyone… |  | `quote-check`, `output` |
 | [`ERF-51`](../SPEC.md#erf-51) | Normalization MUST be this sequence, applied identically to the quote and to the normalized text, so that two… |  | `normalization`, `quote-check`, `cases/quote-check` |
 | [`ERF-52`](../SPEC.md#erf-52) | Only the exact marker `[...]` MUST be treated as an omission, and it is the only wildcard; a bare `...` or `…` is a literal source character (`ERF-6`). |  | `quote-check`, `fixtures/invalid/quote-all-empty-spans`, `fixtures/invalid/quote-spans-out-of-order`, `erf-cases-quote-check` |
-| [`ERF-53`](../SPEC.md#erf-53) | A corpus MUST have a canonical interchange form, given by a binding (this section's opening). |  | `fixtures/valid/minimal` |
+| [`ERF-53`](../SPEC.md#erf-53) | A corpus MUST have a canonical interchange form, given by a serialization (this section's opening). |  | `fixtures/valid/minimal` |
 | [`ERF-54`](../SPEC.md#erf-54) | Every document a corpus holds MUST self-describe with `type`, no meaning MAY live in a path, exactly one document MUST… |  | `fixtures/valid/minimal` |
 | [`ERF-56`](../SPEC.md#erf-56) | A reader MUST materialize an omitted list-typed field as an empty list, because presence means what it says: an omitted… |  | `fixtures/valid/minimal` |
 | [`ERF-57`](../SPEC.md#erf-57) | A consumer MUST preserve unknown fields and unknown record types as opaque data, MUST report them, and MUST NOT reject a corpus solely because it contains them. | Consumer | `serialization` |

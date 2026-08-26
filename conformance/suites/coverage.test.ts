@@ -20,8 +20,9 @@ export interface CoverageEntry {
 }
 
 /**
- * The normative surface is SPEC.md plus every binding document: a rule that
- * moved to the binding document (bindings/, now serialization/) on 2026-08-25 kept its id and is still a requirement.
+ * The normative surface is SPEC.md plus every serialization document: a rule
+ * that moved to the serialization document (bindings/, now serialization/) on
+ * 2026-08-25 kept its id and is still a requirement.
  */
 export function specRequirements(): string[] {
   const files = [SPEC, ...(existsSync(SERIALIZATION)

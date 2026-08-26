@@ -13,10 +13,15 @@ No requirement changed. Repository layout, 2026-08-26: the data model moved
 to `schema/erf.schema.json` with `schema/erf.ts` generated from it (a
 pre-commit hook regenerates it; `tools/generate-types.py --check` is the
 gate); the reference validator is `validator/` and the viewer over it is
-`tools/viewer/`; the YAML/Markdown binding document is
+`tools/viewer/`; the YAML/Markdown serialization document is
 `serialization/yaml-markdown.md`. Links into the repository at the old
 paths (`erf.schema.json`, `types/erf.ts`, `viewer/`, `bindings/`) no longer
 resolve.
+
+Term, 2026-08-26: what was a *binding* (a named, versioned mapping of the
+model to bytes; section 7, `ERF-53`) is a *serialization*. The word
+*binding* now means a narrative binding and nothing else. No requirement
+changed meaning; `YAMLB` ids keep their letters.
 
 ## 0.9.0 — 2026-08-26
 

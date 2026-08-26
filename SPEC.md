@@ -18,7 +18,7 @@ deliberately does not do is `docs/purpose.md`, what was ruled out is
 
 **What is normative.** Three things, and nothing else: this document; the
 data model, [`schema/erf.schema.json`](schema/erf.schema.json) (section 3); and a
-binding document, for any corpus exchanged in that binding
+serialization document, for any corpus exchanged in that serialization
 ([`serialization/yaml-markdown.md`](serialization/yaml-markdown.md) today). Where a
 rule leans on a standard, CommonMark, Unicode, RFC 3339, CSL, SemVer,
 SPDX, the standard is cited and governs its own ground. Everything else in
@@ -156,8 +156,13 @@ shown here.
 - *narrative binding*: a marker closing a passage of prose, naming
   the claims that passage rests on and quoting a verbatim anchor from it,
   so software can find the passage again after the prose moves
-  (`ERF-31`). Always written in full: "binding" alone reads as a
-  programming term.
+  (`ERF-31`). Always written in full. The word has no other sense in
+  this format: how the model maps to bytes is a *serialization*.
+- *serialization*: a named, versioned document that says how the model
+  maps to bytes (section 7). The YAML/Markdown serialization is the
+  interchange default. Called a *binding* until 2026-08-26, when the word
+  was reserved for narrative bindings; the `YAMLB` id prefix keeps its
+  letters, since an id never changes.
 
 ## 3. Data model (normative)
 
@@ -166,7 +171,7 @@ The data model is [`schema/erf.schema.json`](schema/erf.schema.json), a JSON Sch
 file conforms to the model when it validates against the schema, with its
 markdown body attached as `body` where the model has one (a claim, a
 survey, a narrative). The schema describes the JSON data model, not any
-wire; every binding (section 7) maps onto it. It carries the shape rules
+wire; every serialization (section 7) maps onto it. It carries the shape rules
 this document once stated in prose: which fields exist and which are
 required, the closed vocabularies, the three actor forms and their
 disjointness, the precisions a date may take, and the conditional that a
@@ -295,7 +300,7 @@ normalized text stated in one place rather than repeated on each atom and
 free to drift apart. The format never reads a raw file at check time. It
 reads the source's *normalized text*, which is what makes a check
 re-runnable years later and what turns a dead link into weakened provenance
-rather than a broken check. A worked source entry is in the binding
+rather than a broken check. A worked source entry is in the serialization
 document (section 7).
 
 Where a source has no `citation` block, write `citation_text` as "Author,
@@ -404,7 +409,7 @@ is evidence about today's page rather than about what was read.
 ### 4.2 The atom
 
 One piece of evidence: a verbatim quote, a finding, and the trail. A
-worked atom is in the binding document.
+worked atom is in the serialization document.
 
 **Writing one well.** The schema checks structure; it cannot check craft.
 A good finding is one sentence a stranger could check: it states what the
@@ -508,7 +513,7 @@ a proposal, and a claim may be tracked without anyone standing behind it);
 what the evidence says is recorded in `atoms_for` and `atoms_against`.
 Evidence against a claim weakens its position, never its identity: it is the
 same statement, standing in a worse light. A worked claim is in the
-binding document.
+serialization document.
 
 The example ships as a proposal: no one has stood behind it, so its
 `standings` ledger is empty and therefore omitted from the file
@@ -616,7 +621,7 @@ claim decides the use. The asymmetry with atoms is the design: absence and
 coverage are evidenced by surveys; presence is evidenced by atoms. A survey
 cannot disconfirm a gap claim, because what disconfirms it is a found
 source, and a found source is atom-shaped; that is why a claim carries one
-`surveys` list and no against side. A worked survey is in the binding
+`surveys` list and no against side. A worked survey is in the serialization
 document.
 
 **Writing one well.** How often a fruitful survey is re-run is a question
@@ -689,7 +694,7 @@ line, is a matter for whoever writes the narrative.
   claims it named vanish from the narrative. An anchor that does not occur
   in its passage is a flag and never a violation, on section 2's
   principle: anchors break for the ordinary reason that someone edited
-  the prose, and a validator MUST flag it. *Spelling: in the default binding the marker is
+  the prose, and a validator MUST flag it. *Spelling: in the default serialization the marker is
   an HTML comment, `YAMLB-1`.*
 
   The anchor is how software finds the spot after the prose moves; a
@@ -985,35 +990,35 @@ checks the relations no type can see.
 > of one corpus share a worldview. This is advice rather than a rule:
 > which lens a reader wants is the consumer's business.
 
-## 7. Serialization and bindings
+## 7. Serialization
 
-A corpus is exchanged in a **binding**: a named, versioned document that
-says how the model of section 3 maps to bytes. Conformance to the model
-is a property of a corpus as loaded into it, and is the same in every
-binding; conformance to a binding is a property of the bytes, checked by
-that binding's own rules (in the default binding, encoding, parsing and
-key structure). A validator for a binding checks both and says which it
-is reporting.
-Every binding MUST round-trip a corpus through the model without changing
-any record, any field, or any verdict (`ERF-53`); a binding that cannot is
-not one. The YAML/Markdown binding, version 1
+A corpus is exchanged in a **serialization**: a named, versioned document
+that says how the model of section 3 maps to bytes. Conformance to the
+model is a property of a corpus as loaded into it, and is the same in every
+serialization; conformance to a serialization is a property of the bytes,
+checked by that serialization's own rules (in the default one, encoding,
+parsing and key structure). A validator for a serialization checks both
+and says which it is reporting.
+Every serialization MUST round-trip a corpus through the model without
+changing any record, any field, or any verdict (`ERF-53`); one that cannot
+is not a serialization. The YAML/Markdown serialization, version 1
 ([`serialization/yaml-markdown.md`](serialization/yaml-markdown.md), normative), is
 the interchange default: a producer that does not know its recipient's
-binding ships that one. Storage is unconstrained (section 8); interchange
+serialization ships that one. Storage is unconstrained (section 8); interchange
 is not. A corpus held in a SQL store conforms if it loads to a conforming
-model instance, and its export to the default binding is guaranteed to
-give every verdict the store did.
+model instance, and its export to the default serialization is guaranteed
+to give every verdict the store did.
 
 The rules below are the model's own. Presence, extension and versioning
-hold in every binding. Rules that hold only for the default binding's
-files live in its document: `ERF-65`, `ERF-66`, `ERF-67` and the file half
+hold in every serialization. Rules that hold only for the default
+serialization's files live in its document: `ERF-65`, `ERF-66`, `ERF-67` and the file half
 of `ERF-53` moved there on 2026-08-25 keeping their ids, and the
-narrative binding's spelling as an HTML comment is the binding's own
-`YAMLB-1`. Requirements that speak of a *file* mean a held byte sequence,
+narrative binding's spelling as an HTML comment is the serialization's
+own `YAMLB-1`. Requirements that speak of a *file* mean a held byte sequence,
 raw or normalized, and are the model's.
 
 - <a id="erf-53"></a>**ERF-53** A corpus MUST have a canonical interchange form, given by
-  a binding (this section's opening). A store MAY hold a corpus any other
+  a serialization (this section's opening). A store MAY hold a corpus any other
   way it likes, body as one more field, many records in one collection
   document, rows in a database, provided everything the corpus holds
   round-trips without loss: a document through the model, an artifact
@@ -1053,7 +1058,7 @@ raw or normalized, and are the model's.
   no field the declared `spec_version` does not define, outside the `x_`
   namespace (`ERF-72`), is the schema's (`ERF-73`); an unknown key is a
   producer error a validator catches, never a consumer's licence to refuse
-  (`ERF-57`). How an empty list is spelled on the wire is the binding's.
+  (`ERF-57`). How an empty list is spelled on the wire is the serialization's.
 - <a id="erf-57"></a>**ERF-57** A consumer MUST preserve unknown fields and unknown record
   types as opaque data, MUST report them, and MUST NOT reject a corpus
   solely because it contains them. Strictness belongs to the producer and

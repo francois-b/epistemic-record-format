@@ -108,7 +108,7 @@ test("every standalone example carries only defined fields and legal values", ()
  */
 for (const [name, script, args] of [
   ["the specification's prose style", "lint-spec-style.py", []],
-  ["the YAML binding's prose style", "lint-spec-style.py", ["serialization/yaml-markdown.md"]],
+  ["the YAML/Markdown serialization's prose style", "lint-spec-style.py", ["serialization/yaml-markdown.md"]],
   ["field names across the two normative surfaces", "lint-field-names.py", []],
   ["schema/erf.ts against schema/erf.schema.json", "generate-types.py", []],
 ] as const) {

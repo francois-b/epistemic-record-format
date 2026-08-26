@@ -1,26 +1,28 @@
 ---
-title: "The YAML/Markdown binding, version 1"
-purpose: "How the model of SPEC.md section 3 maps to files: one record per file, YAML frontmatter plus a markdown body. Normative for any corpus exchanged in this binding, which is the interchange default."
+title: "The YAML/Markdown serialization, version 1"
+purpose: "How the model of SPEC.md section 3 maps to files: one record per file, YAML frontmatter plus a markdown body. Normative for any corpus exchanged in this serialization, which is the interchange default."
 status: normative
-binding_version: 1
+serialization_version: 1
 spec_version: "0.9.0"
 last_updated: 2026-08-25
 ---
 
-# The YAML/Markdown binding, version 1
+# The YAML/Markdown serialization, version 1
 
-A **binding** says how the model maps to bytes. The word is narrower here
-than in CloudEvents, where a binding says how an event rides a particular
-protocol: nothing in this document concerns a transport, and a corpus in this
-binding is the same corpus whether it arrives over HTTP, on a disk, or in a
-git clone. This one is the format's first and its interchange default: a
-producer that does not know its recipient's binding ships this one, and every
-corpus in this repository is held in it. `SPEC.md` section 7 states what
-every binding must satisfy; this document states what this one does.
+A **serialization** says how the model maps to bytes. Nothing in this
+document concerns a transport: a corpus in this serialization is the same
+corpus whether it arrives over HTTP, on a disk, or in a git clone. This one
+is the format's first and its interchange default: a producer that does not
+know its recipient's serialization ships this one, and every corpus in this
+repository is held in it. `SPEC.md` section 7 states what every
+serialization must satisfy; this document states what this one does. (This
+document was "the YAML/Markdown binding" until 2026-08-26; the format now
+uses *binding* for narrative bindings only. The `YAMLB` ids keep their
+letters, since an id never changes.)
 
 Rules that moved here from `SPEC.md` on 2026-08-25 keep the `ERF` ids they
 carried, so that nothing citing them breaks; they retire there and are never
-reused. Rules that were always this binding's own carry `YAMLB` ids, a flat
+reused. Rules that were always this serialization's own carry `YAMLB` ids, a flat
 sequence under the same discipline.
 
 ## 1. The interchange form
@@ -51,7 +53,7 @@ file: YAML frontmatter, then the body. A corpus's declaration is
 normalized, sits wherever its source entry names it by path, which is the only
 place a path is stated and the only place one is read. None of these names
 binds anything, because discovery is by content (`ERF-54`): a tool that
-dispatches on a filename is reading something this binding never wrote, and a
+dispatches on a filename is reading something this serialization never wrote, and a
 corpus that arranges its files differently is exactly as conforming. No media
 type is registered for any of these files. `text/markdown` describes a record
 *body* and not the file that carries it, since the file is frontmatter plus
@@ -157,7 +159,7 @@ ws       ::= any Unicode White_Space character, line breaks included
 
 ## 6. Worked examples
 
-The records `SPEC.md` describes, as this binding writes them.
+The records `SPEC.md` describes, as this serialization writes them.
 
 ### A source list entry
 
@@ -260,7 +262,7 @@ notable_results:
 ---
 ```
 
-## 7. What this binding costs (non-normative)
+## 7. What this serialization costs (non-normative)
 
 YAML was inherited from the working practice the format was extracted from,
 not chosen; `docs/history.md` records that no forcing instance stands
@@ -281,8 +283,8 @@ about what a consumer will do to it, and a producer that quotes every
 string-typed scalar (section 3) is the only defence that travels with the
 file.
 
-A second binding, over SQL, is drafted from the 2026-08-25 relational trial
-and is the proof that the model survives leaving this one.
+A second serialization, over SQL, is drafted from the 2026-08-25 relational
+trial and is the proof that the model survives leaving this one.
 
 ## References
 

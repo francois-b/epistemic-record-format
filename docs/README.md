@@ -35,5 +35,5 @@ declined on has changed, which is itself worth a dated entry.
 
 Elsewhere in the repository: [`../CHANGELOG.md`](../CHANGELOG.md) is what
 changed and when, and [`../reviews/`](../reviews/) holds evaluations of the specification itself.
-- **How does a corpus become files?** [../serialization/yaml-markdown.md](../serialization/yaml-markdown.md), the interchange default. `SPEC.md` section 7 says what any binding must satisfy.
+- **How does a corpus become files?** [../serialization/yaml-markdown.md](../serialization/yaml-markdown.md), the interchange default. `SPEC.md` section 7 says what any serialization must satisfy.
 - **What does a record look like?** [../erf.schema.json](../erf.schema.json), the data model, normative. `SPEC.md` section 3 says how to read it.

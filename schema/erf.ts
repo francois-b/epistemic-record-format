@@ -319,7 +319,7 @@ export interface CorpusDeclaration {
    */
 }
 /**
- * A corpus keeps a source list: one entry per work, keyed by a source id unique within the corpus. The top level is exactly `type` and `sources`. A source's citation, locator and normalized text live on the source and never on the atom; how the list is stored is the store's business and its interchange form the binding's.
+ * A corpus keeps a source list: one entry per work, keyed by a source id unique within the corpus. The top level is exactly `type` and `sources`. A source's citation, locator and normalized text live on the source and never on the atom; how the list is stored is the store's business and its interchange form the serialization's.
  */
 export interface SourceList {
   type: "sources";
