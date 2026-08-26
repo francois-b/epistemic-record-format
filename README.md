@@ -95,7 +95,7 @@ checks it.
 | Read this | To answer |
 |---|---|
 | [`SPEC.md`](SPEC.md) | What are the rules? Record types, numbered requirements (RFC 2119), vocabularies, invariants, serialization. |
-| [`types/erf.ts`](types/erf.ts) | What are the shapes? The normative data model as a compiling TypeScript file; `SPEC.md` mirrors it inline. |
+| [`erf.schema.json`](erf.schema.json) | What are the shapes? The normative data model, JSON Schema 2020-12; `SPEC.md` section 3 says how to read it. `types/erf.ts` is a TypeScript rendering of it for the reference implementation, held to it by a gate, not normative. |
 | [`docs/purpose.md`](docs/purpose.md) | **What does this format do, and what does it deliberately refuse to do?** |
 | [`docs/`](docs/) | Why is a rule the way it is (`history.md`), was an idea already declined (`non-goals.md`), will it ever do X (`backlog/`), where do the ideas come from (`influences.md`). |
 | [`examples/`](examples/) | What does it look like in use? Single-record examples, plus [`examples/corpora/minimal/`](examples/corpora/minimal/), a complete small corpus, and [`examples/site/`](examples/site/), that corpus rendered. |
