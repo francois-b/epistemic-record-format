@@ -17,7 +17,7 @@ deliberately does not do is `docs/purpose.md`, what was ruled out is
 `docs/non-goals.md`, and what it does not do yet is `docs/backlog/`.
 
 **What is normative.** Three things, and nothing else: this document; the
-data model, [`erf.schema.json`](erf.schema.json) (section 3); and a
+data model, [`schema/erf.schema.json`](schema/erf.schema.json) (section 3); and a
 binding document, for any corpus exchanged in that binding
 ([`bindings/yaml-markdown.md`](bindings/yaml-markdown.md) today). Where a
 rule leans on a standard, CommonMark, Unicode, RFC 3339, CSL, SemVer,
@@ -161,8 +161,8 @@ shown here.
 
 ## 3. Data model (normative)
 
-The data model is [`erf.schema.json`](erf.schema.json), a JSON Schema
-2020-12 document at the root of this repository, and it is normative: a
+The data model is [`schema/erf.schema.json`](schema/erf.schema.json), a JSON Schema
+2020-12 document, and it is normative: a
 file conforms to the model when it validates against the schema, with its
 markdown body attached as `body` where the model has one (a claim, a
 survey, a narrative). The schema describes the JSON data model, not any
@@ -187,9 +187,10 @@ list, `narrative` a document. Lists are total in the model and MAY be
 omitted on the wire when empty; a reader materializes them (`ERF-73`,
 `ERF-56`). A field the schema does not require asserts existence when
 present: a `citation` means structure exists, a `received` means a fetch
-happened, a `last_modified` means an edit happened. `types/erf.ts` is a
-TypeScript rendering of the schema for the reference implementation, held
-to it by a gate, and is not normative.
+happened, a `last_modified` means an edit happened. `schema/erf.ts` is a
+TypeScript rendering generated from the schema for the reference
+implementation, regenerated whenever the schema changes and checked by the
+conformance suite, and is not normative.
 
 - <a id="erf-73"></a>**ERF-73** Every document a corpus holds MUST validate against
   `erf.schema.json`, with its body attached as `body` where the model has

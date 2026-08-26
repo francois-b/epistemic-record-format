@@ -3,9 +3,9 @@
  * from any existing tooling. Nothing here is ever stored: every function is a
  * projection over records the corpus already holds.
  */
-import type { Atom, Claim, StandingEntry } from "../types/erf.ts";
+import type { StandingEntry } from "../schema/erf.ts";
 import * as commonmark from "commonmark";
-import type { ConformanceFinding, LoadedCorpus } from "./corpus.ts";
+import type { Atom, Claim, ConformanceFinding, LoadedCorpus } from "./corpus.ts";
 import { bindingCandidates, shipsWithCorpus } from "./corpus.ts";
 
 export type Disposition =

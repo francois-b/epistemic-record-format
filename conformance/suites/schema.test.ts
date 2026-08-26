@@ -18,7 +18,7 @@ import Ajv2020 from "ajv/dist/2020.js";
 import { FIXTURES, REPO } from "../paths.ts";
 
 const ajv = new Ajv2020({ allErrors: true, strict: true, strictRequired: false });
-const schema = JSON.parse(readFileSync(join(REPO, "erf.schema.json"), "utf8"));
+const schema = JSON.parse(readFileSync(join(REPO, "schema", "erf.schema.json"), "utf8"));
 const validate = ajv.compile(schema);
 
 const FM = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;

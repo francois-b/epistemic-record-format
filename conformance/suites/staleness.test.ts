@@ -9,7 +9,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { staleAgainst, staleAudits, staleEvidenceAudit, bindingStaleness } from "../../viewer/compute.ts";
-import type { Atom } from "../../types/erf.ts";
+import type { Atom } from "../../viewer/corpus.ts";
 
 const atom = (created: string, modified?: string, audit?: string): Atom => ({
   id: "fx-001", type: "atom", corpus: "fx", finding: "f", quote: "q",

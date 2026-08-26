@@ -110,7 +110,7 @@ for (const [name, script, args] of [
   ["the specification's prose style", "lint-spec-style.py", []],
   ["the YAML binding's prose style", "lint-spec-style.py", ["bindings/yaml-markdown.md"]],
   ["field names across the two normative surfaces", "lint-field-names.py", []],
-  ["types/erf.ts against erf.schema.json", "lint-schema-types.py", []],
+  ["schema/erf.ts against schema/erf.schema.json", "generate-types.py", []],
 ] as const) {
   test(`${name} passes its linter`, () => {
     try {

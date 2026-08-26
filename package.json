@@ -9,6 +9,10 @@
     "check": "viewer/node_modules/.bin/tsx viewer/erf-check.ts",
     "view": "viewer/node_modules/.bin/tsx viewer/erf-view.ts",
     "test": "npm test --prefix conformance",
-    "site": "./site/build.sh"
+    "site": "./site/build.sh",
+    "types": "python3 tools/generate-types.py --write"
+  },
+  "devDependencies": {
+    "json-schema-to-typescript": "^15.0.0"
   }
 }

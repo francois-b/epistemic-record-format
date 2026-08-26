@@ -5,7 +5,7 @@ vulnerabilities in the ordinary sense.
 
 ## The reference implementation and the tooling
 
-`viewer/`, `tools/`, `types/`, and the runner and suites under `conformance/`
+`viewer/`, `tools/`, `schema/erf.ts`, and the runner and suites under `conformance/`
 are code that reads files a stranger may have written: YAML frontmatter,
 markdown bodies, normalized texts, digests, narrative bindings. If you find a
 way to make any of it execute something, read outside the corpus directory it

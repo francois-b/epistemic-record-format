@@ -18,7 +18,7 @@ since when. It is a specification with a reference implementation, a
 conformance suite, and a real corpus you can read.
 
 [**Read the specification**](SPEC.md) ·
-[Data model](erf.schema.json) ·
+[Data model](schema/erf.schema.json) ·
 [Binding](bindings/yaml-markdown.md) ·
 [Every requirement, indexed](conformance/requirements.md) ·
 [Contributing](CONTRIBUTING.md)
@@ -160,7 +160,7 @@ checks it.
 | Read this | To answer |
 |---|---|
 | [`SPEC.md`](SPEC.md) | What are the rules? Record types, numbered requirements (RFC 2119), vocabularies, invariants, serialization. |
-| [`erf.schema.json`](erf.schema.json) | What are the shapes? The normative data model, JSON Schema 2020-12; `SPEC.md` section 3 says how to read it. `types/erf.ts` is a TypeScript rendering of it for the reference implementation, held to it by a gate, not normative. |
+| [`schema/`](schema/) | What are the shapes? `erf.schema.json`, the normative data model, JSON Schema 2020-12; `SPEC.md` section 3 says how to read it. Beside it, `erf.ts` is generated from the schema (never edited; a pre-commit hook regenerates it and the suite checks it), not normative. |
 | [`docs/purpose.md`](docs/purpose.md) | **What does this format do, and what does it deliberately refuse to do?** |
 | [`docs/`](docs/) | Why is a rule the way it is (`history.md`), was an idea already declined (`non-goals.md`), will it ever do X (`backlog/`), where do the ideas come from (`influences.md`). |
 | [`examples/`](examples/) | What does it look like in use? Single-record examples, plus [`examples/corpora/minimal/`](examples/corpora/minimal/), a complete small corpus, and [`examples/site/`](examples/site/), that corpus rendered. |

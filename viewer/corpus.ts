@@ -2,8 +2,8 @@
  * Loading an ERF corpus from the textual form, and checking what was read
  * against the normative data model.
  *
- * The types come from `../types/erf.ts`, a rendering of erf.schema.json
- * that tools/lint-schema-types.py holds to the schema. That import is the
+ * The types come from `../schema/erf.ts`, a rendering of schema/erf.schema.json
+ * that tools/generate-types.py generates from the schema. That import is the
  * point of writing this in TypeScript: if the model changes, this file stops
  * compiling, so the reference consumer cannot quietly drift from the
  * specification it is supposed to demonstrate.
@@ -14,7 +14,18 @@ import { join, basename, relative, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import yaml from "js-yaml";
 import Ajv2020 from "ajv/dist/2020.js";
-import type { Atom, Claim, Survey, Source, CorpusDeclaration } from "../types/erf.ts";
+import type { Atom as AtomOnWire, Claim as ClaimOnWire, Survey as SurveyOnWire, Source, CorpusDeclaration } from "../schema/erf.ts";
+
+/**
+ * The wire types in `schema/erf.ts` are generated from the schema and say
+ * what a FILE may omit. In memory the loader materializes every list the
+ * model holds total (`ERF-56`): omitted on the wire, present and empty
+ * here. These are the types the rest of the implementation reads.
+ */
+export type Atom = AtomOnWire & Required<Pick<AtomOnWire, "finding_audit">>;
+export type Claim = ClaimOnWire & Required<Pick<ClaimOnWire,
+  "families" | "atoms_for" | "atoms_against" | "edges" | "standings" | "evidence_audit">>;
+export type Survey = SurveyOnWire & Required<Pick<SurveyOnWire, "notable_results">>;
 
 export type { Source, CorpusDeclaration };
 
@@ -156,7 +167,7 @@ const YAML_OPTS = { schema: yaml.JSON_SCHEMA, json: false } as const;
  * validator. Every file now validates against erf.schema.json as it is
  * read; a schema error is a producer error (ERF-73) reported at the field.
  */
-const SCHEMA_PATH = join(dirname(fileURLToPath(import.meta.url)), "..", "erf.schema.json");
+const SCHEMA_PATH = join(dirname(fileURLToPath(import.meta.url)), "..", "schema", "erf.schema.json");
 const ajv = new Ajv2020({ allErrors: true, strict: true, strictRequired: false });
 const schemaJson = JSON.parse(readFileSync(SCHEMA_PATH, "utf8")) as { $id: string };
 const validateModel = ajv.compile(schemaJson);
@@ -629,12 +640,12 @@ export function loadCorpus(dir: string): LoadedCorpus {
     setUnique(claims, id, {
       ...(data as unknown as Claim),
       id,
-      families: arr(data["families"]),
-      atoms_for: arr(data["atoms_for"]),
-      atoms_against: arr(data["atoms_against"]),
-      edges: arr(data["edges"]),
-      standings: arr(data["standings"]),
-      evidence_audit: arr(data["evidence_audit"]),
+      families: arr<string>(data["families"]),
+      atoms_for: arr<string>(data["atoms_for"]),
+      atoms_against: arr<string>(data["atoms_against"]),
+      edges: arr<Claim["edges"][number]>(data["edges"]),
+      standings: arr<Claim["standings"][number]>(data["standings"]),
+      evidence_audit: arr<Claim["evidence_audit"][number]>(data["evidence_audit"]),
       body,
     }, seenIds, "claim", findings);
   }
@@ -659,8 +670,8 @@ export function loadCorpus(dir: string): LoadedCorpus {
     setUnique(surveys, id, {
       ...(data as unknown as Survey),
       id,
-      searches: arr(data["searches"]),
-      notable_results: arr(data["notable_results"]),
+      searches: arr<Survey["searches"][number]>(data["searches"]) as Survey["searches"],
+      notable_results: arr<Survey["notable_results"][number]>(data["notable_results"]),
       body,
     }, seenIds, "survey", findings);
   }

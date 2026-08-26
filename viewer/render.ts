@@ -7,8 +7,7 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Atom, Claim, Survey } from "../types/erf.ts";
-import type { LoadedCorpus, Narrative, Source } from "./corpus.ts";
+import type { Atom, Claim, LoadedCorpus, Narrative, Source, Survey } from "./corpus.ts";
 import { bindingCandidates, bindingRe, shipsWithCorpus } from "./corpus.ts";
 import {
   backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,

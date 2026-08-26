@@ -26,7 +26,7 @@ covers those; run them alone when only prose changed.
 - [ ] `python3 tools/lint-spec-style.py SPEC.md`
 - [ ] `python3 tools/lint-spec-style.py bindings/yaml-markdown.md`
 - [ ] `python3 tools/lint-field-names.py`
-- [ ] `python3 tools/lint-schema-types.py`
+- [ ] `python3 tools/generate-types.py --check`
 - [ ] Generated indexes regenerated, if their inputs moved:
       `python3 tools/backlog-index.py`, `python3 tools/requirements-index.py`
 

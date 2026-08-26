@@ -57,7 +57,7 @@ cp "$OUT/corpus/assets/erf.css" "$OUT/assets/erf.css"
 
 # The schema at the URL its $id declares, version-scoped, so $ref and tooling resolve it.
 mkdir -p "$OUT/schema/0.9.0"
-cp "$REPO_ROOT/erf.schema.json" "$OUT/schema/0.9.0/erf.schema.json"
+cp "$REPO_ROOT/schema/erf.schema.json" "$OUT/schema/0.9.0/erf.schema.json"
 
 echo "==> writing the landing page"
 sed "s#{{REPO}}#${REPO_URL}#g" "$REPO_ROOT/site/landing.html" > "$OUT/index.html"
