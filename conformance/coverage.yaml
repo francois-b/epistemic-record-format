@@ -22,7 +22,8 @@ requirements:
     tests: [fixtures/valid/extension-field, schema]
     note: an x_ field on a record loads with zero findings
   ERF-69:
-    uncovered: no fixture asserts an excerpt capture declares itself, and whether an excerpt carries enough context is an authoring judgment
+    tests: [fixtures/valid/excerpt-in-passages, fixtures/invalid/quote-crosses-an-excerpt-gap]
+    note: the passages half; whether an excerpt carries enough context is an authoring judgment
   ERF-70:
     tests: [fixtures/invalid/pdf-without-extraction]
     note: the tool-naming half; determinism itself is a property of the tool and untestable here

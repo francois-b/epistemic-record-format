@@ -1,0 +1,9 @@
+requirement: ERF-52
+record: fx-001
+field: quote
+because: >
+  The normalized text is an excerpt in two passages separated by a `[...]`
+  paragraph (ERF-69). The quote reads across the gap as one span. A span
+  never crosses a paragraph separator, and the marker paragraph is one, so
+  the quote fails: what it presents as continuous text is two places in
+  the work with material skipped between them. Ruled 2026-08-26 (B-60).
