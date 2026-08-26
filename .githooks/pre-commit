@@ -1,0 +1,12 @@
+#!/bin/sh
+# schema/erf.ts is generated from schema/erf.schema.json and never edited by hand.
+# Before every commit: if the generated file is out of date, regenerate it and
+# stage it, so the commit carries the schema and its projection together.
+# Wired by `git config core.hooksPath .githooks` (npm's postinstall does this).
+set -e
+cd "$(git rev-parse --show-toplevel)"
+if ! python3 tools/generate-types.py --check >/dev/null 2>&1; then
+  python3 tools/generate-types.py --write
+  git add schema/erf.ts
+  echo "pre-commit: schema/erf.ts regenerated from the schema and staged"
+fi

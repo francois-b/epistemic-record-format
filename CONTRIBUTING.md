@@ -53,7 +53,7 @@ cd conformance && npm test             # every case, then the coverage line
 python3 tools/lint-spec-style.py SPEC.md
 python3 tools/lint-spec-style.py bindings/yaml-markdown.md
 python3 tools/lint-field-names.py
-python3 tools/generate-types.py --check
+python3 tools/generate-types.py --check   # schema/erf.ts is generated; the pre-commit hook in .githooks/ regenerates it
 python3 tools/backlog-index.py         # regenerates docs/backlog/README.md
 python3 tools/requirements-index.py    # regenerates conformance/requirements.md
 ```
