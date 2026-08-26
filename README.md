@@ -189,7 +189,7 @@ with it: what you record is yours.
 
 **The reference implementation and tooling** are under
 [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0): `validator/`,
-`tools/`, `types/`, and the runner and suites under `conformance/`. Full
+`tools/`, `schema/erf.generated.ts`, and the runner and suites under `conformance/`. Full
 text in [`LICENSE-CODE`](LICENSE-CODE). Apache rather than MIT for the
 explicit patent grant, which is worth having in code a second implementer is
 expected to read closely and copy from.

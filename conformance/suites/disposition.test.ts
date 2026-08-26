@@ -10,7 +10,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import yaml from "js-yaml";
-import type { StandingEntry } from "../../schema/erf.ts";
+import type { StandingEntry } from "../../schema/erf.generated.ts";
 import type { Claim } from "../../validator/yaml-markdown/typescript/corpus.ts";
 import { disposition } from "../../validator/yaml-markdown/typescript/compute.ts";
 import { CASES } from "../paths.ts";

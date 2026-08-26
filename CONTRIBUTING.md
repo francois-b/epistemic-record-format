@@ -54,7 +54,7 @@ cd conformance && npm test             # every case, then the coverage line
 python3 tools/lint-spec-style.py SPEC.md
 python3 tools/lint-spec-style.py serialization/yaml-markdown.md
 python3 tools/lint-field-names.py
-python3 tools/generate-types.py --check   # schema/erf.ts is generated; the pre-commit hook in .githooks/ regenerates it
+python3 tools/generate-types.py --check   # schema/erf.generated.ts is generated; the pre-commit hook in .githooks/ regenerates it
 python3 tools/generate-backlog-index.py         # regenerates docs/backlog/index.md
 python3 tools/generate-requirements-index.py    # regenerates conformance/requirements-index.md
 ```
@@ -71,7 +71,7 @@ Two licences, split the way the repository is. Prose (`SPEC.md`, `serialization/
 `docs/`, `examples/`, `reviews/`, `CHANGELOG.md`, this file, and
 the fixture corpora and case tables under `conformance/`) is contributed under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), the text in
-[`LICENSE`](LICENSE). Code (`validator/`, `tools/`, `schema/erf.ts`, and the runner and
+[`LICENSE`](LICENSE). Code (`validator/`, `tools/`, `schema/erf.generated.ts`, and the runner and
 suites under `conformance/`) is contributed under
 [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0), the text in
 [`LICENSE-CODE`](LICENSE-CODE). Opening a pull request is your agreement to

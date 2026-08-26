@@ -192,7 +192,7 @@ list, `narrative` a document. Lists are total in the model and MAY be
 omitted on the wire when empty; a reader materializes them (`ERF-73`,
 `ERF-56`). A field the schema does not require asserts existence when
 present: a `citation` means structure exists, a `received` means a fetch
-happened, a `last_modified` means an edit happened. `schema/erf.ts` is a
+happened, a `last_modified` means an edit happened. `schema/erf.generated.ts` is a
 TypeScript rendering generated from the schema for the reference
 implementation, regenerated whenever the schema changes and checked by the
 conformance suite, and is not normative.

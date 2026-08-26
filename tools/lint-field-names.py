@@ -2,7 +2,7 @@
 """
 Every field the model declares is discussed in SPEC.md.
 
-`SPEC.md` and `types/erf.ts` (now `schema/erf.ts`, generated) were both normative, and on 2026-08-25 they
+`SPEC.md` and `types/erf.ts` (now `schema/erf.generated.ts`, generated) were both normative, and on 2026-08-25 they
 disagreed for a day: the source rework renamed `fetched` to `received` and
 `cleanup` to `normalization` in the model, and the specification kept the
 old names, including in its one worked Source example. Two implementers
@@ -89,7 +89,7 @@ def main() -> int:
                 names.add(f"{prefix}.{f}")
             if not (names & ticked):
                 shown = " or ".join(f"`{n}`" for n in sorted(names))
-                missing.append(f"{iface}.{f}: declared in schema/erf.ts, {shown} appears nowhere in SPEC.md")
+                missing.append(f"{iface}.{f}: declared in schema/erf.generated.ts, {shown} appears nowhere in SPEC.md")
 
     if missing:
         print("field names: the two normative surfaces disagree\n")

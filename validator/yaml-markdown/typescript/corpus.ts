@@ -2,7 +2,7 @@
  * Loading an ERF corpus from the textual form, and checking what was read
  * against the normative data model.
  *
- * The types come from `../schema/erf.ts`, a rendering of schema/erf.schema.json
+ * The types come from `../schema/erf.generated.ts`, a rendering of schema/erf.schema.json
  * that tools/generate-types.py generates from the schema. That import is the
  * point of writing this in TypeScript: if the model changes, this file stops
  * compiling, so the reference consumer cannot quietly drift from the
@@ -14,10 +14,10 @@ import { join, basename, relative, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import yaml from "js-yaml";
 import Ajv2020 from "ajv/dist/2020.js";
-import type { Atom as AtomOnWire, Claim as ClaimOnWire, Survey as SurveyOnWire, Source, CorpusDeclaration } from "../../../schema/erf.ts";
+import type { Atom as AtomOnWire, Claim as ClaimOnWire, Survey as SurveyOnWire, Source, CorpusDeclaration } from "../../../schema/erf.generated.ts";
 
 /**
- * The wire types in `schema/erf.ts` are generated from the schema and say
+ * The wire types in `schema/erf.generated.ts` are generated from the schema and say
  * what a FILE may omit. In memory the loader materializes every list the
  * model holds total (`ERF-56`): omitted on the wire, present and empty
  * here. These are the types the rest of the implementation reads.

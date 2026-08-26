@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""schema/erf.ts is generated from schema/erf.schema.json and never edited.
+"""schema/erf.generated.ts is generated from schema/erf.schema.json and never edited.
 
 One definition of the generation, used two ways:
 
-    tools/generate-types.py --write    regenerate schema/erf.ts (the pre-commit
+    tools/generate-types.py --write    regenerate schema/erf.generated.ts (the pre-commit
                                        hook runs this when the schema is staged)
-    tools/generate-types.py --check    exit 1 if schema/erf.ts differs from what
+    tools/generate-types.py --check    exit 1 if schema/erf.generated.ts differs from what
                                        the schema generates (the conformance
                                        suite runs this as a gate)
 

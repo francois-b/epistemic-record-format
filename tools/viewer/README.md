@@ -18,7 +18,7 @@ so it opens from disk and hosts anywhere.
 ## Why TypeScript
 
 The normative data model is [`erf.schema.json`](../../schema/erf.schema.json), a JSON
-Schema 2020-12 document (`SPEC.md` section 3). `schema/erf.ts` (generated from the schema) is a
+Schema 2020-12 document (`SPEC.md` section 3). `schema/erf.generated.ts` (generated from the schema) is a
 TypeScript rendering of that schema for this implementation, held to it by a
 gate and normative for nothing. This tool uses both, at two levels: it
 imports the types, so a change to the model stops it compiling rather than
