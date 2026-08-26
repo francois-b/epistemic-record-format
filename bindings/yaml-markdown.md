@@ -30,6 +30,18 @@ narrative is a markdown document with frontmatter whose only structured
 content is its narrative bindings (`ERF-34`). Discovery is by content and
 never by path: every file carries `type` (`ERF-54`).
 
+The source list's top level is exactly `type` and `sources` (`ERF-3`):
+
+```yaml
+type: sources
+sources:
+  pacioli-1494-geijsbeek: {…}
+```
+
+The nesting is written out because an earlier wording named both keys
+without saying which contained which, and an independent implementation
+read the entries as further top-level keys beside `type`.
+
 That a canonical interchange form exists, and that a store may hold a corpus
 any other way provided it round-trips without loss, is `ERF-53` in
 `SPEC.md`. That the form is this one is this section.
