@@ -3,7 +3,7 @@
  * against the normative data model.
  *
  * The types come from `../schema/erf.generated.ts`, a rendering of schema/erf.schema.json
- * that tools/generate-types.py generates from the schema. That import is the
+ * that tools/generate/generate-types.py generates from the schema. That import is the
  * point of writing this in TypeScript: if the model changes, this file stops
  * compiling, so the reference consumer cannot quietly drift from the
  * specification it is supposed to demonstrate.

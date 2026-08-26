@@ -15,7 +15,7 @@ Rules (line-based; fenced code blocks are exempt throughout):
      by parenthesized metadata) carries exactly two semicolons in the metadata
      (type; writer; when) and is followed by a ":" definition body
 
-Usage: python3 tools/lint-spec-style.py [source.md]
+Usage: python3 tools/lint/lint-spec-style.py [source.md]
        (defaults to the SPEC.md beside this repository's tools/ directory;
         exit 1 on any violation)
 """
@@ -26,7 +26,7 @@ import pathlib
 if len(sys.argv) > 1:
     src = pathlib.Path(sys.argv[1])
 else:
-    src = pathlib.Path(__file__).resolve().parent.parent / "SPEC.md"
+    src = pathlib.Path(__file__).resolve().parent.parent.parent / "SPEC.md"
 def markdown_shape(text, name):
     """Blank line before every heading and around every fence, no double
     blank lines, no trailing whitespace, one trailing newline."""

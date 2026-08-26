@@ -51,12 +51,12 @@ cd validator/yaml-markdown/typescript && npx tsc --noEmit   # types, reference v
 cd tools/viewer && npx tsc --noEmit    # the viewer over it
 cd conformance && npx tsc --noEmit     # types, suite
 cd conformance && npm test             # every case, then the coverage line
-python3 tools/lint-spec-style.py SPEC.md
-python3 tools/lint-spec-style.py serialization/yaml-markdown.md
-python3 tools/lint-field-names.py
-python3 tools/generate-types.py --check   # schema/erf.generated.ts is generated; the pre-commit hook in .githooks/ regenerates it
-python3 tools/generate-backlog-index.py         # regenerates docs/backlog/index.md
-python3 tools/generate-requirements-index.py    # regenerates conformance/requirements-index.md
+python3 tools/lint/lint-spec-style.py SPEC.md
+python3 tools/lint/lint-spec-style.py serialization/yaml-markdown.md
+python3 tools/lint/lint-field-names.py
+python3 tools/generate/generate-types.py --check   # schema/erf.generated.ts is generated; the pre-commit hook in .githooks/ regenerates it
+python3 tools/generate/generate-backlog-index.py         # regenerates docs/backlog/index.md
+python3 tools/generate/generate-requirements-index.py    # regenerates conformance/requirements-index.md
 ```
 
 **A failing test is a finding, not an expectation to edit.** If a case fails,

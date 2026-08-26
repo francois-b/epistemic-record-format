@@ -23,7 +23,7 @@ import pathlib
 
 import yaml
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
+ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 SPEC = ROOT / "SPEC.md"
 SERIALIZATION = ROOT / "serialization"
 COVERAGE = ROOT / "conformance" / "coverage.yaml"
@@ -52,7 +52,7 @@ model: claude-opus-5
 requirement's text, its home and its coverage actually live. Regenerate with:
 
 ```
-python3 tools/generate-requirements-index.py
+python3 tools/generate/generate-requirements-index.py
 ```
 
 The gist column is the requirement's opening, trimmed. It is a finding aid and

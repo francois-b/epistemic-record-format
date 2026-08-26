@@ -171,7 +171,7 @@ checks it.
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | How do I report a defect, propose a capability, or change the code? The findings pipeline, the backlog's basis and trigger discipline, and the gates. |
 | [`IMPLEMENTATIONS.md`](IMPLEMENTATIONS.md) | Who has built to this? The maintained implementations (none yet but the reference), and eleven cold trials that were built from the specification alone to test it. |
 | [`CHANGELOG.md`](CHANGELOG.md) | Which requirements changed in which version. |
-| [`tools/`](tools/) | The viewer, the type generator, and the lints the repository holds itself to. |
+| [`tools/`](tools/) | `viewer/`, the reference consumer; `generate/`, the type generator and the two index generators; `lint/`, the checks the repository holds itself to. |
 
 ## Licence
 

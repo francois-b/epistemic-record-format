@@ -1,4 +1,4 @@
-/* GENERATED from schema/erf.schema.json by tools/generate-types.py. Do not edit:
+/* GENERATED from schema/erf.schema.json by tools/generate/generate-types.py. Do not edit:
  * change the schema and regenerate (the pre-commit hook does this when the
  * schema is staged; `npm run types` does it by hand). Not normative; the
  * schema is (SPEC.md section 3).

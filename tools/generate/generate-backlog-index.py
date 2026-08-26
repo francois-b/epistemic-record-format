@@ -7,7 +7,7 @@ only place its state lives. Run after adding or changing an entry.
 import re
 import yaml, sys, pathlib, collections
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
+ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 ENTRIES = ROOT / "docs" / "backlog"
 INDEX = ENTRIES / "index.md"
 
@@ -32,7 +32,7 @@ the raiser confirming both.
 
 Nothing here is a promise and nothing is scheduled. **One file per entry,
 in this folder**; this page is generated from them by
-`tools/generate-backlog-index.py` and is never edited by hand.
+`tools/generate/generate-backlog-index.py` and is never edited by hand.
 
 ## What an entry carries
 
@@ -171,7 +171,7 @@ def main():
                [r for r in rows if r["kind"] == "capability" and r["status"] == "open" and r["verdicts"] and all(v == "accurate" for v in r["verdicts"])])
     counts = collections.Counter(v for r in rows for v in r["verdicts"])
     total = sum(len(r["verdicts"]) for r in rows)
-    out += f"\n---\n\n{len(rows)} entries, {total} verifications: " + ", ".join(f"{n} {v}" for v, n in sorted(counts.items())) + ".\nRegenerate with `python3 tools/generate-backlog-index.py`.\n"
+    out += f"\n---\n\n{len(rows)} entries, {total} verifications: " + ", ".join(f"{n} {v}" for v, n in sorted(counts.items())) + ".\nRegenerate with `python3 tools/generate/generate-backlog-index.py`.\n"
     INDEX.write_text(out)
     print(f"index: {len(rows)} entries")
     return 0

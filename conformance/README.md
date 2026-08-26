@@ -136,7 +136,7 @@ where a document names one, and what defends it. It is generated from
 by hand. Regenerate it after adding, changing or retiring a requirement:
 
 ```
-python3 tools/generate-requirements-index.py
+python3 tools/generate/generate-requirements-index.py
 ```
 
 It is a finding aid rather than a normative document: where the index and the

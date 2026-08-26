@@ -12,7 +12,7 @@ Nothing caught it. The style linter reads prose, the conformance suite
 checks behaviour against the reference implementation, and no gate compared
 the two documents. This is that gate (finding F-005).
 
-    python3 tools/lint-field-names.py      # exit 1 on a mismatch
+    python3 tools/lint/lint-field-names.py      # exit 1 on a mismatch
 
 It checks one direction, which is the direction that bit: every field
 declared in a normative interface MUST appear in SPEC.md as a backticked
@@ -24,7 +24,7 @@ import pathlib
 import re
 import sys
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
+ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 SPEC = ROOT / "SPEC.md"
 TYPES = ROOT / "schema" / "erf.ts"
 

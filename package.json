@@ -10,7 +10,7 @@
     "view": "tools/viewer/node_modules/.bin/tsx tools/viewer/erf-view.ts",
     "test": "npm test --prefix conformance",
     "site": "./site/build.sh",
-    "types": "python3 tools/generate-types.py --write"
+    "types": "python3 tools/generate/generate-types.py --write"
   },
   "devDependencies": {
     "json-schema-to-typescript": "^15.0.0"

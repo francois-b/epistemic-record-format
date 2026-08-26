@@ -23,12 +23,12 @@ covers those; run them alone when only prose changed.
 - [ ] `cd validator/yaml-markdown/typescript && npx tsc --noEmit` and `cd tools/viewer && npx tsc --noEmit`
 - [ ] `cd conformance && npx tsc --noEmit`
 - [ ] `cd conformance && npm test`
-- [ ] `python3 tools/lint-spec-style.py SPEC.md`
-- [ ] `python3 tools/lint-spec-style.py bindings/yaml-markdown.md`
-- [ ] `python3 tools/lint-field-names.py`
-- [ ] `python3 tools/generate-types.py --check`
+- [ ] `python3 tools/lint/lint-spec-style.py SPEC.md`
+- [ ] `python3 tools/lint/lint-spec-style.py bindings/yaml-markdown.md`
+- [ ] `python3 tools/lint/lint-field-names.py`
+- [ ] `python3 tools/generate/generate-types.py --check`
 - [ ] Generated indexes regenerated, if their inputs moved:
-      `python3 tools/generate-backlog-index.py`, `python3 tools/generate-requirements-index.py`
+      `python3 tools/generate/generate-backlog-index.py`, `python3 tools/generate/generate-requirements-index.py`
 
 If a conformance case failed, say which and what you decided. A failing test
 is a finding about an implementation, never an expectation to edit.

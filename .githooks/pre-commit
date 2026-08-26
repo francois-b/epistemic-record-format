@@ -5,8 +5,8 @@
 # Wired by `git config core.hooksPath .githooks` (npm's postinstall does this).
 set -e
 cd "$(git rev-parse --show-toplevel)"
-if ! python3 tools/generate-types.py --check >/dev/null 2>&1; then
-  python3 tools/generate-types.py --write
+if ! python3 tools/generate/generate-types.py --check >/dev/null 2>&1; then
+  python3 tools/generate/generate-types.py --write
   git add schema/erf.generated.ts
   echo "pre-commit: schema/erf.generated.ts regenerated from the schema and staged"
 fi

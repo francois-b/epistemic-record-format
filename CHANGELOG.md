@@ -11,7 +11,7 @@ everything else.
 
 No requirement changed. Repository layout, 2026-08-26: the data model moved
 to `schema/erf.schema.json` with `schema/erf.generated.ts` generated from it (a
-pre-commit hook regenerates it; `tools/generate-types.py --check` is the
+pre-commit hook regenerates it; `tools/generate/generate-types.py --check` is the
 gate); the reference validator is `validator/yaml-markdown/typescript/` (one folder
 per serialization, one per language) and the viewer over it is
 `tools/viewer/`; the YAML/Markdown serialization document is

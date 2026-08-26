@@ -3,9 +3,9 @@
 
 One definition of the generation, used two ways:
 
-    tools/generate-types.py --write    regenerate schema/erf.generated.ts (the pre-commit
+    tools/generate/generate-types.py --write    regenerate schema/erf.generated.ts (the pre-commit
                                        hook runs this when the schema is staged)
-    tools/generate-types.py --check    exit 1 if schema/erf.generated.ts differs from what
+    tools/generate/generate-types.py --check    exit 1 if schema/erf.generated.ts differs from what
                                        the schema generates (the conformance
                                        suite runs this as a gate)
 
@@ -15,12 +15,12 @@ TypeScript is a projection of it (SPEC.md section 3).
 """
 import pathlib, re, subprocess, sys
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
+ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 SCHEMA = ROOT / "schema" / "erf.schema.json"
 OUT = ROOT / "schema" / "erf.ts"
 BIN = ROOT / "node_modules" / ".bin" / "json2ts"
 BANNER = (
-    "/* GENERATED from schema/erf.schema.json by tools/generate-types.py. Do not edit:\n"
+    "/* GENERATED from schema/erf.schema.json by tools/generate/generate-types.py. Do not edit:\n"
     " * change the schema and regenerate (the pre-commit hook does this when the\n"
     " * schema is staged; `npm run types` does it by hand). Not normative; the\n"
     " * schema is (SPEC.md section 3).\n"
