@@ -14,5 +14,15 @@ reviews/**/__pycache__/
 # in by `git add -A` on 2026-08-25 and caught before the commit landed, which
 # is the same mistake that put 59 MiB of Rust artifacts in this history.
 reviews/**/erfval
+# ...but the Go package DIRECTORY is also named erfval; re-include it, and
+# the binary inside it stays excluded by the pattern above.
+!reviews/**/erfval/
 reviews/**/erfval-bin
 reviews/**/.build-logs/
+reviews/**/*.o
+reviews/**/*.hi
+reviews/**/*.dyn_o
+reviews/**/*.dyn_hi
+reviews/**/.stack-work/
+reviews/**/dist-newstyle/
+reviews/**/harness/*_pb2.py
