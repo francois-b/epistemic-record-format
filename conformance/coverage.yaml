@@ -17,7 +17,7 @@ requirements:
   ERF-2:
     untestable-by-design: how a capture is made and dated is a producer practice, not a property of a loaded record
   ERF-3:
-    tests: [fixtures/valid/minimal, fixtures/invalid/source-entries-at-top-level]
+    tests: [fixtures/valid/minimal, fixtures/invalid/source-entries-at-top-level, schema]
     note: >
       the source list lives beside the corpus, never on the atom, and its
       top level is exactly `type` and `sources` (F-003). The invalid fixture
@@ -27,9 +27,9 @@ requirements:
   ERF-4:
     tests: [fixtures/invalid/atom-absent-from-mapping]
   ERF-5:
-    tests: [fixtures/invalid/absence-without-reason]
+    tests: [fixtures/invalid/absence-without-reason, schema]
   ERF-72:
-    tests: [fixtures/valid/extension-field]
+    tests: [fixtures/valid/extension-field, schema]
     note: an x_ field on a record loads with zero findings
   ERF-69:
     uncovered: no fixture asserts an excerpt capture declares itself, and whether an excerpt carries enough context is an authoring judgment
@@ -40,7 +40,7 @@ requirements:
   ERF-6:
     tests: [quote-check]
   ERF-7:
-    tests: [fixtures/invalid/citation-text-carries-url, hygiene]
+    tests: [fixtures/invalid/citation-text-carries-url, hygiene, schema]
   ERF-8:
     untestable-by-design: whether a rendered citation carries everything its structured form holds is a judgment about bibliographic completeness
   ERF-9:
@@ -50,27 +50,29 @@ requirements:
   ERF-11:
     tests: [fixtures/invalid/stored-mechanical-result]
   ERF-12:
-    tests: [fixtures/invalid/parse-error-as-verdict]
+    tests: [fixtures/invalid/parse-error-as-verdict, schema]
   ERF-13:
-    untestable-by-design: permanence is a property of history, invisible in any single state
+    tests: [schema]
+    note: was untestable-by-design; the shape half is now in erf.schema.json and the gate holds it
   ERF-14:
-    untestable-by-design: whether a fact is dated or timeless is an authoring judgment
+    tests: [schema]
+    note: was untestable-by-design; the shape half is now in erf.schema.json and the gate holds it
   ERF-15:
     tests: [fixtures/invalid/reference-encodes-location]
   ERF-17:
-    tests: [fixtures/valid/minimal]
+    tests: [fixtures/valid/minimal, schema]
     note: the loader requires corpus on every record
   ERF-18:
     untestable-by-design: that a title states the claim is the authoring act itself; the mechanical half was ERF-46, retired 2026-08-24 into this guidance
   ERF-19:
-    tests: [fixtures/invalid/standing-bare-date, fixtures/invalid/standing-bare-date-block-style]
+    tests: [fixtures/invalid/standing-bare-date, fixtures/invalid/standing-bare-date-block-style, schema]
     note: >
       timestamp precision is covered by the fixture; the append-only and
       non-empty-why halves are covered by ERF-39 and ERF-40
   ERF-20:
     untestable-by-design: a SHOULD on producer behaviour, and the field's absence is legal
   ERF-21:
-    tests: [disposition]
+    tests: [disposition, schema]
     note: covered mechanically by ERF-39; the prohibition on machine stances has no fixture
   ERF-22:
     tests: [fixtures/invalid/stored-state-field]
@@ -121,7 +123,7 @@ requirements:
   ERF-38:
     tests: [fixtures/invalid/duplicate-id-across-types]
   ERF-39:
-    tests: [fixtures/valid/minimal]
+    tests: [fixtures/valid/minimal, schema]
   ERF-40:
     untestable-by-design: verified against substrate history, which a loaded corpus does not carry
   ERF-41:
@@ -171,7 +173,7 @@ requirements:
     tests: [fixtures/valid/minimal]
   ERF-55:
     tests: [fixtures/invalid/unknown-field-originated, hygiene,
-            fixtures/valid/evidence-at-stance-faced-nothing]
+            fixtures/valid/evidence-at-stance-faced-nothing, schema]
     note: >
       the omit rule governs lists only (B-51). The valid fixture carries one
       standing with evidence_at_stance present-and-empty and one with it
@@ -187,11 +189,12 @@ requirements:
     tests: [disposition]
     note: every case uses the timestamp key
   ERF-59:
-    tests: [fixtures/invalid/manifest-missing-field]
+    tests: [fixtures/invalid/manifest-missing-field, schema]
   ERF-60:
     tests: [fixtures/invalid/unsupported-major-version]
   ERF-61:
-    untestable-by-design: what a major increment means is a rule about future changes, not about any corpus
+    tests: [schema]
+    note: was untestable-by-design; the shape half is now in erf.schema.json and the gate holds it
   ERF-62:
     untestable-by-design: which store is authoritative is a deployment fact
   ERF-63:

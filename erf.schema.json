@@ -1,0 +1,799 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://erf.example/erf.schema.json",
+  "title": "Epistemic Record Format, data model",
+  "description": "The normative data model (SPEC.md section 3): what every file a corpus holds looks like once loaded. Lists total in the model may be omitted on the wire when empty (ERF-55, ERF-56). Rules over more than one record, the quote check, and the obligations on acts are in SPEC.md and cannot be stated here.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Atom"
+    },
+    {
+      "$ref": "#/$defs/Claim"
+    },
+    {
+      "$ref": "#/$defs/Survey"
+    },
+    {
+      "$ref": "#/$defs/CorpusDeclaration"
+    },
+    {
+      "$ref": "#/$defs/SourceList"
+    },
+    {
+      "$ref": "#/$defs/Narrative"
+    }
+  ],
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "pattern": "^[^\\s\"<>]+$",
+      "description": "An identifier: one or more characters, none whitespace, '\"', '<' or '>'. Deployment-unique across record types (ERF-36)."
+    },
+    "Date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "A calendar date, RFC 3339 full-date."
+    },
+    "Instant": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d+)?)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "An RFC 3339 instant with a time and an offset (ERF-19)."
+    },
+    "DateOrInstant": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Date"
+        },
+        {
+          "$ref": "#/$defs/Instant"
+        }
+      ],
+      "description": "A date where nothing is ordered, an instant where something is (ERF-19)."
+    },
+    "AsOfDate": {
+      "type": "string",
+      "pattern": "^\\d{4}(-\\d{2}(-\\d{2})?)?$",
+      "description": "A year, a year and month, or a full date; never more precise than the source gave (ERF-14)."
+    },
+    "SemVer": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z.-]+)?(\\+[0-9A-Za-z.-]+)?$",
+      "description": "Semantic Versioning 2.0.0 (ERF-61)."
+    },
+    "HumanActor": {
+      "type": "string",
+      "pattern": "^human:[^\\s\"/<>]+$",
+      "description": "A person. The id carries no '/', so it cannot also read as an agent id (section 2)."
+    },
+    "AgentActor": {
+      "type": "string",
+      "pattern": "^[^\\s\"/<>:]+/[^\\s\"/<>]+$",
+      "description": "A model or agent, producer/version. The producer carries no ':', so it cannot also read as a human or process id."
+    },
+    "ProcessActor": {
+      "type": "string",
+      "pattern": "^process:[^\\s\"/<>]+$",
+      "description": "Automation."
+    },
+    "Actor": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/HumanActor"
+        },
+        {
+          "$ref": "#/$defs/AgentActor"
+        },
+        {
+          "$ref": "#/$defs/ProcessActor"
+        }
+      ],
+      "description": "Exactly one of the three forms; they are disjoint by construction (section 2)."
+    },
+    "ActorStamp": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "$ref": "#/$defs/DateOrInstant"
+        },
+        "by": {
+          "$ref": "#/$defs/Actor"
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Extension field (ERF-72)."
+        }
+      },
+      "required": [
+        "timestamp",
+        "by"
+      ],
+      "description": "Who did it, and when (ERF-58: the event-time key is always `timestamp`)."
+    },
+    "Verdict": {
+      "type": "string",
+      "enum": [
+        "SUPPORTED",
+        "PARTIAL",
+        "UNSUPPORTED"
+      ],
+      "description": "Exactly three; a tool failure is never one (ERF-12)."
+    },
+    "Stance": {
+      "type": "string",
+      "enum": [
+        "for",
+        "against",
+        "withdrawn"
+      ],
+      "description": "ERF-41's vocabulary."
+    },
+    "EpistemicKind": {
+      "type": "string",
+      "enum": [
+        "observation",
+        "argument",
+        "bet",
+        "commitment"
+      ],
+      "description": "What would check the claim (section 4.3)."
+    },
+    "Relation": {
+      "type": "string",
+      "enum": [
+        "supports",
+        "assumes",
+        "decomposes-into",
+        "conflicts-with"
+      ],
+      "description": "The four relations (ERF-24, ERF-43, ERF-44)."
+    },
+    "SourceQuality": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "description": "ERF-9, ERF-10."
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "sha256:<hex> (ERF-71)."
+    },
+    "CSL": {
+      "type": "object",
+      "description": "A CSL-JSON item. Its fields are typed by CSL and preserved opaquely here (ERF-8)."
+    },
+    "AuditEntry": {
+      "type": "object",
+      "properties": {
+        "auditor": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The instrument, a bare identifier, never an Actor (ERF-11)."
+        },
+        "verdict": {
+          "$ref": "#/$defs/Verdict"
+        },
+        "timestamp": {
+          "$ref": "#/$defs/DateOrInstant"
+        },
+        "protocol": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The versioned procedure; verdicts under different protocols are not comparable."
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Extension field (ERF-72)."
+        }
+      },
+      "required": [
+        "auditor",
+        "verdict",
+        "timestamp",
+        "protocol"
+      ],
+      "description": "One recorded audit judgment (ERF-11, section 4.4)."
+    },
+    "EvidenceAtStance": {
+      "type": "object",
+      "properties": {
+        "atoms_for": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "description": "Evidence for, as the ruler faced it. Total in the model; omitted on the wire when empty (ERF-55, ERF-56)."
+        },
+        "atoms_against": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "description": "Evidence against, as the ruler faced it. Total in the model; omitted on the wire when empty (ERF-55, ERF-56)."
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Extension field (ERF-72)."
+        }
+      },
+      "description": "What the ruler faced at ruling time (ERF-20). Present and empty means stamped and faced nothing; absent means never stamped (ERF-55)."
+    },
+    "StandingEntry": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "$ref": "#/$defs/Instant"
+        },
+        "stance": {
+          "$ref": "#/$defs/Stance"
+        },
+        "by": {
+          "$ref": "#/$defs/HumanActor"
+        },
+        "why": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Required; an entry without a reason is a toggle (ERF-39)."
+        },
+        "evidence_at_stance": {
+          "$ref": "#/$defs/EvidenceAtStance"
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Extension field (ERF-72)."
+        }
+      },
+      "required": [
+        "timestamp",
+        "stance",
+        "by",
+        "why"
+      ],
+      "description": "One line of the append-only ledger (ERF-19, ERF-21, ERF-40)."
+    },
+    "SearchAct": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The concrete instrument, never a category (ERF-26)."
+        },
+        "query": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "string"
+        },
+        "hits_reported": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The yield as the instrument reported it; text (ERF-27)."
+        },
+        "timestamp": {
+          "$ref": "#/$defs/DateOrInstant"
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Extension field (ERF-72)."
+        }
+      },
+      "required": [
+        "tool",
+        "query",
+        "hits_reported"
+      ],
+      "description": "One search act (ERF-26, ERF-27)."
+    },
+    "Edge": {
+      "type": "object",
+      "properties": {
+        "to": {
+          "$ref": "#/$defs/Id"
+        },
+        "relation": {
+          "$ref": "#/$defs/Relation"
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Extension field (ERF-72)."
+        }
+      },
+      "required": [
+        "to",
+        "relation"
+      ]
+    },
+    "NotableResult": {
+      "type": "object",
+      "properties": {
+        "what": {
+          "type": "string",
+          "minLength": 1
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        },
+        "atoms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "description": "Atoms minted from this result. Total in the model; omitted on the wire when empty (ERF-55, ERF-56)."
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Extension field (ERF-72)."
+        }
+      },
+      "required": [
+        "what",
+        "note"
+      ]
+    },
+    "Received": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "Where it came from, when from the web; the artifact retrieved, not a landing page (ERF-7)."
+        },
+        "path": {
+          "type": "string",
+          "description": "Where the corpus holds the raw file, when it does (ERF-2)."
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "timestamp": {
+          "$ref": "#/$defs/DateOrInstant"
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Extension field (ERF-72)."
+        }
+      },
+      "description": "The raw file, as it arrived (ERF-2)."
+    },
+    "Source": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Extension field (ERF-72)."
+        }
+      },
+      "description": "One work in the source list (ERF-3 to ERF-8, ERF-68 to ERF-71).",
+      "properties": {
+        "citation_text": {
+          "type": "string",
+          "minLength": 1,
+          "not": {
+            "pattern": "://"
+          },
+          "description": "Identifies the work; never carries a URL (ERF-7)."
+        },
+        "citation": {
+          "$ref": "#/$defs/CSL"
+        },
+        "received": {
+          "$ref": "#/$defs/Received"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "shipped",
+            "shipped-as-quotation",
+            "not-redistributable",
+            "access-restricted",
+            "licence-unverified"
+          ],
+          "description": "ERF-5, ERF-68, ERF-69."
+        },
+        "normalized": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path of the normalized text, relative to the source list (ERF-1, ERF-4)."
+        },
+        "normalized_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Why no normalized text is held (ERF-5)."
+        },
+        "licence": {
+          "type": "string",
+          "description": "SPDX identifier where one applies (ERF-68)."
+        },
+        "licence_name": {
+          "type": "string"
+        },
+        "excerpt": {
+          "$ref": "#/$defs/ActorStamp"
+        },
+        "extraction": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The deterministic extracting tool and exact version (ERF-70)."
+        },
+        "normalization": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The deterministic normalizing tool and exact version (ERF-70)."
+        }
+      },
+      "required": [
+        "citation_text",
+        "status"
+      ],
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "shipped",
+              "shipped-as-quotation"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "normalized"
+        ],
+        "description": "A source that ships gives the path of its normalized text (ERF-4)."
+      },
+      "else": {
+        "required": [
+          "reason"
+        ],
+        "description": "A source recording an absence says why (ERF-5)."
+      }
+    },
+    "Atom": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "type": {
+          "const": "atom"
+        },
+        "corpus": {
+          "$ref": "#/$defs/Id"
+        },
+        "finding": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Verbatim (ERF-6); checked, never trusted (ERF-50)."
+        },
+        "source": {
+          "$ref": "#/$defs/Id"
+        },
+        "source_quality": {
+          "$ref": "#/$defs/SourceQuality"
+        },
+        "as_of_date": {
+          "$ref": "#/$defs/AsOfDate"
+        },
+        "limitations": {
+          "type": "string"
+        },
+        "created": {
+          "$ref": "#/$defs/ActorStamp"
+        },
+        "last_modified": {
+          "$ref": "#/$defs/ActorStamp"
+        },
+        "finding_audit": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AuditEntry"
+          },
+          "description": "Total in the model; omitted on the wire when empty (ERF-55, ERF-56)."
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Extension field (ERF-72)."
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "corpus",
+        "finding",
+        "quote",
+        "source",
+        "source_quality",
+        "created"
+      ],
+      "description": "One piece of evidence (section 4.2)."
+    },
+    "Claim": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "type": {
+          "const": "claim"
+        },
+        "corpus": {
+          "$ref": "#/$defs/Id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "epistemic_kind": {
+          "$ref": "#/$defs/EpistemicKind"
+        },
+        "created": {
+          "$ref": "#/$defs/ActorStamp"
+        },
+        "last_modified": {
+          "$ref": "#/$defs/ActorStamp"
+        },
+        "short_name": {
+          "type": "string"
+        },
+        "families": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          }
+        },
+        "atoms_for": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "description": "Evidence for. Total in the model; omitted on the wire when empty (ERF-55, ERF-56)."
+        },
+        "atoms_against": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "description": "Evidence against. Total in the model; omitted on the wire when empty (ERF-55, ERF-56)."
+        },
+        "surveys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "description": "Surveys backing the claim (ERF-25). Total in the model; omitted on the wire when empty (ERF-55, ERF-56)."
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Edge"
+          }
+        },
+        "standings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StandingEntry"
+          },
+          "description": "The ordered ledger (ERF-40)."
+        },
+        "evidence_audit": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AuditEntry"
+          }
+        },
+        "semantic_query": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string",
+          "description": "The markdown body: the proposition, then working notes."
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Extension field (ERF-72)."
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "corpus",
+        "title",
+        "epistemic_kind",
+        "created"
+      ],
+      "description": "One statement a person could stand behind or dispute (section 4.3)."
+    },
+    "Survey": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "type": {
+          "const": "survey"
+        },
+        "corpus": {
+          "$ref": "#/$defs/Id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conducted": {
+          "$ref": "#/$defs/ActorStamp"
+        },
+        "searches": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SearchAct"
+          },
+          "minItems": 1
+        },
+        "notable_results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/NotableResult"
+          }
+        },
+        "prior_survey": {
+          "$ref": "#/$defs/Id"
+        },
+        "last_modified": {
+          "$ref": "#/$defs/ActorStamp"
+        },
+        "body": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Extension field (ERF-72)."
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "corpus",
+        "title",
+        "conducted",
+        "searches"
+      ],
+      "description": "A search act recorded as evidence of absence (section 4.5)."
+    },
+    "CorpusDeclaration": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "corpus"
+        },
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "spec_version": {
+          "$ref": "#/$defs/SemVer"
+        },
+        "classification": {
+          "type": "string",
+          "description": "An opaque label this version records and does not read (ERF-59)."
+        },
+        "owner": {
+          "$ref": "#/$defs/Actor"
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Extension field (ERF-72)."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "title",
+        "spec_version"
+      ],
+      "description": "ERF-59."
+    },
+    "SourceList": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "sources"
+        },
+        "sources": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[^\\s\"<>]+$"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/Source"
+          },
+          "description": "Keyed by source id, unique within the corpus (ERF-3)."
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Extension field (ERF-72)."
+        }
+      },
+      "required": [
+        "type",
+        "sources"
+      ],
+      "description": "ERF-3: the top level is exactly `type` and `sources`."
+    },
+    "Narrative": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "narrative"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "corpus": {
+          "$ref": "#/$defs/Id"
+        },
+        "created": {
+          "$ref": "#/$defs/ActorStamp"
+        },
+        "body": {
+          "type": "string",
+          "description": "Prose, with narrative bindings as its only structured content (ERF-31)."
+        }
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Extension field (ERF-72)."
+        }
+      },
+      "required": [
+        "type",
+        "title",
+        "corpus",
+        "created"
+      ],
+      "description": "A document, not a record (ERF-34)."
+    }
+  }
+}
