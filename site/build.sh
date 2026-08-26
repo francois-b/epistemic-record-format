@@ -16,7 +16,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-CORPUS="$REPO_ROOT/examples/corpora/2026-08-26-ai-capex"
+CORPUS="$REPO_ROOT/examples/corpora/ai-capex"
 OUT="$REPO_ROOT/site/build"
 
 while [ $# -gt 0 ]; do

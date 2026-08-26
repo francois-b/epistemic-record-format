@@ -42,7 +42,7 @@ it has designed a field nobody fills, which is the exact failure mode the
 project's own subtraction ledger was built to catch.
 
 **What grounds it.** Measured in this repository on 2026-08-26.
-`examples/corpora/2026-08-26-ai-capex/` holds 151 atoms, 53 claims, 6
+`examples/corpora/ai-capex/` holds 151 atoms, 53 claims, 6
 surveys and 71 sources; `grep -l "^standings:" claims/*.md` returns zero.
 `examples/corpora/minimal/` holds 9 atoms and 6 claims; also zero. The
 README states the consequence plainly: "Every claim computes to
@@ -114,12 +114,12 @@ the one mechanical guarantee the format is built on is, on its own
 evidence, a check that the copy contains the copy.
 
 **What grounds it.** Measured in this repository on 2026-08-26.
-`examples/corpora/2026-08-26-ai-capex/sources.yaml` carries 71 sources: 59
+`examples/corpora/ai-capex/sources.yaml` carries 71 sources: 59
 `shipped-as-quotation`, 10 `shipped`, 1 `not-redistributable`, 1
 `access-restricted`. All 69 held texts under `normalized/` carry an
 `excerpt: true` provenance header and none is a whole work; they range
 from 694 to 4,351 bytes, median 2,125. `npm run check --
-examples/corpora/2026-08-26-ai-capex` reports `QUOTE 151 passed, 0 failed,
+examples/corpora/ai-capex` reports `QUOTE 151 passed, 0 failed,
 0 uncheckable of 151 atoms`, zero violations, and among its `NOT-CHECKED`
 lines: `ERF-69 whether an excerpt carries enough adjacent text; a
 judgment`. The validator does not run the fidelity half of `ERF-69`
@@ -410,7 +410,7 @@ research
 (https://eur-lex.europa.eu/eli/dir/2019/790/oj/eng).
 
 The shipped corpus shows the consequence. Of 71 sources in
-`examples/corpora/2026-08-26-ai-capex/sources.yaml`, 10 are `shipped`
+`examples/corpora/ai-capex/sources.yaml`, 10 are `shipped`
 under a permitting licence, 59 are `shipped-as-quotation` (a short excerpt
 under no licence), 1 is `not-redistributable` and 1 is
 `access-restricted`. In `examples/corpora/minimal/`, 4 of 9 atoms can have
@@ -460,7 +460,7 @@ reader who sees "backed by a survey" will not make the distinction the
 survey's own body makes.
 
 **What grounds it.** Measured in this repository, 2026-08-26. All six
-surveys in `examples/corpora/2026-08-26-ai-capex/surveys/` declare their
+surveys in `examples/corpora/ai-capex/surveys/` declare their
 universe as the corpus. From
 `ai-attributable-revenue-evidence-2026-08-25.md`: "this survey's universe
 is the corpus's 151 minted atoms, a closed set." From
@@ -663,9 +663,9 @@ Fetched or measured 2026-08-26 unless otherwise noted.
 **In this repository (measured 2026-08-26).** `README.md`; `SPEC.md`
 sections 1, 2, 4.2, 4.5, 5 and Security Considerations; `docs/purpose.md`;
 `docs/non-goals.md`; `docs/influences.md`; `docs/design-history.md`;
-`examples/corpora/2026-08-26-ai-capex/` (151 atoms, 53 claims, 6 surveys,
+`examples/corpora/ai-capex/` (151 atoms, 53 claims, 6 surveys,
 71 sources, 3 narratives); `examples/corpora/minimal/`; the output of
-`npm run check -- examples/corpora/2026-08-26-ai-capex`.
+`npm run check -- examples/corpora/ai-capex`.
 
 **Adoption and structured-capture history.** Shipman, F.M. and Marshall,
 C.C., "Formality Considered Harmful," Computer Supported Cooperative Work

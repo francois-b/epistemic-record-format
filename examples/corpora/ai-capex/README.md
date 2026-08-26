@@ -30,7 +30,7 @@ plus the friction log each of them wrote while working and the audit run's
 log. **This folder is a copy of that corpus, brought to the specification as
 it stands on 2026-08-26.** Read the trial folder for what the agents
 produced against the draft they had; read this folder for a corpus that
-conforms today. `npm run check -- examples/corpora/2026-08-26-ai-capex`
+conforms today. `npm run check -- examples/corpora/ai-capex`
 ends at zero violations and zero flags.
 
 ## What was changed in the copying

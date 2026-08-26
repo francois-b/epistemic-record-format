@@ -23,7 +23,7 @@ open site/build/index.html
 The generated site is a build artifact of the same kind as a rendered
 corpus, so it is not committed. Everything under `site/build/` comes from
 one of two places: `site/landing.html`, or the reference viewer run over
-`examples/corpora/2026-08-26-ai-capex/`. Nothing in the output is ever
+`examples/corpora/ai-capex/`. Nothing in the output is ever
 edited in place, because the next build would silently discard the edit.
 
 The output is deliberately not under `docs/`, which in this repository is
