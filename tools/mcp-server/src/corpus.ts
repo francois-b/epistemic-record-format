@@ -185,6 +185,8 @@ export interface LogEntry {
   query?: string;
   hits_reported?: string;
   scope?: string;
+  /** What the act was looking for: a claim id, or a short topic. Surveys compile by it. */
+  for?: string;
   url?: string;
   path?: string;
   source?: string;

@@ -65,12 +65,12 @@ wrote. Every refusal names the requirement. Nothing writes a raw file.
 | `erf_corpus_init(folder, id, title, owner)` | creates a corpus under a root: `corpus.yaml` + empty `sources.yaml`; makes it active | folder outside the roots; a declaration already there; owner not `human:` |
 | `erf_corpus_check()` | loads, validates, reports violations, flags, unbacked claims, uncited sources, counts by disposition | never |
 | `erf_source_add(id, citation_text, url? \| path?, licence?, licence_name?)` | captures: raw bytes held and digested (`ERF-71`); extracted and normalized by named tools (`ERF-70`); entry written to `sources.yaml` with `status` derived from the licence; logs the act | id in use; url given while fetching is off; neither url nor path; path outside the corpus |
-| `erf_search_log(tool, query, hits_reported, scope?)` | appends one act to the research log | empty query |
+| `erf_search_log(for, tool, query, hits_reported, scope?)` | appends one act to the research log, tagged with what it was looking for | empty query; no `for` |
 | `erf_atom_mint(source, quote, finding, source_quality, as_of_date?, limitations?)` | assigns the next id (`ERF-37`); runs the quote check (`ERF-50/51/52`) against the held normalized text; writes the atom | source not registered; source has no held text; quote not found (returns the nearest passage); `as_of_date` finer than a date |
 | `erf_claim_mint(id, title, epistemic_kind, atoms_for?, atoms_against?, surveys?, edges?, families?, notes?)` | writes the claim; body opens with the title verbatim (`ERF-18`) | id in use; any referenced id unresolved; a self-edge (`ERF-43`) |
 | `erf_claim_update(id, title?, atoms_for?, atoms_against?, surveys?, edges?, families?, notes?)` | rewrites the named fields, stamps `last_modified` | unresolved ids; an attempt to touch `standings` or `evidence_audit` |
 | `erf_claim_stand(id, stance, why)` | appends a standing under the corpus owner with a full RFC 3339 instant (`ERF-19`, `ERF-40`); returns the computed disposition | empty `why`; no `owner` on the declaration |
-| `erf_survey_record(id, title, notable_results?, coverage_bounds, from_log?: date \| searches?: [...])` | writes the survey; `searches` come from the research log for the given day or from the argument | no acts at all (`ERF-26`); `hits_reported` missing |
+| `erf_survey_record(id, title, notable_results?, coverage_bounds, from_log?: date + for, searches?: [...])` | writes the survey; `searches` come from the research log for the given day **and question** (`for`), or from the argument | no acts at all (`ERF-26`); `hits_reported` missing; `from_log` without `for`; no act logged for `for` |
 | `erf_narrative_bind(narrative, anchor, claims, replace?: true)` | inserts the `YAMLB-1` marker after the passage ending with `anchor`, `bound-at` today; with `replace`, rewrites the marker already on that passage | anchor not found or found twice; a claim id unresolved |
 | `erf_narrative_check(narrative?)` | unresolved ids, stale bindings, broken anchors, malformed candidates (`ERF-31/32/33`) | never |
 | `erf_source_read(id, find?)` | the source entry and its held normalized text, whole when short, else windows around `find` under the fold | unknown source |
@@ -128,8 +128,11 @@ checking and never shipped); `not-redistributable` when the user says so.
 ## The research log
 
 `research-log.jsonl` at the corpus root, append-only, one JSON object per
-line: `{ts, kind: "search"|"fetch", tool, query?, hits_reported?, scope?,
-url?, source?}`. Written by `erf_search_log` and by every capture. It is a
+line: `{ts, kind: "search"|"fetch", for?, tool, query?, hits_reported?,
+scope?, url?, source?}`. `for` is what a search was looking for (a claim id
+or a topic); a survey compiles only the acts logged for its own question,
+so a day's searches for one claim can never become backing for another
+(found on the first Desktop session, by the model refusing exactly that). Written by `erf_search_log` and by every capture. It is a
 working file of the producer, not a record: the format says nothing about
 it, which is the right boundary. `erf_survey_record(from_log)` reads it.
 

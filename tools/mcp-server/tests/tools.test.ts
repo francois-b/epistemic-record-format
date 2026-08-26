@@ -122,10 +122,15 @@ test("claims: mint, refusals, update stamps last_modified and flags stale bindin
 test("surveys: from the research log, and refused with no acts", () => {
   const c = fresh();
   assert.throws(() => T.surveyRecord(c, { id: "nothing-2026-08-26", title: "Nothing", coverage_bounds: "none" }), /ERF-26/);
-  T.searchLog(c, { tool: "web search", query: "continuous claim check tools", hits_reported: "9 results, none on point" });
-  assert.throws(() => T.searchLog(c, { tool: "web search", query: "x", hits_reported: "" }), /ERF-27/);
+  assert.throws(() => T.searchLog(c, { tool: "web search", query: "continuous claim check tools", hits_reported: "9 results" }), /what the search was for/);
+  T.searchLog(c, { tool: "web search", query: "continuous claim check tools", hits_reported: "9 results, none on point", for: "no-such-tool" });
+  T.searchLog(c, { tool: "web search", query: "cursor blame", hits_reported: "10 results", for: "coding-tooling-ahead" });
+  assert.throws(() => T.searchLog(c, { tool: "web search", query: "x", hits_reported: "", for: "t" }), /ERF-27/);
   const day = new Date().toISOString().slice(0, 10);
-  const r = T.surveyRecord(c, { id: `claim-check-tools-${day}`, title: "Tools running a continuous claim check", coverage_bounds: "English-language web only.", from_log: day, notable_results: [{ what: "None on point", note: "nothing shipped runs continuously" }] });
+  // a survey compiles only the acts logged for its own question
+  assert.throws(() => T.surveyRecord(c, { id: `claim-check-tools-${day}`, title: "T", coverage_bounds: "x", from_log: day }), /say what this survey is for/);
+  assert.throws(() => T.surveyRecord(c, { id: `claim-check-tools-${day}`, title: "T", coverage_bounds: "x", from_log: day, for: "something-else" }), /no search act on .* was logged for something-else/);
+  const r = T.surveyRecord(c, { id: `claim-check-tools-${day}`, title: "Tools running a continuous claim check", coverage_bounds: "English-language web only.", from_log: day, for: "no-such-tool", notable_results: [{ what: "None on point", note: "nothing shipped runs continuously" }] });
   assert.match(r.text, /1 act/);
   clean(c);
   const s = loadCorpus(c.dir).surveys.get(`claim-check-tools-${day}`)!;

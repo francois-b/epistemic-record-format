@@ -109,11 +109,12 @@ export async function sourceAdd(c: Corpus, a: { id: string; citation_text: strin
   return finish(c, `source ${a.id} registered: ${cap.bytes} bytes held (${cap.rawDigest.slice(0, 19)}…), normalized ${cap.normalizedPath}${cap.title ? `, title "${cap.title}"` : ""}; status ${status}`, wrote, `register source ${a.id}`);
 }
 
-export function searchLog(c: Corpus, a: { tool: string; query: string; hits_reported: string; scope?: string }): Result {
+export function searchLog(c: Corpus, a: { tool: string; query: string; hits_reported: string; scope?: string; for?: string }): Result {
   if (!a.query.trim()) throw new Refusal("a search act needs its query");
   if (!a.hits_reported.trim()) throw new Refusal("record the hits as the instrument reported them, even if that is \"not recorded\" (ERF-27)");
-  const e = appendLog(c, { kind: "search", tool: a.tool, query: a.query, hits_reported: a.hits_reported, scope: a.scope });
-  return { text: `logged search at ${e.ts}: ${a.tool} · "${a.query}" · ${a.hits_reported}` };
+  if (!a.for?.trim()) throw new Refusal("say what the search was for: a claim id or a short topic. A survey compiles only the acts that were looking for its question; an act with no `for` can back nothing");
+  const e = appendLog(c, { kind: "search", tool: a.tool, query: a.query, hits_reported: a.hits_reported, scope: a.scope, for: a.for.trim() });
+  return { text: `logged search at ${e.ts} for ${a.for.trim()}: ${a.tool} · "${a.query}" · ${a.hits_reported}` };
 }
 
 // ---------- atoms ----------
@@ -218,13 +219,17 @@ export function claimStand(c: Corpus, a: { id: string; stance: string; why: stri
 
 // ---------- surveys ----------
 
-export function surveyRecord(c: Corpus, a: { id: string; title: string; coverage_bounds: string; summary?: string; from_log?: string; searches?: { tool: string; query: string; hits_reported: string; scope?: string }[]; notable_results?: { what: string; note: string; atoms?: string[] }[]; prior_survey?: string }): Result {
+export function surveyRecord(c: Corpus, a: { id: string; title: string; coverage_bounds: string; summary?: string; from_log?: string; for?: string; searches?: { tool: string; query: string; hits_reported: string; scope?: string }[]; notable_results?: { what: string; note: string; atoms?: string[] }[]; prior_survey?: string }): Result {
   const decl = readDeclaration(c);
   if (!/^[a-z0-9][a-z0-9-]*$/.test(a.id)) throw new Refusal("survey id must be a lowercase slug; end it with the conducted date (ERF-28)");
   if (idInUse(c, a.id)) throw new Refusal(`id ${a.id} is already used by a record (ERF-36)`);
   let searches = a.searches ?? [];
   if (a.from_log) {
-    const acts = readLog(c).filter((e) => e.kind === "search" && e.ts.startsWith(a.from_log!));
+    const day = readLog(c).filter((e) => e.kind === "search" && e.ts.startsWith(a.from_log!));
+    const tags = [...new Set(day.map((e) => e.for ?? "(untagged)"))];
+    if (!a.for) throw new Refusal(`say what this survey is for (\`for\`); the log for ${a.from_log} holds acts for: ${tags.join(", ") || "nothing"}. A survey compiles only the acts that were looking for its own question`);
+    const acts = day.filter((e) => e.for === a.for);
+    if (!acts.length) throw new Refusal(`no search act on ${a.from_log} was logged for ${a.for}; acts that day were for: ${tags.join(", ") || "nothing"}. Run and log the searches, then record the survey (ERF-26)`);
     searches = [...searches, ...acts.map((e) => ({ tool: e.tool, query: e.query ?? "", hits_reported: e.hits_reported ?? "not recorded", scope: e.scope, timestamp: e.ts }))];
   }
   if (!searches.length) throw new Refusal("a survey records at least one search act; nothing is in the log for that day and none was given (ERF-26)");
