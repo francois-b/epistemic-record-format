@@ -27,7 +27,7 @@ waits on implementations other than the author's.
 the specification version you built against, which conformance classes you
 claim (Record, Corpus, Producer, Consumer, Validator, defined in `SPEC.md`
 section 1), and a link. Run `conformance/` against it first, starting with
-`conformance/cases/quote-check.txt`. Nobody vets a row; it says what you
+`conformance/cases/quote-check.tsv`. Nobody vets a row; it says what you
 claim, and the suite is what checks it.
 
 ## Independent trial implementations

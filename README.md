@@ -139,7 +139,7 @@ cannot.
 ## Try to break it
 
 If you read one file here, read
-[`conformance/cases/quote-check.txt`](conformance/cases/quote-check.txt). It
+[`conformance/cases/quote-check.tsv`](conformance/cases/quote-check.tsv). It
 is a standing attack suite: every quotation a source never said that once
 passed the quote check, kept as a case that any implementation must fail. A
 number cut at its decimal point. A negation dropped at a hyphen. A word

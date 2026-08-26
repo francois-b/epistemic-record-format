@@ -35,7 +35,7 @@ specification version you built against, which conformance classes you claim
 (Record, Corpus, Producer, Consumer, Validator, defined in `SPEC.md`
 section 1), and a link. Run the conformance suite against it first. Its case
 files are data rather than TypeScript, so another language consumes them
-directly, and `conformance/cases/quote-check.txt` is the standing attack
+directly, and `conformance/cases/quote-check.tsv` is the standing attack
 suite: quotations a source never said that once passed the quote check, every
 one of which your implementation must fail. A case that disagrees with your
 reading of the prose is a finding, not a licence to skip it. Open an issue.

@@ -37,7 +37,7 @@ because a public report is itself the harm:
 
 - A way to make a quotation pass the check that its source never contained.
   This is the mechanism the rest of the format rests on, and every known
-  instance is pinned in `conformance/cases/quote-check.txt` under `F-016`. A
+  instance is pinned in `conformance/cases/quote-check.tsv` under `F-016`. A
   new one is worth reporting privately first; it will end up in that file
   either way.
 - Anything that lets a record misattribute a standing, an audit verdict, or an

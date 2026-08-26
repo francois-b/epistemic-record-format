@@ -1,7 +1,7 @@
 /**
  * ERF-51: the normalization sequence.
  *
- * Cases live in `erf-cases-normalization.txt` beside SPEC.md, normative, as raw/expected pairs, after the
+ * Cases live in `cases/normalization.tsv`, normative, as raw/expected pairs, after the
  * model of Unicode's normalization conformance files: a plain table any
  * implementation in any language can run, not a test bound to this codebase.
  */

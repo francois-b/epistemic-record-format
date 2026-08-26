@@ -32,7 +32,7 @@ cannot, this is one person's tooling with a specification attached.
 
 ## The attack suite
 
-`cases/quote-check.txt` carries, under the cases marked F-016, the
+`cases/quote-check.tsv` carries, under the cases marked F-016, the
 quotations a source never said that once passed the quote check: a number
 cut at its decimal point, a negation dropped at a hyphen, a word halved at
 a soft hyphen, two paragraphs spliced into one sentence, `3*4` read as
@@ -63,8 +63,8 @@ conformance/
                        coverage. Never edited by hand
   paths.ts             shared locations
   cases/
-    normalization.txt  ERF-51, raw/expected pairs, one per line
-    quote-check.txt    ERF-50, ERF-52, requirement + expected verdict +
+    normalization.tsv  ERF-51, raw/expected pairs, one per line
+    quote-check.tsv    ERF-50, ERF-52, requirement + expected verdict +
                        quote + capture, tab-separated, one case per line
     disposition/*.yaml ERF-41, standings + expected reading, one case per file
   fixtures/
@@ -85,7 +85,7 @@ in any language, without running this TypeScript.
 
 ## Adding a case
 
-**A normalization case** is one line in `cases/normalization.txt`: the raw
+**A normalization case** is one line in `cases/normalization.tsv`: the raw
 text, a tab, the expected output. `\n` means a newline. Say which step it
 exercises in a comment above it.
 
@@ -96,7 +96,7 @@ branch changes: the two cases recording that unanimous opposition reads as
 describe behaviour that was wrong until 2026-08-23 and would otherwise be
 free to regress.
 
-**A quote-check case** is one tab-separated line in `cases/quote-check.txt`:
+**A quote-check case** is one tab-separated line in `cases/quote-check.tsv`:
 the requirement, the expected verdict (`pass`, `fail` or `uncheckable`), the
 quote, and the capture. The `#` line above it names the case.
 
