@@ -27,8 +27,12 @@ export function specRequirements(): string[] {
   const files = [SPEC, ...(existsSync(BINDINGS)
     ? readdirSync(BINDINGS).filter((f) => f.endsWith(".md")).sort().map((f) => join(BINDINGS, f))
     : [])];
+  // A definition line carries its HTML anchor, so that SPEC.md#erf-6 resolves
+  // on GitHub: `- <a id="erf-6"></a>**ERF-6** ...`. The anchor is optional in
+  // this pattern so a document written without one still parses.
   return files.flatMap((f) =>
-    [...readFileSync(f, "utf8").matchAll(/^- \*\*((?:ERF|YAMLB)-\d+)\*\*/gm)].map((m) => m[1]!));
+    [...readFileSync(f, "utf8").matchAll(
+      /^- (?:<a id="[a-z0-9-]+"><\/a>)?\*\*((?:ERF|YAMLB)-\d+)\*\*/gm)].map((m) => m[1]!));
 }
 
 export function coverage(): Record<string, CoverageEntry> {

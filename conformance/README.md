@@ -9,11 +9,11 @@ npx tsx conformance/run.ts     # or: cd conformance && npm test
 The runner executes every case and then prints a coverage line:
 
 ```
-65 requirements: 41 covered, 18 untestable by design, 6 uncovered
+54 requirements: 38 covered, 12 untestable by design, 4 uncovered
 ```
 
 (The numbers move as the specification and the suite do; the line above is
-what a run printed on 2026-08-24, not a promise.)
+what a run printed on 2026-08-26, not a promise.)
 
 ## Why it exists
 
@@ -59,10 +59,13 @@ the wrong assertion had been hiding.
 conformance/
   run.ts               the runner: executes the suites, then reports coverage
   coverage.yaml        requirement -> the tests that defend it, or why none can
+  requirements.md      generated: every requirement, its gist, its class, its
+                       coverage. Never edited by hand
   paths.ts             shared locations
   cases/
     normalization.txt  ERF-51, raw/expected pairs, one per line
-    quote-check.yaml   ERF-50, ERF-52, quote + capture + expected verdict
+    quote-check.txt    ERF-50, ERF-52, requirement + expected verdict +
+                       quote + capture, tab-separated, one case per line
     disposition/*.yaml ERF-41, standings + expected reading, one case per file
   fixtures/
     valid/             corpora that must load with no finding
@@ -93,7 +96,9 @@ branch changes: the two cases recording that unanimous opposition reads as
 describe behaviour that was wrong until 2026-08-23 and would otherwise be
 free to regress.
 
-**A quote-check case** is an entry in `cases/quote-check.yaml`.
+**A quote-check case** is one tab-separated line in `cases/quote-check.txt`:
+the requirement, the expected verdict (`pass`, `fail` or `uncheckable`), the
+quote, and the capture. The `#` line above it names the case.
 
 **A record fixture** is a directory under `fixtures/`. An invalid one MUST
 carry `expect.yaml` naming the requirement that must reject it, because
@@ -114,13 +119,29 @@ number that flatters.
 
 `untestable-by-design` means it constrains authoring judgment no tool can
 reach: whether a finding states what its quote shows, whether a title states
-its claim, which of two inputs governs a source's grade. Eighteen
-requirements are in this state, and saying so plainly is more honest than
-padding the covered count with tests that assert nothing.
+its claim, which of two inputs governs a source's grade. Saying so plainly is
+more honest than padding the covered count with tests that assert nothing; how
+many requirements sit in this state is printed on every run.
 
 `uncovered` means it should be tested and is not. That list is a to-do
 against this suite, not a gap in the format, and it is printed on every run
 so it cannot quietly grow.
+
+## The requirement index
+
+`requirements.md` beside this file is the whole map on one page: every
+requirement, a phrase of what it says, the conformance class that binds it
+where a document names one, and what defends it. It is generated from
+`SPEC.md`, `bindings/yaml-markdown.md` and `coverage.yaml`, and never edited
+by hand. Regenerate it after adding, changing or retiring a requirement:
+
+```
+python3 tools/requirements-index.py
+```
+
+It is a finding aid rather than a normative document: where the index and the
+specification differ, the specification governs, and the difference is a bug
+in the generator.
 
 ## Dependencies
 

@@ -4,7 +4,8 @@
 Rules (line-based; fenced code blocks are exempt throughout):
   A  no em dash (U+2014) in body prose (headings exempt)
   B  no middle dot (U+00B7) anywhere outside fences
-  C  requirement ids: a definition line has the shape "- **ERF-x.y** " and its
+  C  requirement ids: a definition line has the shape "- **ERF-x.y** ", optionally
+     preceded by its HTML anchor ("- <a id=\"erf-6\"></a>**ERF-6** "), and its
      first sentence carries an uppercase RFC 2119 keyword; any other ERF-id
      occurrence is bold, backticked, or inside parentheses on its line
   D  non-normative notes use the canonical blockquote form
@@ -56,7 +57,8 @@ violations = []
 violations += markdown_shape(src.read_text(), src.name)
 KEYWORD = re.compile(r"\b(MUST NOT|MUST|SHOULD NOT|SHOULD|MAY)\b")
 ERF_ID = re.compile(r"(?:ERF|YAMLB)-\d+(?:\.\d+)?[a-z]?")
-DEF_LINE = re.compile(r"^\s*- \*\*((?:ERF|YAMLB)-\d+(?:\.\d+)?[a-z]?)\*\* ")
+ANCHOR = r'(?:<a id="[a-z0-9-]+"></a>)?'
+DEF_LINE = re.compile(r"^\s*- " + ANCHOR + r"\*\*((?:ERF|YAMLB)-\d+(?:\.\d+)?[a-z]?)\*\* ")
 NOTE_OPENER = re.compile(r"^> \*Note \(non-normative\):\*")
 LEGACY_NOTE = re.compile(r"\*\(?Non-normative")
 

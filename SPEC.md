@@ -191,7 +191,7 @@ happened, a `last_modified` means an edit happened. `types/erf.ts` is a
 TypeScript rendering of the schema for the reference implementation, held
 to it by a gate, and is not normative.
 
-- **ERF-73** Every document a corpus holds MUST validate against
+- <a id="erf-73"></a>**ERF-73** Every document a corpus holds MUST validate against
   `erf.schema.json`, with its body attached as `body` where the model has
   one. A document is the declaration, the source list, a record, or a
   narrative; a held raw or normalized file is an artifact, not a document,
@@ -306,7 +306,7 @@ the next time it is read or used, and its atoms are minted then; a corpus
 is not retrofitted wholesale, because a file taken long after the reading
 is evidence about today's page rather than about what was read.
 
-- **ERF-1** Every check MUST run against a source's *normalized text*,
+- <a id="erf-1"></a>**ERF-1** Every check MUST run against a source's *normalized text*,
   never the live web, so a source without one has no verdict. It
   is the output of the corpus's text pipeline: the raw file as received,
   then extraction to CommonMark, then a passage selected from it, then
@@ -314,20 +314,20 @@ is evidence about today's page rather than about what was read.
   the fold of `ERF-51` renders. Where a source arrives already as clean
   CommonMark the pipeline is empty and the normalized text is the file
   itself.
-- **ERF-2** A raw file is immutable: a revision arriving later MUST be a
+- <a id="erf-2"></a>**ERF-2** A raw file is immutable: a revision arriving later MUST be a
   new source, never an overwrite. A corpus that holds the raw file records
   where, in `received.path`; a corpus that does not holds `received.url` and
   `received.digest` instead, which is what lets a reader obtain the same
   bytes. A source whose raw file is mutable at its location, a web page
   above all, MUST record `received.timestamp`, the date it arrived, because
   otherwise nothing says which version was read.
-- **ERF-4** Every atom MUST name a source that exists in the corpus's
+- <a id="erf-4"></a>**ERF-4** Every atom MUST name a source that exists in the corpus's
   source list. Whether the source ships its normalized text or records
   why none is held is the schema's conditional on `status`; that absence
   is explicit rather than silent is what makes a source list checkable,
   because a validator can tell a recorded absence from an omission and
   cannot tell an omission from an oversight.
-- **ERF-68** A source whose normalized text ships SHOULD name the licence
+- <a id="erf-68"></a>**ERF-68** A source whose normalized text ships SHOULD name the licence
   that permits it as an SPDX identifier where one exists, with the plain
   name alongside, and a text shipping under no licence as a short
   quotation MUST carry `status: shipped-as-quotation`. *Shape:
@@ -335,7 +335,7 @@ is evidence about today's page rather than about what was read.
   not; prose matches by eye. SPDX names a licence and never the
   redistribution judgment, which stays the status vocabulary (section 5)'s. An absent licence
   otherwise reads as an oversight rather than a different basis.
-- **ERF-69** A source's normalized text MAY be an excerpt of the work
+- <a id="erf-69"></a>**ERF-69** A source's normalized text MAY be an excerpt of the work
   rather than a whole copy, and MUST then record who selected the passage
   and when (`excerpt`). It MUST contain the quoted passage together with
   enough adjacent text for the passage's place in the work to be legible: a
@@ -357,7 +357,7 @@ is evidence about today's page rather than about what was read.
   performs it by obtaining the file at `received.url`, confirming
   `received.digest`, and re-running the tools of `ERF-70`.
 
-- **ERF-70** Where normalized text was produced from a raw file in another
+- <a id="erf-70"></a>**ERF-70** Where normalized text was produced from a raw file in another
   format,
   the source MUST name the extracting tool and its exact version
   (`extraction`), and that tool MUST be deterministic: the same tool at the
@@ -390,7 +390,7 @@ is evidence about today's page rather than about what was read.
 > non-deterministic act, and this requirement forbids it as a pipeline
 > step. An author who needs one runs it, reads the result, and authors the
 > normalized text from what they read, which is what it already is.
-- **ERF-71** A source whose normalized text is an excerpt or a conversion SHOULD
+- <a id="erf-71"></a>**ERF-71** A source whose normalized text is an excerpt or a conversion SHOULD
   carry `received.digest`, the cryptographic digest of the retrieved
   artifact with the algorithm named ("sha256:<hex>"). The locator and the
   digest together close the step the format cannot otherwise check: a
@@ -437,19 +437,19 @@ surveys have bodies and use them. The atom has none, so `limitations` is
 not a caveat slot bolted onto prose that already exists, it is the atom's
 only prose.
 
-- **ERF-6** The `quote` MUST be verbatim from the source's normalized text. An omission
+- <a id="erf-6"></a>**ERF-6** The `quote` MUST be verbatim from the source's normalized text. An omission
   inside a quote MUST be written `[...]`; bare `...` is reserved for dots
   the source itself contains. A producer MUST take a quote
   from the normalized text by copying, a substring operation performed by
   a tool, and MUST NOT regenerate it: an author that retypes, an LLM
   above all, tidies what it retypes, and a tidied quote is the author
   guessing at their own evidence. The check exists to say so.
-- **ERF-8** When `citation` is present it is canonical: it MUST carry
+- <a id="erf-8"></a>**ERF-8** When `citation` is present it is canonical: it MUST carry
   everything the rendered `citation_text` string shows, chapter,
   translator, and edition included, and `citation_text` MUST be rendered
   from it. The default rendering style is Chicago, via CSL; a deliverable
   MAY override it.
-- **ERF-9** `source_quality` MUST grade one axis, how much weight the
+- <a id="erf-9"></a>**ERF-9** `source_quality` MUST grade one axis, how much weight the
   attester's word carries for the fact the finding conveys, the weaker of
   two inputs governing: provenance distance, the hops between the source's
   text and the fact, and attester accountability, whether the source is
@@ -464,7 +464,7 @@ only prose.
 | `medium` | An identifiable intermediary reporting someone else's fact, or a first party with an interest in the answer: trade press, an analyst note, a vendor's claim about its own product, a one-hop relay. The same organization can attest at both grades: its audited filing is accountable, its marketing page is interested. |
 | `low` | An unaccountable or unidentifiable attester, or a chain not yet pulled to primary: a forum comment, an aggregator citing an unnamed original. |
 
-- **ERF-10** The grade MUST be assessed against the substance the finding
+- <a id="erf-10"></a>**ERF-10** The grade MUST be assessed against the substance the finding
   conveys, not against the bare fact that someone uttered it. Reported
   speech does not raise it: "a commenter reported X", sourced to an
   anonymous forum, stays `low`, because the reader's question is whether X
@@ -473,7 +473,7 @@ only prose.
   own words; the utterance is then the substance, a recorded identified
   utterance is direct and accountable, and the grade can be checked against
   what the atom attests.
-- **ERF-11** The judgment (does the quote, in context, support the
+- <a id="erf-11"></a>**ERF-11** The judgment (does the quote, in context, support the
   finding?) is not recomputable and MUST be recorded per auditor in
   `finding_audit`, with the protocol version that produced it; the
   mechanical check (the normalized quote occurs in the normalized text) is
@@ -491,10 +491,10 @@ only prose.
   run it again, because a tool failure in the field that holds a judgment
   is a judgment to everything downstream. Disagreeing with a verdict is a
   standing on the claim, never an edit to the verdict.
-- **ERF-13** An atom's `id` MUST be permanent: never renamed and never
+- <a id="erf-13"></a>**ERF-13** An atom's `id` MUST be permanent: never renamed and never
   reused. Its shape, a mint-time prefix and a sequence number, is the
   schema's (`AtomId`).
-- **ERF-14** `as_of_date`, where present, MUST record the date the fact
+- <a id="erf-14"></a>**ERF-14** `as_of_date`, where present, MUST record the date the fact
   is true of, at the precision the source gave and no finer: a year, a
   year and month, or a full date. *Shape: `AsOfDate`.* A figure true of a
   period carries the period's end; a statement about the future carries
@@ -542,20 +542,20 @@ contests a claim, is worth taking through a show-both-sides review
 individually. The cold-reader test applies to standings as much as to
 prose: does the recorded why survive the evidence on record?
 
-- **ERF-15** References MUST be bare ids and MUST NOT encode location.
+- <a id="erf-15"></a>**ERF-15** References MUST be bare ids and MUST NOT encode location.
   A claim moved between corpora keeps its id, and no reference changes.
-- **ERF-17** A record's `corpus` MUST name the corpus the deployment
+- <a id="erf-17"></a>**ERF-17** A record's `corpus` MUST name the corpus the deployment
   declares. Changing it is a promotion or transfer that stamps
   `last_modified` (`ERF-48`) and is explained in working notes; it MUST NOT
   be written as a standing, because a bookkeeping note in the ledger moves
   the disposition (`ERF-41`).
-- **ERF-18** `title` MUST state the claim; it is the normative statement.
+- <a id="erf-18"></a>**ERF-18** `title` MUST state the claim; it is the normative statement.
   The body SHOULD open by restating it, and keeping the restatement
   verbatim is what makes later drift visible to a reader; whether an
   opening in other words still states the same claim is a reading, so no
   rule numbers it. Beyond that restatement the body is the one
   operator-authored text on the record, and carries the working notes.
-- **ERF-20** Producer tools SHOULD stamp each standing entry with the
+- <a id="erf-20"></a>**ERF-20** Producer tools SHOULD stamp each standing entry with the
   evidence sets attached at ruling time, by id
   (`evidence_at_stance: {atoms_for: [ids], atoms_against: [ids]}`). Which
   evidence the ruler faced is the one fact about a ruling's context that
@@ -564,7 +564,7 @@ prose: does the recorded why survive the evidence on record?
   after the stance or a verdict newer than it, is derivable from
   timestamps, and a count would hide the swap of one atom for another,
   which is the staleness the field exists to expose.
-- **ERF-23** Evidence MUST live on the claim, in both directions:
+- <a id="erf-23"></a>**ERF-23** Evidence MUST live on the claim, in both directions:
   `atoms_for` and `atoms_against`. Evidence against a claim MUST NOT be
   modeled as a rival claim.
 
@@ -578,7 +578,7 @@ Run it on change rather than on a schedule: an atom added to either list, a
 cited atom modified, the statement edited. Staleness is computed
 (`ERF-47`), and between changes there is nothing to re-run.
 
-- **ERF-24** The backing audit MUST ask the question the epistemic kind
+- <a id="erf-24"></a>**ERF-24** The backing audit MUST ask the question the epistemic kind
   sets, because the kind is the backing contract. For an `observation`: do
   the `atoms_for`, each already checked at the atom level, jointly entail
   the statement, and do the `atoms_against` undermine it? Where the
@@ -591,7 +591,7 @@ cited atom modified, the statement edited. Staleness is computed
   tension and structure, never premises. `bet` and `commitment` owe no
   backing, so they have nothing to audit; auditability is computable from
   the kind.
-- **ERF-25** A universal negative, a claim of the form "no shipped tool
+- <a id="erf-25"></a>**ERF-25** A universal negative, a claim of the form "no shipped tool
   does X", MUST be audited as scoped rather than as proved. No set of atoms
   proves such a claim: the atoms evidence the coverage of a survey, not the
   absence itself, and SUPPORTED means supported as scoped. Such a claim
@@ -630,18 +630,18 @@ cover and how deeply hits were inspected, because that is what a reader
 weighs when an absence is doing work. A complete search of a closed corpus
 correctly has nothing to state.
 
-- **ERF-26** Each search act MUST name its concrete instrument in `tool`
+- <a id="erf-26"></a>**ERF-26** Each search act MUST name its concrete instrument in `tool`
   and its `query` in that instrument's own terms, and MAY name the `scope`
   that applied. *Shape: `SearchAct`.* A category ("web search") is not an
   instrument, and yields are comparable only where instruments are named.
   For a manual review the query is the universe inspected.
-- **ERF-27** `hits_reported` MUST record each act's yield as the
+- <a id="erf-27"></a>**ERF-27** `hits_reported` MUST record each act's yield as the
   instrument reported it, as text, and MUST NOT state precision the
   instrument did not give. *Shape: `SearchAct.hits_reported`.*
   `notable_results` is the curated subset: near-misses with why they fall
   short, exemplars with why they matter, minting atoms where a hit
   deserves quoting.
-- **ERF-28** What a survey conducted is immutable: `searches` and each
+- <a id="erf-28"></a>**ERF-28** What a survey conducted is immutable: `searches` and each
   act's reported yield MUST NOT change after the fact, because a search
   already run cannot have run differently. A re-run of the same sought is
   a new record, SHOULD name its predecessor in `prior_survey`, and its id
@@ -679,7 +679,7 @@ format asks of a narrative. Whether a second document is also compiled from
 the bound claims, as a structured list a collaborator can dispute line by
 line, is a matter for whoever writes the narrative.
 
-- **ERF-31** A passage that asserts something SHOULD end with a narrative
+- <a id="erf-31"></a>**ERF-31** A passage that asserts something SHOULD end with a narrative
   binding: a marker naming the claims the passage rests on, an anchor of a
   few exact words from it, and `bound-at`, the date the binding was made.
   Every part is required; every id MUST resolve to a claim; and the anchor
@@ -702,7 +702,7 @@ line, is a matter for whoever writes the narrative.
   in a long document matching, and a paragraph false-flags a sentence
   split across a break.
 
-- **ERF-32** A narrative binding MUST be checkable: it is stale when the
+- <a id="erf-32"></a>**ERF-32** A narrative binding MUST be checkable: it is stale when the
   claim it names carries a `last_modified` later than the binding's
   `bound-at`, a complete mechanical test using only fields the format
   already defines, and its mixed-precision case resolves as `ERF-47` says,
@@ -713,7 +713,7 @@ line, is a matter for whoever writes the narrative.
   under `ERF-31` is the ordinary case of this, and the two go together, one
   saying the record is wrong and the other saying what the reader sees
   meanwhile.
-- **ERF-33** A consumer encountering a narrative binding whose id
+- <a id="erf-33"></a>**ERF-33** A consumer encountering a narrative binding whose id
   resolves to no record MUST report it and MUST NOT drop it silently. A
   narrative claiming support from a record that does not exist is a defect
   in the narrative, and hiding it turns a broken citation into a confident
@@ -783,7 +783,7 @@ are not a stored vocabulary; see `ERF-41`.
 All machine-checkable. Types express what types can express; the validator
 checks the relations no type can see.
 
-- **ERF-35** A reference asserting a *current* relationship MUST resolve
+- <a id="erf-35"></a>**ERF-35** A reference asserting a *current* relationship MUST resolve
   within the deployment, the corpora read and cited together: `atoms_for`,
   `atoms_against`, `edges.to`, `surveys`, `prior_survey` and each
   `notable_results` entry's `atoms` name existing records **of the type
@@ -798,15 +798,15 @@ checks the relations no type can see.
   test for any later id-bearing field is whether it asserts something now
   or records something then.
 
-- **ERF-36** Every record id MUST be unique across every corpus in the
+- <a id="erf-36"></a>**ERF-36** Every record id MUST be unique across every corpus in the
   deployment, regardless of record type: one atom, claim, or survey may
   hold a given id, and no second record of any type may repeat it.
-- **ERF-40** Standings MUST be append-only; an edit or deletion of an
+- <a id="erf-40"></a>**ERF-40** Standings MUST be append-only; an edit or deletion of an
   existing entry is a violation, verified against the substrate's history.
   The audit lists (`finding_audit`, `evidence_audit`) are append-only in
   the same sense, which is why `ERF-48` can exempt appends to all three
   from re-stamping.
-- **ERF-41** Disposition MUST be computed, never stored, from the current
+- <a id="erf-41"></a>**ERF-41** Disposition MUST be computed, never stored, from the current
   stances alone, each person's newest admissible entry. No standings:
   `proposal`. Otherwise discard every current `withdrawn`, withdrawal
   being exit and not opposition, and read the rest: none remaining,
@@ -821,12 +821,12 @@ checks the relations no type can see.
   and there is no tie-break: `contested` is the terminal reading of a
   disagreement, and what a use requires of a disposition is the
   consumer's to decide.
-- **ERF-42** `rejected` and `retired` MUST NOT be conflated. A rejected
+- <a id="erf-42"></a>**ERF-42** `rejected` and `retired` MUST NOT be conflated. A rejected
   claim is one every current holder judges false; a retired claim is one
   every current holder has left. Both are terminal readings and neither is
   a deletion; a consumer presenting them identically MUST say which it
   means.
-- **ERF-43** An argument's premise closure, followed transitively through
+- <a id="erf-43"></a>**ERF-43** An argument's premise closure, followed transitively through
   its outgoing `assumes` edges and the incoming `supports` edges of other
   claims (`ERF-24`), MUST terminate in non-argument leaves. The closure is
   what the edges reach and excludes the argument itself, so a premise-less
@@ -846,8 +846,8 @@ checks the relations no type can see.
   retired premise hollows every argument above it, and it is a flag
   because a withdrawal elsewhere creates the condition with no edit to the
   argument.
-- **ERF-44** `conflicts-with` MUST be stored once per pair.
-- **ERF-47** Staleness MUST be computed, never stored: a
+- <a id="erf-44"></a>**ERF-44** `conflicts-with` MUST be stored once per pair.
+- <a id="erf-47"></a>**ERF-47** Staleness MUST be computed, never stored: a
   `finding_audit`, `evidence_audit`, or narrative binding older than the last change
   to what it judged is flagged stale. What each judged: a `finding_audit`,
   its atom; an `evidence_audit`, the claim and the atoms attached to it,
@@ -858,7 +858,7 @@ checks the relations no type can see.
   check that cannot tell says look, never rest. Two bare dates that are
   equal read as current, because the re-audit that follows an edit lands
   on the same day.
-- **ERF-48** Any change to a record MUST set `last_modified`, and it MUST
+- <a id="erf-48"></a>**ERF-48** Any change to a record MUST set `last_modified`, and it MUST
   NOT precede `created`; that is the whole of what a validator decides
   here, since a corpus holds no prior value to compare against. A
   producer SHOULD advance it with every edit, and one stamping a second
@@ -876,11 +876,11 @@ checks the relations no type can see.
 > unnecessary re-audit; under-stamping shows a current verdict on a finding
 > that has since moved, which is the failure that matters.
 
-- **ERF-50** The mechanical quote check (the normalized quote occurs in
+- <a id="erf-50"></a>**ERF-50** The mechanical quote check (the normalized quote occurs in
   the source's normalized text) MUST be re-runnable by anyone holding the
   corpus and its normalized texts. When it runs is nobody's business but
   the producer's; that it can run, at any time, by anyone, is the format's.
-- **ERF-51** Normalization MUST be this sequence, applied identically to
+- <a id="erf-51"></a>**ERF-51** Normalization MUST be this sequence, applied identically to
   the quote and to the normalized text, so that two conforming tools reach
   the same verdict on the same pair:
 
@@ -933,7 +933,7 @@ checks the relations no type can see.
   it, exactly as it does for a text it does not hold. The prose above
   names each transformation and the standards it cites fix each one; the
   conformance suite's case files test an implementation and bind nothing.
-- **ERF-52** Only the exact marker `[...]` MUST be treated as an
+- <a id="erf-52"></a>**ERF-52** Only the exact marker `[...]` MUST be treated as an
   omission, and it is the only wildcard; a bare `...` or `…` is a literal
   source character (`ERF-6`). The quote MUST be split on `[...]` BEFORE
   normalization, because normalization would otherwise fold the marker,
@@ -1009,7 +1009,7 @@ narrative binding's spelling as an HTML comment is the binding's own
 `YAMLB-1`. Requirements that speak of a *file* mean a held byte sequence,
 raw or normalized, and are the model's.
 
-- **ERF-53** A corpus MUST have a canonical interchange form, given by
+- <a id="erf-53"></a>**ERF-53** A corpus MUST have a canonical interchange form, given by
   a binding (this section's opening). A store MAY hold a corpus any other
   way it likes, body as one more field, many records in one collection
   document, rows in a database, provided everything the corpus holds
@@ -1027,7 +1027,7 @@ raw or normalized, and are the model's.
   whole verifiability chain. How records are grouped in a store carries no
   meaning, because each record states its own `type` and `corpus`
   (`ERF-54`).
-- **ERF-54** Every document a corpus holds MUST self-describe with
+- <a id="erf-54"></a>**ERF-54** Every document a corpus holds MUST self-describe with
   `type`, no meaning MAY live in a path, exactly one document MUST carry
   `type: corpus`, and every record MUST also carry `corpus`. A held raw or
   normalized file is an artifact and carries no `type`; a source names it
@@ -1038,7 +1038,7 @@ raw or normalized, and are the model's.
   the format out of a store's business: what travels is a set of
   self-describing documents and the artifacts they name, and where they
   sit carries nothing.
-- **ERF-56** A reader MUST materialize an omitted list-typed field as an
+- <a id="erf-56"></a>**ERF-56** A reader MUST materialize an omitted list-typed field as an
   empty list, because presence means what it says: an omitted list means none,
   never unknown, so a record that omits one is complete rather than
   partial, and an atom nobody has audited yet carries no audit key and is
@@ -1051,12 +1051,12 @@ raw or normalized, and are the model's.
   namespace (`ERF-72`), is the schema's (`ERF-73`); an unknown key is a
   producer error a validator catches, never a consumer's licence to refuse
   (`ERF-57`). How an empty list is spelled on the wire is the binding's.
-- **ERF-57** A consumer MUST preserve unknown fields and unknown record
+- <a id="erf-57"></a>**ERF-57** A consumer MUST preserve unknown fields and unknown record
   types as opaque data, MUST report them, and MUST NOT reject a corpus
   solely because it contains them. Strictness belongs to the producer and
   detection to the validator; a consumer that refuses what it does not
   recognize breaks forward compatibility for everything downstream of it.
-- **ERF-72** A field named with the prefix `x_` is an extension field: a
+- <a id="erf-72"></a>**ERF-72** A field named with the prefix `x_` is an extension field: a
   producer MAY originate one anywhere, a validator MUST NOT report it under
   `ERF-73`, and a consumer treats it as unknown (`ERF-57`). *Shape: the
   `^x_` pattern on every definition.* A field lives under the prefix while
@@ -1064,7 +1064,7 @@ raw or normalized, and are the model's.
   after which the prefixed form is a distinct extension field. Rigid by
   default and extensible in one place, because a format tolerant
   everywhere decays into whatever its implementations write.
-- **ERF-60** A consumer MAY refuse a corpus whose MAJOR `spec_version` it
+- <a id="erf-60"></a>**ERF-60** A consumer MAY refuse a corpus whose MAJOR `spec_version` it
   does not support, and MUST say so when it does. For an unsupported MINOR
   version it MUST either preserve unrecognized content losslessly or refuse
   with an explicit diagnostic; silently dropping what it does not
@@ -1079,7 +1079,7 @@ raw or normalized, and are the model's.
   than refusing it, because the failure is silent: fields shift meaning
   and nothing in the file announces the mismatch. Migrations between
   majors are explicit.
-- **ERF-61** A MAJOR increment of `spec_version` MUST mean that records
+- <a id="erf-61"></a>**ERF-61** A MAJOR increment of `spec_version` MUST mean that records
   of the previous major are unreadable or read with changed meaning, and a
   MINOR increment an addition an older reader under-interprets but never
   misreads. The changed-meaning clause is what `ERF-60`'s refusal exists
@@ -1088,10 +1088,10 @@ raw or normalized, and are the model's.
 
 ## 8. Storage
 
-- **ERF-62** A corpus MUST have exactly one authoritative home. Every
+- <a id="erf-62"></a>**ERF-62** A corpus MUST have exactly one authoritative home. Every
   index, database, or embedding built over it is a *projection*:
   recomputable, derived, never consulted as truth.
-- **ERF-63** A substrate MAY be anything that preserves records, ids,
+- <a id="erf-63"></a>**ERF-63** A substrate MAY be anything that preserves records, ids,
   attribution, and an edit history sufficient to verify `ERF-40`. Files
   in git are the reference implementation (history and diffing for free);
   a record's body is one more field in a database.
@@ -1111,6 +1111,12 @@ raw or normalized, and are the model's.
   a number does not say which section a requirement lives in, so moving a
   section can never make an id wrong. Ids are stable once published.
   Insertions append; retired ids are never reused and are never refilled.
+- A requirement is cited by its id and linked by its anchor. Every definition
+  line carries one, lowercased from the id, so `SPEC.md#erf-6` and
+  `bindings/yaml-markdown.md#yamlb-1` resolve to the requirement itself
+  wherever the file is rendered. The anchor is part of the line rather than of
+  a heading, because requirements are not headings and a section can be
+  reorganized without moving one.
 - The discipline the specification's own editors work under (forcing
   instances, the decision register, the changelog) is stated in
   `docs/history.md`; it binds whoever amends this document, not an

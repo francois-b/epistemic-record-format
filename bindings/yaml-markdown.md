@@ -9,11 +9,14 @@ last_updated: 2026-08-25
 
 # The YAML/Markdown binding, version 1
 
-A **binding** says how the model maps to bytes. This one is the format's
-first and its interchange default: a producer that does not know its
-recipient's binding ships this one, and every corpus in this repository is
-held in it. `SPEC.md` section 7 states what every binding must satisfy;
-this document states what this one does.
+A **binding** says how the model maps to bytes. The word is narrower here
+than in CloudEvents, where a binding says how an event rides a particular
+protocol: nothing in this document concerns a transport, and a corpus in this
+binding is the same corpus whether it arrives over HTTP, on a disk, or in a
+git clone. This one is the format's first and its interchange default: a
+producer that does not know its recipient's binding ships this one, and every
+corpus in this repository is held in it. `SPEC.md` section 7 states what
+every binding must satisfy; this document states what this one does.
 
 Rules that moved here from `SPEC.md` on 2026-08-25 keep the `ERF` ids they
 carried, so that nothing citing them breaks; they retire there and are never
@@ -42,13 +45,25 @@ The nesting is written out because an earlier wording named both keys
 without saying which contained which, and an independent implementation
 read the entries as further top-level keys beside `type`.
 
+The file conventions below are conventions and not rules. A record is a `.md`
+file: YAML frontmatter, then the body. A corpus's declaration is
+`corpus.yaml` and its source list is `sources.yaml`. A held text, raw or
+normalized, sits wherever its source entry names it by path, which is the only
+place a path is stated and the only place one is read. None of these names
+binds anything, because discovery is by content (`ERF-54`): a tool that
+dispatches on a filename is reading something this binding never wrote, and a
+corpus that arranges its files differently is exactly as conforming. No media
+type is registered for any of these files. `text/markdown` describes a record
+*body* and not the file that carries it, since the file is frontmatter plus
+body and nothing standard names that pair.
+
 That a canonical interchange form exists, and that a store may hold a corpus
 any other way provided it round-trips without loss, is `ERF-53` in
 `SPEC.md`. That the form is this one is this section.
 
 ## 2. Encoding and body
 
-- **ERF-67** A record body is CommonMark, and a file MUST be UTF-8
+- <a id="erf-67"></a>**ERF-67** A record body is CommonMark, and a file MUST be UTF-8
   encoded with LF line endings and no byte-order mark. Markdown without a
   named dialect is not a format, which is the gap CommonMark was written
   to close; every UTF-8 string is valid CommonMark, so naming the dialect
@@ -60,7 +75,7 @@ any other way provided it round-trips without loss, is `ERF-53` in
 
 ## 3. Parsing frontmatter
 
-- **ERF-65** Frontmatter MUST parse under YAML 1.2 using the **JSON
+- <a id="erf-65"></a>**ERF-65** Frontmatter MUST parse under YAML 1.2 using the **JSON
   schema**, the narrowest of the three the specification defines. Under it
   only `null`, the literals `true` and `false`, and JSON's own number
   grammar resolve to non-string scalars; everything else stays a string.
@@ -87,7 +102,7 @@ any other way provided it round-trips without loss, is `ERF-53` in
 
 ## 4. Keys and structure
 
-- **YAMLB-2** An empty list MUST be omitted on the wire, and a reader
+- <a id="yamlb-2"></a>**YAMLB-2** An empty list MUST be omitted on the wire, and a reader
   materializes it (`ERF-56`); an optional mapping that is present and
   empty MUST be written as `{}`, because presence asserts existence and
   `evidence_at_stance: {}` is a different fact from its absence. A file
@@ -95,7 +110,7 @@ any other way provided it round-trips without loss, is `ERF-53` in
   list rule to mappings destroys the one fact `ERF-20` calls
   unrecoverable.
 
-- **ERF-66** A record's frontmatter MUST NOT contain a duplicate key, an
+- <a id="erf-66"></a>**ERF-66** A record's frontmatter MUST NOT contain a duplicate key, an
   anchor, an alias, or an explicit tag. YAML permits all four and leaves a
   processor's response to duplicates at its own discretion, so two
   conforming parsers may legally disagree about the same file. A record is
@@ -104,7 +119,7 @@ any other way provided it round-trips without loss, is `ERF-53` in
 
 ## 5. The narrative binding's spelling
 
-- **YAMLB-1** A narrative binding MUST be spelled as an HTML comment, so
+- <a id="yamlb-1"></a>**YAMLB-1** A narrative binding MUST be spelled as an HTML comment, so
   that it is invisible in every render and survives any markdown pipeline:
 
 ```markdown
