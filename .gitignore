@@ -39,3 +39,7 @@ reviews/**/.build/
 reviews/2026-08-26-standards-fold-trials/bitter-lesson-corpus/corpus/raw/
 reviews/2026-08-25-schema-spec-trials/essay-corpus/corpus/raw/*
 !reviews/2026-08-25-schema-spec-trials/essay-corpus/corpus/raw/epistemology-for-knowledge-work-in-the-llm-era-6ed2f*
+
+# The example corpus rendered by the viewer is build output, like site/build/:
+# npm run view -- examples/corpora/minimal -o examples/site
+examples/site/
