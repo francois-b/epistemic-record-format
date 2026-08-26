@@ -1,8 +1,8 @@
 ---
 id: B-42
 kind: defect
-status: contested
-priority: P3
+status: closed
+priority: closed
 contested_because: >
   Verified duplicate of B-01 on 2026-08-25 and carrying merge_into since
   then; the status never followed the verdict. Marked so the index shows
@@ -43,3 +43,7 @@ record and the `merge_into: B-01` the entry has carried since the
 2026-08-25 prune. The index had listed it under Unverified because a
 later self-note verdict of `unverified` split the list; the reasoning
 stays here for B-01 to reach.
+
+## Resolution
+
+Closed 2026-08-26, ruled by the operator on the consolidation pass's verdict: duplicate of `B-01` (cross-deployment identity), which stays open with its trigger.

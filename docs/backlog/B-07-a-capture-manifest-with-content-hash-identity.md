@@ -1,8 +1,8 @@
 ---
 id: B-07
 kind: capability
-status: contested
-priority: P3
+status: closed
+priority: closed
 contested_because: >
   Stale at HEAD: the part the entry said remained, whether a corpus can
   prove which normalized text it holds, is answered by `normalized_digest`
@@ -43,3 +43,7 @@ same-URL revision is `ERF-2`'s (a revision is a new source) and the other
 two name nothing a digest per source does not already give. A manifest as
 a separate artifact would be a fifth document kind with no forcing
 instance. Marked contested for disposal rather than a ruling.
+
+## Resolution
+
+Closed 2026-08-26, ruled by the operator on the consolidation pass's verdict: `normalized_digest` and `received.digest` exist on `Source`, and `ERF-71` now makes a recorded digest a MUST against the held artifact, so the capture-manifest capability's remaining content is delivered.

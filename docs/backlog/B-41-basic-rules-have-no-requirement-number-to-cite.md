@@ -1,8 +1,8 @@
 ---
 id: B-41
 kind: defect
-status: contested
-priority: P3
+status: closed
+priority: closed
 contested_because: >
   Stale at HEAD: ERF-73 is the number. Every shape obligation a trial
   cited a section for now cites one requirement.
@@ -46,3 +46,7 @@ cites `ERF-73` and the definition (`Atom.required`), which is one number
 and one pointer rather than a section. The alternative the entry offered,
 "state in section 1 that the data model binds independently", is what
 section 3 now says of the schema. Marked contested for disposal.
+
+## Resolution
+
+Closed 2026-08-26, ruled by the operator on the consolidation pass's verdict: `ERF-73` is the number: every document validates against `erf.schema.json`, so a basic shape violation cites it.

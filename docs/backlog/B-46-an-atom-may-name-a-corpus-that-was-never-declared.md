@@ -1,8 +1,8 @@
 ---
 id: B-46
 kind: defect
-status: contested
-priority: P3
+status: closed
+priority: closed
 contested_because: >
   Stale at HEAD: ERF-17 was widened from every claim to a record's corpus
   in the 2026-08-26 trim, which is the one-word fix the entry asked for.
@@ -48,3 +48,7 @@ section 3.1 atom table still cites `ERF-54` alone for `type`, `corpus`
 while the claim and survey tables cite `ERF-17`, an index inconsistency
 of the kind the 2026-08-25 verifier noted, and not an obligation gap.
 That is a one-cell edit to the field reference, not a ruling.
+
+## Resolution
+
+Closed 2026-08-26, ruled by the operator on the consolidation pass's verdict: `ERF-17` reads "A record's `corpus` MUST resolve to a declared corpus" and the loader reports an undeclared one.

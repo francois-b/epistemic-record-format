@@ -1,8 +1,8 @@
 ---
 id: B-43
 kind: defect
-status: contested
-priority: P3
+status: closed
+priority: closed
 contested_because: >
   Verified inaccurate on 2026-08-25 and folded into B-24 (closed); at HEAD
   the schema states which precision is legal where, so the residual is
@@ -50,3 +50,7 @@ typed `Instant` ("a full instant with time and offset, never a bare date,
 because this is the format's only ordered ledger"), and `AsOfDate` ("A
 year, a year and month, or a full date"). Nothing is left to fold into
 `B-24`, which is closed.
+
+## Resolution
+
+Closed 2026-08-26, ruled by the operator on the consolidation pass's verdict: the schema's `Instant`, `Date`, `DateOrInstant` and `AsOfDate` type each timestamp field; `Instant` requires seconds since 2026-08-26.

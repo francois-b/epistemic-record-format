@@ -1,8 +1,8 @@
 ---
 id: B-31
 kind: defect
-status: contested
-priority: P3
+status: closed
+priority: closed
 contested_because: >
   Stale at HEAD: the note the entry proposed is now in ERF-48's own text,
   and ERF-40 and ERF-63 say the rest.
@@ -43,3 +43,7 @@ The three together say what the entry wanted said. The hold on the SQL
 trial's wording is moot; that trial closed on 2026-08-25. That no fixture
 can exercise a transition rule is a limitation of the suite the entry's
 own priority note already recorded, not a defect in the text.
+
+## Resolution
+
+Closed 2026-08-26, ruled by the operator on the consolidation pass's verdict: `ERF-48` says what a validator decides from a single corpus, `ERF-40` names history as the ground for append-only, and the `NOT-CHECKED` line names the rest.

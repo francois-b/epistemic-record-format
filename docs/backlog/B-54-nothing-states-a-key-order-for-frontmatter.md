@@ -1,8 +1,8 @@
 ---
 id: B-54
 kind: defect
-status: contested
-priority: P3
+status: closed
+priority: closed
 contested_because: >
   Stale at HEAD: the decision the entry asked for, whether byte-identity
   is ever a goal, is taken in ERF-53, which defines equivalence for
@@ -44,3 +44,7 @@ the same document and are equivalent; byte identity is a goal only for
 held raw and normalized files, which have no keys. The entry's premise,
 that `B-40` did not name this, is also moot: `B-40` closed on 2026-08-25
 with the definition that answers it.
+
+## Resolution
+
+Closed 2026-08-26, ruled by the operator on the consolidation pass's verdict: `ERF-53` defines document equivalence at the model, so key order carries no meaning and no rule is needed to say which order.

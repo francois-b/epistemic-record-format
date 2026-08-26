@@ -1,8 +1,8 @@
 ---
 id: B-27
 kind: defect
-status: contested
-priority: P3
+status: closed
+priority: closed
 contested_because: >
   Stale at HEAD: the case files are no longer normative, so a reader of
   the specification alone is not missing anything that binds. What remains
@@ -45,3 +45,7 @@ the document alone has the four cited standards, which is the whole rule.
 Whether the case files ship beside a published specification is a
 publication decision, as the entry's own priority note already said, and
 not a defect in the text.
+
+## Resolution
+
+Closed 2026-08-26, ruled by the operator on the consolidation pass's verdict: the conformance case files are instruments and not normative since 2026-08-26 (`SPEC.md`, What is normative), so nothing a reader must obtain is missing from the normative set.

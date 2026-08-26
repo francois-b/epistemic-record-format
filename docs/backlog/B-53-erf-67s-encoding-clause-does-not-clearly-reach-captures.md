@@ -1,8 +1,8 @@
 ---
 id: B-53
 kind: defect
-status: contested
-priority: P3
+status: closed
+priority: closed
 contested_because: >
   Stale at HEAD: the failure the entry names, a byte-order mark failing a
   verbatim check, cannot happen under ERF-51 step 2, and section 7 now
@@ -44,3 +44,7 @@ normalized, and are the model's", and `ERF-67` in the binding says "a
 file MUST be UTF-8 encoded with LF line endings and no byte-order mark".
 A normalized text saved with a BOM is a binding violation and, if it
 reached the fold anyway, would fold identically. Nothing left to rule.
+
+## Resolution
+
+Closed 2026-08-26, ruled by the operator on the consolidation pass's verdict: `ERF-51` step 2 removes the byte-order mark and `ERF-67` says every file is UTF-8; section 7 scopes "file" to what a corpus holds.

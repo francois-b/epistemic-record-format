@@ -81,22 +81,6 @@ Items leave when their trigger fires or their ruling lands, going into the
 specification or into `non-goals.md` if the answer turns out to be no.
 Decisions already taken against something are not here.
 
-## Contested
-
-Verification disputes these: stale, inaccurate, duplicated, or already ruled elsewhere. Each needs a decision about the **entry** before the format is touched.
-
-| id | priority | | basis | verification |
-|---|---|---|---|---|
-| [`B-07`](B-07-a-capture-manifest-with-content-hash-identity.md) | **P3** | A capture manifest with content-hash identity | `anticipated` | `accurate` · `stale` ⚠ split |
-| [`B-27`](B-27-the-normative-conformance-cases-are-unobtainable-by-a-read.md) | **P3** | The normative conformance cases are unobtainable by a reader of the specification alone | `reported` | `accurate` · `stale` ⚠ split |
-| [`B-31`](B-31-append-only-rules-cannot-be-checked-from-a-single-corpus-s.md) | **P3** | Append-only rules cannot be checked from a single corpus snapshot | `reported` | `accurate` · `stale` ⚠ split |
-| [`B-41`](B-41-basic-rules-have-no-requirement-number-to-cite.md) | **P3** | Basic rules have no requirement number to cite | `demonstrated` | `accurate` · `unverified` · `stale` ⚠ split |
-| [`B-42`](B-42-the-deployment-has-no-identity.md) | **P3** | The deployment has no identity | `demonstrated` | `duplicate` · `unverified` · `duplicate` ⚠ split |
-| [`B-43`](B-43-timestamps-the-type-says-instant-every-example-writes-a-ba.md) | **P3** | Timestamps: the type says instant, every example writes a bare date | `reported` | `inaccurate` · `unverified` · `stale` ⚠ split |
-| [`B-46`](B-46-an-atom-may-name-a-corpus-that-was-never-declared.md) | **P3** | An atom may name a corpus that was never declared | `reported` | `accurate` · `unverified` · `stale` ⚠ split |
-| [`B-53`](B-53-erf-67s-encoding-clause-does-not-clearly-reach-captures.md) | **P3** | `ERF-67`'s encoding clause does not clearly reach captures | `reported` | `unverified` · `stale` ⚠ split |
-| [`B-54`](B-54-nothing-states-a-key-order-for-frontmatter.md) | **P3** | Nothing states a key order for frontmatter | `reported` | `unverified` · `stale` ⚠ split |
-
 ## Unverified
 
 Raised but not yet checked by anyone other than whoever raised them. **Not ready to be decided.**
@@ -104,18 +88,18 @@ Raised but not yet checked by anyone other than whoever raised them. **Not ready
 | id | priority | | basis | verification |
 |---|---|---|---|---|
 | [`B-40`](B-40-erf-53s-round-trip-clause-has-no-definition-of-loss.md) | **closed** | `ERF-53`'s round-trip clause has no definition of loss | `demonstrated` | `accurate` · `unverified` ⚠ split |
-| [`B-41`](B-41-basic-rules-have-no-requirement-number-to-cite.md) | **P3** | Basic rules have no requirement number to cite | `demonstrated` | `accurate` · `unverified` · `stale` ⚠ split |
-| [`B-42`](B-42-the-deployment-has-no-identity.md) | **P3** | The deployment has no identity | `demonstrated` | `duplicate` · `unverified` · `duplicate` ⚠ split |
-| [`B-43`](B-43-timestamps-the-type-says-instant-every-example-writes-a-ba.md) | **P3** | Timestamps: the type says instant, every example writes a bare date | `reported` | `inaccurate` · `unverified` · `stale` ⚠ split |
+| [`B-41`](B-41-basic-rules-have-no-requirement-number-to-cite.md) | **closed** | Basic rules have no requirement number to cite | `demonstrated` | `accurate` · `unverified` · `stale` ⚠ split |
+| [`B-42`](B-42-the-deployment-has-no-identity.md) | **closed** | The deployment has no identity | `demonstrated` | `duplicate` · `unverified` · `duplicate` ⚠ split |
+| [`B-43`](B-43-timestamps-the-type-says-instant-every-example-writes-a-ba.md) | **closed** | Timestamps: the type says instant, every example writes a bare date | `reported` | `inaccurate` · `unverified` · `stale` ⚠ split |
 | [`B-44`](B-44-erf-2-requires-a-dated-capture-and-no-field-holds-the-date.md) | **closed** | `ERF-2` requires a dated capture and no field holds the date | `demonstrated` | `accurate` · `unverified` ⚠ split |
 | [`B-45`](B-45-erf-28-asserts-a-computed-staleness-that-nothing-defines.md) | **P2** | `ERF-28` asserts a computed staleness that nothing defines | `reported` | `accurate` · `unverified` ⚠ split |
-| [`B-46`](B-46-an-atom-may-name-a-corpus-that-was-never-declared.md) | **P3** | An atom may name a corpus that was never declared | `reported` | `accurate` · `unverified` · `stale` ⚠ split |
+| [`B-46`](B-46-an-atom-may-name-a-corpus-that-was-never-declared.md) | **closed** | An atom may name a corpus that was never declared | `reported` | `accurate` · `unverified` · `stale` ⚠ split |
 | [`B-47`](B-47-the-serialization-rules-are-written-about-records-and-miss.md) | **P2** | The serialization rules are written about records and miss the other files | `reported` | `accurate` · `unverified` ⚠ split |
 | [`B-48`](B-48-the-validator-conformance-class-omits-section-4.md) | **closed** | The Validator conformance class omits section 4 | `demonstrated` | `accurate` · `accurate` · `unverified` ⚠ split |
 | [`B-51`](B-51-erf-55s-omit-rule-stops-at-lists-and-an-empty-mapping-carries-meaning.md) | **closed** | `ERF-55`'s omit rule stops at lists, and one empty mapping carries meaning | `reported` | `unverified` · `accurate` ⚠ split |
 | [`B-52`](B-52-the-base-for-a-capture-path-is-stated-only-in-a-comment.md) | **closed** | The base for a capture `path` is stated only in a comment | `reported` | `unverified` |
-| [`B-53`](B-53-erf-67s-encoding-clause-does-not-clearly-reach-captures.md) | **P3** | `ERF-67`'s encoding clause does not clearly reach captures | `reported` | `unverified` · `stale` ⚠ split |
-| [`B-54`](B-54-nothing-states-a-key-order-for-frontmatter.md) | **P3** | Nothing states a key order for frontmatter | `reported` | `unverified` · `stale` ⚠ split |
+| [`B-53`](B-53-erf-67s-encoding-clause-does-not-clearly-reach-captures.md) | **closed** | `ERF-67`'s encoding clause does not clearly reach captures | `reported` | `unverified` · `stale` ⚠ split |
+| [`B-54`](B-54-nothing-states-a-key-order-for-frontmatter.md) | **closed** | Nothing states a key order for frontmatter | `reported` | `unverified` · `stale` ⚠ split |
 | [`B-55`](B-55-dehyphenation-needs-a-dictionary-and-is-deferred.md) | **trigger-driven** | Dehyphenation at a line break | `anticipated` | `unverified` |
 | [`B-56`](B-56-icu-transform-rules-as-the-folding-definition.md) | **trigger-driven** | ICU transform rules as the folding definition | `anticipated` | `unverified` |
 | [`B-57`](B-57-a-normalized-text-may-hold-what-is-not-the-works-text.md) | **P3** | A normalized text may hold what is not the work's text, and nothing says so | `demonstrated` | `unverified` |
