@@ -14,8 +14,16 @@ Specification, v0.9 (draft). The abstract and status are in `README.md`;
 the change history is in `CHANGELOG.md`; how the format got this way is
 `docs/history.md`, the fields it draws on are `docs/influences.md`, what it
 deliberately does not do is `docs/purpose.md`, what was ruled out is
-`docs/non-goals.md`, and what it does not do yet is `docs/backlog/`. The normative data model is the TypeScript file
-`types/erf.ts`, mirrored inline in section 3.
+`docs/non-goals.md`, and what it does not do yet is `docs/backlog/`.
+
+**What is normative.** Four things, and nothing else: this document; the
+data model, [`erf.schema.json`](erf.schema.json) (section 3); a binding
+document, for any corpus exchanged in that binding
+([`bindings/yaml-markdown.md`](bindings/yaml-markdown.md) today); and the
+two conformance case files `ERF-51` names, which fix the exact behaviour
+of the quote check where prose cannot. Everything else in this repository,
+the reference implementation, the fixtures, the type rendering, the trials
+and the history, is an instrument or a record and binds nothing.
 
 ## 1. Scope and conformance
 
