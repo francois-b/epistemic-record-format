@@ -1,0 +1,63 @@
+---
+# Build the site and publish it with GitHub Pages.
+#
+# Before the first run somebody has to set Settings -> Pages -> Build and
+# deployment -> Source to "GitHub Actions". Until that is done the deploy
+# step fails with a "Pages site not found" error, and nothing in the
+# repository can set it.
+#
+# The build is the same one a person runs locally, site/build.sh, so what
+# lands here and what a contributor sees are produced by one script. The
+# corpus is checked before it is rendered and the build fails on any
+# conformance violation, which is what keeps a non-conforming corpus off
+# the published site.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time, and let a run in progress finish rather than
+# cancelling it: a half-deployed Pages site is worse than a stale one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build the site
+        env:
+          # The landing page links back into the source, and a fork's links
+          # should point at the fork rather than at the original.
+          ERF_REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+        run: ./site/build.sh
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

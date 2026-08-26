@@ -2,6 +2,12 @@ node_modules/
 package-lock.json
 *.tsbuildinfo
 .DS_Store
+
+# The published site is generated from site/landing.html and the corpus by
+# site/build.sh, so it is a build artifact like any rendered corpus. Its
+# source is committed and its output is not; committing it would invite an
+# edit in the output that the next build discards.
+site/build/
 # Build artifacts from the independent trials: their sources are kept, their
 # outputs are not. Swept in once by an over-broad `git add -A` (2026-08-25).
 target/

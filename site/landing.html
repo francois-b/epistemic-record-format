@@ -1,0 +1,251 @@
+<!doctype html>
+<!--
+  The landing page's source. `site/build.sh` copies it into the build and
+  substitutes {{REPO}} with the repository's URL, so nothing here is
+  hand-edited after generation. Self-contained: the stylesheet sits beside
+  it with its font faces inside it, and no page here fetches anything.
+-->
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Epistemic Record Format</title>
+<link rel="stylesheet" href="assets/erf.css">
+<style>
+  main { max-width: calc(41 * var(--base)); }
+  .lede { font-size: 1.12em; line-height: 1.55; }
+  .kicker { font-family: var(--sans); font-size: .78em; text-transform: uppercase;
+    letter-spacing: .1em; color: var(--muted); margin: 0 0 .8em; }
+  h1.title { font-size: 2.1em; margin-bottom: .35em; }
+  .pains { list-style: none; padding-left: 0; margin: 1.4em 0 0; }
+  .pains > li { border-top: 1px solid var(--rulelt); padding: 1.05em 0 .2em; }
+  .pains b { font-family: var(--sans); font-size: .93em; display: block;
+    margin-bottom: .25em; }
+  .answer { display: block; font-size: .89em; color: var(--muted);
+    margin-top: .5em; padding-left: .9em; border-left: 2px solid var(--rule); }
+  .answer i { font-style: normal; font-family: var(--mono); font-size: .93em;
+    color: var(--ink); }
+  .tour { list-style: none; padding-left: 0; margin: 1.2em 0 0; counter-reset: t; }
+  .tour > li { border-top: 1px solid var(--rulelt); padding: 1.05em 0 .9em;
+    counter-increment: t; }
+  .tour > li::before { content: counter(t); font-family: var(--mono);
+    font-size: .78em; color: var(--mutedlt); display: block; margin-bottom: .25em; }
+  .tour a.go { font-weight: 700; }
+  .tour p { margin: .3em 0 0; font-size: .93em; }
+  .reads { list-style: none; padding-left: 0; }
+  .reads li { padding: .55em 0; border-bottom: 1px solid var(--rulelt);
+    font-size: .95em; }
+  .reads a { font-weight: 700; }
+  .reads span { color: var(--muted); }
+  .cta { margin: 2em 0 0; padding: 1.1em 1.2em; background: var(--highlight);
+    border-left: 2px solid var(--accent); }
+  .cta a { font-weight: 700; }
+</style></head>
+<body>
+<nav class="topbar"><a href="index.html">The Epistemic Record Format</a><a href="corpus/index.html">the corpus</a><a href="{{REPO}}/blob/main/SPEC.md">specification</a><a href="{{REPO}}">repository</a></nav>
+<main>
+
+<p class="kicker">A record format, version 0.9, August 2026</p>
+<h1 class="title">The Epistemic Record Format</h1>
+
+<p class="lede">ERF is a plain-text record format for working research: the
+analysis, argumentation and synthesis done in consulting, strategy, due
+diligence and organizational decision-making, where conclusions rest on
+claims nobody can later trace, check, or stand behind. Academic publishing
+has citations and peer review. Software has types, tests and version
+control. The knowledge work between them has had prose. ERF supplies what
+prose leaves out: evidence recorded verbatim and checkable against a frozen
+copy of its source, claims typed by what would settle them, arguments as
+typed relations between claims, and an append-only ledger of who stands
+behind each claim, since when, and why. LLMs make the records maintainable,
+because drafting, extracting and classifying is what they are good at.
+People make the judgments. The record shows which was which.</p>
+
+<div class="cta">A working corpus of 151 atoms, 53 claims, 6 surveys and 71
+sources, on whether AI infrastructure spending is backed by demand, is
+rendered here in the reference viewer:
+<a href="corpus/index.html">read the corpus</a>. Zero conformance
+violations, every quote checked. The tour below is the fastest way in.</div>
+
+<h2>Six things that go wrong, and what the record does about each</h2>
+
+<p>None of these are new. What is new is that an LLM can now produce a
+month of plausible prose in an afternoon, so the cost of not fixing them
+compounds faster than it used to.</p>
+
+<ul class="pains">
+<li><b>Plausible text arrives faster than anyone can check it.</b>
+An LLM writes fluent, well-organized, correctly-hedged prose about anything,
+including things that are not so. Volume is no longer the constraint;
+knowing which sentences are backed is.
+<span class="answer">The unit of evidence is an <i>atom</i>: one verbatim
+quote from one source, with one sentence saying what the quote shows. It is
+small enough to check by machine and small enough to check by eye.</span></li>
+
+<li><b>Knowledge work has no version control and no tests.</b>
+A codebase tells you what broke and when. A folder of documents tells you
+nothing: there is no build that fails, no diff that means anything, no test
+that a conclusion still follows from what it was built on.
+<span class="answer">A corpus is checkable the way a codebase is. A
+validator reads it and reports violations, and the reference implementation
+runs as <i>erf-check</i> on the command line. What it cannot decide it names
+rather than guessing.</span></li>
+
+<li><b>Provenance is lost between the reading and the writing.</b>
+Somebody reads a report, writes a paragraph, and six months later the
+paragraph is the only survivor. The link is a URL that has moved, or a
+citation to a work nobody re-opens, and what the source actually said is
+gone.
+<span class="answer">Every quote is checked against the source's
+<i>normalized text</i>, a copy the corpus holds, never against the live web.
+A dead link becomes weaker provenance rather than a broken check, and the
+check is re-runnable years later by anyone holding both.</span></li>
+
+<li><b>Verdicts get stored as facts.</b>
+A tool judges a source reliable, or a claim verified, and the judgment is
+written into a field. A year on, nothing says who judged it, under what
+procedure, or whether the thing judged has changed since.
+<span class="answer">A judgment is recorded per auditor with the protocol
+version that produced it, so two verdicts under different procedures are
+never read as like for like. The mechanical part, whether the quote occurs
+in the text, is stored nowhere at all: it is recomputed on every read,
+because a stored result is a claim about a check rather than the check.</span></li>
+
+<li><b>Nobody records who stands where.</b>
+Disagreement in an organization lives in memory and in meetings. Who
+accepted a conclusion, when, on what grounds, and whether they later changed
+their mind are the facts most worth having and the ones least often
+written down.
+<span class="answer">The <i>standings</i> ledger is append-only, one entry
+per person, humans only, each carrying a date, a stance and a reason.
+Nothing is ever edited or deleted; leaving a position is its own dated
+entry. A claim's <i>disposition</i>, whether it is a proposal, active,
+contested, rejected or retired, is computed from that ledger every time it
+is read and is never a stored field, so no strength of evidence can promote
+a claim nobody has committed to.</span></li>
+
+<li><b>Staleness is invisible.</b>
+The thinking underneath a document moves, and the document keeps saying what
+it said. Nothing marks which paragraphs depended on what changed.
+<span class="answer">A passage of prose ends with a <i>narrative
+binding</i>: the claims it rests on, a few exact words from the passage so
+software can find it again after an edit, and the date the binding was made.
+When a bound claim moves, every passage resting on it can be listed. The
+same computation covers verdicts that predate what they judged.</span></li>
+</ul>
+
+<h2>A flag is not a violation</h2>
+
+<p>The six answers above produce two kinds of report, and the difference is
+the part most systems get wrong. A violation says the corpus does not
+conform. A flag says something here wants a person's attention, and a corpus
+carrying flags and no violations conforms perfectly well. Flags exist
+because several of the conditions this format cares about arise without
+anyone touching the record that carries them: withdrawing from a claim
+elsewhere hollows an argument that rested on it, and editing a claim ages
+every passage bound to it. Making either a violation would let one person's
+permitted act break another person's untouched corpus. So the format flags,
+and a consumer may neither present a flag as a failure nor hide one.</p>
+
+<h2>The tour</h2>
+
+<p>Four pages, in order. The corpus was written on 2026-08-25 by eleven LLM
+agents running in sequence, each reading what the last one left, none of
+them having seen anything of this project beyond the specification. It was
+brought to the current specification and checked on 2026-08-26.</p>
+
+<ol class="tour">
+
+<li><a class="go" href="corpus/claim-ai-capex-outpaces-realizable-revenue-bubble-risk.html">A
+claim with the evidence against it on the same page</a>
+<p>Look at the two evidence tables. The case against this claim is not
+filed as a rival claim somewhere else; it sits on the claim itself, under
+<span class="id">Evidence against</span>, because evidence against a
+statement weakens its position and never changes its identity. Then look at
+the standings ledger at the bottom, which is empty, and at the disposition
+above, which computes to <span class="id">proposal</span> because of
+that.</p></li>
+
+<li><a class="go" href="corpus/capture-acx-31.html">A quote, checked</a>
+<p>The page runs the mechanical check and then shows you the source's held
+text with the quoted span marked inside it. The check is not a similarity
+score. It normalizes both sides through one published sequence, splits the
+quote on its elision markers, and requires every span to occur in order, on
+whole-word boundaries, without crossing a paragraph break the quote does not
+itself hold. This quote failed that last test until 2026-08-26, because it
+had run two paragraphs of the earnings call together into one
+sentence.</p></li>
+
+<li><a class="go" href="corpus/survey-ai-attributable-revenue-evidence-rerun-2026-08-25.html">A
+search recorded as evidence</a>
+<p>Read the yields column. Absence cannot be evidenced by a quote, because
+there is nothing to quote, so the format records the search itself: which
+instrument, which query, what scope, and what came back in the instrument's
+own words. This one is a deliberate re-run of an earlier survey, chained to
+it by <span class="id">prior_survey</span>, because what a survey conducted
+is immutable and a search run again is a new record rather than an edit to
+the old one.</p></li>
+
+<li><a class="go" href="corpus/narrative-state-of-the-question.html">Prose
+that names what it rests on</a>
+<p>Each paragraph ends with a line naming the claims it stands on. The
+bindings are invisible in the source document, spelled as HTML comments so
+they survive any markdown pipeline, and each carries a few exact words of
+its own passage so the binding still finds the paragraph after somebody
+rewrites the sentence around it. Follow one into a claim and back.</p></li>
+
+</ol>
+
+<p>Two more pages are worth a minute.
+<a href="corpus/health.html">Corpus health</a> is every computed flag in one
+place: 120 of the 151 atoms carry no audit verdict, and the page lists them
+by name rather than reporting a percentage.
+<a href="corpus/sources.html">Sources</a> is the whole source list, split by
+whether the text may travel: 69 of the 71 works ship their normalized text
+so the checks run here, and the two that do not each record why, because a
+validator can tell a recorded absence from an omission and cannot tell an
+omission from an oversight.</p>
+
+<h2>Read further</h2>
+
+<ul class="reads">
+<li><a href="{{REPO}}/blob/main/SPEC.md">The specification</a>
+<span>The rules. Record types, numbered requirements under RFC 2119,
+vocabularies, invariants, serialization. Written to be handed to an
+implementer or diffed against an existing system requirement by
+requirement.</span></li>
+<li><a href="{{REPO}}/blob/main/erf.schema.json">The data model</a>
+<span>JSON Schema 2020-12, normative. Which fields exist, which are
+required, the closed vocabularies, and the conditionals a schema can carry.
+Section 3 of the specification says how to read it.</span></li>
+<li><a href="{{REPO}}/blob/main/docs/essay/epistemology-for-knowledge-work-in-the-llm-era.md">The
+essay the format grew out of</a>
+<span>Why knowledge work outside coding needs an epistemic layer, what the
+'90s knowledge-management attempt got wrong, and what changes now that an
+LLM can do the housekeeping.</span></li>
+<li><a href="{{REPO}}/blob/main/docs/purpose.md">What it deliberately does not do</a>
+<span>Eight boundaries, each with the field that owns the ground it
+declines: argumentation theory, decision records, conflict resolution,
+confidence scores, ethics, and interpretation.</span></li>
+<li><a href="{{REPO}}">The repository</a>
+<span>The conformance suite, the reference viewer, the ten independent
+trials that read the specification and nothing else on 2026-08-25, and every
+open item in the backlog with a priority on it.</span></li>
+</ul>
+
+<h2>Status</h2>
+
+<p>Version 0.9, and numbered below 1.0 deliberately. It was extracted from a
+working practice rather than designed in advance: roughly 740 audited atoms
+and 300 claims across seven corpora came before the specification did. On
+2026-08-25 ten independent trials read the document and nothing else, six of
+them building implementations in Python, Rust, SQL, Go, Haskell and Swift.
+They found a hole in the quote check that let a fabricated quotation pass, a
+requirement that could not be implemented as written, and two that
+contradicted each other. Every one was ruled and pinned with a conformance
+case the same day. What 1.0 waits on is implementations other than the
+author's, and feedback is invited.</p>
+
+</main>
+<footer>The specification and prose are under CC BY 4.0; the reference
+implementation and tooling under Apache 2.0. This page and the corpus beside
+it are static files with no scripts and no external requests.</footer>
+</body></html>
