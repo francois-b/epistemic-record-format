@@ -110,10 +110,10 @@ Absence is evidenced by surveys; presence by atoms.
 
 [`examples/corpora/minimal/`](examples/corpora/minimal/) is a small corpus of real records,
 copied from a working practice: nine atoms, six claims, three
-surveys, and a narrative whose passages bind to the claims they rest on. [`viewer/`](viewer/) renders it to static HTML.
+surveys, and a narrative whose passages bind to the claims they rest on. [`validator/`](validator/) checks it and [`tools/viewer/`](tools/viewer/) renders it to static HTML.
 
 ```
-npm install                                   # installs the viewer and the conformance suite
+npm install                                   # installs the validator, the viewer and the conformance suite
 npm run check -- examples/corpora/minimal     # the validator: violations, flags, what it does not check
 npm run view -- examples/corpora/minimal -o examples/site
 ```
@@ -165,12 +165,13 @@ checks it.
 | [`docs/`](docs/) | Why is a rule the way it is (`history.md`), was an idea already declined (`non-goals.md`), will it ever do X (`backlog/`), where do the ideas come from (`influences.md`). |
 | [`examples/`](examples/) | What does it look like in use? Single-record examples, plus [`examples/corpora/minimal/`](examples/corpora/minimal/), a complete small corpus, and [`examples/site/`](examples/site/), that corpus rendered. |
 | [`conformance/`](conformance/) | Does my implementation obey the rules? Cases, fixtures, a map from every requirement to what defends it, and [`requirements.md`](conformance/requirements.md), that map as one page. |
-| [`viewer/`](viewer/) | What does one implementation look like? `erf-view`, the reference consumer, computing every derived reading from the specification text. |
+| [`validator/`](validator/) | What does one implementation look like? `erf-check`, the reference validator: loads a corpus against the schema and computes every derived reading from the specification text. The conformance suite tests this code. |
+| [`tools/viewer/`](tools/viewer/) | What does a corpus look like rendered? `erf-view`, the reference consumer, a static-site renderer over the validator. |
 | [`reviews/`](reviews/) | Does the document itself work? Evaluations of the specification: adversarial reads, and independent trials that tested it by building from it. |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | How do I report a defect, propose a capability, or change the code? The findings pipeline, the backlog's basis and trigger discipline, and the gates. |
 | [`IMPLEMENTATIONS.md`](IMPLEMENTATIONS.md) | Who has built to this? The maintained implementations (none yet but the reference), and eleven cold trials that were built from the specification alone to test it. |
 | [`CHANGELOG.md`](CHANGELOG.md) | Which requirements changed in which version. |
-| [`tools/`](tools/) | The style lint the specification holds itself to. |
+| [`tools/`](tools/) | The viewer, the type generator, and the lints the repository holds itself to. |
 
 ## Licence
 
@@ -187,7 +188,7 @@ specification**, and nothing in the licence reaches the corpora you build
 with it: what you record is yours.
 
 **The reference implementation and tooling** are under
-[Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0): `viewer/`,
+[Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0): `validator/`,
 `tools/`, `types/`, and the runner and suites under `conformance/`. Full
 text in [`LICENSE-CODE`](LICENSE-CODE). Apache rather than MIT for the
 explicit patent grant, which is worth having in code a second implementer is

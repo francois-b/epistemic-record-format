@@ -47,7 +47,8 @@ the linters, so a green suite means those passed too; run them alone when
 editing prose. The last two files are generated and never hand-edited.
 
 ```
-cd viewer && npx tsc --noEmit          # types, reference viewer
+cd validator && npx tsc --noEmit       # types, reference validator
+cd tools/viewer && npx tsc --noEmit    # the viewer over it
 cd conformance && npx tsc --noEmit     # types, suite
 cd conformance && npm test             # every case, then the coverage line
 python3 tools/lint-spec-style.py SPEC.md
@@ -70,7 +71,7 @@ Two licences, split the way the repository is. Prose (`SPEC.md`, `bindings/`,
 `docs/`, `examples/`, `reviews/`, `CHANGELOG.md`, this file, and
 the fixture corpora and case tables under `conformance/`) is contributed under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), the text in
-[`LICENSE`](LICENSE). Code (`viewer/`, `tools/`, `schema/erf.ts`, and the runner and
+[`LICENSE`](LICENSE). Code (`validator/`, `tools/`, `schema/erf.ts`, and the runner and
 suites under `conformance/`) is contributed under
 [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0), the text in
 [`LICENSE-CODE`](LICENSE-CODE). Opening a pull request is your agreement to

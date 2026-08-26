@@ -12,8 +12,8 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import yaml from "js-yaml";
-import { loadCorpus } from "../../viewer/corpus.ts";
-import { brokenAnchors, danglingRefs, disposition, evidenceRefsFlagged, quoteCheck, standingTies, stoodOn, unbacked } from "../../viewer/compute.ts";
+import { loadCorpus } from "../../validator/corpus.ts";
+import { brokenAnchors, danglingRefs, disposition, evidenceRefsFlagged, quoteCheck, standingTies, stoodOn, unbacked } from "../../validator/compute.ts";
 import { FIXTURES } from "../paths.ts";
 
 interface Expectation {

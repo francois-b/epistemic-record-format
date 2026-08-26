@@ -14,7 +14,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, relative } from "node:path";
 import yaml from "js-yaml";
-import { loadCorpus, KNOWN_FIELDS } from "../../viewer/corpus.ts";
+import { loadCorpus, KNOWN_FIELDS } from "../../validator/corpus.ts";
 import { REPO } from "../paths.ts";
 
 /** Historical documents cite old ids on purpose; everything else may not. */

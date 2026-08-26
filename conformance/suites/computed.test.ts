@@ -6,8 +6,8 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { unbacked } from "../../viewer/compute.ts";
-import type { Claim } from "../../viewer/corpus.ts";
+import { unbacked } from "../../validator/compute.ts";
+import type { Claim } from "../../validator/corpus.ts";
 
 const claim = (over: Partial<Claim>): Claim => ({
   id: "fx-claim", type: "claim", corpus: "fx", title: "t",

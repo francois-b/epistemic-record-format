@@ -34,17 +34,18 @@ echo "==> repository url: $REPO_URL"
 echo "==> corpus:         $CORPUS"
 echo "==> output:         $OUT"
 
-cd "$REPO_ROOT/viewer"
-[ -d node_modules ] || npm install --no-audit --no-fund
-
 # The site never publishes a corpus that does not conform. erf-check exits
 # non-zero on any violation, and `set -e` stops the build here if it does.
+cd "$REPO_ROOT/validator"
+[ -d node_modules ] || npm install --no-audit --no-fund
 echo "==> checking the corpus"
 npx tsx erf-check.ts "$CORPUS" | tail -n 2
 
 rm -rf "$OUT"
 mkdir -p "$OUT/assets"
 
+cd "$REPO_ROOT/tools/viewer"
+[ -d node_modules ] || npm install --no-audit --no-fund
 echo "==> rendering the corpus"
 npx tsx erf-view.ts "$CORPUS" -o "$OUT/corpus" \
   --link "the format=../index.html" \

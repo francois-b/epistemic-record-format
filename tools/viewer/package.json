@@ -1,0 +1,19 @@
+{
+  "name": "erf-view",
+  "version": "1.0.2",
+  "private": true,
+  "description": "Reference consumer for the Epistemic Record Format: renders a corpus as a static site, reading every derived value from validator/.",
+  "type": "module",
+  "bin": {
+    "erf-view": "./erf-view.ts"
+  },
+  "scripts": {
+    "build": "tsx erf-view.ts ../../examples/corpora/minimal -o ../../examples/site",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

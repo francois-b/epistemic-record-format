@@ -11,4 +11,5 @@ export const NORMALIZATION_CASES = join(CASES, "normalization.txt");
 export const QUOTE_CASES = join(CASES, "quote-check.txt");
 export const SPEC = join(REPO, "SPEC.md");
 export const BINDINGS = join(REPO, "bindings");
-export const VIEWER = join(REPO, "viewer");
+export const VALIDATOR = join(REPO, "validator");
+export const VIEWER = join(REPO, "tools", "viewer");

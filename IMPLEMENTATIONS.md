@@ -15,7 +15,7 @@ it was built.
 
 ## Implementations
 
-None yet, other than the reference viewer in [`viewer/`](viewer/), which is
+None yet, other than the reference validator in [`validator/`](validator/) and the viewer over it in [`tools/viewer/`](tools/viewer/), which are
 part of this repository and therefore not an independent reading of it. 1.0
 waits on implementations other than the author's.
 

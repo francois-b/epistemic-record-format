@@ -3,17 +3,21 @@
 The reference consumer: renders an ERF corpus as a static site.
 
 ```
-cd viewer
+cd tools/viewer
 npm install
-npx tsx erf-view.ts ../examples/corpora/minimal -o ../examples/site
+npx tsx erf-view.ts ../../examples/corpora/minimal -o ../../examples/site
 ```
+
+Everything this renders is computed by the reference validator in
+[`validator/`](../../validator/) (`corpus.ts` loads, `compute.ts` derives,
+`erf-check.ts` is the command line); this folder holds only the rendering.
 
 Output is self-contained HTML. Inline CSS, no scripts, no external requests,
 so it opens from disk and hosts anywhere.
 
 ## Why TypeScript
 
-The normative data model is [`erf.schema.json`](../erf.schema.json), a JSON
+The normative data model is [`erf.schema.json`](../../schema/erf.schema.json), a JSON
 Schema 2020-12 document (`SPEC.md` section 3). `schema/erf.ts` (generated from the schema) is a
 TypeScript rendering of that schema for this implementation, held to it by a
 gate and normative for nothing. This tool uses both, at two levels: it
@@ -31,8 +35,9 @@ under `strict`.
 
 ## Dependencies
 
-Three at runtime: `js-yaml` for the frontmatter, `ajv` for the schema, and
-`commonmark` for the render step `ERF-51` opens with. Development
+The validator's, resolved from `validator/node_modules`: `js-yaml` for the
+frontmatter, `ajv` for the schema, and `commonmark` for the render step
+`ERF-51` opens with. This folder's own development
 dependencies are `tsx` to run TypeScript directly, `typescript` for the type
 check, and the `@types` packages.
 

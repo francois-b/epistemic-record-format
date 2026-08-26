@@ -1,14 +1,14 @@
 {
-  "name": "erf-view",
+  "name": "erf-check",
   "version": "1.0.2",
   "private": true,
-  "description": "Reference consumer for the Epistemic Record Format: renders a corpus as a static site.",
+  "description": "Reference validator for the Epistemic Record Format: loads a corpus against the schema, computes every derived reading from the specification text, reports violations and flags.",
   "type": "module",
   "bin": {
-    "erf-view": "./erf-view.ts"
+    "erf-check": "./erf-check.ts"
   },
   "scripts": {
-    "build": "tsx erf-view.ts ../examples/corpora/minimal -o ../examples/site",
+    "check": "tsx erf-check.ts ../examples/corpora/minimal",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -20,7 +20,7 @@ the way it should read there.
 Green before review. The suite shells out to the linters, so a green suite
 covers those; run them alone when only prose changed.
 
-- [ ] `cd viewer && npx tsc --noEmit`
+- [ ] `cd validator && npx tsc --noEmit` and `cd tools/viewer && npx tsc --noEmit`
 - [ ] `cd conformance && npx tsc --noEmit`
 - [ ] `cd conformance && npm test`
 - [ ] `python3 tools/lint-spec-style.py SPEC.md`
