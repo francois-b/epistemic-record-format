@@ -25,7 +25,7 @@ function pageFromHref(href: string): string | null {
   if (h === "index.html" || h === "") return "index";
   if (h === "sources.html") return "sources";
   if (h === "health.html") return "health";
-  const m = /^(claim|atom|survey|capture|narrative)-(.+)\.html$/.exec(h);
+  const m = /^(claim|atom|survey|capture|narrative)-(.*)\.html$/.exec(h);
   return m ? `${m[1]}:${decodeURIComponent(m[2]!)}` : null;
 }
 
@@ -69,6 +69,42 @@ document.addEventListener("click", (e) => {
   const page = pageFromHref(href);
   if (page) { void open(page); return; }
   if (/^https?:\/\//.test(href)) void app.openLink({ url: href });
+});
+
+// ---- mark for backing: select a passage of the narrative, hand it to the conversation ----
+// The app never writes here. "Back this" sends the selection as a message, so the LLM proposes
+// claims and the user rules, exactly as when the passage was pasted by hand.
+const bar = document.getElementById("selbar")!;
+const selText = (): string => {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed || !sel.rangeCount) return "";
+  const range = sel.getRangeAt(0);
+  if (!main.contains(range.commonAncestorContainer)) return "";
+  return sel.toString().replace(/\s+/g, " ").trim();
+};
+function placeBar(): void {
+  const text = selText();
+  if (!current || !current.page.startsWith("narrative") || text.length < 12) { bar.hidden = true; return; }
+  const rect = window.getSelection()!.getRangeAt(0).getBoundingClientRect();
+  bar.hidden = false;
+  // fixed against the viewport: #main scrolls on its own, so document offsets would drift
+  bar.style.top = `${Math.max(4, rect.top - bar.offsetHeight - 8)}px`;
+  bar.style.left = `${Math.max(4, Math.min(rect.left, window.innerWidth - bar.offsetWidth - 8))}px`;
+}
+document.addEventListener("mouseup", () => setTimeout(placeBar, 0));
+document.addEventListener("keyup", (e) => { if (e.shiftKey || e.key === "Shift") placeBar(); });
+document.addEventListener("selectionchange", () => { if (!selText()) bar.hidden = true; });
+bar.addEventListener("mousedown", (e) => e.preventDefault()); // keep the selection while clicking a button
+document.getElementById("back-this")!.addEventListener("click", async () => {
+  const text = selText(); if (!text) return;
+  const passage = text.length > 1200 ? text.slice(0, 1200) + " […]" : text;
+  const msg = `Back this passage from the narrative "${current?.title ?? ""}": propose the claims it rests on (decompose it, type each by what would settle it, say what would back it), and wait for my ruling before writing anything.\n\n"${passage}"`;
+  const caps = app.getHostCapabilities();
+  try {
+    if (caps?.sendMessage) { await app.sendMessage({ role: "user", content: [{ type: "text", text: msg }] }); status.textContent = "sent to the conversation"; }
+    else { await navigator.clipboard.writeText(msg); status.textContent = "this host cannot send messages; copied to the clipboard, paste it"; }
+  } catch (e) { status.textContent = `could not send: ${String(e)}`; }
+  bar.hidden = true;
 });
 
 app.ontoolresult = (params) => {
