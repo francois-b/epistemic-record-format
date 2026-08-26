@@ -6,6 +6,23 @@
 > `reviews/`, `docs/findings/` and `CHANGELOG.md`. Requirement ids are
 > stable from this version on; the text is not final.
 
+![Spec version 0.9.0 draft](https://img.shields.io/badge/spec-0.9.0%20draft-1f6feb)
+![Prose licence CC BY 4.0](https://img.shields.io/badge/prose-CC%20BY%204.0-555555)
+![Code licence Apache 2.0](https://img.shields.io/badge/code-Apache--2.0-555555)
+
+ERF is a plain-text record format for research whose conclusions have to hold
+up later: evidence quoted verbatim and checkable against frozen copies of its
+sources, claims typed by what would settle them, arguments as typed relations
+between claims, and an append-only ledger of who stands behind each claim and
+since when. It is a specification with a reference implementation, a
+conformance suite, and a real corpus you can read.
+
+[**Read the specification**](SPEC.md) ·
+[Data model](erf.schema.json) ·
+[Binding](bindings/yaml-markdown.md) ·
+[Every requirement, indexed](conformance/requirements.md) ·
+[Contributing](CONTRIBUTING.md)
+
 **See it work:** [`https://francois-b.github.io/epistemic-record-format/`](https://francois-b.github.io/epistemic-record-format/), the case for the format plus a 151-atom corpus rendered in the reference viewer.
 
 The Epistemic Record Format (ERF) is a plain-text record format for bringing rigor to working research: the analysis, argumentation, and synthesis done in consulting, strategy, due diligence, and organizational decision-making, where conclusions rest on claims that no one can later trace, check, or stand behind. Academic publishing has citations and peer review; software has types, tests, and version control; the knowledge work between them has had only prose. ERF supplies the missing substrate: evidence captured verbatim and checkable against frozen copies of its sources; claims typed by what would check them; arguments as typed relations between claims; and an append-only ledger of who stands behind each claim, since when, and why. LLMs make the format maintainable (they draft, extract, classify, and keep the records tidy); people make the judgments; the records show which was which. The result is a working level above raw text: a corpus that people and machines can query, verify, and build on rather than re-read and re-interpret.
@@ -39,6 +56,10 @@ ruled and pinned with a conformance case the same day; the record is in
 `reviews/`, `docs/findings/` and `CHANGELOG.md`. What remains open is
 published in `docs/backlog/` with a priority and a verification on each
 entry. 1.0 waits on implementations other than the author's.
+Forty-nine requirements, three of them with no conformance fixture and
+named as such by the coverage line on every run; fourteen open backlog
+defects and eleven capabilities waiting on a trigger, each with a priority,
+a basis, and a verification record.
 Requirement ids are a flat sequence, stable from this version on:
 insertions append, and a retired id is never reused. Feedback is invited; the
 intended reading is implementation, or a requirement-by-requirement diff
@@ -112,6 +133,22 @@ which says nothing about presentation. It is also what the format looks
 like in the ordinary case, where some evidence can be republished and some
 cannot.
 
+## Try to break it
+
+If you read one file here, read
+[`conformance/cases/quote-check.txt`](conformance/cases/quote-check.txt). It
+is a standing attack suite: every quotation a source never said that once
+passed the quote check, kept as a case that any implementation must fail. A
+number cut at its decimal point. A negation dropped at a hyphen. A word
+halved at a soft hyphen. Two paragraphs spliced into one sentence. `3*4` read
+as `34`. Each of those was green until somebody attacked it, and most were
+found by cold implementations that had never seen the reference.
+
+The quote check is the mechanism the rest of the format rests on, so this is
+where an attack is worth most. A case is never removed from the file, and a
+new way through is the contribution: open an issue, and it joins the suite
+with the trial that found it.
+
 ## Documents
 
 The specification is normative; everything else explains, demonstrates, or
@@ -124,9 +161,11 @@ checks it.
 | [`docs/purpose.md`](docs/purpose.md) | **What does this format do, and what does it deliberately refuse to do?** |
 | [`docs/`](docs/) | Why is a rule the way it is (`history.md`), was an idea already declined (`non-goals.md`), will it ever do X (`backlog/`), where do the ideas come from (`influences.md`). |
 | [`examples/`](examples/) | What does it look like in use? Single-record examples, plus [`examples/corpora/minimal/`](examples/corpora/minimal/), a complete small corpus, and [`examples/site/`](examples/site/), that corpus rendered. |
-| [`conformance/`](conformance/) | Does my implementation obey the rules? Cases, fixtures, and a map from every requirement to what defends it. |
+| [`conformance/`](conformance/) | Does my implementation obey the rules? Cases, fixtures, a map from every requirement to what defends it, and [`requirements.md`](conformance/requirements.md), that map as one page. |
 | [`viewer/`](viewer/) | What does one implementation look like? `erf-view`, the reference consumer, computing every derived reading from the specification text. |
 | [`reviews/`](reviews/) | Does the document itself work? Evaluations of the specification: adversarial reads, and independent trials that tested it by building from it. |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | How do I report a defect, propose a capability, or change the code? The findings pipeline, the backlog's basis and trigger discipline, and the gates. |
+| [`IMPLEMENTATIONS.md`](IMPLEMENTATIONS.md) | Who has built to this? The maintained implementations (none yet but the reference), and eleven cold trials that were built from the specification alone to test it. |
 | [`CHANGELOG.md`](CHANGELOG.md) | What changed, and when. |
 | [`LAYOUT.md`](LAYOUT.md) | What lives where, and how a new kind of thing is admitted. |
 | [`tools/`](tools/) | The style lint the specification holds itself to. |
