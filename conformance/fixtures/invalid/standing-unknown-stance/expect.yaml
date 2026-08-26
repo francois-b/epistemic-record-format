@@ -1,7 +1,8 @@
-requirement: ERF-41
+requirement: ERF-73
 record: fx-claim
 field: standings
 because: >
   `maybe` is not `for`, `against` or `withdrawn`. It is reported and left
   out of the disposition, which therefore reads `proposal` rather than one
-  of three inventions (F-011).
+  of three inventions (F-011). The vocabulary is the schema's, so the
+  requirement is `ERF-73`; `ERF-41` reads every entry the schema admits (F-030).

@@ -8,7 +8,7 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { staleAgainst, staleAudits, bindingStaleness } from "../../viewer/compute.ts";
+import { staleAgainst, staleAudits, staleEvidenceAudit, bindingStaleness } from "../../viewer/compute.ts";
 import type { Atom } from "../../types/erf.ts";
 
 const atom = (created: string, modified?: string, audit?: string): Atom => ({
@@ -58,6 +58,18 @@ const corpusWith = (modified?: string) => ({
   }]]),
   // Only `claims` is consulted by bindingStaleness.
 }) as never;
+
+test("ERF-47: an evidence audit is stale when an atom was attached after it (F-030)", () => {
+  const claim = {
+    id: "c-2", type: "claim", corpus: "fx", title: "t", epistemic_kind: "observation",
+    created: { timestamp: "2026-08-01", by: "agent/fixture" },
+    families: [], atoms_for: ["a-9"], atoms_against: [], edges: [], standings: [],
+    evidence_audit: [{ timestamp: "2026-08-10", auditor: "x", protocol: "p", verdict: "SUPPORTED" }], body: "t",
+  } as never;
+  const atoms = new Map([["a-9", { id: "a-9", created: { timestamp: "2026-08-15", by: "agent/fixture" } }]]);
+  assert.equal(staleEvidenceAudit(claim, { atoms }), true, "an atom minted after the audit is a change it never saw");
+  assert.equal(staleEvidenceAudit(claim, { atoms: new Map([["a-9", { id: "a-9", created: { timestamp: "2026-08-02", by: "agent/fixture" } }]]) }), false);
+});
 
 test("ERF-32: a binding without bound-at is indeterminate, never current", () => {
   const r = bindingStaleness(undefined, ["c-1"], corpusWith("2026-08-20"));

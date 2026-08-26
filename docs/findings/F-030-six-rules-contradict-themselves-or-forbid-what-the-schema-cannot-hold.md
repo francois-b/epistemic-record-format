@@ -11,7 +11,17 @@ specified:
   requirement: "ERF-31, ERF-48, ERF-41, ERF-20, ERF-11, ERF-47"
   claim: null
 verifications: []
-outcome: open
+outcome: promoted
+promoted_to: "ERF-31, ERF-48, ERF-41, ERF-20, ERF-11, ERF-47, ruled directly 2026-08-26"
+resolution_note: >
+  Ruled by the operator on 2026-08-26 ahead of 0.9.0, all six applied in
+  one pass: ERF-31 has one outcome (a flag); ERF-48 keeps only what a
+  corpus can decide (last_modified never precedes created) and makes the
+  rest SHOULDs; ERF-41 reads every entry the schema admits and keeps the
+  tie rule; ERF-20 drops the prohibitions on a closed object; ERF-11 says
+  no field holds the mechanical result; ERF-47 names what each audit kind
+  judged, and the reference's evidence-audit staleness now includes atoms
+  edited or attached after the audit.
 ---
 
 # F-030 · Six rules contradict themselves or forbid what the schema cannot hold

@@ -473,12 +473,13 @@ only prose.
   own words; the utterance is then the substance, a recorded identified
   utterance is direct and accountable, and the grade can be checked against
   what the atom attests.
-- **ERF-11** The mechanical check (the normalized quote occurs in the
-  normalized text) is recomputable by anyone holding the corpus and its texts,
-  so its result MUST NOT be stored. The judgment (does the quote, in
-  context, support the finding?) is not recomputable: it MUST be recorded
-  per auditor in `finding_audit`, with the protocol version that produced
-  it. Verdicts rendered under different protocol versions MUST NOT be read
+- **ERF-11** The judgment (does the quote, in context, support the
+  finding?) is not recomputable and MUST be recorded per auditor in
+  `finding_audit`, with the protocol version that produced it; the
+  mechanical check (the normalized quote occurs in the normalized text) is
+  recomputable by anyone holding the corpus and its texts, so no field
+  holds its result, and a result written under the `x_` namespace carries
+  no meaning and is never read as the check. Verdicts rendered under different protocol versions MUST NOT be read
   as like for like, which is why the protocol travels with the verdict and
   why an auditor's identity, a hosted model id whose weights drift under a
   stable name, is recorded beside it. The `auditor` is a bare model or tool
@@ -559,11 +560,10 @@ prose: does the recorded why survive the evidence on record?
   (`evidence_at_stance: {atoms_for: [ids], atoms_against: [ids]}`). Which
   evidence the ruler faced is the one fact about a ruling's context that
   cannot be recovered later, because attachment events are recorded
-  nowhere. Drift MUST NOT be stored there: content drift, an atom modified
-  after the stance, and audit drift, verdicts newer than the stance, are
-  both derivable from existing timestamps. Counts are not an acceptable
-  digest either, because swapping one atom for another leaves the count
-  unchanged and hides the staleness the field exists to expose.
+  nowhere. The field holds ids and nothing else: drift, an atom modified
+  after the stance or a verdict newer than it, is derivable from
+  timestamps, and a count would hide the swap of one atom for another,
+  which is the staleness the field exists to expose.
 - **ERF-23** Evidence MUST live on the claim, in both directions:
   `atoms_for` and `atoms_against`. Evidence against a claim MUST NOT be
   modeled as a rival claim.
@@ -683,16 +683,16 @@ line, is a matter for whoever writes the narrative.
   binding: a marker naming the claims the passage rests on, an anchor of a
   few exact words from it, and `bound-at`, the date the binding was made.
   Every part is required; every id MUST resolve to a claim; and the anchor
-  MUST occur in its passage under the test a quote meets (`ERF-52`), the
-  fold and whole words. A binding's passage is the text from the end of
+  is checked against its passage under the test a quote meets (`ERF-52`),
+  the fold and whole words. A binding's passage is the text from the end of
   the previous binding's marker, or the start of the body where there is
   none, to the start of its own marker. A candidate that fails the
   binding's grammar is not a binding, closes no passage, and MUST be
   reported rather than skipped: a binding dropped in silence makes the
-  claims it named vanish from the narrative. A validator MUST flag an
-  anchor that does not occur in its passage, a flag and not a violation on
-  section 2's principle, because anchors break for the ordinary reason that
-  someone edited the prose. *Spelling: in the default binding the marker is
+  claims it named vanish from the narrative. An anchor that does not occur
+  in its passage is a flag and never a violation, on section 2's
+  principle: anchors break for the ordinary reason that someone edited
+  the prose, and a validator MUST flag it. *Spelling: in the default binding the marker is
   an HTML comment, `YAMLB-1`.*
 
   The anchor is how software finds the spot after the prose moves; a
@@ -811,11 +811,9 @@ checks the relations no type can see.
   `proposal`. Otherwise discard every current `withdrawn`, withdrawal
   being exit and not opposition, and read the rest: none remaining,
   `retired`; all `for`, `active`; all `against`, `rejected`; both,
-  `contested`. An entry is admissible when its `stance` is in the
-  vocabulary, its `timestamp` is an instant (the schema (`StandingEntry`)) and its `by` is a
-  `human:` actor (the schema (`HumanActor`)); any other entry is a producer error, MUST be
-  reported, and is treated as never written, so the person's previous
-  admissible entry stays their newest. Where one person's newest entries
+  `contested`. Every entry the schema admits is a stance: `StandingEntry`
+  fixes `stance` to the vocabulary, `timestamp` to an instant and `by` to
+  a `human:` author (`ERF-73`), so the computation reads them all. Where one person's newest entries
   share an instant, the later in the ledger is current and a validator
   MUST flag the collision: `standings` is an ordered list in the model
   (`ERF-40`), so its order is a fact about the corpus and not about bytes.
@@ -851,18 +849,21 @@ checks the relations no type can see.
 - **ERF-44** `conflicts-with` MUST be stored once per pair.
 - **ERF-47** Staleness MUST be computed, never stored: a
   `finding_audit`, `evidence_audit`, or narrative binding older than the last change
-  to what it judged is flagged stale. Where the two stamps differ in
+  to what it judged is flagged stale. What each judged: a `finding_audit`,
+  its atom; an `evidence_audit`, the claim and the atoms attached to it,
+  so an atom edited or attached after the audit makes it stale; a
+  narrative binding, the claims it names. Where the two stamps differ in
   precision and the coarser one cannot order them (a bare date against a
   full instant on the same day), the comparison MUST resolve to stale: a
   check that cannot tell says look, never rest. Two bare dates that are
   equal read as current, because the re-audit that follows an edit lands
   on the same day.
-- **ERF-48** Any change to a record MUST set `last_modified` to a
-  timestamp later than its `created` and later than any prior
-  `last_modified`. At date precision "later" admits the same day, because
-  a bare date cannot order within one; a producer stamping a second edit
-  on the same day SHOULD write a full instant, which is what makes the
-  ordering it owes recoverable. The one exception: appending to an
+- **ERF-48** Any change to a record MUST set `last_modified`, and it MUST
+  NOT precede `created`; that is the whole of what a validator decides
+  here, since a corpus holds no prior value to compare against. A
+  producer SHOULD advance it with every edit, and one stamping a second
+  edit on the same day SHOULD write a full instant, because a bare date
+  cannot order within one. The one exception: appending to an
   append-only list
   (`standings`, `finding_audit`, `evidence_audit`) MUST NOT advance it, or
   every audit and every stance would invalidate itself at the moment it was

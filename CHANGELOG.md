@@ -24,6 +24,25 @@ record. All three numbers are published rather than hidden: this is a draft
 meant to be implemented against and argued with, and what is known to be
 unresolved, unverified, or untested is part of what it says.
 
+### 2026-08-26 — F-030: six rules said two things, or forbade what no record can hold
+
+`ERF-31` said the anchor MUST occur in its passage and then that a missing
+anchor is a flag, not a violation; it now says the one thing (a flag).
+`ERF-48` asked for `last_modified` later than any prior value, which a
+corpus cannot show; a validator decides only that it never precedes
+`created`, and the rest are SHOULDs. `ERF-41`'s admissibility test checked
+what `StandingEntry` now enforces; it reads every entry the schema admits
+and keeps the same-instant tie rule. `ERF-20` forbade storing drift and
+counts in a closed object of two id lists; the prohibitions are gone and
+the reason stays. `ERF-11` said the mechanical result MUST NOT be stored
+while naming no field; it now says no field holds it and an `x_` copy is
+never read as the check. `ERF-47` never said what an `evidence_audit`
+judged; it names the dependency set per audit kind, and the reference now
+counts an atom edited or attached after the audit as a change it never
+saw. The off-vocabulary stance fixture cites `ERF-73`. Separately, the
+essay corpus's third-party raw captures were removed from history (as the
+Bitter Lesson corpus's were), with the source list's digests standing in.
+
 ### 2026-08-26 — the cold Rust validator, and the rubric's remainder filed
 
 A second cold Rust validator, built from the `d124820` snapshot without

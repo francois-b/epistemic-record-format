@@ -340,11 +340,18 @@ export function staleAudits(atom: Atom): boolean {
  * staleness is computed and only the atom's finding audit was covered, so a
  * stale backing audit read as current.
  */
-export function staleEvidenceAudit(claim: Claim): boolean {
-  const changed = claim.last_modified?.timestamp;
+export function staleEvidenceAudit(claim: Claim, c?: { atoms: Map<string, unknown> }): boolean {
   const audits = claim.evidence_audit ?? [];
-  if (!changed || audits.length === 0) return false;
-  return audits.some((a) => staleAgainst(a.timestamp, changed));
+  if (audits.length === 0) return false;
+  // What an evidence audit judged (`ERF-47`, F-030): the claim and the atoms
+  // attached to it. An atom edited or attached after the audit is a change
+  // the audit never saw.
+  const changes: unknown[] = [claim.last_modified?.timestamp];
+  for (const id of [...(claim.atoms_for ?? []), ...(claim.atoms_against ?? [])]) {
+    const at = c?.atoms.get(id) as { created?: { timestamp?: unknown }; last_modified?: { timestamp?: unknown } } | undefined;
+    if (at) changes.push(at.last_modified?.timestamp ?? at.created?.timestamp);
+  }
+  return audits.some((a) => changes.some((ch) => ch !== undefined && staleAgainst(a.timestamp, ch)));
 }
 
 export type BindingStaleness = "current" | "stale" | "indeterminate";

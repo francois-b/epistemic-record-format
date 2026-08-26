@@ -330,8 +330,8 @@ const PROHIBITED_KEYS: Record<string, Record<string, string>> = {
     status: "a claim MUST NOT store a state field; the disposition is computed (ERF-73)",
   },
   atom: {
-    quote_check: "the mechanical check is recomputable and MUST NOT be stored (ERF-11)",
-    mechanical_check: "the mechanical check is recomputable and MUST NOT be stored (ERF-11)",
+    quote_check: "no field holds the mechanical check's result; it is recomputable (ERF-11, ERF-73)",
+    mechanical_check: "no field holds the mechanical check's result; it is recomputable (ERF-11, ERF-73)",
   },
 };
 
@@ -589,13 +589,14 @@ export function loadCorpus(dir: string): LoadedCorpus {
     // bare date passed unexamined; found by an adversarial fixture from the
     // v0.9 stress battery, lane 4.)
     for (const st of arr<{ timestamp?: unknown; stance?: unknown }>(data["standings"])) {
-      // `ERF-41`: a stance outside the vocabulary is reported here and left
-      // out of the disposition, so the computation stays total (F-011).
+      // `ERF-73`: a stance outside the vocabulary is a schema violation; it is
+      // reported here too and left out of the disposition, so the computation
+      // stays total (F-011, F-030).
       if (!["for", "against", "withdrawn"].includes(String(st?.stance))) {
         findings.push({
           record: id, field: "standings",
           detail: `stance ${JSON.stringify(st?.stance)} is not for, against or withdrawn; `
-            + `reported and left out of the disposition (ERF-41, ERF-73)`,
+            + `reported and left out of the disposition (ERF-73)`,
         });
       }
       const ts = String(st?.timestamp ?? "").trim();

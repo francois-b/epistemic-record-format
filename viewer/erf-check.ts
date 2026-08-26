@@ -35,7 +35,7 @@ for (const cl of c.claims.values()) if (unbacked(cl, c)) console.log(`FLAG\tunba
 // viewer and never printed here until the Bitter Lesson trial (2026-08-26)
 // moved a claim under a binding and saw nothing.
 for (const a of c.atoms.values()) if (staleAudits(a)) console.log(`FLAG\tERF-47\t${a.id}: a finding_audit is older than last_modified`);
-for (const cl of c.claims.values()) if (staleEvidenceAudit(cl)) console.log(`FLAG\tERF-47\t${cl.id}: an evidence_audit is older than last_modified`);
+for (const cl of c.claims.values()) if (staleEvidenceAudit(cl, c)) console.log(`FLAG\tERF-47\t${cl.id}: an evidence_audit is older than last_modified`);
 for (const n of c.narratives) for (const b of n.bindings) {
   const st = bindingStaleness(b.boundAt, b.claims, c);
   if (st.state === "stale") console.log(`FLAG\tERF-47\t${n.slug} binding "${b.anchor}": ${st.why}`);

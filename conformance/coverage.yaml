@@ -93,7 +93,8 @@ requirements:
   ERF-40:
     untestable-by-design: verified against substrate history, which a loaded corpus does not carry
   ERF-41:
-    tests: [disposition, fixtures/invalid/standing-unknown-stance, fixtures/valid/standing-tie-at-one-instant]
+    tests: [disposition, fixtures/valid/standing-tie-at-one-instant]
+    note: an off-vocabulary stance is ERF-73's fixture (standing-unknown-stance) since F-030
   ERF-42:
     tests: [disposition, output]
   ERF-43:

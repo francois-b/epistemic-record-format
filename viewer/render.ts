@@ -343,7 +343,7 @@ ${(() => {
          <span class="id">stored on that claim</span></li>`).join("")}</ul>`
     : "";
 })()}
-${staleEvidenceAudit(cl) ? `<div class="warnbox">A backing verdict on this claim predates its last change (<span class="id">ERF-47</span>).</div>` : ""}
+${staleEvidenceAudit(cl, c) ? `<div class="warnbox">A backing verdict on this claim predates its last change (<span class="id">ERF-47</span>).</div>` : ""}
 
 <h3>Standings</h3>
 ${cl.standings.length === 0
