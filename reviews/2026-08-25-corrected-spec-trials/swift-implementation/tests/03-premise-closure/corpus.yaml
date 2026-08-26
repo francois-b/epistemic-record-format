@@ -1,0 +1,5 @@
+type: corpus
+id: closure-trial
+title: "Premise-closure cases for ERF-43"
+spec_version: "0.9.0"
+owner: "human:fb"

@@ -1,0 +1,10 @@
+type: sources
+sources:
+  012:
+    citation_text: "A source whose id is bare 012"
+    status: licence-unverified
+    reason: "Its id is the point, not its text."
+  no:
+    citation_text: "A source whose id is bare no"
+    status: licence-unverified
+    reason: "Its id is the point, not its text."

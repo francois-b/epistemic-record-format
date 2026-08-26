@@ -1,0 +1,8 @@
+type: sources
+sources:
+  pacioli-1494-geijsbeek:
+    citation_text: "Luca Pacioli, Particularis de Computis et Scripturis
+      (Venice, 1494), ch. 36, trans. Geijsbeek 1914"
+    status: shipped-as-quotation
+    normalized: normalized/pacioli-1494-geijsbeek.md
+    excerpt: {timestamp: "2026-08-23", by: "agent/claude-sonnet-5"}

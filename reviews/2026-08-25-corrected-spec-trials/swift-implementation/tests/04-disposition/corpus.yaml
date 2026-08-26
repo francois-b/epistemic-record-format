@@ -1,0 +1,5 @@
+type: corpus
+id: disposition-trial
+title: "Disposition cases for ERF-41"
+spec_version: "0.9.0"
+owner: "human:fb"

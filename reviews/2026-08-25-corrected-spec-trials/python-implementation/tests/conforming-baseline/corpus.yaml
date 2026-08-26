@@ -1,0 +1,5 @@
+type: corpus
+id: baseline
+title: "A corpus that conforms"
+spec_version: "0.9.0"
+owner: "human:francois"

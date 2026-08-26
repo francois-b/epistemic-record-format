@@ -26,3 +26,4 @@ reviews/**/*.dyn_hi
 reviews/**/.stack-work/
 reviews/**/dist-newstyle/
 reviews/**/harness/*_pb2.py
+reviews/**/.build/

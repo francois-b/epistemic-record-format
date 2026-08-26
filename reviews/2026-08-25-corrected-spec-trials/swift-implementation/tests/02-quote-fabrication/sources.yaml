@@ -1,0 +1,78 @@
+type: sources
+sources:
+  f01-catapult-plain:
+    citation_text: "Synthetic text f01-catapult-plain, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f01-catapult-plain.md
+  f02-hyphen-boundary:
+    citation_text: "Synthetic text f02-hyphen-boundary, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f02-hyphen-boundary.md
+  f03-soft-hyphen:
+    citation_text: "Synthetic text f03-soft-hyphen, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f03-soft-hyphen.md
+  f04-zero-width-space:
+    citation_text: "Synthetic text f04-zero-width-space, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f04-zero-width-space.md
+  f05-underscore-join:
+    citation_text: "Synthetic text f05-underscore-join, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f05-underscore-join.md
+  f06-bare-subword:
+    citation_text: "Synthetic text f06-bare-subword, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f06-bare-subword.md
+  f07-case:
+    citation_text: "Synthetic text f07-case, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f07-case.md
+  f08-out-of-order:
+    citation_text: "Synthetic text f08-out-of-order, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f08-out-of-order.md
+  f09-subword-continuation:
+    citation_text: "Synthetic text f09-subword-continuation, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f09-subword-continuation.md
+  f10-all-empty:
+    citation_text: "Synthetic text f10-all-empty, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f10-all-empty.md
+  f11-empty-flanks:
+    citation_text: "Synthetic text f11-empty-flanks, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f11-empty-flanks.md
+  f12-elision-that-elides-nothing:
+    citation_text: "Synthetic text f12-elision-that-elides-nothing, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f12-elision-that-elides-nothing.md
+  f13-across-a-heading:
+    citation_text: "Synthetic text f13-across-a-heading, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f13-across-a-heading.md
+  f14-nbsp:
+    citation_text: "Synthetic text f14-nbsp, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f14-nbsp.md
+  f15-nfd-source:
+    citation_text: "Synthetic text f15-nfd-source, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f15-nfd-source.md
+  f16-combining-boundary:
+    citation_text: "Synthetic text f16-combining-boundary, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f16-combining-boundary.md
+  f17-footnote-asterisk:
+    citation_text: "Synthetic text f17-footnote-asterisk, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f17-footnote-asterisk.md
+  f18-multiplication:
+    citation_text: "Synthetic text f18-multiplication, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f18-multiplication.md
+  f19-greedy-needs-skipping:
+    citation_text: "Synthetic text f19-greedy-needs-skipping, authored for this trial"
+    status: shipped-as-quotation
+    normalized: normalized/f19-greedy-needs-skipping.md

@@ -1,0 +1,5 @@
+type: corpus
+id: passage-trial
+title: "Narrative-binding passage cases for ERF-31"
+spec_version: "0.9.0"
+owner: "human:fb"

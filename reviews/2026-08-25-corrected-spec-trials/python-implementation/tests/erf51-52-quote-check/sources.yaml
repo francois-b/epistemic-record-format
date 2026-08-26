@@ -1,0 +1,7 @@
+type: sources
+sources:
+  field-notes-1912:
+    citation_text: "Anon., Field Notes (n.p., 1912), p. 4"
+    status: shipped-as-quotation
+    normalized: normalized/field-notes-1912.md
+    excerpt: {timestamp: "2026-08-24", by: "human:francois"}

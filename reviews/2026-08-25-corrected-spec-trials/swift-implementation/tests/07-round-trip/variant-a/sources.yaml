@@ -1,0 +1,10 @@
+type: sources
+sources:
+  cttee:
+    citation_text: "A committee report, authored for this trial"
+    citation:
+      type: report
+      chapter-number: 36
+      issued: 1494
+    status: shipped-as-quotation
+    normalized: normalized/t.md

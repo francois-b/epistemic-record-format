@@ -1,0 +1,5 @@
+type: corpus
+id: quotecheck
+title: "Quote-check cases (ERF-51, ERF-52)"
+spec_version: "0.9.0"
+owner: "human:francois"

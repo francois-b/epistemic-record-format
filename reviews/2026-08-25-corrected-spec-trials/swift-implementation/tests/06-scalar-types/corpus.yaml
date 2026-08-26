@@ -1,0 +1,5 @@
+type: corpus
+id: types-trial
+title: "Scalar arrival types"
+spec_version: 1.0
+owner: "human:fb"

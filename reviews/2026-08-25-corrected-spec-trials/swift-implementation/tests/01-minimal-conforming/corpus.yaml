@@ -1,0 +1,5 @@
+type: corpus
+id: trial
+title: "Swift cold-implementation trial corpus"
+spec_version: "0.9.0"
+owner: "human:fb"

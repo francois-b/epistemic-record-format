@@ -1,0 +1,15 @@
+type: sources
+sources:
+  012:
+    citation_text: "A source whose id has a leading zero"
+    status: shipped-as-quotation
+    normalized: normalized/t.md
+  no:
+    citation_text: "A source whose id is the word no"
+    status: shipped-as-quotation
+    normalized: normalized/t.md
+  ts:
+    citation_text: "A source with an unquoted timestamp"
+    status: shipped-as-quotation
+    normalized: normalized/t.md
+    excerpt: {timestamp: 2026-08-23, by: "human:fb"}
