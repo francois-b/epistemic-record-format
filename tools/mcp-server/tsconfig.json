@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "strict": true, "target": "ES2022", "module": "ESNext", "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true, "noEmit": true, "esModuleInterop": true, "skipLibCheck": true,
+    "types": ["node"], "noUncheckedIndexedAccess": true
+  },
+  "include": ["src/*.ts", "tests/*.ts", "../../validator/yaml-markdown/typescript/*.ts", "../../schema/*.ts"]
+}
