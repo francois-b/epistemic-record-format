@@ -922,7 +922,7 @@ checks the relations no type can see.
 > moved to a named tool in the pipeline (`ERF-70`). The 2026-08-25 trials
 > then showed the three steps were necessary and not sufficient, which is
 > where the format characters, the marker rule and the paragraph boundary
-> came from; `CHANGELOG.md` has the measurements.
+> came from; `docs/history.md` has the measurements.
 
   These assume text or markdown, which is what normalized text always is:
   it is authored, not converted at check time. Where the source was a

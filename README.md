@@ -3,7 +3,7 @@
 > **Version 0.9, not yet 1.0.** The format is under stress test as of
 > August 2026: cold implementations, cold authoring trials and adversarial
 > reads against the specification alone, with what they found recorded in
-> `reviews/`, `docs/findings/` and `CHANGELOG.md`. Requirement ids are
+> `reviews/`, `docs/findings/` and `docs/history.md`. Requirement ids are
 > stable from this version on; the text is not final.
 
 ![Spec version 0.9.0 draft](https://img.shields.io/badge/spec-0.9.0%20draft-1f6feb)
@@ -53,7 +53,7 @@ in the reference implementation within the hour, a hole in the quote check
 that let a fabricated quotation pass, a requirement that could not be
 implemented as written, and two that contradicted each other. Every one was
 ruled and pinned with a conformance case the same day; the record is in
-`reviews/`, `docs/findings/` and `CHANGELOG.md`. What remains open is
+`reviews/`, `docs/findings/` and `docs/history.md`. What remains open is
 published in `docs/backlog/` with a priority and a verification on each
 entry. 1.0 waits on implementations other than the author's.
 Forty-nine requirements, three of them with no conformance fixture and
@@ -166,7 +166,7 @@ checks it.
 | [`reviews/`](reviews/) | Does the document itself work? Evaluations of the specification: adversarial reads, and independent trials that tested it by building from it. |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | How do I report a defect, propose a capability, or change the code? The findings pipeline, the backlog's basis and trigger discipline, and the gates. |
 | [`IMPLEMENTATIONS.md`](IMPLEMENTATIONS.md) | Who has built to this? The maintained implementations (none yet but the reference), and eleven cold trials that were built from the specification alone to test it. |
-| [`CHANGELOG.md`](CHANGELOG.md) | What changed, and when. |
+| [`CHANGELOG.md`](CHANGELOG.md) | Which requirements changed in which version. |
 | [`tools/`](tools/) | The style lint the specification holds itself to. |
 
 ## Licence

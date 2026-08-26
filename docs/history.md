@@ -428,8 +428,9 @@ section until 2026-08-26, and are reproduced here unchanged and in the same
 order, newest first. They moved because a changelog answers what changed and
 this document answers how the work went, and sixty kilobytes of narrative
 under one version heading was answering the second question in the first
-place. The terse record they were split from, requirement id by requirement
-id, is [`../CHANGELOG.md`](../CHANGELOG.md) under `0.9.0`.
+place. From 0.9.0 on, [`../CHANGELOG.md`](../CHANGELOG.md) records only
+which requirements changed in which version; for the first version the
+record is the commits.
 
 ### 2026-08-26 — the pre-push rulings
 
