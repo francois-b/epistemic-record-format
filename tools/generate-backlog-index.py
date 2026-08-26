@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate docs/backlog/README.md from the entry files beside it.
+"""Regenerate docs/backlog/index.md from the entry files beside it.
 
 The index is derived, never edited by hand: an entry's frontmatter is the
 only place its state lives. Run after adding or changing an entry.
@@ -9,7 +9,7 @@ import yaml, sys, pathlib, collections
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 ENTRIES = ROOT / "docs" / "backlog"
-INDEX = ENTRIES / "README.md"
+INDEX = ENTRIES / "index.md"
 
 HEADER = """---
 title: "Backlog"

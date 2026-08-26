@@ -27,7 +27,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SPEC = ROOT / "SPEC.md"
 SERIALIZATION = ROOT / "serialization"
 COVERAGE = ROOT / "conformance" / "coverage.yaml"
-INDEX = ROOT / "conformance" / "requirements.md"
+INDEX = ROOT / "conformance" / "requirements-index.md"
 
 DEF_LINE = re.compile(
     r'^- (?:<a id="[a-z0-9-]+"></a>)?\*\*((?:ERF|YAMLB)-\d+)\*\* (.*)$')

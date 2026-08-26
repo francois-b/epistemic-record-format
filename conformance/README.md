@@ -59,7 +59,7 @@ the wrong assertion had been hiding.
 conformance/
   run.ts               the runner: executes the suites, then reports coverage
   coverage.yaml        requirement -> the tests that defend it, or why none can
-  requirements.md      generated: every requirement, its gist, its class, its
+  requirements-index.md generated: every requirement, its gist, its class, its
                        coverage. Never edited by hand
   paths.ts             shared locations
   cases/
@@ -129,7 +129,7 @@ so it cannot quietly grow.
 
 ## The requirement index
 
-`requirements.md` beside this file is the whole map on one page: every
+`requirements-index.md` beside this file is the whole map on one page: every
 requirement, a phrase of what it says, the conformance class that binds it
 where a document names one, and what defends it. It is generated from
 `SPEC.md`, `serialization/yaml-markdown.md` and `coverage.yaml`, and never edited
