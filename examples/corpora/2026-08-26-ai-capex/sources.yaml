@@ -1,0 +1,1380 @@
+# The ai-capex source list. Seventy-one sources, gathered by three source
+# scouts running in sequence: the bull camp (bull-), the bear camp (bear-),
+# and a third pass on the dimensions both camps left out (n-). Sixty-nine
+# ship a normalized text under `normalized/`; two record why none is held.
+# The trial that produced them is
+# reviews/2026-08-25-independent-trials/03-authoring-trial-at-scale/.
+
+type: sources
+sources:
+  bear-academic-humlum-genai-labor-2025:
+    citation_text: Humlum, Anders; Vestergaard, Emilie, "Large Language Models,
+      Small Labor Market Effects" (NBER Working Paper No. 33777, July 2025)
+    citation:
+      URL: https://www.andershumlum.com/s/chatbots_july25.pdf
+      author:
+      - family: Humlum
+        given: Anders
+      - family: Vestergaard
+        given: Emilie
+      container-title: NBER Working Paper Series, No. 33777
+      issued: '2025-07-15'
+      title: Large Language Models, Small Labor Market Effects
+      type: article-journal
+    received:
+      digest: sha256:b69543b8f45ee53675ed717114a3b57686b0f48b01b8e70c8da343330a53bb9e
+      timestamp: '2026-08-25'
+      url: https://www.andershumlum.com/s/chatbots_july25.pdf
+    status: shipped-as-quotation
+    normalized: normalized/bear-academic-humlum-genai-labor-2025.md
+    extraction: pymupdf4llm 0.3.4
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-bain-tech-report-2025:
+    citation_text: 'Crawford, David; Hoecker, Anne; Aulanier, Dana (eds.), "Technology
+      Report 2025: AI leaders are extending their edge" (Bain & Company, 6th annual
+      Global Technology Report, October 2025)'
+    citation:
+      URL: https://www.bain.com/globalassets/noindex/2025/bain_report_technology_report_2025.pdf
+      author:
+      - family: Crawford
+        given: David
+      - family: Hoecker
+        given: Anne
+      - family: Aulanier
+        given: Dana
+      container-title: Bain & Company
+      issued: '2025-10-16'
+      title: 'Technology Report 2025: AI leaders are extending their edge'
+      type: report
+    received:
+      digest: sha256:5c22754b354527739d20ad484dd7409513355fc3924ce74d41d6ee71d4b5022a
+      timestamp: '2026-08-25'
+      url: https://www.bain.com/globalassets/noindex/2025/bain_report_technology_report_2025.pdf
+    status: shipped-as-quotation
+    normalized: normalized/bear-bain-tech-report-2025.md
+    extraction: pymupdf4llm 0.3.4
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-burry-nvidia-coreweave-depreciation-2025:
+    citation_text: Michael Burry, "Substack Note on CoreWeave's Off-Balance-Sheet
+      Structure" (Cassandra Unchained, February 2026)
+    citation:
+      URL: https://substack.com/@michaeljburry/note/c-220488532
+      author:
+      - family: Burry
+        given: Michael
+      container-title: Cassandra Unchained (Substack)
+      issued: '2026-02-27'
+      title: Substack Note on CoreWeave's Off-Balance-Sheet Structure
+      type: post-weblog
+    received:
+      timestamp: '2026-08-25'
+      url: https://substack.com/@michaeljburry/note/c-220488532
+    status: shipped-as-quotation
+    normalized: normalized/bear-burry-nvidia-coreweave-depreciation-2025.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-cahn-600b-question-2024:
+    citation_text: David Cahn, "AI's $600B Question" (Sequoia Capital, June 2024)
+    citation:
+      URL: https://sequoiacap.com/article/ais-600b-question/
+      author:
+      - family: Cahn
+        given: David
+      container-title: Sequoia Capital
+      issued: '2024-06-20'
+      title: AI's $600B Question
+      type: post-weblog
+    received:
+      timestamp: '2026-08-25'
+      url: https://sequoiacap.com/article/ais-600b-question/
+    status: shipped-as-quotation
+    normalized: normalized/bear-cahn-600b-question-2024.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-cahn-600b-question-followup:
+    citation_text: 'David Cahn, "AI in 2026: A Tale of Two AIs" (Sequoia Capital,
+      December 2025)'
+    citation:
+      URL: https://sequoiacap.com/article/ai-in-2026-the-tale-of-two-ais/
+      author:
+      - family: Cahn
+        given: David
+      container-title: Sequoia Capital
+      issued: '2025-12-03'
+      title: 'AI in 2026: A Tale of Two AIs'
+      type: post-weblog
+    received:
+      timestamp: '2026-08-25'
+      url: https://sequoiacap.com/article/ai-in-2026-the-tale-of-two-ais/
+    status: shipped-as-quotation
+    normalized: normalized/bear-cahn-600b-question-followup.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-chanos-ai-capex-short-thesis:
+    citation_text: Jim Chanos (Kynikos Associates), remarks at Global Alts New York
+      2026, reported in "Jim Chanos on the AI Bubble & Data Center Short Thesis"
+      (iConnections Insights, June 2026)
+    citation:
+      URL: https://iconnections.io/insights/jim-chanos-ai-bubble-data-centers-global-alts-ny-2026/
+      author:
+      - family: iConnections
+        given: ''
+      container-title: iConnections Insights
+      issued: '2026-06-15'
+      title: Jim Chanos on the AI Bubble & Data Center Short Thesis
+      type: webpage
+    received:
+      timestamp: '2026-08-25'
+      url: https://iconnections.io/insights/jim-chanos-ai-bubble-data-centers-global-alts-ny-2026/
+    status: shipped-as-quotation
+    normalized: normalized/bear-chanos-ai-capex-short-thesis.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-circular-financing-nvidia-openai-coreweave:
+    citation_text: Abhishek Jadhav, "Nvidia, OpenAI, and the Trillion-Dollar Loop"
+      (The Register, November 2025)
+    citation:
+      URL: https://www.theregister.com/2025/11/04/the_circular_economy_of_ai/
+      author:
+      - family: Jadhav
+        given: Abhishek
+      container-title: The Register
+      issued: '2025-11-04'
+      title: Nvidia, OpenAI, and the Trillion-Dollar Loop
+      type: article-newspaper
+    received:
+      timestamp: '2026-08-25'
+      url: https://www.theregister.com/2025/11/04/the_circular_economy_of_ai/
+    status: shipped-as-quotation
+    normalized: normalized/bear-circular-financing-nvidia-openai-coreweave.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-covello-goldman-too-much-spend-2024:
+    citation_text: 'Covello, Jim (interviewed by Allison Nathan), "Gen AI: Too Much
+      Spend, Too Little Benefit?" (Goldman Sachs Research, Top of Mind, Issue 129,
+      June 2024)'
+    citation:
+      URL: https://www.goldmansachs.com/insights/top-of-mind/gen-ai-too-much-spend-too-little-benefit
+      author:
+      - family: Covello
+        given: Jim
+      - family: Nathan
+        given: Allison
+      container-title: Goldman Sachs Research — Top of Mind, Issue 129
+      issued: '2024-06-25'
+      title: 'Gen AI: too much spend, too little benefit?'
+      type: report
+    received:
+      digest: sha256:0fc6c28641616ab2d788042c70ea882c6e8ff96f9145a5dd4644cc77afc99fc2
+      timestamp: '2026-08-25'
+      url: https://www.goldmansachs.com/images/migrated/insights/pages/gs-research/gen-ai--too-much-spend,-too-little-benefit-/TOM_AI%202.0_ForRedaction.pdf
+    status: shipped-as-quotation
+    normalized: normalized/bear-covello-goldman-too-much-spend-2024.md
+    extraction: pymupdf4llm 0.3.4
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-damodaran-ai-bubble-valuation:
+    citation_text: 'Aswath Damodaran, "AI''s Bar Mitzvah Moment: From Hype & Hope
+      to Business Questions!" (Musings on Markets, August 2026)'
+    citation:
+      URL: https://aswathdamodaran.blogspot.com/2026/08/ais-bar-mitzvah-moment-from-hype-hope.html
+      author:
+      - family: Damodaran
+        given: Aswath
+      container-title: Musings on Markets
+      issued: '2026-08-20'
+      title: 'AI''s Bar Mitzvah Moment: From Hype & Hope to Business Questions!'
+      type: post-weblog
+    received:
+      timestamp: '2026-08-25'
+      url: https://aswathdamodaran.blogspot.com/2026/08/ais-bar-mitzvah-moment-from-hype-hope.html
+    status: shipped-as-quotation
+    normalized: normalized/bear-damodaran-ai-bubble-valuation.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-delloro-datacenter-capex-forecast-2025:
+    citation_text: Dell'Oro Group, "Data Center Capex Surges 57 Percent in 2025
+      as AI Deployments Accelerate" (Press Release, March 2026)
+    citation:
+      URL: https://www.delloro.com/news/data-center-capex-surges-57-percent-in-2025-as-ai-deployments-accelerate/
+      author:
+      - family: Dell'Oro Group
+        given: ''
+      container-title: Dell'Oro Group
+      issued: '2026-03-17'
+      title: Data Center Capex Surges 57 Percent in 2025 as AI Deployments Accelerate
+      type: webpage
+    received:
+      timestamp: '2026-08-25'
+      url: https://www.delloro.com/news/data-center-capex-surges-57-percent-in-2025-as-ai-deployments-accelerate/
+    status: shipped-as-quotation
+    normalized: normalized/bear-delloro-datacenter-capex-forecast-2025.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-doomberg-ai-capex-critique:
+    citation_text: Doomberg, "Old Tapes" (Doomberg newsletter, July 2026)
+    citation:
+      URL: https://newsletter.doomberg.com/p/old-tapes
+      author:
+      - family: Doomberg
+        given: ''
+      container-title: Doomberg
+      issued: '2026-07-22'
+      title: Old Tapes
+      type: post-weblog
+    received:
+      timestamp: '2026-08-25'
+      url: https://newsletter.doomberg.com/p/old-tapes
+    status: shipped-as-quotation
+    normalized: normalized/bear-doomberg-ai-capex-critique.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-fortune-circular-ai-deals-accounting:
+    citation_text: Fortune, "OpenAI Data Center Deal With Nvidia Comes In $145 Billion
+      Lower Than Reported" (Fortune, August 2026)
+    citation:
+      URL: https://fortune.com/2026/08/18/openai-data-center-deal-with-nvidia-comes-in-145-billion-lower-than-reportedsignaling-concerns-of-artificial-demand-for-chips/
+      author:
+      - family: Fortune
+        given: ''
+      container-title: Fortune
+      issued: '2026-08-18'
+      title: OpenAI data center deal with Nvidia comes in $145 billion lower than
+        reported—signaling concerns of artificial demand for chips
+      type: article-newspaper
+    received:
+      timestamp: '2026-08-25'
+      url: https://fortune.com/2026/08/18/openai-data-center-deal-with-nvidia-comes-in-145-billion-lower-than-reportedsignaling-concerns-of-artificial-demand-for-chips/
+    status: shipped-as-quotation
+    normalized: normalized/bear-fortune-circular-ai-deals-accounting.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-gmo-grantham-chancellor-ai-bubble:
+    citation_text: 'Jeremy Grantham and Edward Chancellor, "Valuing AI: Extreme
+      Bubble, New Golden Era, or Both?" (GMO Viewpoints, January 2026)'
+    citation:
+      URL: https://www.gmo.com/globalassets/articles/viewpoints/2026/gmo_valuing-ai-extreme-bubble---new-golden-era---or-both_1-26.pdf
+      author:
+      - family: Grantham
+        given: Jeremy
+      - family: Chancellor
+        given: Edward
+      container-title: GMO Viewpoints
+      issued:
+        date-parts:
+        - - 2026
+          - 1
+      title: 'Valuing AI: Extreme Bubble, New Golden Era, or Both? / Anatomy of
+        a Technology Mania'
+      type: report
+    received:
+      digest: sha256:5daf528f000353864983475af0a247db67acd8e529eff39ff6144dcc5bc381b9
+      timestamp: '2026-08-25'
+      url: https://www.gmo.com/globalassets/articles/viewpoints/2026/gmo_valuing-ai-extreme-bubble---new-golden-era---or-both_1-26.pdf
+    status: shipped-as-quotation
+    normalized: normalized/bear-gmo-grantham-chancellor-ai-bubble.md
+    extraction: pymupdf4llm 0.3.4
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-goldman-ai-bubble-debate-2025:
+    citation_text: 'Cahn, David (interviewed by Allison Nathan), "AI: In a Bubble?"
+      (Goldman Sachs Research, Top of Mind, Issue 143, October 2025)'
+    citation:
+      URL: https://www.goldmansachs.com/pdfs/insights/goldman-sachs-research/ai-in-a-bubble/report.pdf
+      author:
+      - family: Cahn
+        given: David
+      - family: Nathan
+        given: Allison
+      container-title: Goldman Sachs Research — Top of Mind, Issue 143
+      issued: '2025-10-22'
+      title: 'AI: in a bubble?'
+      type: report
+    received:
+      digest: sha256:b8c393fe7ecf0595443557ab2853fb27aa33e01b5248a8ec7b59a64dffc49659
+      timestamp: '2026-08-25'
+      url: https://www.goldmansachs.com/pdfs/insights/goldman-sachs-research/ai-in-a-bubble/report.pdf
+    status: shipped-as-quotation
+    normalized: normalized/bear-goldman-ai-bubble-debate-2025.md
+    extraction: pymupdf4llm 0.3.4
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-iea-electricity-2025:
+    citation_text: International Energy Agency, "Electricity 2025" (IEA, February
+      2025)
+    citation:
+      URL: https://www.iea.org/reports/electricity-2025
+      author:
+      - family: International Energy Agency
+        given: ''
+      container-title: IEA
+      issued: '2025-02-14'
+      title: Electricity 2025
+      type: report
+    received:
+      digest: sha256:08fffb29edf8468c0a795a9b4eab2298a8059dce4307e97ade5b5ab4e9179f9e
+      timestamp: '2026-08-25'
+      url: https://iea.blob.core.windows.net/assets/7c671ef6-2947-4e87-beea-af0e1288e1d7/Electricity2025.pdf
+    status: shipped-as-quotation
+    normalized: normalized/bear-iea-electricity-2025.md
+    extraction: pymupdf4llm 0.3.4
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-iea-energy-and-ai-2025:
+    citation_text: International Energy Agency, "Energy and AI" (World Energy Outlook
+      Special Report, April 2025)
+    citation:
+      URL: https://www.iea.org/reports/energy-and-ai
+      author:
+      - family: International Energy Agency
+        given: ''
+      container-title: World Energy Outlook Special Report
+      issued: '2025-04-10'
+      title: Energy and AI
+      type: report
+    received:
+      digest: sha256:3956b80152d4aac6b659a09d0cd7671a4bd53efeeb067e4d50df4230701b33e4
+      timestamp: '2026-08-25'
+      url: https://iea.blob.core.windows.net/assets/de9dea13-b07d-42c5-a398-d1b3ae17d866/EnergyandAI.pdf
+    status: shipped-as-quotation
+    normalized: normalized/bear-iea-energy-and-ai-2025.md
+    extraction: pymupdf4llm 0.3.4
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-kedrosky-ai-capex-critique:
+    citation_text: Paul Kedrosky, "Honey, AI Capex Keeps Eating ... Everything"
+      (Applied Complexity, July 2025), excerpted via Edward Conard Macro Roundup
+    citation:
+      URL: https://www.edwardconard.com/macro-roundup/paul-kedrosky-estimates-that-ai-capex-drove-20-to-40-of-us-gdp-growth-of-3-in-q2-for-practical-purposes-ai-capex-ate-q2-gdp-growth/
+      author:
+      - family: Kedrosky
+        given: Paul
+      container-title: Applied Complexity (paulkedrosky.com)
+      issued: '2025-07-31'
+      title: Honey, AI Capex Keeps Eating ... Everything
+      type: post-weblog
+    received:
+      timestamp: '2026-08-25'
+      url: https://www.edwardconard.com/macro-roundup/paul-kedrosky-estimates-that-ai-capex-drove-20-to-40-of-us-gdp-growth-of-3-in-q2-for-practical-purposes-ai-capex-ate-q2-gdp-growth/?view=detail&topic_filter=innovation-research
+    status: shipped-as-quotation
+    normalized: normalized/bear-kedrosky-ai-capex-critique.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-marcus-ai-bubble:
+    citation_text: Gary Marcus, "Peak bubble" (Marcus on AI, September 2025)
+    citation:
+      URL: https://garymarcus.substack.com/p/peak-bubble
+      author:
+      - family: Marcus
+        given: Gary
+      container-title: Marcus on AI
+      issued: '2025-09-11'
+      title: Peak bubble
+      type: post-weblog
+    received:
+      timestamp: '2026-08-25'
+      url: https://garymarcus.substack.com/p/peak-bubble
+    status: shipped-as-quotation
+    normalized: normalized/bear-marcus-ai-bubble.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-mckinsey-cost-of-compute-2025:
+    citation_text: 'Noffsinger, Jesse; Patel, Mark; Sachdeva, Pankaj, "The cost
+      of compute: A $7 trillion race to scale data centers" (McKinsey Quarterly,
+      April 2025)'
+    citation:
+      URL: https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/the-cost-of-compute-a-7-trillion-dollar-race-to-scale-data-centers
+      author:
+      - family: Noffsinger
+        given: Jesse
+      - family: Patel
+        given: Mark
+      - family: Sachdeva
+        given: Pankaj
+      container-title: McKinsey Quarterly
+      issued: '2025-04-28'
+      title: 'The cost of compute: A $7 trillion race to scale data centers'
+      type: article-journal
+    received:
+      timestamp: '2026-08-25'
+      url: https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/the-cost-of-compute-a-7-trillion-dollar-race-to-scale-data-centers
+    status: shipped-as-quotation
+    normalized: normalized/bear-mckinsey-cost-of-compute-2025.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-mit-nanda-genai-divide-2025:
+    citation_text: 'Challapally, Aditya; Pease, Chris; Raskar, Ramesh; Chari, Pradyumna,
+      "The GenAI Divide: State of AI in Business 2025" (MIT NANDA / Project NANDA,
+      July 2025)'
+    citation:
+      URL: https://cloudelligent.com/wp-content/uploads/2026/02/v0.1_State_of_AI_in_Business_2025_Report.pdf
+      author:
+      - family: Challapally
+        given: Aditya
+      - family: Pease
+        given: Chris
+      - family: Raskar
+        given: Ramesh
+      - family: Chari
+        given: Pradyumna
+      container-title: MIT NANDA (Project NANDA)
+      issued: 2025-07
+      title: 'The GenAI Divide: State of AI in Business 2025'
+      type: report
+    received:
+      digest: sha256:dd5c5f53b9b013705c1b7377f75dd056955d3ff215c7076562c553ac8a55b68f
+      timestamp: '2026-08-25'
+      url: https://cloudelligent.com/wp-content/uploads/2026/02/v0.1_State_of_AI_in_Business_2025_Report.pdf
+    status: shipped-as-quotation
+    normalized: normalized/bear-mit-nanda-genai-divide-2025.md
+    extraction: pymupdf4llm 0.3.4
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-slok-apollo-ai-bubble-dotcom:
+    citation_text: Torsten Slok, "AI Bubble Today Is Bigger Than the IT Bubble in
+      the 1990s" (Apollo Academy, July 2025)
+    citation:
+      URL: https://www.apolloacademy.com/ai-bubble-today-is-bigger-than-the-it-bubble-in-the-1990s/
+      author:
+      - family: Slok
+        given: Torsten
+      container-title: Apollo Academy
+      issued: '2025-07-16'
+      title: AI Bubble Today Is Bigger Than the IT Bubble in the 1990s
+      type: webpage
+    received:
+      timestamp: '2026-08-25'
+      url: https://www.apolloacademy.com/ai-bubble-today-is-bigger-than-the-it-bubble-in-the-1990s/
+    status: not-redistributable
+    reason: 'Page carries an explicit institutional distribution restriction, not
+      a generic copyright notice: "This presentation may not be distributed, transmitted
+      or otherwise communicated to others in whole or in part without the express
+      consent of Apollo Global Management, Inc." This plainly forbids even a short
+      excerpt, so the shipped-as-quotation route does not apply
+      here. No capture shipped; the source entry records the chart''s headline claim
+      and date for later reference by title/URL only.'
+  bear-synergy-hyperscale-capex-2025:
+    citation_text: Synergy Research Group, "Hyperscale Spending Spree is Driving
+      Dramatic Growth in Data Center Capacity" (Press Release, December 2025)
+    citation:
+      URL: https://www.srgresearch.com/articles/hyperscale-spending-spree-is-driving-dramatic-growth-in-data-center-capacity
+      author:
+      - family: Synergy Research Group
+        given: ''
+      container-title: Synergy Research Group
+      issued: '2025-12-19'
+      title: Hyperscale Spending Spree is Driving Dramatic Growth in Data Center
+        Capacity
+      type: webpage
+    received:
+      timestamp: '2026-08-25'
+      url: https://www.srgresearch.com/articles/hyperscale-spending-spree-is-driving-dramatic-growth-in-data-center-capacity
+    status: shipped-as-quotation
+    normalized: normalized/bear-synergy-hyperscale-capex-2025.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-zitron-haters-guide-ai-bubble:
+    citation_text: Ed Zitron, "The Hater's Guide To The AI Bubble" (Where's Your
+      Ed At, July 2025)
+    citation:
+      URL: https://www.wheresyoured.at/the-haters-gui/
+      author:
+      - family: Zitron
+        given: Ed
+      container-title: Where's Your Ed At
+      issued: '2025-07-21'
+      title: The Hater's Guide To The AI Bubble
+      type: post-weblog
+    received:
+      timestamp: '2026-08-25'
+      url: https://www.wheresyoured.at/the-haters-gui/
+    status: shipped-as-quotation
+    normalized: normalized/bear-zitron-haters-guide-ai-bubble.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bear-zitron-subprime-ai-crisis:
+    citation_text: Ed Zitron, "The Subprime AI Crisis" (Where's Your Ed At, September
+      2024)
+    citation:
+      URL: https://www.wheresyoured.at/subprimeai/
+      author:
+      - family: Zitron
+        given: Ed
+      container-title: Where's Your Ed At
+      issued: '2024-09-16'
+      title: The Subprime AI Crisis
+      type: post-weblog
+    received:
+      timestamp: '2026-08-25'
+      url: https://www.wheresyoured.at/subprimeai/
+    status: shipped-as-quotation
+    normalized: normalized/bear-zitron-subprime-ai-crisis.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-amzn-10q-2026q2:
+    citation_text: Amazon.com, Inc., Form 10-Q for the quarter ended June 30, 2026
+      (filed 2026-07-31, SEC accession 0001018724-26-000026), Item 2 (MD&A, Liquidity
+      and Capital Resources)
+    received:
+      digest: sha256:d07b8a88fa442c2c55bd65b3f1d336ca16e7d1e9fda831e1063d24adea60e4eb
+      timestamp: '2026-08-24'
+      url: https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm
+    status: shipped
+    normalized: normalized/bull-amzn-10q-2026q2.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+    licence_name: U.S. SEC filing, public-record financial disclosure, treated as
+      freely shippable per operator instruction
+  bull-amzn-earnings-release-2026q2:
+    citation_text: Amazon.com, Inc., "Amazon.com Announces Second Quarter Results"
+      (2026-07-30), Exhibit 99.1 to Form 8-K, SEC accession 0001018724-26-000024
+    received:
+      digest: sha256:3a867450183833d4b7f4ed73d81e9492f8117cb49ea6bd1986e9ad0ecd231895
+      timestamp: '2026-08-24'
+      url: https://www.sec.gov/Archives/edgar/data/1018724/000101872426000024/amzn-20260630xex991.htm
+    status: shipped-as-quotation
+    normalized: normalized/bull-amzn-earnings-release-2026q2.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-amzn-jassy-shareholder-letter-2025:
+    citation_text: Andy Jassy, "Amazon CEO Andy Jassy's 2025 Letter to Shareholders",
+      aboutamazon.com, published 2026-04-09
+    received:
+      digest: sha256:33ffeaf1a0e69a32d6c36d5130b9aa09fa690b0bf34dd7da9cb45063accf31e1
+      timestamp: '2026-08-24'
+      url: https://www.aboutamazon.com/news/company-news/amazon-ceo-andy-jassy-2025-letter-to-shareholders
+    status: shipped-as-quotation
+    normalized: normalized/bull-amzn-jassy-shareholder-letter-2025.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-anthropic-50b-infrastructure:
+    citation_text: Anthropic, "Anthropic invests $50 billion in American AI infrastructure",
+      anthropic.com/news, 2025-11-12
+    received:
+      digest: sha256:83b77aa74f39b00196459415d6d0ed6e5a4110f98954042e3db333c0de862671
+      timestamp: '2026-08-24'
+      url: https://www.anthropic.com/news/anthropic-invests-50-billion-in-american-ai-infrastructure
+    status: shipped-as-quotation
+    normalized: normalized/bull-anthropic-50b-infrastructure.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-anthropic-amazon-compute-2026:
+    citation_text: Anthropic/Amazon, "Anthropic and Amazon expand collaboration
+      for up to 5 gigawatts of new compute", anthropic.com/news, 2026-04-20
+    received:
+      digest: sha256:749cae5f0c105a9baa6b661568bc084f36683e4b3801fdbacee332b0b04df9be
+      timestamp: '2026-08-24'
+      url: https://www.anthropic.com/news/anthropic-amazon-compute
+    status: shipped-as-quotation
+    normalized: normalized/bull-anthropic-amazon-compute-2026.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-avgo-earnings-release-2026q2:
+    citation_text: Broadcom Inc., Q2 Fiscal Year 2026 earnings press release (Hock
+      Tan, Kirsten Spears), Exhibit 99 to Form 8-K, 2026-06-03, SEC accession 0001730168-26-000051
+    received:
+      digest: sha256:e142b67577a310f1cdc676d404f9e86851980555f0cdc916923fbe79f1fae695
+      timestamp: '2026-08-24'
+      url: https://www.sec.gov/Archives/edgar/data/1730168/000173016826000051/avgo-05032026x8kxex99.htm
+    status: shipped-as-quotation
+    normalized: normalized/bull-avgo-earnings-release-2026q2.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-bea-gdp-q1-2026:
+    citation_text: U.S. Bureau of Economic Analysis, "GDP (Advance Estimate), 1st
+      Quarter 2026" (BEA 26-21), released 2026-04-30
+    received:
+      digest: sha256:74fe82513c975b925248d44ce27b7d5f4830ff43b05346310fb4cc378012e2c7
+      timestamp: '2026-08-24'
+      url: https://www.bea.gov/news/2026/gdp-advance-estimate-1st-quarter-2026
+    status: shipped
+    normalized: normalized/bull-bea-gdp-q1-2026.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+    licence_name: U.S. Government Work, public domain under 17 U.S.C. §105 (BEA
+      is a federal statistical agency; this release is authored by federal employees
+      in the course of official duties)
+  bull-bloomberg-ai-bull-run-2026:
+    citation_text: Bloomberg Professional Services, "AI bull run to endure in 2026
+      on cash flows from apps, ETFs", bloomberg.com/professional/ insights/markets
+    received:
+      timestamp: '2026-08-24'
+      url: https://www.bloomberg.com/professional/insights/markets/ai-bull-run-to-endure-in-2026-on-cash-flows-from-apps-etfs/
+    status: access-restricted
+    reason: Attempted fetch (2026-08-24) returned Bloomberg's bot-check / access-gate
+      page (title 'Bloomberg - Are you a robot?'), not the article body; Bloomberg
+      content sits behind a subscription/access wall whose terms are accepted to
+      view it at all, independent of copyright, the ERF-5 access-restricted category
+      rather than not-redistributable, since the block is at the reading step, not
+      only republication. No capture held; this entry records the source's existence
+      (found via WebSearch snippet quoting its headline claim) without holding its
+      text.
+  bull-crwv-10q-2026q2:
+    citation_text: CoreWeave, Inc., Form 10-Q for the quarter ended June 30, 2026
+      (filed 2026-08-12, SEC accession 0001769628-26-000366), Item 1 (Notes, Remaining
+      Performance Obligations and Property and Equipment)
+    received:
+      digest: sha256:5ef1bddf52a356c5c8a77ebba2b53b35a7c35ac669b27e8fa7842f1f301124e7
+      timestamp: '2026-08-24'
+      url: https://www.sec.gov/Archives/edgar/data/1769628/000176962826000366/crwv-20260630.htm
+    status: shipped
+    normalized: normalized/bull-crwv-10q-2026q2.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+    licence_name: U.S. SEC filing, public-record financial disclosure, treated as
+      freely shippable per operator instruction
+  bull-futurum-ai-capex-2026:
+    citation_text: 'Futurum Group, "AI Capex 2026: The $690B Infrastructure Sprint",
+      futurumgroup.com/insights'
+    received:
+      digest: sha256:7e35e1bb74c53fbc4fbee60bdd31238e8c5b313d1f63769ee75595d2a1cd62a8
+      timestamp: '2026-08-24'
+      url: https://futurumgroup.com/insights/ai-capex-2026-the-690b-infrastructure-sprint/
+    status: shipped-as-quotation
+    normalized: normalized/bull-futurum-ai-capex-2026.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-googl-10q-2026q2:
+    citation_text: Alphabet Inc., Form 10-Q for the quarter ended June 30, 2026
+      (filed 2026-07-23, SEC accession 0001652044-26-000071), Item 2 (MD&A, Capital
+      Expenditures and Leases)
+    received:
+      digest: sha256:fecfbc2683f630380b17937278ce3745eca150eb90e21a945fd6b78fe19728c7
+      timestamp: '2026-08-24'
+      url: https://www.sec.gov/Archives/edgar/data/1652044/000165204426000071/goog-20260630.htm
+    status: shipped
+    normalized: normalized/bull-googl-10q-2026q2.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+    licence_name: U.S. SEC filing, public-record financial disclosure, treated as
+      freely shippable per operator instruction
+  bull-googl-earnings-call-2026q2:
+    citation_text: Alphabet Inc., Q2 2026 Earnings Call transcript (Sundar Pichai,
+      Anat Ashkenazi), 2026-07-22, published by Alphabet Investor Relations
+    received:
+      digest: sha256:de938411f77818b147ff51d8ca2f70081f9a44401d396f1779ab5b5adfbd9123
+      timestamp: '2026-08-24'
+      url: https://s206.q4cdn.com/479360582/files/doc_events/2026/Jul/22/2026_Q2_Earnings_Transcript.pdf
+    status: shipped-as-quotation
+    normalized: normalized/bull-googl-earnings-call-2026q2.md
+    extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-jpmorgan-ai-infrastructure-financing:
+    citation_text: J.P. Morgan, "Financing AI infrastructure and U.S. data centers",
+      jpmorgan.com/insights (John Servidea, Scott Wilcoxen quoted)
+    received:
+      digest: sha256:b0477e84624e451122cc27d49e999aeec925b756f7a207f45330d74665494213
+      timestamp: '2026-08-24'
+      url: https://www.jpmorgan.com/insights/banking/capital-markets/financing-ai-infrastructure-data-centers
+    status: shipped-as-quotation
+    normalized: normalized/bull-jpmorgan-ai-infrastructure-financing.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-meta-10q-2026q2:
+    citation_text: Meta Platforms, Inc., Form 10-Q for the quarter ended June 30,
+      2026 (filed 2026-07-30, SEC accession 0001628280-26-050705), Item 2 (MD&A,
+      Liquidity and Capital Resources)
+    received:
+      digest: sha256:b294c4f08edb78d0700cb82c86a0141a2cef38e4f1c2bb02b16ff1ce564a8492
+      timestamp: '2026-08-24'
+      url: https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm
+    status: shipped
+    normalized: normalized/bull-meta-10q-2026q2.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+    licence_name: U.S. SEC filing, public-record financial disclosure, treated as
+      freely shippable per operator instruction
+  bull-meta-earnings-release-2026q2:
+    citation_text: Meta Platforms, Inc., "Meta Reports Second Quarter 2026 Results"
+      (2026-07-29), Exhibit 99.1 to Form 8-K, SEC accession 0001628280-26-050596
+    received:
+      digest: sha256:96497fb80bc902097c756499df1f673303488652aa5460cfcc567546ed6cc31c
+      timestamp: '2026-08-24'
+      url: https://www.sec.gov/Archives/edgar/data/1326801/000162828026050596/meta-06302026xexhibit991.htm
+    status: shipped-as-quotation
+    normalized: normalized/bull-meta-earnings-release-2026q2.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-meta-zuckerberg-superintelligence-letter:
+    citation_text: Mark Zuckerberg, "Personal Superintelligence" (open letter),
+      meta.com/superintelligence/, 2025-07-30
+    received:
+      digest: sha256:990212e78f6b5818d3e4985972e36cc9d5d7cbb715f0abf3b58d0273532aeda6
+      timestamp: '2026-08-24'
+      url: https://www.meta.com/superintelligence/
+    status: shipped-as-quotation
+    normalized: normalized/bull-meta-zuckerberg-superintelligence-letter.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-msft-10k-2026:
+    citation_text: Microsoft Corporation, Form 10-K for the fiscal year ended June
+      30, 2026 (filed 2026-07-29, SEC accession 0001193125-26-323660), Item 1A (Risk
+      Factors), Item 7 (MD&A), Item 8 (Cash Flows Statements)
+    received:
+      digest: sha256:4bcf2da2871acc19e32c5a62f36f6d83d6aae03cdc4aaa9a86a9a21ee8223f02
+      timestamp: '2026-08-24'
+      url: https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm
+    status: shipped
+    normalized: normalized/bull-msft-10k-2026.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+    licence_name: U.S. SEC filing, statutorily mandated public disclosure; treated
+      as freely shippable per operator instruction (public-record financial filing,
+      not a copyright-asserted work in practice); no SPDX identifier fits precisely,
+      see friction-log
+  bull-msft-earnings-call-fy26q4:
+    citation_text: Microsoft Corporation, FY2026 Q4 Earnings Call prepared remarks
+      (Satya Nadella, Amy Hood), 2026-07-29, published by Microsoft Investor Relations
+    received:
+      digest: sha256:b1ba4245f1940a27b58c80f7c085473b6790007aa563347756268455aeb779ae
+      timestamp: '2026-08-24'
+      url: https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/TranscriptFY26Q4.docx
+    status: shipped-as-quotation
+    normalized: normalized/bull-msft-earnings-call-fy26q4.md
+    extraction: pandoc 3.8.3 (docx to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-nvda-10q-2026q1:
+    citation_text: NVIDIA Corporation, Form 10-Q for the quarter ended April 26,
+      2026 (fiscal Q1 2027; filed 2026-05-20, SEC accession 0001045810-26-000052),
+      Item 1 (Notes) and Item 2 (MD&A)
+    received:
+      digest: sha256:1b5de37b973da4a3f1cd31a09aa455c01c519ea7cc409c73de2250ad156f99e4
+      timestamp: '2026-08-24'
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000052/nvda-20260426.htm
+    status: shipped
+    normalized: normalized/bull-nvda-10q-2026q1.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+    licence_name: U.S. SEC filing, public-record financial disclosure, treated as
+      freely shippable per operator instruction
+  bull-nvda-msft-anthropic-partnership-2026:
+    citation_text: NVIDIA/Microsoft/Anthropic, "Microsoft, NVIDIA and Anthropic
+      Announce Strategic Partnerships", NVIDIA blog (published simultaneously on
+      the Microsoft, NVIDIA, and Anthropic newsrooms)
+    received:
+      digest: sha256:70419cb0bb4117c51dbef2360f63b154f09ca18d400f9ee53008ec1f5bd11a9f
+      timestamp: '2026-08-24'
+      url: https://blogs.nvidia.com/blog/microsoft-nvidia-anthropic-announce-partnership/
+    status: shipped-as-quotation
+    normalized: normalized/bull-nvda-msft-anthropic-partnership-2026.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-nvda-openai-10gw-partnership-2026:
+    citation_text: NVIDIA Corporation, "OpenAI and NVIDIA Announce Strategic Partnership
+      to Deploy 10 Gigawatts of NVIDIA Systems", NVIDIA Newsroom press release
+    received:
+      digest: sha256:adfc8094717cbd76cec0e9883b6a4da5549fb87ab4521f0d34c860c1a19fab77
+      timestamp: '2026-08-24'
+      url: https://nvidianews.nvidia.com/news/openai-and-nvidia-announce-strategic-partnership-to-deploy-10gw-of-nvidia-systems
+    status: shipped-as-quotation
+    normalized: normalized/bull-nvda-openai-10gw-partnership-2026.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-nvda-openai-ports-pike-2026:
+    citation_text: NVIDIA Corporation, "NVIDIA Guarantees SB Energy's PORTS-Pike
+      Technology Campus in Ohio to Exclusively Host NVIDIA AI Compute" (2026-08-17),
+      Exhibit 99.1 to Form 8-K, SEC accession 0001045810-26-000069
+    received:
+      digest: sha256:e3c39df5be133417c6f3b097cf6f81a5f502443bc4203eba55275fe2ad96f096
+      timestamp: '2026-08-24'
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000069/sbeoainvidia-portsrelease.htm
+    status: shipped-as-quotation
+    normalized: normalized/bull-nvda-openai-ports-pike-2026.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-orcl-10k-2026:
+    citation_text: Oracle Corporation, Form 10-K for the fiscal year ended May 31,
+      2026 (filed 2026-06-22, SEC accession 0001193125-26-277521), Item 7 (MD&A,
+      Remaining Performance Obligations and Capital Expenditures)
+    received:
+      digest: sha256:6cd094af28aa16098cad795bf785be1866d69e59605aed1d6aef75a911a5766b
+      timestamp: '2026-08-24'
+      url: https://www.sec.gov/Archives/edgar/data/1341439/000119312526277521/orcl-20260531.htm
+    status: shipped
+    normalized: normalized/bull-orcl-10k-2026.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+    licence_name: U.S. SEC filing, public-record financial disclosure, treated as
+      freely shippable per operator instruction
+  bull-orcl-earnings-release-2026q4:
+    citation_text: Oracle Corporation, "Oracle Announces Record Q4 and FY 2026 Results
+      Driven by Cloud Infrastructure & Cloud Applications" (2026-06-10), Exhibit
+      99.1 to Form 8-K, SEC accession 0001193125-26-265848
+    received:
+      digest: sha256:5f18e9a8297707330f846d037ba0832cc5ba94536d840008169bdb2659c71937
+      timestamp: '2026-08-24'
+      url: https://www.sec.gov/Archives/edgar/data/1341439/000119312526265848/orcl-ex99_1.htm
+    status: shipped-as-quotation
+    normalized: normalized/bull-orcl-earnings-release-2026q4.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  bull-samaltman-abundant-intelligence:
+    citation_text: Sam Altman, "Abundant Intelligence", blog.samaltman.com, 2025-09-23
+    received:
+      digest: sha256:82be3a2d057631957f567168089b0a4899a1c8f354103bc92997e46375883843
+      timestamp: '2026-08-24'
+      url: https://blog.samaltman.com/abundant-intelligence
+    status: shipped-as-quotation
+    normalized: normalized/bull-samaltman-abundant-intelligence.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-acemoglu-simple-macroeconomics-ai:
+    citation_text: Daron Acemoglu, "The Simple Macroeconomics of AI" (NBER Working
+      Paper No. 32487, May 2024)
+    citation:
+      author:
+      - family: Acemoglu
+        given: Daron
+      container-title: NBER Working Paper Series, No. 32487
+      issued: 2024-05
+      title: The Simple Macroeconomics of AI
+      type: article-journal
+    received:
+      digest: sha256:ffb04f119539228da2db0699530425e56e815c890b6ebe7b5c932675e2eebdb0
+      timestamp: '2026-08-25'
+      url: https://www.nber.org/system/files/working_papers/w32487/w32487.pdf
+    status: shipped-as-quotation
+    normalized: normalized/n-acemoglu-simple-macroeconomics-ai.md
+    extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-asml-q2-2026-results:
+    citation_text: ASML Holding N.V., "ASML reports €9.3 billion total net sales
+      and €2.9 billion net income in Q2 2026" (press release, 2026-07-15), Exhibit
+      99.1 to Form 6-K, SEC accession 0001628280-26-048235
+    citation:
+      container-title: SEC EDGAR (Form 6-K, Exhibit 99.1)
+      issued: '2026-07-15'
+      title: ASML reports €9.3 billion total net sales and €2.9 billion net income
+        in Q2 2026
+      type: article-newspaper
+    received:
+      digest: sha256:71232ad9d36778a8fd45344c950aba28a45ef5993517b9634a2457fcb56e256c
+      timestamp: '2026-08-25'
+      url: https://www.sec.gov/Archives/edgar/data/937966/000162828026048235/pressreleasefinancialresul.htm
+    status: shipped-as-quotation
+    normalized: normalized/n-asml-q2-2026-results.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-chen-abundant-intelligence-deficient-demand:
+    citation_text: 'Xupeng Chen, "Abundant Intelligence and Deficient Demand: A
+      Macro-Financial Stress Test of Rapid AI Adoption" (arXiv:2603.09209 [cs.AI],
+      submitted 2026-03-10)'
+    citation:
+      author:
+      - family: Chen
+        given: Xupeng
+      container-title: arXiv:2603.09209 [cs.AI]
+      issued: '2026-03-10'
+      title: 'Abundant Intelligence and Deficient Demand: A Macro-Financial Stress
+        Test of Rapid AI Adoption'
+      type: article
+    received:
+      digest: sha256:fc15edd9add229fdf537b004877c32d14cf036a6cf2f5ee7a16df641dc2546ab
+      timestamp: '2026-08-25'
+      url: https://arxiv.org/pdf/2603.09209
+    status: shipped-as-quotation
+    normalized: normalized/n-chen-abundant-intelligence-deficient-demand.md
+    extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-constellation-crane-tmi-restart-2024:
+    citation_text: Constellation Energy Corporation / Constellation Energy Generation,
+      LLC, "Crane Clean Energy Center – Meeting the Country’s Needs for Clean and
+      Reliable Generation" (investor presentation, 2024-09-20), Exhibit 99.2 to
+      Form 8-K, SEC accession 0001868275-24-000058
+    citation:
+      container-title: SEC EDGAR (Form 8-K, Exhibit 99.2)
+      issued: '2024-09-20'
+      title: Crane Clean Energy Center – Meeting the Country’s Needs for Clean and
+        Reliable Generation
+      type: article-newspaper
+    received:
+      digest: sha256:096c080e496599ed19ad65b409123538d409e7bd07ca2a4b6adb7a98225dec7c
+      timestamp: '2026-08-25'
+      url: https://www.sec.gov/Archives/edgar/data/1868275/000186827524000058/ceg-202409208kexh992.htm
+    status: shipped-as-quotation
+    normalized: normalized/n-constellation-crane-tmi-restart-2024.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-coreweave-ddtl4-8k-2026:
+    citation_text: CoreWeave, Inc., "CoreWeave Closes Landmark $8.5 Billion Financing
+      Facility, Achieving First Investment-Grade Rated GPU-Backed Financing" (press
+      release, 2026-03-31), Exhibit 99.1 to Form 8-K, SEC accession 0001769628-26-000129
+    citation:
+      container-title: SEC EDGAR (Form 8-K, Exhibit 99.1)
+      issued: '2026-03-31'
+      title: CoreWeave Closes Landmark $8.5 Billion Financing Facility, Achieving
+        First Investment-Grade Rated GPU-Backed Financing
+      type: article-newspaper
+    received:
+      digest: sha256:7d244dfa0d70095c752a266df461490ff8edb0e01248a74c3bb6c3b374791bd9
+      timestamp: '2026-08-25'
+      url: https://www.sec.gov/Archives/edgar/data/1769628/000176962826000129/ex991.htm
+    status: shipped-as-quotation
+    normalized: normalized/n-coreweave-ddtl4-8k-2026.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-dominion-pjm-load-forecast-2026:
+    citation_text: 'Stanley L. Blackwell (Dominion Energy, Director – Data Center
+      Practice), letter to the PJM Load Analysis Team re: "Data Center Large Load
+      Adjustment" (2026-01-06), published as documentation supporting PJM''s 2026
+      load forecast'
+    citation:
+      author:
+      - family: Blackwell
+        given: Stanley L.
+      container-title: PJM Interconnection, 2026 Load Forecast Report (Manual 19,
+        Attachment B documentation)
+      issued: '2026-01-06'
+      title: Dominion Energy Data Center Large Load Adjustment (letter to PJM Load
+        Analysis Team)
+      type: report
+    received:
+      digest: sha256:37b4eb05209983b7799e4b9d043a92f74fb207b4acd9c295c921df1d83486086
+      timestamp: '2026-08-25'
+      url: https://www.pjm.com/-/media/DotCom/planning/res-adeq/load-forecast/dominion-documentation.pdf
+    status: shipped-as-quotation
+    normalized: normalized/n-dominion-pjm-load-forecast-2026.md
+    extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-ercot-large-load-tac-report-2026:
+    citation_text: 'ERCOT Large Load Integration Team, "Large Load Interconnection
+      Status Update" (March TAC Report, posted to ercot.com 2026-03-12); NOTE: several
+      chart labels inside the deck read "March 2025" rather than "March 2026" —
+      see friction-log'
+    citation:
+      container-title: ERCOT Large Load Integration Team
+      issued: '2026-03-12'
+      title: Large Load Interconnection Status Update (March TAC Report)
+      type: report
+    received:
+      digest: sha256:e152e34d90e3cc0fa46f1bbda9d54fac78e8b7dc37a5901ee625ad0b7923dee1
+      timestamp: '2026-08-25'
+      url: https://www.ercot.com/files/docs/2026/03/12/March-TAC-Report.pdf
+    status: shipped-as-quotation
+    normalized: normalized/n-ercot-large-load-tac-report-2026.md
+    extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-fortune-ai-debt-orgy-2026:
+    citation_text: Jason Ma, "After a nearly 1,000% surge, the AI debt orgy can’t
+      last forever, while hidden borrowing has exploded to $1.65 trillion" (Fortune,
+      2026-07-31)
+    citation:
+      author:
+      - family: Ma
+        given: Jason
+      container-title: Fortune
+      issued: '2026-07-31'
+      title: After a nearly 1,000% surge, the AI debt orgy can’t last forever, while
+        hidden borrowing has exploded to $1.65 trillion
+      type: article-newspaper
+    received:
+      digest: sha256:82d869be93d5714c66c9089c5e9ddf357d3e8688e33ead10c3e4ef5320a1d59a
+      timestamp: '2026-08-25'
+      url: https://fortune.com/2026/07/31/ai-debt-hypescalers-capex-capital-spending-hidden-borrowing-bond-issuance/
+    status: shipped-as-quotation
+    normalized: normalized/n-fortune-ai-debt-orgy-2026.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-frb-feds-datacenter-investment-2025:
+    citation_text: Eirik Eylands Brandsaas, Daniel Garcia, Robert Kurtzman, Joseph
+      Nichols, and Adelia Zytek, "Estimating Aggregate Data Center Investment with
+      Project-level Data" (Finance and Economics Discussion Series 2025-109, Federal
+      Reserve Board, Washington, D.C., 2025-12-17)
+    citation:
+      author:
+      - family: Brandsaas
+        given: Eirik Eylands
+      - family: Garcia
+        given: Daniel
+      - family: Kurtzman
+        given: Robert
+      - family: Nichols
+        given: Joseph
+      - family: Zytek
+        given: Adelia
+      container-title: Finance and Economics Discussion Series, Federal Reserve
+        Board, No. 2025-109
+      issued: '2025-12-17'
+      title: Estimating Aggregate Data Center Investment with Project-level Data
+      type: report
+    received:
+      digest: sha256:f996a356278dcdfa3c2b7561876147f09b95ddf3ee73f54109d6fa3873be7d53
+      timestamp: '2026-08-25'
+      url: https://www.federalreserve.gov/econres/feds/files/2025109pap.pdf
+    status: shipped
+    normalized: normalized/n-frb-feds-datacenter-investment-2025.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+    extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    licence_name: U.S. Government Work, public domain under 17 U.S.C. §105 (Federal
+      Reserve Board of Governors is a federal agency; paper authored by Board staff
+      economists in the course of official duties, per author affiliation lines
+      "Division of Research & Statistics, Federal Reserve Board")
+  n-frb-notes-ai-buildout-2026:
+    citation_text: 'Paul E. Soto, Mason Thieu, and Jeffrey S. Allen, "The AI Buildout
+      and the Economy: Publicly Available Data to Assess AI''s Impact" (FEDS Notes,
+      Federal Reserve Board, 2026-07-17)'
+    citation:
+      author:
+      - family: Soto
+        given: Paul E.
+      - family: Thieu
+        given: Mason
+      - family: Allen
+        given: Jeffrey S.
+      container-title: FEDS Notes, Federal Reserve Board
+      issued: '2026-07-17'
+      title: 'The AI Buildout and the Economy: Publicly Available Data to Assess
+        AI''s Impact'
+      type: webpage
+    received:
+      digest: sha256:3abefbfc49c96092ad0a4fbb719e0b5a20627db5e574916fe44781f40061229b
+      timestamp: '2026-08-25'
+      url: https://www.federalreserve.gov/econres/notes/feds-notes/the-ai-buildout-and-the-economy-publicly-available-data-to-assess-ais-impact-20260717.html
+    status: shipped
+    normalized: normalized/n-frb-notes-ai-buildout-2026.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+    extraction: pandoc 3.8.3 (html to plain)
+    licence_name: U.S. Government Work, public domain under 17 U.S.C. §105 (Federal
+      Reserve Board of Governors staff note)
+  n-hogendorn-excessive-entry-telecom:
+    citation_text: Christiaan Hogendorn, "Excessive(?) Entry of National Telecom
+      Networks, 1990–2001" (Wesleyan University working paper, 2007-06-13; journal
+      version published in Telecommunications Policy, 2011)
+    citation:
+      author:
+      - family: Hogendorn
+        given: Christiaan
+      container-title: Wesleyan University working paper (published in Telecommunications
+        Policy, 2011)
+      issued: '2007-06-13'
+      title: Excessive(?) Entry of National Telecom Networks, 1990–2001
+      type: article-journal
+    received:
+      digest: sha256:5e65b9c0deeb6493efccfc23141b42de6a146b75e7c937b31d412bc618c6a651
+      timestamp: '2026-08-25'
+      url: http://jwhitehorn.web.wesleyan.edu/Research/excessive.pdf
+    status: shipped-as-quotation
+    normalized: normalized/n-hogendorn-excessive-entry-telecom.md
+    extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-jll-na-datacenter-midyear-2026:
+    citation_text: 'Andrew Batson and Ben Davalos, "North America Data Center Report
+      Midyear 2026: Navigating historic growth and community acceptance" (JLL Insights,
+      2026-08-11)'
+    citation:
+      author:
+      - family: Batson
+        given: Andrew
+      - family: Davalos
+        given: Ben
+      container-title: JLL Insights
+      issued: '2026-08-11'
+      title: 'North America Data Center Report Midyear 2026: Navigating historic
+        growth and community acceptance'
+      type: report
+    received:
+      digest: sha256:bd6242cf7ad96abedc5127bb79c7a4888550275ee9529019fd9463b4a53d71a8
+      timestamp: '2026-08-25'
+      url: https://www.jll.com/en-us/insights/market-dynamics/north-america-data-centers
+    status: shipped-as-quotation
+    normalized: normalized/n-jll-na-datacenter-midyear-2026.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-jones-ai-economic-future:
+    citation_text: Charles I. Jones, "AI and Our Economic Future" (Stanford GSB
+      and NBER, version dated 2026-05-18; also circulated as NBER Working Paper
+      No. 34779)
+    citation:
+      author:
+      - family: Jones
+        given: Charles I.
+      container-title: Stanford GSB and NBER (in preparation for the Journal of
+        Economic Perspectives); also NBER Working Paper No. 34779
+      issued: '2026-05-18'
+      title: AI and Our Economic Future
+      type: article-journal
+    received:
+      digest: sha256:ca7887c25c89ada3b4c066eb2a44a01d2a1ee8797a84721335cb97766ff32576
+      timestamp: '2026-08-25'
+      url: https://web.stanford.edu/~chadj/AIandEconomicFuture.pdf
+    status: shipped-as-quotation
+    normalized: normalized/n-jones-ai-economic-future.md
+    extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-odlyzko-internet-time-myth:
+    citation_text: Andrew Odlyzko, "The Myth of Internet Time" (AT&T Labs; undated
+      essay, internal evidence — references to "early 2000" as recent past — places
+      composition ca. 2000–2001; exact original publication venue and date unconfirmed,
+      see friction-log), hosted on the author’s University of Minnesota archive
+    citation:
+      author:
+      - family: Odlyzko
+        given: Andrew
+      container-title: AT&T Labs (author's University of Minnesota archive copy)
+      title: The Myth of Internet Time
+      type: article
+    received:
+      digest: sha256:4ba5a8404c17847dad8fd3348eef2c1d0c905a83284a3dc6bb2b0b56240948dc
+      timestamp: '2026-08-25'
+      url: https://www-users.cse.umn.edu/~odlyzko/doc/internet.time.myth.txt
+    status: shipped-as-quotation
+    normalized: normalized/n-odlyzko-internet-time-myth.md
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-odlyzko-railway-mania-hallucinations:
+    citation_text: 'Andrew Odlyzko, "Collective Hallucinations and Inefficient Markets:
+      The British Railway Mania of the 1840s" (preliminary version, 2010-01-15,
+      University of Minnesota; also SSRN Working Paper, doi:10.2139/ssrn.1537338)'
+    citation:
+      author:
+      - family: Odlyzko
+        given: Andrew
+      container-title: School of Mathematics and Digital Technology Center, University
+        of Minnesota (also SSRN Working Paper, doi:10.2139/ssrn.1537338)
+      issued: '2010-01-15'
+      title: 'Collective Hallucinations and Inefficient Markets: The British Railway
+        Mania of the 1840s'
+      type: article
+    received:
+      digest: sha256:77f6f51db1eb63b1f9573583fa1b338cc0944ef135dd71bee8fee7a80d87558a
+      timestamp: '2026-08-25'
+      url: https://www-users.cse.umn.edu/~odlyzko/doc/hallucinations.pdf
+    status: shipped-as-quotation
+    normalized: normalized/n-odlyzko-railway-mania-hallucinations.md
+    extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-pjm-2028-2029-capacity-auction:
+    citation_text: PJM Interconnection, "PJM Capacity Auction Procures 138,318 MW
+      of Generation Resources as Work Continues To Address Growing Electricity Demand"
+      (News Release, 2026-07-14), results of the 2028/2029 Base Residual Auction
+    citation:
+      container-title: PJM Interconnection Newsroom
+      issued: '2026-07-14'
+      title: PJM Capacity Auction Procures 138,318 MW of Generation Resources as
+        Work Continues To Address Growing Electricity Demand
+      type: webpage
+    received:
+      digest: sha256:f19dee4a7028742594c6a2cb1884425d85a291e6b0a7e3c4a06f6e22497c2e26
+      timestamp: '2026-08-25'
+      url: https://www.pjm.com/-/media/DotCom/about-pjm/newsroom/2026-releases/20260714-pjm-capacity-auction-procures-138318-mw-of-generation-resources.pdf
+    status: shipped-as-quotation
+    normalized: normalized/n-pjm-2028-2029-capacity-auction.md
+    extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-samsung-q2-2026-results:
+    citation_text: Samsung Electronics Co., Ltd., "Samsung Electronics Announces
+      Second Quarter 2026 Results" (Samsung Global Newsroom, 2026-07-30)
+    citation:
+      URL: https://news.samsung.com/global/samsung-electronics-announces-second-quarter-2026-results
+      container-title: Samsung Global Newsroom
+      issued: '2026-07-30'
+      title: Samsung Electronics Announces Second Quarter 2026 Results
+      type: webpage
+    received:
+      digest: sha256:45c468447760c095b2bd2149fd13c1ddd878689b962a320adb8ca263c621fc64
+      timestamp: '2026-08-25'
+      url: https://news.samsung.com/global/samsung-electronics-announces-second-quarter-2026-results
+    status: shipped-as-quotation
+    normalized: normalized/n-samsung-q2-2026-results.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-skhynix-q2-2026-results:
+    citation_text: SK hynix Inc., "SK hynix Announces 2Q26 Financial Results" (SK
+      hynix Newsroom, 2026-07-29)
+    citation:
+      URL: https://news.skhynix.com/en/q2-2026-business-results/
+      container-title: SK hynix Newsroom
+      issued: '2026-07-29'
+      title: SK hynix Announces 2Q26 Financial Results
+      type: webpage
+    received:
+      digest: sha256:1ebe2bfae67904e4455164da7a4794a5d9637bacae8b13317de8fae3ea7809be
+      timestamp: '2026-08-25'
+      url: https://news.skhynix.com/en/q2-2026-business-results/
+    status: shipped-as-quotation
+    normalized: normalized/n-skhynix-q2-2026-results.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-softbank-openai-followon-2026:
+    citation_text: SoftBank Group Corp., "Announcement Regarding Follow-on Investments
+      in OpenAI" (press release, 2026-02-27)
+    citation:
+      container-title: SoftBank Group Corp. Press Releases
+      issued: '2026-02-27'
+      title: Announcement Regarding Follow-on Investments in OpenAI
+      type: webpage
+    received:
+      digest: sha256:82979a5184e0d4c947d2adc100c1449bfd1b9146a4dbcf88efc25a224d99b1b3
+      timestamp: '2026-08-25'
+      url: https://group.softbank/en/news/press/20260227
+    status: shipped-as-quotation
+    normalized: normalized/n-softbank-openai-followon-2026.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-spglobal-datacenter-macro-needle:
+    citation_text: S&P Global, "S&P Global Research Reveals Data Center Investments
+      Moving The U.S. Macro Needle" (press release, 2025-11-05)
+    citation:
+      container-title: S&P Global Press Releases
+      issued: '2025-11-04'
+      title: S&P Global Research Reveals Data Center Investments Moving The U.S.
+        Macro Needle
+      type: webpage
+    received:
+      digest: sha256:01defd62ee0e43a526c4749d777cbf47b90a97076b21a68b7878898145d42b07
+      timestamp: '2026-08-25'
+      url: https://press.spglobal.com/2025-11-05-S-P-Global-Research-Reveals-Data-Center-Investments-Moving-The-U-S-Macro-Needle
+    status: shipped-as-quotation
+    normalized: normalized/n-spglobal-datacenter-macro-needle.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-tsmc-q2-2026-earnings-release:
+    citation_text: Taiwan Semiconductor Manufacturing Company Limited, "TSMC Reports
+      Second Quarter EPS of NT$27.25" (press release, 2026-07-16), Exhibit 99.1
+      to Form 6-K, SEC accession 0001046179-26-000451
+    citation:
+      container-title: SEC EDGAR (Form 6-K, Exhibit 99.1)
+      issued: '2026-07-16'
+      title: TSMC Reports Second Quarter EPS of NT$27.25
+      type: article-newspaper
+    received:
+      digest: sha256:6e877956870c87d857d8af23144f35ddcbd3b569d464c962e7cf368c46860be3
+      timestamp: '2026-08-25'
+      url: https://www.sec.gov/Archives/edgar/data/1046179/000104617926000451/a2q26e_withguidancexfinal.htm
+    status: shipped-as-quotation
+    normalized: normalized/n-tsmc-q2-2026-earnings-release.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
+  n-tsmc-q2-2026-presentation:
+    citation_text: Taiwan Semiconductor Manufacturing Company Limited, "2026 Second
+      Quarter Earnings Conference Presentation Material" (2026-07-16), Exhibit 99.2
+      to Form 6-K, SEC accession 0001046179-26-000451
+    citation:
+      container-title: SEC EDGAR (Form 6-K, Exhibit 99.2)
+      issued: '2026-07-16'
+      title: 2026 Second Quarter Earnings Conference Presentation Material
+      type: article-newspaper
+    received:
+      digest: sha256:939d51f10b81ee70e87864e3fa0f93b7eb0a9e4868d6a226b6bd284d407583af
+      timestamp: '2026-08-25'
+      url: https://www.sec.gov/Archives/edgar/data/1046179/000104617926000451/a2q26presentatione.htm
+    status: shipped-as-quotation
+    normalized: normalized/n-tsmc-q2-2026-presentation.md
+    extraction: pandoc 3.8.3 (html to plain)
+    excerpt:
+      by: agent/claude-sonnet-5
+      timestamp: '2026-08-25'
