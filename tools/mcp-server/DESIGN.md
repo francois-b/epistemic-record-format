@@ -24,6 +24,21 @@ specification. Put them in the write path and they hold.
 - The corpus is plain files in a folder the user chose. If the folder is a
   git repository the server commits its own writes as the user.
 
+## The workspace: roots, corpora, the active one
+
+The server is started with one or more **root folders** (in a Desktop
+extension, the directory picker with `multiple: true`). A root may itself
+be a corpus or hold several. Corpora are found by their declarations
+(`ERF-54`: discovery by content, never by path), identified by the `id` in
+`corpus.yaml`, and two declaring the same id are refused (`ERF-36`). One
+corpus is **active** per session: the only one when there is one, else
+whatever `erf_corpus_use` chose; every tool also takes an optional `corpus`
+id to address another in a single call. Every result is prefixed with the
+id of the corpus it touched, so a write to the wrong corpus is visible in
+the same breath. `erf_corpus_init(folder, …)` creates a corpus under a root
+and makes it active. Ruled 2026-08-26: the connector is the format, not a
+corpus.
+
 ## The corpus it writes into
 
 Discovery is by content (`ERF-54`), so the server reads any layout. It
@@ -45,7 +60,9 @@ wrote. Every refusal names the requirement. Nothing writes a raw file.
 
 | Tool | Does | Refuses when |
 |---|---|---|
-| `erf_corpus_init(id, title, owner)` | writes `corpus.yaml` + empty `sources.yaml` | a declaration already exists |
+| `erf_corpus_list()` | every corpus under the roots, the active one marked | never |
+| `erf_corpus_use(id)` | makes one corpus the target of following calls | unknown id |
+| `erf_corpus_init(folder, id, title, owner)` | creates a corpus under a root: `corpus.yaml` + empty `sources.yaml`; makes it active | folder outside the roots; a declaration already there; owner not `human:` |
 | `erf_corpus_check()` | loads, validates, reports violations, flags, unbacked claims, uncited sources, counts by disposition | never |
 | `erf_source_add(id, citation_text, url? \| path?, licence?, licence_name?)` | captures: raw bytes held and digested (`ERF-71`); extracted and normalized by named tools (`ERF-70`); entry written to `sources.yaml` with `status` derived from the licence; logs the act | id in use; url given while fetching is off; neither url nor path; path outside the corpus |
 | `erf_search_log(tool, query, hits_reported, scope?)` | appends one act to the research log | empty query |
@@ -72,8 +89,9 @@ finding and evidence audits, excerpts (`ERF-69`), PDF extraction, the
 
 ## Resources
 
-`erf://claims/{id}`, `erf://atoms/{id}`, `erf://surveys/{id}`: the record
-as it stands, so a client can pull one into context without a tool call.
+`erf://{corpus}/claims/{id}`, `erf://{corpus}/atoms/{id}`,
+`erf://{corpus}/surveys/{id}`: the record as it stands, so a client can pull
+one into context without a tool call.
 
 ## Server instructions (sent at initialize)
 

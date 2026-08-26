@@ -194,3 +194,45 @@ test("record_read and record_list", () => {
 });
 
 function await0(fn: () => unknown): void { fn(); }
+
+// ---------- workspace: roots, discovery, the active corpus ----------
+import { openWorkspace, discover, resolveCorpus, useCorpus, newCorpusDir } from "../src/workspace.ts";
+
+test("workspace: corpora are found under roots by their declarations; one corpus is active by default", () => {
+  const root = mkdtempSync(join(tmpdir(), "erf-ws-"));
+  cpSync(MINIMAL, join(root, "a"), { recursive: true });
+  const ws = openWorkspace([root], { agent: "agent/test", fetchEnabled: false, commit: false });
+  assert.deepEqual([...discover(ws).keys()], ["erf-example"]);
+  assert.equal(ws.active, "erf-example");
+  assert.equal(resolveCorpus(ws).id, "erf-example");
+  // a root that is itself a corpus
+  const ws2 = openWorkspace([join(root, "a")], { agent: "agent/test", fetchEnabled: false, commit: false });
+  assert.equal(resolveCorpus(ws2).id, "erf-example");
+});
+
+test("workspace: two corpora need an explicit choice; duplicate ids are refused; init creates and activates", () => {
+  const root = mkdtempSync(join(tmpdir(), "erf-ws-"));
+  cpSync(MINIMAL, join(root, "a"), { recursive: true });
+  cpSync(MINIMAL, join(root, "b"), { recursive: true });
+  assert.throws(() => openWorkspace([root], { agent: "agent/test", fetchEnabled: false, commit: false }), /ERF-36/);
+  writeFileSync(join(root, "b", "corpus.yaml"), readFileSync(join(root, "b", "corpus.yaml"), "utf8").replace("erf-example", "fixture-second"));
+  const ws = openWorkspace([root], { agent: "agent/test", fetchEnabled: false, commit: false });
+  assert.equal(ws.active, null);
+  assert.throws(() => resolveCorpus(ws), /none active/);
+  assert.throws(() => useCorpus(ws, "nope"), /no corpus with id nope/);
+  useCorpus(ws, "fixture-second");
+  assert.equal(resolveCorpus(ws).id, "fixture-second");
+  assert.equal(resolveCorpus(ws, "erf-example").id, "erf-example", "a call may name another corpus");
+  // init under the root
+  const dir = newCorpusDir(ws, "c");
+  const c = openCorpus({ dir, agent: "agent/test", fetchEnabled: false, commit: false });
+  T.corpusInit(c, { id: "fixture-third", title: "Third", owner: "human:test" });
+  assert.ok(discover(ws).has("fixture-third"));
+  assert.throws(() => newCorpusDir(ws, "/tmp/elsewhere"), /outside the workspace/);
+  assert.throws(() => newCorpusDir(ws, "c"), /already holds/);
+  // records written by the second corpus land in the second corpus
+  const r = T.claimMint(resolveCorpus(ws, "fixture-second"), { id: "second-claim", title: "A claim in the second corpus", epistemic_kind: "commitment" });
+  assert.match(r.wrote![0]!, /^claims\/second-claim\.md$/);
+  assert.ok(existsSync(join(root, "b", "claims", "second-claim.md")));
+  assert.ok(!existsSync(join(root, "a", "claims", "second-claim.md")));
+});
