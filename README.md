@@ -167,7 +167,6 @@ checks it.
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | How do I report a defect, propose a capability, or change the code? The findings pipeline, the backlog's basis and trigger discipline, and the gates. |
 | [`IMPLEMENTATIONS.md`](IMPLEMENTATIONS.md) | Who has built to this? The maintained implementations (none yet but the reference), and eleven cold trials that were built from the specification alone to test it. |
 | [`CHANGELOG.md`](CHANGELOG.md) | What changed, and when. |
-| [`LAYOUT.md`](LAYOUT.md) | What lives where, and how a new kind of thing is admitted. |
 | [`tools/`](tools/) | The style lint the specification holds itself to. |
 
 ## Licence

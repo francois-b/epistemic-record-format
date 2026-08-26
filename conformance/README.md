@@ -154,8 +154,8 @@ run `npm install` here against the `package.json` in this directory.
 ## Adoptions
 
 Cases that entered this suite from an evaluation rather than from its
-authors, with the date and the reason. `LAYOUT.md` requires the record:
-adoption is a decision, not a file copy.
+authors, with the date and the reason. The record is required: adoption
+is a decision, not a file copy.
 
 **2026-08-25, from the independent trials** (`reviews/2026-08-25-independent-trials/`).
 An agent that could not see this suite wrote fixtures against `SPEC.md`
