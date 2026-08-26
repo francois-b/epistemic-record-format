@@ -37,7 +37,10 @@ widening was unlogged and now has an entry.
 
 **4. There is no git remote.** The repository has never been pushed. The
 author creates the public repository and pushes; nothing in this repository
-does that on its own.
+does that on its own. The history was rewritten on 2026-08-25 before any
+push: build artifacts and every private reference removed from all 109
+commits, 82 MB to 2.8 MB, the full pre-rewrite history kept in a bundle
+outside the repository.
 
 ## Worth doing first, cheaply
 
@@ -92,8 +95,8 @@ a JSON Schema and a SQL binding is drafted from the relational trial.
 
 1. ~~Rule `F-003`.~~ Done.
 2. ~~Choose the licence.~~ Done.
-3. Add the spec-to-types gate; settle `F-004`; normalize the example actor ids.
-4. Rewrite the README's Status section around what the trials found (see below).
+3. ~~Add the spec-to-types gate.~~ Done. `F-004` and the actor ids remain open, non-blocking.
+4. ~~Rewrite the README's Status section.~~ Done.
 5. ~~Cut `## 0.9.0` in the changelog.~~ Done.
 6. Tag `v0.9.0`. Create the public repository. Push.
 

@@ -8,9 +8,18 @@ This is version 0.9 (draft, August 2026), extracted from a working practice
 rather than designed in advance: roughly 740 audited atoms and 300 claims
 across seven corpora preceded the specification, and a pilot
 ran the records on a third-party substrate before it was written.
-It is numbered below 1.0 deliberately: the specification is complete and
-internally verified, and 1.0 waits on stress testing in real use beyond
-its author's practice.
+It is numbered below 1.0 deliberately. On 2026-08-25 it was tested by
+ten independent trials that read the specification and nothing else: six
+cold implementations in Python, Rust, SQL, Go, Haskell and Swift, a
+protobuf schema exercise, two authoring trials (one of 71 sources, 151
+atoms and 53 claims), and an adversarial fixture set. They found defects
+in the reference implementation within the hour, a hole in the quote check
+that let a fabricated quotation pass, a requirement that could not be
+implemented as written, and two that contradicted each other. Every one was
+ruled and pinned with a conformance case the same day; the record is in
+`reviews/`, `docs/findings/` and `CHANGELOG.md`. What remains open is
+published in `docs/backlog/` with a priority and a verification on each
+entry. 1.0 waits on implementations other than the author's.
 Requirement ids are a flat sequence, stable from this version on:
 insertions append, and a retired id is never reused. Feedback is invited; the
 intended reading is implementation, or a requirement-by-requirement diff

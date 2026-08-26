@@ -11,7 +11,7 @@ Seven requirements were rewritten in response to the post-ruling trials
 (`ERF-3`, `31`, `41`, `43`, `51`, `52`, `65`, plus the Validator class and
 section 7's bindings framing), each ruled, implemented and fixtured by one
 hand. These two trials read `SPEC-as-tried.md` and `BINDING-as-tried.md`,
-snapshots at commit `a1e14f8`, under the purity boundary, and were asked one
+snapshots taken at commit `69db400` (the commit that added the post-ruling trial sources; its pre-rewrite hash was amended away and is not in any history), under the purity boundary, and were asked one
 narrow question: does the new text determine one implementation, or still
 admit several? Each was also told to attack the corrected quote check.
 

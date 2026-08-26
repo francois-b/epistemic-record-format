@@ -11,7 +11,7 @@ Nine requirements were rewritten on 2026-08-25 (`ERF-3`, `14`, `31`, `34`,
 `35`, `43`, `51`, `54`, `55`), each ruled, implemented and fixtured by one
 hand. The fixtures encoded the author's reading of the author's ruling,
 which is the self-testing trap the independent trials exist to break. These
-ran against `SPEC-as-tried.md`, a snapshot at commit `c6535c9`, under the
+ran against `SPEC-as-tried.md`, a snapshot at commit `64b0921` (`c6535c9` before the 2026-08-25 history rewrite that removed build artifacts and private references), under the
 same purity boundary as the morning's trials: the specification and nothing
 else in the repository.
 
