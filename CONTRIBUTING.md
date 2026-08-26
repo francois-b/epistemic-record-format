@@ -67,7 +67,7 @@ message. Adding a requirement means adding a row to
 ## Licensing of contributions
 
 Two licences, split the way the repository is. Prose (`SPEC.md`, `bindings/`,
-`docs/`, `examples/`, `reviews/`, `CHANGELOG.md`, `LAYOUT.md`, this file, and
+`docs/`, `examples/`, `reviews/`, `CHANGELOG.md`, this file, and
 the fixture corpora and case tables under `conformance/`) is contributed under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), the text in
 [`LICENSE`](LICENSE). Code (`viewer/`, `tools/`, `types/`, and the runner and

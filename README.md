@@ -176,7 +176,7 @@ things.
 
 **The specification and prose** are under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): `SPEC.md`, this
-file, `CHANGELOG.md`, `LAYOUT.md`, `docs/`, `examples/`, `reviews/`, and the
+file, `CHANGELOG.md`, `docs/`, `examples/`, `reviews/`, and the
 fixture corpora and case tables under `conformance/`. Full text in
 [`LICENSE`](LICENSE). Use it, quote it, implement it, fork it; attribution
 is the only condition. **An implementation is not a derivative work of the
