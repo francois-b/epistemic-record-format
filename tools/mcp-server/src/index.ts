@@ -18,7 +18,7 @@ import { openWorkspace, resolveCorpus, useCorpus, newCorpusDir, describe, discov
 import * as T from "./tools.ts";
 import { readFileSync } from "node:fs";
 
-const INSTRUCTIONS = `This server holds Epistemic Record Format corpora: research recorded so it can be checked later. One corpus is active at a time (erf_corpus_list, erf_corpus_use); every write names the corpus it went to, so check it. Discover with any search you like, but read every page you might cite through erf_source_add: it holds the bytes, digests them and registers the source, and nothing can be cited that was not captured this way. Log each search with erf_search_log at the moment you run it, not afterwards. Mint atoms only with verbatim quotes; the server checks each one against the held text and refuses paraphrase. Claims are typed by what would settle them: observation (data or research), argument (reasoning over premises), commitment (the author's decision), bet (the world will settle it). Propose; the user rules; never write a record the user has not confirmed. Run erf_corpus_check when asked where things stand.`;
+const INSTRUCTIONS = `This server holds Epistemic Record Format corpora: research recorded so it can be checked later. One corpus is active at a time (erf_corpus_list, erf_corpus_use); every write names the corpus it went to, so check it. Discover with any search you like, but read every page you might cite through erf_source_add: it holds the bytes, digests them and registers the source, and nothing can be cited that was not captured this way. Log each search with erf_search_log at the moment you run it, not afterwards. Mint atoms only with verbatim quotes; the server checks each one against the held text and refuses paraphrase. Claims are typed by what would settle them: observation (data or research), argument (reasoning over premises), commitment (the author's decision), bet (the world will settle it). An edge goes on the claim that assumes or supports, pointing at the other; write no edge the user did not ask for. Log a search before you capture what it found, and give as_of_date at the source's own precision (the date the source speaks as of, not the day you fetched it). Propose; the user rules; never write a record the user has not confirmed. Run erf_corpus_check when asked where things stand.`;
 
 function args(): { roots: string[]; agent: string; fetch: boolean; commit: boolean } {
   const a = process.argv.slice(2);
@@ -52,7 +52,8 @@ export function buildServer(ws: Workspace): McpServer {
   const server = new McpServer({ name: "erf-mcp", version: "0.2.0" }, { instructions: INSTRUCTIONS });
   const corpusArg = z.string().optional().describe("corpus id; defaults to the active corpus");
   const ids = z.array(z.string()).optional();
-  const edges = z.array(z.object({ to: z.string(), relation: z.enum(["supports", "assumes", "decomposes-into", "conflicts-with"]) })).optional();
+  const edges = z.array(z.object({ to: z.string(), relation: z.enum(["supports", "assumes", "decomposes-into", "conflicts-with"]) })).optional()
+    .describe("Edges are written on the claim that does the assuming or supporting, pointing at the other: an edge {to: B, relation: assumes} on claim A says A rests on B as a premise; {to: B, relation: supports} says A is evidence-like reasoning for B. Never write the mirror on B. Only add an edge the user asked for or confirmed.");
 
   /** Run a tool on the corpus a call addresses; the result is prefixed with the corpus id. */
   const on = <A extends { corpus?: string }>(tool: string, fn: (c: ReturnType<typeof resolveCorpus>, a: A) => T.Result | Promise<T.Result>) =>
