@@ -20,8 +20,9 @@ deliberately does not do is `docs/purpose.md`, what was ruled out is
 data model, [`erf.schema.json`](erf.schema.json) (section 3); a binding
 document, for any corpus exchanged in that binding
 ([`bindings/yaml-markdown.md`](bindings/yaml-markdown.md) today); and the
-two conformance case files `ERF-51` names, which fix the exact behaviour
-of the quote check where prose cannot. Everything else in this repository,
+two case files beside this document that `ERF-51` names, each line of
+which is a requirement stated as data: an input and the verdict a
+conforming implementation MUST return. Everything else in this repository,
 the reference implementation, the fixtures, the type rendering, the trials
 and the history, is an instrument or a record and binds nothing.
 
@@ -950,10 +951,10 @@ checks the relations no type can see.
   A validator therefore never converts. Facing a normalized text that is not text or
   markdown it MUST report the check as unavailable rather than pass or fail
   it, exactly as it does for a text it does not hold. The prose above
-  names each transformation; the conformance case files
-  (`conformance/cases/normalization.txt` and
-  `conformance/cases/quote-check.yaml`, this repository) are normative for
-  its exact behavior: where a reading of the prose and a case disagree, the
+  names each transformation; the case files beside this document,
+  [`erf-cases-normalization.txt`](erf-cases-normalization.txt) and
+  [`erf-cases-quote-check.txt`](erf-cases-quote-check.txt), are normative
+  for its exact behavior: where a reading of the prose and a case disagree, the
   case governs, and a conforming implementation reproduces every pair.
 - **ERF-52** Only the exact marker `[...]` MUST be treated as an
   omission, and it is the only wildcard; a bare `...` or `…` is a literal

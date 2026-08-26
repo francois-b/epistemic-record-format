@@ -1,0 +1,137 @@
+# ERF-50 and ERF-52: the mechanical quote check. Normative (ERF-51).
+#
+# One case per record: a `#` line naming it, optional `#` note lines, then
+# REQUIREMENT <TAB> EXPECT <TAB> QUOTE <TAB> CAPTURE, where EXPECT is pass,
+# fail or uncheckable and CAPTURE is <none> where no normalized text is held.
+# \n, \t and \\ are escapes in QUOTE and CAPTURE; nothing else is.
+#
+# The check splits the quote on [...] BEFORE normalizing, normalizes each
+# span, and requires every non-empty span to occur in the normalized
+# capture in order, without overlap, and as whole words (ERF-52).
+#
+# A failing case is a finding about the implementation. Do not edit an
+# expectation to make a test pass. The cases marked F-016 are the attack
+# suite: quotations a source never said, which every implementation MUST
+# fail (conformance/README.md).
+
+# a verbatim quote occurs in its capture
+ERF-50	pass	An entity is a physical, digital, conceptual, or other kind of thing.	Preamble. An entity is a physical, digital, conceptual, or other kind of thing. More text follows.
+
+# a quote the capture does not contain fails
+ERF-50	fail	the study found no effect	the study found a small positive effect in the treated group
+
+# an elision marker spans omitted material
+ERF-52	pass	The study found [...] no effect on retention.	The study found, after controlling for tenure and role, no effect on retention.
+
+# spans must occur in order
+#   Both spans are present in the capture but in the opposite order, so the quote misrepresents the source's sequence and must fail.
+ERF-52	fail	no effect on retention [...] The study found	The study found, after controls, no effect on retention.
+
+# spans must not overlap
+#   The second span can only be satisfied by re-reading text the first span already consumed, which would let one occurrence stand for two.
+ERF-52	fail	the same words [...] the same words	prefix the same words suffix
+
+# a bare ellipsis is literal, not a wildcard
+#   Reserved for dots the source itself contains (ERF-6). Treating it as a wildcard let a quote pass against text the source never carried, which is the defect this case defends against.
+ERF-52	fail	Wait... what?	Wait, despite the warning, what?
+
+# a bare ellipsis matches when the source really has one
+ERF-52	pass	Wait... what?	He paused. Wait... what? Then he continued.
+
+# a quote of nothing but elisions fails rather than trivially passing
+ERF-52	fail	[...]	any capture at all
+
+# a quote passes only after normalization
+#   The capture italicises a word and wraps a line inside the quoted span. Both differences are ones the author did not introduce, which is what the three surviving steps are for.
+ERF-51	pass	The reported total was 17 units.	The *reported* total\n  was 17 units.
+
+# a capture carrying markdown link syntax no longer passes
+#   Layout and markup repair left the normalization sequence on 2026-08-25 and became a capture-time act under ERF-70. A capture still carrying link syntax inside the quoted span is a capture that was not cleaned, and the check says so rather than guessing.
+ERF-51	fail	The reported total was 17.	The [reported total](https://ex.test/data) was 17.
+
+# a retyped curly apostrophe fails
+#   The sequence folds no typographic characters. An author who retypes rather than copies is guessing at their own evidence, and the failure tells them to copy from the capture. Measured over 160 atoms in three corpora, this newly failed four, and every one was a real transcription divergence the folding had concealed.
+ERF-51	fail	that amount doesn't include leases	that amount doesn’t include leases
+
+# a hyphen at a line break is not joined
+#   Undecidable without knowing the word: classifi-cation is one word, Pre-money is two, and no rule tells them apart. The producer resolves it at capture time; the checker does not guess.
+ERF-51	fail	Premoney valuation	Pre-\nmoney valuation
+
+# case is not folded
+#   Folding case would let a mis-cased quote pass a check whose whole job is fidelity.
+ERF-51	fail	the study found	The Study Found no effect
+
+# a missing capture is uncheckable, neither pass nor fail
+ERF-51	uncheckable	anything	<none>
+
+# an elided quote assembled from word fragments fails
+#   F-008, found by the Go trial. Split-before-normalize plus trim left plain substring containment, so "The cat" matched inside "The catapult" and "sat" matched "sat", in order, without overlap. Spans must occur as whole words.
+ERF-52	fail	The cat[...]sat	The catapult was heavy. Someone eventually sat on the mat beside it.
+
+# a fragment of a longer word fails even without an elision
+#   the same fabrication without the marker; verbatim means whole words.
+ERF-52	fail	cat	The catapult was heavy.
+
+# a span opening on punctuation is unconstrained on that side
+#   the punctuation is the boundary; a quote may begin mid-sentence at a quotation mark or bracket.
+ERF-52	pass	(heavy) it was	The catapult (heavy) it was, and old.
+
+# whole words on both sides of an elision still pass
+ERF-52	pass	The catapult[...]sat on the mat	The catapult was heavy. Someone eventually sat on the mat beside it.
+
+# a number truncated at its decimal point fails
+ERF-52	fail	Revenue fell 12	Revenue fell 12.5 percent this year.
+
+# a number truncated at a thousands separator fails
+ERF-52	fail	the loss reached $1,000	the loss reached $1,000,000 by June.
+
+# a negation dropped at a hyphen fails
+#   the meaning inverts; the hyphen joins two word characters and is word-internal.
+ERF-52	fail	binding, and management did not recommend proceeding	the plan was non-binding, and management did not recommend proceeding
+
+# a possessive cut at the apostrophe fails
+ERF-52	fail	The board	The board's own review found nothing.
+
+# a soft hyphen inside a word is not a boundary
+#   U+00AD is a format character and is removed in step 1, so the word is whole again.
+ERF-51	fail	The cat	The cat­apult was heavy.
+
+# a zero-width space inside a word is not a boundary
+ERF-51	fail	Availability is region	Availability is region​locked in three markets.
+
+# a heading spliced to the paragraph under it fails
+#   the blank line is a paragraph boundary and folds to U+2029.
+ERF-51	fail	Field notes, 1912 The catapult was heavy	# Field notes, 1912\n\nThe catapult was heavy.
+
+# two paragraphs spliced into one sentence fail
+ERF-51	fail	sat on the wreckage. Revenue fell	Someone eventually sat on the wreckage.\n\nRevenue fell 12.5 percent.
+
+# a multiplication folded into a number fails
+#   the star has word characters on both sides and stays; `34` is a number the source never held.
+ERF-51	fail	34 reviewer-hours	It took 3*4 reviewer-hours.
+
+# an identifier with its underscore removed fails
+ERF-51	fail	MAXLEN	The constant MAX_LEN bounds it.
+
+# emphasis markers still fold away
+ERF-51	pass	it was, however, heavy	it was, *however*, heavy
+
+# a quote ending on a whole number before a period passes
+ERF-52	pass	fell 12.5 percent	Revenue fell 12.5 percent. Then it rose.
+
+# a quote holding the same paragraph break passes
+ERF-51	pass	sat on the wreckage.\n\nRevenue fell	Someone eventually sat on the wreckage.\n\nRevenue fell 12.5 percent.
+
+# a non-breaking space and an ordinary one are one whitespace
+ERF-51	pass	twelve percent	It fell twelve percent.
+
+# an elision marker is not a boundary; the text beside the span decides
+#   found by the Rust trial; the natural implementation splits on the marker and forgets the quote's edge.
+ERF-52	fail	[...]binding, and management did not recommend	the plan was non-binding, and management did not recommend proceeding
+
+# a run of strong-emphasis markers folds as one delimiter
+ERF-51	pass	the debit side	the **debit** side
+
+# a quote copied from a rendered bold heading that ends in a full stop passes
+#   F-018, from the essay corpus; flanking on word characters left the closing run in the text.
+ERF-51	pass	Epistemic types for text. Mainstream tools file text by subject	- **Epistemic types for text.** Mainstream tools file text by subject, never by kind.

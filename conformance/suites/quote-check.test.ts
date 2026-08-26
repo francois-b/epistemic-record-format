@@ -9,11 +9,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
-import yaml from "js-yaml";
 import type { Atom } from "../../types/erf.ts";
 import { quoteCheck } from "../../viewer/compute.ts";
-import { CASES } from "../paths.ts";
+import { QUOTE_CASES } from "../paths.ts";
 
 interface QuoteCase {
   name: string; requirement: string; note?: string;
@@ -21,8 +19,19 @@ interface QuoteCase {
 }
 
 export function loadQuoteCases(): QuoteCase[] {
-  const doc = yaml.load(readFileSync(join(CASES, "quote-check.yaml"), "utf8")) as { cases: QuoteCase[] };
-  return doc.cases;
+  // Tab-separated text beside SPEC.md (ERF-51): REQUIREMENT, EXPECT, QUOTE,
+  // CAPTURE, with \n \t \\ escapes and <none> for a capture not held. The
+  // preceding `#` line names the case.
+  const unesc = (s: string) => s.replace(/\\(n|t|\\)/g, (_m, c: string) => (c === "n" ? "\n" : c === "t" ? "\t" : "\\"));
+  const cases: QuoteCase[] = [];
+  let name = "";
+  for (const line of readFileSync(QUOTE_CASES, "utf8").split("\n")) {
+    if (line.startsWith("#")) { const t = line.slice(1).trim(); if (t && !t.startsWith(" ") && !line.startsWith("#   ")) name = t; continue; }
+    if (!line.trim()) continue;
+    const [requirement, expect, quote, capture] = line.split("\t");
+    cases.push({ name, requirement: requirement!, quote: unesc(quote ?? ""), capture: capture === "<none>" ? null : unesc(capture ?? ""), expect: expect as QuoteCase["expect"] });
+  }
+  return cases;
 }
 
 function atomWith(quote: string): Atom {

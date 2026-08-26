@@ -1,4 +1,4 @@
-# ERF-51 normalization conformance cases.
+# ERF-51 normalization cases. Normative (ERF-51).
 #
 # Format, after the model of Unicode's NormalizationTest.txt: one case per
 # line, RAW <TAB> EXPECTED. Blank lines and lines opening with # are ignored.

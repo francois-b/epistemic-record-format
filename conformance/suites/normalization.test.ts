@@ -1,7 +1,7 @@
 /**
  * ERF-51: the normalization sequence.
  *
- * Cases live in `cases/normalization.txt` as raw/expected pairs, after the
+ * Cases live in `erf-cases-normalization.txt` beside SPEC.md, normative, as raw/expected pairs, after the
  * model of Unicode's normalization conformance files: a plain table any
  * implementation in any language can run, not a test bound to this codebase.
  */
@@ -10,12 +10,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { normalizeForCheck } from "../../viewer/compute.ts";
-import { CASES } from "../paths.ts";
+import { NORMALIZATION_CASES } from "../paths.ts";
 
 interface Case { line: number; raw: string; expected: string }
 
 export function loadNormalizationCases(): Case[] {
-  const text = readFileSync(join(CASES, "normalization.txt"), "utf8");
+  const text = readFileSync(NORMALIZATION_CASES, "utf8");
   const out: Case[] = [];
   text.split("\n").forEach((ln, i) => {
     if (!ln.trim() || ln.startsWith("#")) return;

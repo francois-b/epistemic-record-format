@@ -21,6 +21,9 @@ these changes what conformance means.
 
 - `SPEC.md` — the specification: the obligations on acts, and the rules over more than one record
 - `erf.schema.json` — the data model, JSON Schema 2020-12, normative
+- `erf-cases-normalization.txt`, `erf-cases-quote-check.txt` — the quote
+  check's normative case files (`ERF-51`): each line an input and the
+  verdict a conforming implementation must return
 - `bindings/` — one document per wire, each normative for any corpus
   exchanged in it; `bindings/yaml-markdown.md` is the interchange default.
   `SPEC.md` section 7 says what every binding must satisfy
@@ -29,7 +32,7 @@ these changes what conformance means.
 **Instruments.** Permanent, versioned alongside the requirements, aimed at
 a stranger checking their own work.
 
-- `conformance/` — the conformance suite: cases, fixtures, and a map from
+- `conformance/` — the conformance suite: fixtures, the disposition cases, and a map from
   every requirement to what defends it
 - `tools/` — checks this repository holds itself to
 - `viewer/` — the reference consumer, one implementation of reading a corpus

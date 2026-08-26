@@ -32,7 +32,7 @@ cannot, this is one person's tooling with a specification attached.
 
 ## The attack suite
 
-`cases/quote-check.yaml` carries, under the heading marked F-016, the
+`erf-cases-quote-check.txt`, beside `SPEC.md` and normative, carries under the cases marked F-016 the
 quotations a source never said that once passed the quote check: a number
 cut at its decimal point, a negation dropped at a hyphen, a word halved at
 a soft hyphen, two paragraphs spliced into one sentence, `3*4` read as
