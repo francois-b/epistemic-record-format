@@ -206,14 +206,21 @@ export function normalizeForCheck(s: string): string {
     //    they were legal places to cut a word in half (F-016).
     .normalize("NFC")
     .replace(/\p{Cf}/gu, "")
-    // 2. A marker with a word character on exactly one side is a flanking
-    //    delimiter and goes (`*however*`); with word characters on both
-    //    sides (`MAX_LEN`, `3*4`) or neither (`a * b`, a footnote star) it
-    //    is text and stays. CommonMark's own rule, approximated (F-016).
+    // 2. CommonMark's flanking rule, one pass. A run is left-flanking when
+    //    the next character is not whitespace and is either not punctuation
+    //    or preceded by whitespace or punctuation; right-flanking is the
+    //    mirror. A run that is exactly one of the two is a delimiter and
+    //    goes (`*however*,` and `**text.**` both fold); a run that is both
+    //    (`MAX_LEN`, `3*4`) or neither (`a * b`) is text and stays.
+    //    Approximating this twice, on word characters and then on
+    //    whitespace, each failed an honest quote (F-016, F-018).
     .replace(/([*_`])\1*/gu, (m, _c, at: number, str: string) => {
-      const l = /[\p{L}\p{N}\p{M}]/u.test(str[at - 1] ?? "");
-      const r = /[\p{L}\p{N}\p{M}]/u.test(str[at + m.length] ?? "");
-      return l !== r ? "" : m;
+      const prev = str[at - 1] ?? "", next = str[at + m.length] ?? "";
+      const ws = (ch: string) => ch === "" || /\s/u.test(ch);
+      const punct = (ch: string) => /[\p{P}\p{S}]/u.test(ch);
+      const left = !ws(next) && (!punct(next) || ws(prev) || punct(prev));
+      const right = !ws(prev) && (!punct(prev) || ws(next) || punct(next));
+      return left !== right ? "" : m;
     })
     // 3. Whitespace (Unicode White_Space) runs to one space, except a run
     //    holding a blank line, which is a paragraph boundary and folds to

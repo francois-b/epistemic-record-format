@@ -891,11 +891,14 @@ checks the relations no type can see.
 
   1. Unicode NFC, then remove every format character (Unicode General
      Category `Cf`: the soft hyphen, the zero-width space, the joiners).
-  2. Remove a run of one marker, `*`, `_` or `` ` `` repeated, that has
-     a word character on exactly one side of the run; keep a run that has
-     word characters on both sides (`MAX_LEN`, `3*4`) or on neither
-     (`a * b`, a lone footnote star). One pass, decided against the text
-     as it entered the step: `**bold**` folds to `bold`.
+  2. Remove a run of one marker, `*`, `_` or `` ` `` repeated, that is
+     left-flanking or right-flanking but not both, in CommonMark's sense:
+     left-flanking when the next character is not whitespace and is
+     either not punctuation or preceded by whitespace or punctuation;
+     right-flanking is the mirror. A run that is both (`MAX_LEN`, `3*4`)
+     or neither (`a * b`) is text and stays. One pass, decided against
+     the text as it entered the step: `**bold**`, `*however*,` and
+     `**text.** Next` all fold.
   3. Collapse each whitespace run (Unicode `White_Space`) to a single
      space, except a run holding a blank line, which is a paragraph
      boundary and collapses to U+2029 PARAGRAPH SEPARATOR; then trim.
@@ -913,8 +916,10 @@ checks the relations no type can see.
   (`ERF-70`). Format characters because they are invisible and
   untypeable, and each one was a place to cut a word in half. The marker
   rule because the normalized text is markdown and the quote is the prose
-  inside it; keeping a marker between two word characters stops `3*4`
-  folding to `34`. The paragraph boundary because splicing two paragraphs,
+  inside it, and CommonMark's flanking rule is what decides which marker
+  is markup: it keeps `3*4` from folding to `34` and lets a bold run that
+  ends in punctuation fold, which an honest quote copied from a rendered
+  page depends on. Two simpler approximations each failed such a quote. The paragraph boundary because splicing two paragraphs,
   or a heading to its prose, says the source spoke them in one breath.
 
 > *Note (non-normative):* an earlier sequence had seventeen steps, folding

@@ -1,0 +1,5 @@
+type: corpus
+id: fixture-emphasis-in-scalar
+title: "A quote carrying emphasis markers inside a quoted scalar"
+spec_version: "0.9.0"
+classification: public

@@ -32,7 +32,10 @@ MAX_LEN keeps its underscore, 3*4 its star	MAX_LEN keeps its underscore, 3*4 its
 # A marker between two word characters stays even where CommonMark would
 # pair it (a*b*c is emphasis there). The approximation errs toward keeping
 # text, which is the safe direction for a fidelity check.
-a footnote star 40%* stays, a * b stays	a footnote star 40%* stays, a * b stays
+**Epistemic types for text.** Mainstream tools	Epistemic types for text. Mainstream tools
+an emphasized full stop 12*.*5 folds	an emphasized full stop 12.5 folds
+a footnote star after 40%* goes, a * b stays	a footnote star after 40% goes, a * b stays
+*however*, with a comma	however, with a comma
 a _stressed_ word	a stressed word
 inline `code` here	inline code here
 **bold** and __also bold__	bold and also bold

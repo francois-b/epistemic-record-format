@@ -172,7 +172,11 @@ function checkSchema(instance: unknown, record: string, findings: ConformanceFin
 }
 
 /** `ERF-66`: a record is flat and declines anchors, aliases, and tags. */
-const YAML_GRAPH = /(^|\s)(&[A-Za-z0-9_-]+|\*[A-Za-z0-9_-]+|!![A-Za-z]+)(\s|$)/;
+// An anchor, alias or tag can only open a value: after `key:` or `- `, or
+// at the start of a flow item. Matching them anywhere took `*decision log*`
+// inside a quoted scalar for an alias and rejected an honest atom (found by
+// the Rust differential run, which reads the parser's events instead).
+const YAML_GRAPH = /(^\s*(?:[\w.-]+:|-)\s+|[\[{,]\s*)(&[A-Za-z0-9_-]+|\*[A-Za-z0-9_-]+|!![A-Za-z]+)(\s|$|[,\]}])/m;
 
 function splitFrontmatter(text: string): { data: Record<string, unknown>; body: string } {
   const m = FM.exec(text);

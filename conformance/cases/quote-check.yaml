@@ -243,3 +243,9 @@ cases:
     quote: "the debit side"
     capture: "the **debit** side"
     expect: pass
+  - name: a quote copied from a rendered bold heading that ends in a full stop passes
+    requirement: ERF-51
+    note: F-018, from the essay corpus; flanking on word characters left the closing run in the text.
+    quote: "Epistemic types for text. Mainstream tools file text by subject"
+    capture: "- **Epistemic types for text.** Mainstream tools file text by subject, never by kind."
+    expect: pass
