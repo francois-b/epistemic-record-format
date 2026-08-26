@@ -69,8 +69,8 @@ export async function captureUrl(c: Corpus, id: string, url: string): Promise<Ca
   const bytes = Buffer.from(await res.arrayBuffer());
   const ctype = res.headers.get("content-type") ?? "";
   const isHtml = /html/i.test(ctype) || /^\s*<!doctype html|^\s*<html/i.test(bytes.subarray(0, 512).toString("utf8"));
-  const ext = isHtml ? ".html" : /markdown/i.test(ctype) ? ".md" : /text\/plain/i.test(ctype) ? ".txt" : extname(new URL(url).pathname) || ".bin";
-  if (!isHtml && ext === ".bin") throw new Refusal(`${url} is ${ctype || "an unknown type"}; v0 captures HTML, markdown and plain text only`);
+  const ext = isHtml ? ".html" : /markdown/i.test(ctype) ? ".md" : /text\/plain/i.test(ctype) ? ".txt" : null;
+  if (!ext) throw new Refusal(`${url} is ${ctype || "an unknown type"}; v0 captures HTML, markdown and plain text only (a PDF would be held as binary and no quote could ever check against it). For a paper, capture its HTML edition or an abstract page`);
   return finish(c, id, ext, bytes, isHtml, url);
 }
 
