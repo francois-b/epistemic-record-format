@@ -13,6 +13,7 @@ import {
 } from "./corpus.ts";
 import { captureUrl, capturePath } from "./capture.ts";
 import { renderSite } from "../../viewer/erf-view.ts";
+import { renderIndex, renderSources, renderHealth, renderNarrative, renderClaim, renderAtom, renderCapture, renderSurvey, setSiteLinks } from "../../viewer/render.ts";
 import { splitDocument } from "../../../validator/yaml-markdown/typescript/corpus.ts";
 import {
   quoteCheck, normalizeForCheck, disposition, unbacked, stoodOn, danglingRefs, brokenAnchors,
@@ -326,6 +327,36 @@ export function renderSiteTool(c: Corpus, a: { out?: string }): Result {
     if (!cur.split("\n").some((l) => l.trim() === line)) writeFileSync(gi, cur.replace(/\n*$/, "\n") + `\n# rendered by erf_render_site; derived, rebuilt on demand\n${line}\n`, "utf8");
   }
   return { text: `rendered ${r.pages} pages for ${r.corpus} into ${rel}/ (${r.atoms} atoms, ${r.claims} claims, ${r.surveys} surveys${r.findings ? `; ${r.findings} records diverge, see health.html` : ""})\nopen: ${join(outDir, "index.html")}` };
+}
+
+/** One viewer page, body only, for the app: `index`, `sources`, `health`, `claim:<id>`, `atom:<id>`, `capture:<id>`, `survey:<id>`, `narrative:<slug>`. */
+export interface ViewPage { page: string; title: string; html: string; corpus: string }
+
+export function viewPage(c: Corpus & { id?: string }, a: { page?: string }): ViewPage {
+  const decl = readDeclaration(c);
+  const l = load(c);
+  const src = readSourceList(c);
+  const captureText = (atomId: string): string | null => {
+    const s = src[l.atoms.get(atomId)?.source ?? ""];
+    return s?.normalized && existsSync(join(c.dir, s.normalized)) ? readFileSync(join(c.dir, s.normalized), "utf8") : null;
+  };
+  setSiteLinks([]);
+  const page = (a.page ?? "index").trim();
+  const [kind, id] = page.includes(":") ? [page.slice(0, page.indexOf(":")), page.slice(page.indexOf(":") + 1)] : [page, ""];
+  let full: string, title: string;
+  switch (kind) {
+    case "index": full = renderIndex(l); title = String(decl.title); break;
+    case "sources": full = renderSources(l); title = "sources"; break;
+    case "health": full = renderHealth(l, captureText); title = "health"; break;
+    case "claim": { const cl = l.claims.get(id); if (!cl) throw new Refusal(`no claim ${id}`); full = renderClaim(cl, l); title = cl.title; break; }
+    case "atom": { const at = l.atoms.get(id); if (!at) throw new Refusal(`no atom ${id}`); full = renderAtom(at, l, claimsUsingAtom(l).get(id) ?? [], captureText(id)); title = `atom ${id}`; break; }
+    case "capture": { const at = l.atoms.get(id); if (!at) throw new Refusal(`no atom ${id}`); full = renderCapture(at, l, captureText(id)); title = `capture for ${id}`; break; }
+    case "survey": { const sv = l.surveys.get(id); if (!sv) throw new Refusal(`no survey ${id}`); full = renderSurvey(sv, l); title = sv.title; break; }
+    case "narrative": { const n = l.narratives.find((x) => x.slug === id) ?? (id ? undefined : l.narratives[0]); if (!n) throw new Refusal(`no narrative ${id}`); full = renderNarrative(n, l); title = n.title; break; }
+    default: throw new Refusal(`unknown page ${page}; use index, sources, health, claim:<id>, atom:<id>, capture:<id>, survey:<id>, narrative:<slug>`);
+  }
+  const m = /<main>([\s\S]*)<\/main>/.exec(full);
+  return { page, title, html: `<main>${m?.[1] ?? full}</main>`, corpus: String(decl.id) };
 }
 
 // ---------- reading ----------

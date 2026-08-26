@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ERF</title>
+<style>
+/*STYLE*/
+/* the app's own chrome, on top of the viewer's stylesheet */
+html, body { margin: 0; height: 100%; }
+body { display: flex; flex-direction: column; min-height: 320px; }
+nav.appbar { display: flex; gap: 1rem; align-items: baseline; padding: .5rem .9rem; border-bottom: 1px solid rgba(127,127,127,.35); font-size: .9rem; position: sticky; top: 0; background: inherit; }
+nav.appbar a { cursor: pointer; text-decoration: none; }
+nav.appbar #crumb { margin-left: auto; opacity: .75; font-style: italic; }
+nav.appbar #status { opacity: .6; }
+#main { flex: 1; overflow: auto; padding: 0 .9rem 1rem; }
+#main main { max-width: none; }
+</style>
+</head>
+<body>
+<nav class="appbar"><a href="index.html">corpus</a><a href="sources.html">sources</a><a href="health.html">health</a><span id="status"></span><span id="crumb"></span></nav>
+<div id="main"><main><p class="gap">Waiting for a page…</p></main></div>
+<script type="module">
+/*SCRIPT*/
+</script>
+</body>
+</html>

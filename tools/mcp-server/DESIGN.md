@@ -73,10 +73,12 @@ wrote. Every refusal names the requirement. Nothing writes a raw file.
 | `erf_survey_record(id, title, notable_results?, coverage_bounds, from_log?: date + for, searches?: [...])` | writes the survey; `searches` come from the research log for the given day **and question** (`for`), or from the argument | no acts at all (`ERF-26`); `hits_reported` missing; `from_log` without `for`; no act logged for `for` |
 | `erf_narrative_bind(narrative, anchor, claims, replace?: true)` | inserts the `YAMLB-1` marker after the passage ending with `anchor`, `bound-at` today; with `replace`, rewrites the marker already on that passage | anchor not found or found twice; a claim id unresolved |
 | `erf_narrative_check(narrative?)` | unresolved ids, stale bindings, broken anchors, malformed candidates (`ERF-31/32/33`) | never |
+| `erf_render_site(out?)` | runs the reference viewer into `site/` (or `out`) inside the corpus; gitignores it | `out` outside the corpus |
+| `erf_view(page?)` | the viewer's page (index, sources, health, claim:, atom:, capture:, survey:, narrative:) as `structuredContent`, carried by the app | unknown page or id |
 | `erf_source_read(id, find?)` | the source entry and its held normalized text, whole when short, else windows around `find` under the fold | unknown source |
 | `erf_record_read(id)` / `erf_record_list(type?)` | returns a record (or a source) / lists ids and titles | unknown id |
 
-Not in v0: `erf_search` (closed loop), `erf_render_site`, the MCP App,
+Not in v0: `erf_search` (closed loop),
 finding and evidence audits, excerpts (`ERF-69`), PDF extraction, the
 `.mcpb` bundle. Each has a slot; none is needed to run the loop once.
 
@@ -165,3 +167,16 @@ trial.
 - An existing marker quotes its own anchor, so anchor uniqueness must be
   checked over the prose with markers masked, not over the body.
 
+## The app (first stab, 2026-08-26)
+
+One `ui://` resource, `app/template.html` plus `app/main.ts` bundled by
+`scripts/build-app.ts` into `src/app-bundle.generated.ts` (committed; rebuild
+after touching `app/` or the viewer's stylesheet). The app shows the
+reference viewer's pages, body only, inside the host: `erf_view` returns a
+page as `structuredContent`, the host feeds it to the app, and the page's
+own links (`claim-x.html`, `atom-y.html`, `index.html` …) are turned into
+`erf_view` calls back through the host. Read-only by construction: the app
+calls one tool. Non-UI hosts get the page flattened to text. The viewer's
+stylesheet, fonts inlined, is the app's stylesheet, so the site and the app
+are the same views at two distances. Versioned by content hash in the URI,
+since hosts cache the resource.

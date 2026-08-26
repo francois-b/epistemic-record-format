@@ -4,13 +4,17 @@
   "private": true,
   "description": "The Epistemic Record Format as a local MCP server: one corpus folder, gated writes, the reference validator as its oracle.",
   "type": "module",
-  "bin": { "erf-mcp": "./src/index.ts" },
+  "bin": {
+    "erf-mcp": "./src/index.ts"
+  },
   "scripts": {
     "start": "tsx src/index.ts",
     "test": "tsx --test tests/*.test.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build:app": "tsx scripts/build-app.ts"
   },
   "dependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.7.5",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@mozilla/readability": "^0.6.0",
     "js-yaml": "^4.1.0",
@@ -20,6 +24,7 @@
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.0.0",
+    "esbuild": "^0.28.2",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0"
   }

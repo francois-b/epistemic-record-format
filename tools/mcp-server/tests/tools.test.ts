@@ -210,6 +210,19 @@ test("render_site writes the viewer's pages inside the corpus and ignores them i
   assert.throws(() => T.renderSiteTool(c, { out: "../elsewhere" }), /inside the corpus/);
 });
 
+test("view: the viewer's pages, body only, addressed by kind and id", () => {
+  const c = fresh();
+  const idx = T.viewPage(c, {});
+  assert.equal(idx.page, "index"); assert.match(idx.html, /^<main>/); assert.match(idx.html, /claim-/);
+  const cid = [...loadCorpus(c.dir).claims.keys()][0]!;
+  const cl = T.viewPage(c, { page: `claim:${cid}` });
+  assert.match(cl.html, /atom-/); assert.doesNotMatch(cl.html, /<html/);
+  assert.match(T.viewPage(c, { page: "narrative" }).html, /<main>/);
+  assert.match(T.viewPage(c, { page: "health" }).html, /<main>/);
+  assert.throws(() => T.viewPage(c, { page: "claim:nope" }), /no claim nope/);
+  assert.throws(() => T.viewPage(c, { page: "bogus" }), /unknown page/);
+});
+
 test("record_read and record_list", () => {
   const c = fresh();
   assert.match(T.recordList(c, { type: "claim" }).text, /^claim /m);

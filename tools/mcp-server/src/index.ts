@@ -12,6 +12,9 @@
  */
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { registerAppResource, registerAppTool, RESOURCE_MIME_TYPE } from "@modelcontextprotocol/ext-apps/server";
+import { createHash } from "node:crypto";
+import { APP_HTML } from "./app-bundle.generated.ts";
 import { z } from "zod";
 import { openCorpus, Refusal, recordFiles } from "./corpus.ts";
 import { openWorkspace, resolveCorpus, useCorpus, newCorpusDir, describe, discover, type Workspace } from "./workspace.ts";
@@ -93,6 +96,28 @@ export function buildServer(ws: Workspace): McpServer {
   server.registerTool("erf_source_read", { title: "Read a held source", description: "A source's entry and its held normalized text, so a verbatim quote can be chosen from the text the quote check folds. Give find to see windows around a phrase; without it, the opening of the text.", inputSchema: { corpus: corpusArg, id: z.string(), find: z.string().optional(), window: z.number().optional() } }, on("erf_source_read", (c, a) => T.sourceRead(c, a)));
   server.registerTool("erf_record_read", { title: "Read a record", description: "The record file for an id, as it stands.", inputSchema: { corpus: corpusArg, id: z.string() } }, on("erf_record_read", (c, a) => T.recordRead(c, a)));
   server.registerTool("erf_record_list", { title: "List records", description: "Ids, kinds, dispositions and titles; optionally one type: claim, atom, survey, source, narrative.", inputSchema: { corpus: corpusArg, type: z.string().optional() } }, on("erf_record_list", (c, a) => T.recordList(c, a)));
+
+  // the app: the viewer's pages inside the host. One ui:// resource, versioned by its bytes
+  // (hosts cache by URI), and one tool that carries it. Non-UI hosts get the page as text.
+  const appUri = `ui://erf/app.${createHash("sha256").update(APP_HTML).digest("hex").slice(0, 12)}.html`;
+  registerAppResource(server, "erf-app", appUri, { mimeType: RESOURCE_MIME_TYPE, _meta: { ui: { prefersBorder: true } } }, async () => ({ contents: [{ uri: appUri, mimeType: RESOURCE_MIME_TYPE, text: APP_HTML, _meta: { ui: { prefersBorder: true } } }] }));
+  registerAppTool(server, "erf_view", {
+    title: "View the corpus",
+    description: "Open a page of the corpus in the ERF viewer inside the conversation: the corpus index, a claim with its disposition, evidence and standings, an atom with its quote check, a survey, the narrative with its bound passages, sources, or health. Pages: index, sources, health, claim:<id>, atom:<id>, survey:<id>, narrative:<slug>. Use this when the user wants to see or browse, not when you need data to reason over.",
+    inputSchema: { corpus: corpusArg, page: z.string().optional().describe("index (default), sources, health, claim:<id>, atom:<id>, capture:<id>, survey:<id>, narrative:<slug>") },
+    outputSchema: { page: z.string(), title: z.string(), html: z.string(), corpus: z.string() },
+    annotations: { readOnlyHint: true },
+    _meta: { ui: { resourceUri: appUri } },
+  }, async (a) => {
+    const started = Date.now(); let corpus: string | null = null;
+    try {
+      const c = resolveCorpus(ws, a.corpus); corpus = c.id;
+      const p = T.viewPage(c, a);
+      trace("erf_view", corpus, started, `ok: ${p.page}`);
+      const plain = p.html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 1500);
+      return { content: [{ type: "text" as const, text: `[${c.id}] ${p.title}\n${plain}` }], structuredContent: { ...p } as Record<string, unknown> };
+    } catch (e) { trace("erf_view", corpus, started, outcomeOf(refused(e))); return refused(e); }
+  });
 
   // prompts: judgment scaffolds, read-only
   server.registerPrompt("decompose-passage", { title: "Decompose a passage into claims", description: "Every checkable assertion in a passage, typed by what would settle it.", argsSchema: { passage: z.string() } }, ({ passage }) => ({ messages: [{ role: "user", content: { type: "text", text: `Read this passage and list every assertion a reader could check. For each: a proposed id (lowercase slug), the epistemic kind (observation: data or research would settle it; argument: reasoning over premises; commitment: the author's decision is the backing; bet: the world will settle it), the claim as one sentence stated no stronger than the passage does, what would settle it, and three to six exact words from the passage to anchor on. Merge assertions that are one claim. Do not write anything; present the table for ruling.\n\nPassage:\n${passage}` } }] }));
