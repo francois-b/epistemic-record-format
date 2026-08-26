@@ -2,18 +2,15 @@
 //! `SPEC.md`, `erf.schema.json` and `bindings/yaml-markdown.md` alone.
 
 
-use std::collections::BTreeMap;
 use std::path::PathBuf;
 use std::process::ExitCode;
 
 use clap::Parser as ClapParser;
 
-use erfval::checks::{self, CorpusCtx, Deployment, Strictness};
-use erfval::corpus;
+use erfval::checks;
 use erfval::model::RecordType;
 use erfval::norm::FoldMode;
 use erfval::report::Report;
-use erfval::schema;
 
 #[derive(ClapParser, Debug)]
 #[command(
@@ -56,40 +53,14 @@ fn main() -> ExitCode {
         FoldMode::SeparatorPreserving
     };
 
-    let schemas = match schema::build() {
-        Ok(s) => s,
+    let roots: Vec<&std::path::Path> = cli.roots.iter().map(|p| p.as_path()).collect();
+    let (rep, dep) = match erfval::validate(&roots, mode) {
+        Ok(x) => x,
         Err(e) => {
-            eprintln!("erfval: the embedded data model does not compile: {e}");
+            eprintln!("erfval: {e}");
             return ExitCode::from(2);
         }
     };
-
-    let mut rep = Report::new();
-    let mut corpora = Vec::new();
-    for root in &cli.roots {
-        if !root.is_dir() {
-            eprintln!("erfval: `{}` is not a directory", root.display());
-            return ExitCode::from(2);
-        }
-        let label = root
-            .file_name()
-            .map(|s| s.to_string_lossy().to_string())
-            .unwrap_or_else(|| root.display().to_string());
-        let loaded = corpus::load(root, &mut rep);
-        let index = corpus::index(&loaded);
-        corpora.push(CorpusCtx {
-            root: root.clone(),
-            label,
-            loaded,
-            index,
-            decl_id: None,
-            strictness: Strictness::Known,
-            texts: BTreeMap::new(),
-        });
-    }
-
-    let mut dep = Deployment { corpora, mode };
-    checks::run(&mut dep, &schemas, &mut rep);
 
     print!("{}", rep.render(cli.no_unperformed));
 

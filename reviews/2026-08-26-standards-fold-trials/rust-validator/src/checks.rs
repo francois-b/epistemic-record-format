@@ -34,7 +34,7 @@ pub struct CorpusCtx {
     pub label: String,
     pub loaded: Loaded,
     pub index: Index,
-    pub decl_id: Option<String>,
+    pub decl_ids: Vec<String>,
     pub strictness: Strictness,
     /// Folded normalized text per source id, and whether it was available.
     pub texts: BTreeMap<String, Result<String, String>>,
@@ -114,17 +114,18 @@ const SPDX_SUBSET: &[&str] = &[
     "OGL-UK-3.0", "PDDL-1.0", "ODbL-1.0", "AGPL-3.0-only", "Zlib",
 ];
 
-fn stamp_of(v: Option<&Value>, key: &str) -> Option<Result<Stamp, StampError>> {
-    let o = v?.get(key)?.as_str()?;
-    Some(Stamp::parse(o))
+/// The instant or date inside an `ActorStamp`-shaped field (`ERF-58`: the
+/// event-time key is always `timestamp`).
+fn stamp_at(front: &Value, key: &str) -> Option<Stamp> {
+    Stamp::parse(front.get(key)?.get("timestamp")?.as_str()?).ok()
 }
 
-/// The last change to a record: `last_modified` where it exists, else `created`
-/// (`ERF-48`: "A record never edited since minting correctly carries no
-/// `last_modified` at all").
+/// The last change to a record: `last_modified` where it exists, else the
+/// minting stamp (`ERF-48`: "A record never edited since minting correctly
+/// carries no `last_modified` at all").
 fn last_change(d: &FileDoc) -> Option<Stamp> {
     for k in ["last_modified", "created", "conducted"] {
-        if let Some(Ok(st)) = stamp_of(d.front.get(k).map(|_| &d.front), k) {
+        if let Some(st) = stamp_at(&d.front, k) {
             return Some(st);
         }
     }
@@ -173,14 +174,21 @@ fn declaration(c: &mut CorpusCtx, rep: &mut Report) {
             "no file carries `type: corpus`; a corpus MUST carry exactly one declaration",
         ),
         1 => {}
-        n => rep.violation(
-            "ERF-54",
-            &c.label,
-            format!("{n} files carry `type: corpus`; a validator MUST reject two declarations"),
-        ),
+        n => {
+            rep.violation(
+                "ERF-54",
+                &c.label,
+                format!("{n} files carry `type: corpus`; a validator MUST reject two declarations"),
+            );
+            rep.violation(
+                "ERF-59",
+                &c.label,
+                format!("{n} declarations; a corpus MUST carry exactly one"),
+            );
+        }
     }
     let decl = decls.first().copied();
-    c.decl_id = decl.and_then(|d| d.id()).map(|s| s.to_string());
+    c.decl_ids = decls.iter().filter_map(|d| d.id()).map(|s| s.to_string()).collect();
 
     // ERF-60/ERF-61: read `spec_version` before anything else.
     let sv = decl.and_then(|d| d.str_field("spec_version"));
@@ -241,16 +249,15 @@ fn declaration(c: &mut CorpusCtx, rep: &mut Report) {
                 match d.corpus() {
                     None => rep.violation("ERF-17", &d.rel, "no `corpus` field"),
                     Some(cid) => {
-                        if let Some(decl_id) = &c.decl_id {
-                            if cid != decl_id {
-                                rep.violation(
-                                    "ERF-17",
-                                    &d.rel,
-                                    format!(
-                                        "`corpus: {cid}` names no declared corpus (this corpus declares `{decl_id}`)"
-                                    ),
-                                );
-                            }
+                        if !c.decl_ids.is_empty() && !c.decl_ids.iter().any(|x| x == cid) {
+                            rep.violation(
+                                "ERF-17",
+                                &d.rel,
+                                format!(
+                                    "`corpus: {cid}` names no declared corpus (declared here: {})",
+                                    c.decl_ids.join(", ")
+                                ),
+                            );
                         }
                     }
                 }
@@ -411,6 +418,23 @@ fn schema_layer(c: &mut CorpusCtx, schemas: &Schemas, rep: &mut Report) {
                         &format!("{}{}", d.rel, p),
                         "an extension field on a claim appears to store a state field; the disposition is computed (ERF-41)",
                     );
+                }
+            }
+        }
+
+        // ERF-58: "The event-time key MUST be `timestamp`, everywhere."
+        for stamp_field in ["created", "last_modified", "conducted", "excerpt", "received"] {
+            if let Some(Value::Object(m)) = d.front.get(stamp_field) {
+                if !m.contains_key("timestamp") {
+                    for alt in ["date", "when", "at", "time", "ts", "datetime", "on"] {
+                        if m.contains_key(alt) {
+                            rep.violation(
+                                "ERF-58",
+                                &format!("{}/{stamp_field}", d.rel),
+                                format!("event time is keyed `{alt}`; the event-time key MUST be `timestamp`, everywhere"),
+                            );
+                        }
+                    }
                 }
             }
         }
@@ -917,7 +941,7 @@ fn atoms(c: &CorpusCtx, rep: &mut Report, mode: FoldMode) {
                         // taken by copying matches without it.
                         let raw_ok = {
                             let t2 = norm::fold_without_step2(&raw_text_of(c, src), mode);
-                            norm::quote_check(q, &t2, mode).ok()
+                            norm::quote_check_without_step2(q, &t2, mode).ok()
                         };
                         if !raw_ok {
                             rep.flag(
@@ -1383,21 +1407,8 @@ fn staleness(c: &CorpusCtx, rep: &mut Report) {
             continue;
         }
         // ERF-48.
-        let created = stamp_of(Some(&d.front), "created")
-            .or_else(|| stamp_of(Some(&d.front), "conducted"))
-            .and_then(|r| r.ok())
-            .or_else(|| {
-                d.front
-                    .get("created")
-                    .or_else(|| d.front.get("conducted"))
-                    .and_then(|v| s(v.get("timestamp")))
-                    .and_then(|t| Stamp::parse(t).ok())
-            });
-        let lm = d
-            .front
-            .get("last_modified")
-            .and_then(|v| s(v.get("timestamp")))
-            .and_then(|t| Stamp::parse(t).ok());
+        let created = stamp_at(&d.front, "created").or_else(|| stamp_at(&d.front, "conducted"));
+        let lm = stamp_at(&d.front, "last_modified");
         if let (Some(cr), Some(m)) = (created, lm) {
             if Stamp::not_later_than(&m, &cr) {
                 rep.violation(

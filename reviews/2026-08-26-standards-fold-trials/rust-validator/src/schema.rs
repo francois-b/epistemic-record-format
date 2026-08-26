@@ -68,6 +68,14 @@ pub struct SchemaFinding {
     pub is_unknown_field: bool,
 }
 
+/// The fields that make a file a record. A narrative holding any of them is
+/// being modelled as one (`ERF-34`).
+const RECORD_FURNITURE: &[&str] = &[
+    "id", "standings", "atoms_for", "atoms_against", "surveys", "edges",
+    "evidence_audit", "finding_audit", "epistemic_kind", "source",
+    "source_quality", "quote", "finding", "last_modified",
+];
+
 pub fn validate(schemas: &Schemas, rt: RecordType, instance: &Value) -> Vec<SchemaFinding> {
     let mut out = Vec::new();
     for err in schemas.for_type(rt).iter_errors(instance) {
@@ -89,7 +97,19 @@ pub fn validate(schemas: &Schemas, rt: RecordType, instance: &Value) -> Vec<Sche
             }
             _ => (false, false, String::new()),
         };
-        let req = if is_unknown_field {
+        // A narrative carrying a record's furniture is ERF-34's violation, not
+        // a generic undefined field: "A narrative MUST NOT be modelled as a
+        // record... It has no evidence, no standings and no disposition."
+        let narrative_as_record = rt == RecordType::Narrative
+            && match kind {
+                ValidationErrorKind::AdditionalProperties { unexpected } => {
+                    unexpected.iter().any(|u| RECORD_FURNITURE.contains(&u.as_str()))
+                }
+                _ => false,
+            };
+        let req = if narrative_as_record {
+            "ERF-34"
+        } else if is_unknown_field {
             "ERF-55"
         } else if is_wire_type_error {
             "ERF-65"
@@ -168,6 +188,7 @@ fn req_for(rt: RecordType, segs: &[String], kind: &ValidationErrorKind) -> &'sta
                 if f(2) == "relation" { "ERF-43" } else { "ERF-35" }
             }
             "standings" => match f(2) {
+                "stance" => "ERF-41",
                 "by" => "ERF-21",
                 "why" => "ERF-39",
                 "evidence_at_stance" => "ERF-20",

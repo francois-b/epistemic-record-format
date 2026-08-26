@@ -167,6 +167,15 @@ pub fn spans_of(quote: &str, mode: FoldMode) -> Vec<String> {
     quote.split(ELISION).map(|s| fold(s, mode)).collect()
 }
 
+/// The same split, with step 2 held back on both sides. Used only by the
+/// `ERF-6` copying check.
+pub fn spans_of_without_step2(quote: &str, mode: FoldMode) -> Vec<String> {
+    quote
+        .split(ELISION)
+        .map(|s| fold_without_step2(s, mode))
+        .collect()
+}
+
 /// The word-boundary set of `text` under UAX #29's default rules, with
 /// `ERF-52`'s one stated departure: "a hyphen (`-`, U+2010, U+2011) between two
 /// letters or digits does not break a word".
@@ -220,7 +229,24 @@ fn occurrences(haystack: &str, needle: &str) -> Vec<usize> {
 
 /// `ERF-52` in full, over an already-folded `text`.
 pub fn quote_check(quote: &str, text: &str, mode: FoldMode) -> QuoteVerdict {
-    let spans: Vec<String> = spans_of(quote, mode);
+    quote_check_inner(quote, text, mode, true)
+}
+
+/// `ERF-52` run with step 2 of `ERF-51` held back on both the quote and the
+/// text. This is not a conformance check: it is the `ERF-6` question, "did the
+/// author copy this or retype it?", asked mechanically. A quote taken from the
+/// normalized text by copying matches the source's own code points; one that
+/// only matches after NFC and ignorable-removal came from somewhere else.
+pub fn quote_check_without_step2(quote: &str, text_step13: &str, mode: FoldMode) -> QuoteVerdict {
+    quote_check_inner(quote, text_step13, mode, false)
+}
+
+fn quote_check_inner(quote: &str, text: &str, mode: FoldMode, step2: bool) -> QuoteVerdict {
+    let spans: Vec<String> = if step2 {
+        spans_of(quote, mode)
+    } else {
+        spans_of_without_step2(quote, mode)
+    };
     let non_empty: Vec<(usize, String)> = spans
         .iter()
         .enumerate()

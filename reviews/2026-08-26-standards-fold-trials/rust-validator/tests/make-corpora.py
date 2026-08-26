@@ -468,6 +468,131 @@ and the thinking underneath it drift apart quietly.
     return f
 
 
+
+# ---------------------------------------------------------------------------
+# A corpus that conforms and is worth a person's attention anyway. Section 2:
+# "a corpus carrying flags and no violations conforms."
+# ---------------------------------------------------------------------------
+
+def flag_corpus():
+    f = base_files()
+
+    # ERF-13: an id that is not a mint-time prefix and a sequence number. The
+    # schema's `Id` admits it, so this is a flag and not a violation.
+    f["atoms/opaque.md"] = f["atoms/lg-004.md"].replace(
+        'id: "lg-004"', 'id: "vendor-briefing-quote"')
+    del f["atoms/lg-004.md"]
+    for rel in list(f):
+        if rel.startswith("claims/"):
+            f[rel] = f[rel].replace('"lg-004"', '"vendor-briefing-quote"')
+
+    # ERF-47: an audit older than the last change to what it judged.
+    f["atoms/lg-003.md"] = f["atoms/lg-003.md"].replace(
+        'created: {timestamp: "2026-08-24", by: "agent/claude-fable-5"}',
+        'created: {timestamp: "2026-08-24", by: "agent/claude-fable-5"}\n'
+        'last_modified: {timestamp: "2026-08-26", by: "human:fb"}')
+
+    # ERF-20: a stance with no record of the evidence its ruler faced.
+    f["claims/double-entry-rule-is-1494.md"] = f["claims/double-entry-rule-is-1494.md"].replace(
+        '    evidence_at_stance: {atoms_for: ["lg-001", "lg-002"]}\n', '')
+
+    # ERF-35: a past-state reference that no longer resolves. A permitted act
+    # elsewhere created this, so it is flagged rather than counted a violation.
+    f["claims/annual-close-is-the-control.md"] = f["claims/annual-close-is-the-control.md"].replace(
+        'evidence_at_stance: {atoms_for: ["lg-002"]}',
+        'evidence_at_stance: {atoms_for: ["lg-002", "lg-099"]}', 1)
+
+    # ERF-43: a retired premise, which hollows the argument above it.
+    f["claims/market-will-adopt-record-formats.md"] = f["claims/market-will-adopt-record-formats.md"].replace(
+        'edges:\n  - {to: "annual-close-is-the-control", relation: "conflicts-with"}',
+        'edges:\n  - {to: "annual-close-is-the-control", relation: "supports"}')
+
+    # ERF-26: a category where an instrument belongs.
+    f["surveys/drift-check-tools-2026-08-25.md"] = f["surveys/drift-check-tools-2026-08-25.md"].replace(
+        'tool: "npm search (npm CLI 10.8.2)"', 'tool: "web search"')
+
+    # ERF-32: a narrative binding older than the claim it names.
+    f["claims/no-tool-checks-narrative-drift.md"] = f["claims/no-tool-checks-narrative-drift.md"].replace(
+        'created: {timestamp: "2026-08-22", by: "agent/claude-fable-5"}',
+        'created: {timestamp: "2026-08-22", by: "agent/claude-fable-5"}\n'
+        'last_modified: {timestamp: "2026-08-26", by: "human:fb"}')
+
+    # ERF-31: an anchor the prose no longer contains, the ordinary case of
+    # someone editing a passage.
+    f["narratives/why-the-close-matters.md"] = f["narratives/why-the-close-matters.md"].replace(
+        '"It was in print, stated plainly"', '"It was in print, stated flatly"')
+
+    # ERF-18: a body whose opening restates the title in other words.
+    f["claims/partners-read-the-close.md"] = f["claims/partners-read-the-close.md"].replace(
+        "A partnership's annual close is read by the partners, not only filed\n\n## Working",
+        "Partners actually read the annual close.\n\n## Working")
+
+    # ERF-6 and ERF-69: a source whose normalized text is the quote and nothing
+    # else, quoted with characters the source does not carry.
+    quote_only = "The caf\u00e9 is the point.\n"
+    f["normalized/quote-only.md"] = quote_only
+    f["sources.yaml"] += (
+        '  quote-only-2026:\n'
+        '    citation_text: "Analyst Note, One Sentence (analyst note, 2026)"\n'
+        '    status: "shipped"\n'
+        '    licence: "CC-BY-4.0"\n'
+        '    licence_name: "Creative Commons Attribution 4.0 International"\n'
+        '    normalized: "normalized/quote-only.md"\n')
+    f["atoms/lg-006.md"] = """---
+id: "lg-006"
+type: "atom"
+corpus: "ledger-governance"
+finding: "The analyst note states that lock-in is the deliberate aim of the
+  product's design."
+quote: "The cafe\u0301 is the point."
+source: "quote-only-2026"
+source_quality: "low"
+limitations: "An analyst note with no named author; the chain has not been
+  pulled to a primary."
+created: {timestamp: "2026-08-26", by: "agent/claude-fable-5"}
+---
+"""
+    # ERF-72: an extension field, reported as unknown and never under ERF-55.
+    f["atoms/lg-001.md"] = f["atoms/lg-001.md"].replace(
+        'source_quality: "high"',
+        'source_quality: "high"\nx_reviewed_by: "human:mk"')
+
+    # ERF-11: an auditor written as an Actor rather than as a bare instrument.
+    f["atoms/lg-001.md"] = f["atoms/lg-001.md"].replace(
+        'auditor: "deepseek-v4-pro"', 'auditor: "agent/deepseek-v4-pro"')
+
+    # ERF-24: a bet owes no backing, so an evidence_audit on it has nothing to
+    # audit.
+    f["claims/market-will-adopt-record-formats.md"] = f["claims/market-will-adopt-record-formats.md"].replace(
+        'created: {timestamp: "2026-08-23", by: "agent/claude-fable-5"}',
+        'evidence_audit:\n'
+        '  - {auditor: "gemini-3.5-flash", verdict: "PARTIAL", timestamp: "2026-08-26",\n'
+        '     protocol: "backing-audit-v1"}\n'
+        'created: {timestamp: "2026-08-23", by: "agent/claude-fable-5"}')
+
+    # ERF-68 and ERF-70: a shipped text with no licence, and an extractor with
+    # no version.
+    f["sources.yaml"] = f["sources.yaml"].replace(
+        '    licence: "CC-BY-4.0"\n'
+        '    licence_name: "Creative Commons Attribution 4.0 International"\n', '')
+    f["sources.yaml"] = f["sources.yaml"].replace(
+        'extraction: "pandoc 3.1.11 -f html -t commonmark"',
+        'extraction: "pandoc"')
+
+    # ERF-41: one person, two entries, one instant.
+    f["claims/reconciliation-is-manual-everywhere.md"] = f["claims/reconciliation-is-manual-everywhere.md"].replace(
+        '  - timestamp: "2026-08-25T09:30:00-05:00"\n    stance: "against"\n    by: "human:mk"',
+        '  - timestamp: "2026-08-24T12:00:00-05:00"\n    stance: "against"\n    by: "human:fb"')
+
+    # ERF-28: a re-run whose id does not end with its conducted date.
+    f["surveys/drift-check-tools-2026-08-25.md"] = f["surveys/drift-check-tools-2026-08-25.md"].replace(
+        'id: "drift-check-tools-2026-08-25"', 'id: "drift-check-tools-rerun"')
+    for rel in list(f):
+        f[rel] = f[rel].replace('"drift-check-tools-2026-08-25"', '"drift-check-tools-rerun"')
+
+    return f
+
+
 def write(path, files):
     if os.path.exists(path):
         shutil.rmtree(path)
@@ -529,8 +654,9 @@ def mutations():
         '    reason: "Copyright permits reading and not republication; the quotation\n'
         '      route of ERF-69 stays open but no text is held here."\n', ''))
 
-    # ERF-6 / ERF-52: an elision marker and nothing else.
-    mut("bad-erf6-quote-is-only-an-elision", lambda f: edit(
+    # ERF-52: an elision marker and nothing else. "A quote whose spans are all
+    # empty MUST fail rather than trivially pass."
+    mut("bad-erf52-quote-is-only-an-elision", lambda f: edit(
         f, "atoms/lg-002.md",
         'quote: "The books should be closed each year [...] so that each partner may\n'
         '  know what he has."',
@@ -604,11 +730,13 @@ def mutations():
         f, "claims/market-will-adopt-record-formats.md",
         'stance: "withdrawn"', 'stance: "abstain"'))
 
-    # ERF-43: a premise cycle, X assumes Y and Y supports X.
+    # ERF-43: a premise cycle. `annual-close-is-the-control` already assumes
+    # this claim, so an `assumes` back closes the loop; the closure would not
+    # terminate and the relation admits no cycles.
     mut("bad-erf43-premise-cycle", lambda f: edit(
         f, "claims/double-entry-rule-is-1494.md",
         'created: {timestamp: "2026-08-22", by: "agent/claude-fable-5"}',
-        'edges:\n  - {to: "annual-close-is-the-control", relation: "supports"}\n'
+        'edges:\n  - {to: "annual-close-is-the-control", relation: "assumes"}\n'
         'created: {timestamp: "2026-08-22", by: "agent/claude-fable-5"}'))
 
     # ERF-43: a self-edge.
@@ -731,12 +859,38 @@ Reasoning alone settles what a control is for
         return f
     mut("bad-yamlb1s-atom-carries-a-body", yamlb1s)
 
+    # ERF-34: a narrative given the furniture of a record.
+    mut("bad-erf34-narrative-modelled-as-a-record", lambda f: edit(
+        f, "narratives/why-the-close-matters.md",
+        'type: "narrative"', 'type: "narrative"\nid: "why-the-close-matters"'))
+
+    # SPEC section 2: "Every actor id MUST follow this convention." An
+    # unnumbered MUST, reported under SPEC-2 because it carries no ERF id.
+    mut("bad-spec2-actor-off-convention", lambda f: edit(
+        f, "atoms/lg-001.md", 'by: "agent/claude-fable-5"', 'by: "claude-fable-5"'))
+
+    # ERF-57 read under a known version: an unrecognized record type is a
+    # producer error there, and expected content only under a newer MINOR.
+    def erf57(f):
+        f["questions/q-001.md"] = (
+            '---\nid: "q-001"\ntype: "question"\ncorpus: "ledger-governance"\n'
+            'title: "What closes a passage?"\n---\n')
+        return f
+    mut("bad-erf57-unknown-record-type", erf57)
+
+    # ERF-65: a yield stated as a bare `0`, which the binding names as one of
+    # the scalars a producer MUST quote.
+    mut("bad-erf65-hits-reported-as-a-number", lambda f: edit(
+        f, "surveys/drift-check-tools-2026-08-22.md",
+        'hits_reported: "0"', 'hits_reported: 0'))
+
     return m
 
 
 def main():
     os.makedirs(OUT, exist_ok=True)
     write(os.path.join(OUT, "conforming"), base_files())
+    write(os.path.join(OUT, "flags-worth-a-look"), flag_corpus())
     n = 1
     for name, fn in mutations().items():
         files = fn(base_files())

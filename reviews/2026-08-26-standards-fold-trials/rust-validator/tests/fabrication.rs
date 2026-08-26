@@ -132,7 +132,7 @@ fn f14_dropping_a_negation_without_a_marker_fails() {
 // ---------------------------------------------------------------------------
 
 #[test]
-fn g01_an_elision_can_inverve_the_meaning_and_still_pass() {
+fn g01_an_elision_can_invert_the_meaning_and_still_pass() {
     // The source says the committee does NOT believe the tool is reliable.
     // With one legal elision marker, the quotation says it does. The check
     // passes it, correctly by its own rules: "The text between two spans is

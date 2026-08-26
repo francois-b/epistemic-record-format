@@ -10,7 +10,7 @@ semantic_query: "double entry bookkeeping debit credit earliest printed
   treatise Pacioli Venice"
 atoms_for: ["lg-001", "lg-002"]
 edges:
-  - {to: "annual-close-is-the-control", relation: "supports"}
+  - {to: "annual-close-is-the-control", relation: "assumes"}
 created: {timestamp: "2026-08-22", by: "agent/claude-fable-5"}
 standings:
   - timestamp: "2026-08-22T14:05:00-05:00"
