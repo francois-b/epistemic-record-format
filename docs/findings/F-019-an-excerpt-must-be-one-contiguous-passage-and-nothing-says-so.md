@@ -29,3 +29,15 @@ source holds 8 KB for two paragraphs.
 - Say it: an excerpt is one contiguous passage.
 - Define fidelity per passage, with an excerpt allowed to be a sequence of
   passages each of which occurs, in order.
+
+## Further evidence, 2026-08-26
+
+The Bitter Lesson trial met the same wall and named it the largest cost the
+format imposed. Deep Blue's "8,000 features" (page 5) and its hand-built
+opening book (page 21) could not both be held without sixteen pages of a
+journal article; the figure was taken from Wikipedia instead, downgrading a
+`high` atom to `low` for no epistemic reason. The Harpy paper's best
+sentence for the corpus sits 480 lines from the passage that was held, so
+the best sentence in the source is not in the corpus. See
+`reviews/2026-08-26-standards-fold-trials/bitter-lesson-corpus/friction-log.md`
+entry F-02.

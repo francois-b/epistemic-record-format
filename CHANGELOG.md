@@ -24,6 +24,27 @@ record. All three numbers are published rather than hidden: this is a draft
 meant to be implemented against and argued with, and what is known to be
 unresolved, unverified, or untested is part of what it says.
 
+### 2026-08-26 — the Bitter Lesson closed loop: two validator gaps, four findings
+
+A cold agent built a corpus top-down over Sutton's "The Bitter Lesson"
+(115 atoms, 32 claims, 4 surveys, 31 sources, one bound narrative) from
+the spec snapshot at `d124820`, reached zero violations in two passes, and
+logged sixteen friction entries. Verified against the reference: the
+command-line validator computed narrative-binding staleness (`ERF-32`,
+`ERF-47`) and never printed it, and named nothing it did not check, which
+the Validator class requires. Both fixed: `erf-check.ts` now prints
+`ERF-47` flags for stale audits and bindings, `ERF-32` for indeterminate
+bindings, and a `NOT-CHECKED` line per requirement it does not decide,
+with `ERF-36` named as partial. A held raw or normalized text was listed
+as unrecognized, one line per source; held artifacts are now excluded
+(`ERF-73`). The Validator class paragraph named `ERF-36` twice, a residue
+of retiring `ERF-38`; fixed. Four findings raised, none ruled: `F-024`
+(no honest status for a full text held for checking), `F-025` (a
+proponent's own assertion grades `high` and reads as backing), `F-026`
+(elisions used to step over footnote markers), `F-027` (`conflicts-with`
+had no honest use). `F-019` gains a second demonstration. The agent's
+`ERF-73` complaint was the snapshot lagging the validator, not a defect.
+
 ### 2026-08-26 — the schema is the requirement: fourteen shape rules retire
 
 Four cold readers, Opus, Gemini 3.1 Pro, Gemini 3.5 Flash and GPT-5.6 Sol,

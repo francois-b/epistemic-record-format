@@ -1,0 +1,817 @@
+[
+ {
+  "id": "computation-leveraging-methods-win-over-seventy-years",
+  "kind": "argument",
+  "short_name": "the bitter lesson",
+  "title": "Over seventy years of AI research, general methods that leverage computation have ultimately proved the most effective, and by a large margin.",
+  "families": [
+   "thesis"
+  ],
+  "semantic_query": "scaling compute versus hand-engineered domain knowledge in the history of artificial intelligence",
+  "atoms_for": [
+   "bl-001",
+   "bl-103",
+   "bl-110"
+  ],
+  "atoms_against": [
+   "bl-044",
+   "bl-097",
+   "bl-105",
+   "bl-106",
+   "bl-046",
+   "bl-112"
+  ],
+  "edges": [
+   [
+    "compute-cost-per-unit-continues-to-fall-exponentially",
+    "assumes"
+   ],
+   [
+    "knowledge-and-computation-compete-for-researcher-time",
+    "assumes"
+   ],
+   [
+    "search-and-learning-scale-arbitrarily-with-computation",
+    "assumes"
+   ]
+  ],
+  "notes": "This is the essay's conclusion and everything else in the corpus is either a premise of it or an attack on one. It is an argument rather than an observation because no measurement settles it: the four cases are the evidence, the word 'ultimately' is the hinge, and Nielsen's objection is that the hinge fixes no horizon and so decides nothing about what to do now.\n\nThe strongest attack on record is not that the cases are wrong but that they are compatible with a different explanation. Hooker's hardware lottery reads the same seventy years as ideas winning because they suited the available silicon; Brooks reads them as every solution having cost substantial human ingenuity somewhere, with the ingenuity relocated rather than removed. Neither is modelled here as a rival claim, per ERF-23; both sit in atoms_against."
+ },
+ {
+  "id": "compute-cost-per-unit-continues-to-fall-exponentially",
+  "kind": "observation",
+  "short_name": "falling compute cost",
+  "title": "The cost per unit of computation has continued to fall exponentially, which is the generalization of Moore's law the essay relies on.",
+  "families": [
+   "thesis",
+   "compute"
+  ],
+  "semantic_query": "FLOP per dollar trend GPU price performance doubling time Moore's law end transistor cost",
+  "atoms_for": [
+   "bl-002",
+   "bl-004",
+   "bl-098",
+   "bl-099"
+  ],
+  "atoms_against": [
+   "bl-095",
+   "bl-100",
+   "bl-101",
+   "bl-102"
+  ],
+  "notes": "The one premise of the essay that is straightforwardly measurable, and the measurement mostly holds: Epoch AI's 470-GPU dataset gives FLOP/s per dollar doubling about every 2.5 years across 2006 to 2021, which is exponential, though slightly slower than Moore's two-year figure.\n\nThe against side is about the derivative, not the direction. Transistor scaling slowed after about 2010, the industry's own roadmap body stopped organising around the law in 2016, and Moore himself put the end around 2025. Brooks, writing six days after the essay, gives a doubling time of twenty years rather than one. Nothing here shows the fall has stopped; it shows the exponent is contested and the essay does not say which exponent it needs."
+ },
+ {
+  "id": "most-ai-research-assumes-constant-computation",
+  "kind": "observation",
+  "short_name": "fixed-compute assumption",
+  "title": "Most AI research has been conducted as if the computation available to the agent were constant.",
+  "families": [
+   "thesis"
+  ],
+  "semantic_query": "AI research methodology assumption fixed computational budget survey of published methods",
+  "atoms_for": [
+   "bl-003"
+  ],
+  "surveys": [
+   "field-practice-quantification-2026-08-26"
+  ],
+  "edges": [
+   [
+    "computation-leveraging-methods-win-over-seventy-years",
+    "supports"
+   ]
+  ],
+  "notes": "Unbacked except by the essay's own sentence. This is a quantified claim about the working assumptions of a whole research literature and nobody appears to have counted. The survey records what was looked for and what came back."
+ },
+ {
+  "id": "knowledge-and-computation-compete-for-researcher-time",
+  "kind": "argument",
+  "short_name": "the tradeoff",
+  "title": "Building in human knowledge and leveraging computation compete in practice, because time spent on one is time not spent on the other and knowledge-heavy methods are harder to scale.",
+  "families": [
+   "thesis"
+  ],
+  "semantic_query": "tradeoff between domain knowledge engineering and scalable general methods researcher effort",
+  "atoms_for": [
+   "bl-005",
+   "bl-006"
+  ],
+  "atoms_against": [
+   "bl-084",
+   "bl-092",
+   "bl-093",
+   "bl-094"
+  ],
+  "edges": [
+   [
+    "most-ai-research-assumes-constant-computation",
+    "assumes"
+   ]
+  ],
+  "notes": "The essay concedes the two need not conflict and then asserts that in practice they do. Every atom against is the same objection from a different direction: the systems that won did both at once. AlexNet's authors say in as many words that their model needs lots of prior knowledge; Brooks says the convolution front end, the labelled dataset and the architecture choice are all human knowledge that has been moved rather than removed."
+ },
+ {
+  "id": "deep-blue-won-by-massive-deep-search",
+  "kind": "observation",
+  "short_name": "Deep Blue searched",
+  "title": "The program that defeated Kasparov in 1997 won largely by massive, deep, hardware-accelerated search.",
+  "families": [
+   "chess"
+  ],
+  "semantic_query": "Deep Blue 1997 alpha-beta search positions per second custom chess chips",
+  "atoms_for": [
+   "bl-007",
+   "bl-033",
+   "bl-037",
+   "bl-042"
+  ],
+  "edges": [
+   [
+    "computation-leveraging-methods-win-over-seventy-years",
+    "supports"
+   ]
+  ],
+  "notes": "Not contested by anyone in this corpus, including the essay's critics: Nielsen grants it in the same sentence in which he attacks the next claim. The 200-million-positions-per-second figure is held here only through a tertiary source."
+ },
+ {
+  "id": "deep-blue-was-simpler-than-its-knowledge-based-rivals",
+  "kind": "observation",
+  "short_name": "Deep Blue was simpler",
+  "title": "Deep Blue's winning approach was simpler than the human-knowledge approaches it beat.",
+  "families": [
+   "chess"
+  ],
+  "semantic_query": "Deep Blue evaluation function features hand tuned grandmaster opening book expert system",
+  "atoms_for": [
+   "bl-009"
+  ],
+  "atoms_against": [
+   "bl-028",
+   "bl-029",
+   "bl-030",
+   "bl-032",
+   "bl-034",
+   "bl-035",
+   "bl-038",
+   "bl-043",
+   "bl-049"
+  ],
+  "edges": [
+   [
+    "computation-leveraging-methods-win-over-seventy-years",
+    "supports"
+   ]
+  ],
+  "notes": "The weakest link in the essay's first case, and the one the sources contradict hardest. Deep Blue's own builders report that the large majority of the features and weights in its evaluation function were made and tuned by hand; that its opening book was written by four grandmasters; that an extended book summarised a 700,000-game grandmaster database to nudge its play toward human opening theory; and that one hand-crafted rook feature was of critical importance in game two of the match. The AlphaZero authors, describing the field a decade later, call handcrafted evaluation refined by human experts a defining property of the strongest chess programs.\n\nNothing here disputes that the search was massive. What the evidence disputes is the word 'simpler'. Sutton's own sentence is the only atom on the for side."
+ },
+ {
+  "id": "majority-of-chess-researchers-viewed-the-1997-win-with-dismay",
+  "kind": "observation",
+  "short_name": "chess dismay",
+  "title": "The majority of computer-chess researchers viewed Deep Blue's 1997 victory with dismay.",
+  "families": [
+   "chess",
+   "reception"
+  ],
+  "semantic_query": "computer chess community reaction Deep Blue 1997 survey poll opinion brute force disappointment",
+  "atoms_for": [
+   "bl-008",
+   "bl-040",
+   "bl-041"
+  ],
+  "surveys": [
+   "chess-researcher-dismay-2026-08-26"
+  ],
+  "notes": "A claim about the distribution of an opinion in a named population. The searching found identified individuals holding the opinion, McCarthy the clearest, and no measurement of how many held it. The atoms for are therefore evidence that the attitude existed and not that it was the majority's; the survey carries the coverage the word 'majority' would need.\n\nThis is the passage where the essay's rhetoric does the most work per unit of evidence."
+ },
+ {
+  "id": "defeated-chess-researchers-called-brute-force-ungeneral-and-inhuman",
+  "kind": "observation",
+  "short_name": "the brute-force objection",
+  "title": "Chess researchers who had pursued human-knowledge methods responded that brute-force search was not a general strategy and not how people play chess.",
+  "families": [
+   "chess",
+   "reception"
+  ],
+  "semantic_query": "criticism brute force chess programs not general not how humans play McCarthy Berliner objection",
+  "atoms_for": [
+   "bl-010",
+   "bl-039",
+   "bl-040",
+   "bl-041"
+  ],
+  "edges": [
+   [
+    "majority-of-chess-researchers-viewed-the-1997-win-with-dismay",
+    "supports"
+   ]
+  ],
+  "notes": "This one backs cleanly, and from a better source than the essay offers. McCarthy states both halves of the objection in his own name: that the programs solved his test position by brute force, and that humans use a much simpler process that does not involve brute force. He adds a 1997 note applying the charge to Deep Blue by name. The essay attributes the words to nobody; the corpus can now name a speaker."
+ },
+ {
+  "id": "learning-played-no-big-role-in-the-1997-chess-program",
+  "kind": "observation",
+  "short_name": "no learning in Deep Blue",
+  "title": "Learning played no big role in the 1997 program that first beat a world chess champion.",
+  "families": [
+   "chess"
+  ],
+  "semantic_query": "Deep Blue automated evaluation tuning comparison training learned weights master games",
+  "atoms_for": [
+   "bl-013",
+   "bl-028"
+  ],
+  "atoms_against": [
+   "bl-031",
+   "bl-036"
+  ],
+  "edges": [
+   [
+    "deep-blue-won-by-massive-deep-search",
+    "supports"
+   ]
+  ],
+  "notes": "Mostly true, with a caveat the builders themselves supply: a comparison-training tool learned pawn-shelter weights and showed the hand-tuned values were systematically too low, and those weights were raised before the match. A tertiary source goes further and says the evaluation parameters were set by analyzing thousands of master games, which the excerpt of the builders' paper held here does not corroborate. 'No big role' survives; 'no role' would not."
+ },
+ {
+  "id": "computer-go-repeated-the-chess-pattern-twenty-years-later",
+  "kind": "observation",
+  "short_name": "Go, twenty years on",
+  "title": "Computer Go repeated the computer-chess pattern about twenty years later.",
+  "families": [
+   "go"
+  ],
+  "semantic_query": "AlphaGo 2016 European champion Fan Hui first professional defeat timeline versus Deep Blue 1997",
+  "atoms_for": [
+   "bl-011",
+   "bl-052",
+   "bl-053"
+  ],
+  "edges": [
+   [
+    "computation-leveraging-methods-win-over-seventy-years",
+    "supports"
+   ]
+  ],
+  "notes": "The arithmetic holds: 1997 to 2016 is nineteen years, and the AlphaGo authors record that the result had been thought at least a decade away."
+ },
+ {
+  "id": "human-knowledge-efforts-in-go-proved-irrelevant-once-search-scaled",
+  "kind": "observation",
+  "short_name": "Go knowledge irrelevant",
+  "title": "The human-knowledge and game-specific efforts in computer Go proved irrelevant, or worse, once search was applied effectively at scale.",
+  "families": [
+   "go"
+  ],
+  "semantic_query": "AlphaGo supervised learning human expert games policy network feature planes AlphaGo Zero tabula rasa",
+  "atoms_for": [
+   "bl-012",
+   "bl-050",
+   "bl-056",
+   "bl-057",
+   "bl-059"
+  ],
+  "atoms_against": [
+   "bl-051",
+   "bl-054",
+   "bl-055",
+   "bl-058"
+  ],
+  "edges": [
+   [
+    "computer-go-repeated-the-chess-pattern-twenty-years-later",
+    "supports"
+   ]
+  ],
+  "notes": "The claim is true of AlphaGo Zero and false of AlphaGo. The program that actually broke the twenty-year pattern, the one that beat Fan Hui and then Lee Sedol, was bootstrapped on about thirty million human expert moves and fed Go-specific feature pre-processing before its networks saw the board. Its own authors say so in the abstract. Eighteen months later AlphaGo Zero removed the human data and beat it a hundred games to nil, which is the essay's pattern arriving on schedule but after the sentence that describes it.\n\nRead strictly against the 2016 program the claim fails; read as a statement about where the ceiling was, it holds. The essay does not distinguish the two."
+ },
+ {
+  "id": "self-play-learning-brings-massive-computation-to-bear",
+  "kind": "argument",
+  "short_name": "learning is like search",
+  "title": "Learning by self-play is like search in that it converts available computation into performance.",
+  "families": [
+   "go",
+   "thesis"
+  ],
+  "semantic_query": "self-play reinforcement learning compute scaling value function search analogy",
+  "atoms_for": [
+   "bl-014",
+   "bl-050",
+   "bl-057"
+  ],
+  "edges": [
+   [
+    "human-knowledge-efforts-in-go-proved-irrelevant-once-search-scaled",
+    "assumes"
+   ],
+   [
+    "search-and-learning-are-the-two-techniques-that-use-massive-computation",
+    "supports"
+   ]
+  ],
+  "notes": "The essay's structural move: it needs learning and search to be the same kind of thing so that both count as computation-leveraging. AlphaZero's twenty-four-hour result from random play is the cleanest instance on record."
+ },
+ {
+  "id": "search-and-learning-are-the-two-techniques-that-use-massive-computation",
+  "kind": "observation",
+  "short_name": "search and learning",
+  "title": "Search and learning are the two most important classes of technique for utilizing massive amounts of computation in AI research.",
+  "families": [
+   "thesis"
+  ],
+  "semantic_query": "general methods that scale with computation search learning inductive bias architecture",
+  "atoms_for": [
+   "bl-014",
+   "bl-025"
+  ],
+  "atoms_against": [
+   "bl-107",
+   "bl-111"
+  ],
+  "edges": [
+   [
+    "search-and-learning-scale-arbitrarily-with-computation",
+    "supports"
+   ]
+  ],
+  "notes": "Stated as a two-item list with no third candidate considered. The against side offers one: architecture, that is, the choice of what structure to put in the model before any search or learning happens. AlphaFold's authors attribute their accuracy to exactly that, and Goyal and Bengio propose lengthening the list of built-in inductive biases rather than shortening it."
+ },
+ {
+  "id": "darpa-ran-an-early-speech-recognition-competition-in-the-1970s",
+  "kind": "observation",
+  "short_name": "DARPA SUR",
+  "title": "DARPA sponsored an early speech recognition programme in the 1970s with stated performance goals.",
+  "families": [
+   "speech"
+  ],
+  "semantic_query": "DARPA Speech Understanding Research 1971 1976 Newell study group thousand word vocabulary",
+  "atoms_for": [
+   "bl-015",
+   "bl-060",
+   "bl-061",
+   "bl-066"
+  ],
+  "edges": [
+   [
+    "statistical-methods-beat-human-knowledge-methods-in-speech",
+    "supports"
+   ]
+  ],
+  "notes": "Backed from the primary side: the Harpy paper records the five-year effort and the 1971 Newell study group that set its goals. The word 'competition' is the essay's; the programme was a funded multi-site effort assessed against fixed targets, which is close enough that nothing turns on it."
+ },
+ {
+  "id": "speech-entrants-used-hand-built-human-knowledge",
+  "kind": "observation",
+  "short_name": "speech knowledge sources",
+  "title": "Entrants to the DARPA speech programme built systems around hand-constructed knowledge of words, phonemes, grammar and the vocal tract.",
+  "families": [
+   "speech"
+  ],
+  "semantic_query": "Hearsay-II semantic template grammar knowledge sources Harpy juncture rules phonetic knowledge",
+  "atoms_for": [
+   "bl-016",
+   "bl-068",
+   "bl-069",
+   "bl-070",
+   "bl-071",
+   "bl-072"
+  ],
+  "edges": [
+   [
+    "statistical-methods-beat-human-knowledge-methods-in-speech",
+    "supports"
+   ]
+  ],
+  "notes": "The best-backed sentence in the speech paragraph. Hearsay-II's authors say their grammar embedded semantic and pragmatic constraint directly in its structure; Harpy's authors say the juncture rules were all empirically derived by hand. Both are primary."
+ },
+ {
+  "id": "hmm-based-methods-were-the-rival-side-in-the-1970s-speech-programme",
+  "kind": "observation",
+  "short_name": "HMMs at DARPA",
+  "title": "The statistical side of the 1970s DARPA speech programme was made of newer methods based on hidden Markov models.",
+  "families": [
+   "speech"
+  ],
+  "semantic_query": "hidden Markov model Dragon Baker DARPA speech understanding 1976 Harpy beam search precompiled network",
+  "atoms_for": [
+   "bl-017"
+  ],
+  "atoms_against": [
+   "bl-062",
+   "bl-065",
+   "bl-067",
+   "bl-069"
+  ],
+  "surveys": [
+   "hmm-entrant-darpa-sur-2026-08-26"
+  ],
+  "edges": [
+   [
+    "statistical-methods-beat-human-knowledge-methods-in-speech",
+    "supports"
+   ]
+  ],
+  "notes": "This is the essay's clearest factual problem, and it is a dating problem. The system that met and beat every stated goal of the programme was Harpy, and Harpy was not an HMM system: it compiled hand-written knowledge sources into a single fifteen-thousand-state network and ran a beam search over it. Its authors credit Baker's Dragon for the network representation, and Dragon did not win. Wikipedia dates the CMU use of HMMs for speech to about a decade after Baum's late-1960s work, and dates HMM dominance to the 1980s.\n\nSo the statistical turn is real and the essay's mechanism is real, but it happened after the competition the sentence places it in. The survey records the search for a contrary reading."
+ },
+ {
+  "id": "statistical-methods-beat-human-knowledge-methods-in-speech",
+  "kind": "observation",
+  "short_name": "statistics won speech",
+  "title": "In speech recognition the statistical, computation-heavy methods won out over the human-knowledge methods.",
+  "families": [
+   "speech"
+  ],
+  "semantic_query": "statistical speech recognition displaced knowledge-based approaches hidden Markov models dominance",
+  "atoms_for": [
+   "bl-018",
+   "bl-064",
+   "bl-065",
+   "bl-073"
+  ],
+  "atoms_against": [
+   "bl-063",
+   "bl-067",
+   "bl-074"
+  ],
+  "edges": [
+   [
+    "computation-leveraging-methods-win-over-seventy-years",
+    "supports"
+   ]
+  ],
+  "notes": "True over the decade, contestable over the competition. Two atoms on the against side deserve attention: hidden Markov models are described in the same encyclopedia entry as the thing that let researchers combine knowledge sources in one probabilistic model, which is a framework for organising human knowledge rather than for discarding it; and the Jelinek anecdote everyone quotes for this claim comes with its own source saying the wording and dating are unclear."
+ },
+ {
+  "id": "statistics-and-computation-came-to-dominate-natural-language-processing",
+  "kind": "observation",
+  "short_name": "the statistical turn in NLP",
+  "title": "The statistical turn in speech spread gradually over decades into all of natural language processing, where statistics and computation came to dominate.",
+  "families": [
+   "speech"
+  ],
+  "semantic_query": "statistical natural language processing displaced rule-based linguistics corpus methods history",
+  "atoms_for": [
+   "bl-019",
+   "bl-064",
+   "bl-073"
+  ],
+  "edges": [
+   [
+    "statistical-methods-beat-human-knowledge-methods-in-speech",
+    "supports"
+   ]
+  ],
+  "notes": "Thinly backed here. The corpus reaches this claim only through the speech literature and one contested anecdote; a proper backing would want citation counts or method surveys across two decades of computational linguistics, which was not attempted."
+ },
+ {
+  "id": "deep-learning-dramatically-improved-speech-recognition",
+  "kind": "observation",
+  "short_name": "deep learning in speech",
+  "title": "Deep learning produced dramatically better speech recognition than the statistical systems it replaced.",
+  "families": [
+   "speech"
+  ],
+  "semantic_query": "deep neural network acoustic model word error rate Switchboard GMM-HMM relative reduction",
+  "atoms_for": [
+   "bl-020",
+   "bl-075",
+   "bl-076"
+  ],
+  "edges": [
+   [
+    "statistical-methods-beat-human-knowledge-methods-in-speech",
+    "supports"
+   ]
+  ],
+  "notes": "The single hardest number in the corpus: 27.4% to 18.5% word error rate on Switchboard, a 33% relative reduction, from four research groups reporting jointly."
+ },
+ {
+  "id": "deep-learning-speech-systems-rely-less-on-human-knowledge",
+  "kind": "observation",
+  "short_name": "less knowledge in speech",
+  "title": "Deep learning speech systems rely less on human knowledge than the systems they replaced.",
+  "families": [
+   "speech"
+  ],
+  "semantic_query": "feature engineering HLDA VTLN triphone states language model deep neural network learned features",
+  "atoms_for": [
+   "bl-020",
+   "bl-077"
+  ],
+  "atoms_against": [
+   "bl-078"
+  ],
+  "edges": [
+   [
+    "statistical-methods-beat-human-knowledge-methods-in-speech",
+    "supports"
+   ]
+  ],
+  "notes": "Partly. The same paper that reports deep networks learning their own features also records that the network replaced only the acoustic model, inside a pipeline that kept tied triphone states, a trigram language model and engineered input features. Less human knowledge, not none, and the reduction is local to one component."
+ },
+ {
+  "id": "early-computer-vision-used-edges-cylinders-and-sift",
+  "kind": "observation",
+  "short_name": "early vision",
+  "title": "Early computer vision conceived of vision as a search for edges, generalized cylinders, or SIFT-style features.",
+  "families": [
+   "vision"
+  ],
+  "semantic_query": "scale invariant feature transform generalized cylinders edge detection early computer vision methods",
+  "atoms_for": [
+   "bl-021",
+   "bl-079",
+   "bl-080"
+  ],
+  "edges": [
+   [
+    "early-computer-vision-methods-are-discarded-today",
+    "supports"
+   ]
+  ],
+  "notes": "Lowe's paper is in the corpus as the primary instance: a hand-designed feature and a hand-designed matching pipeline with no learned component anywhere in it."
+ },
+ {
+  "id": "early-computer-vision-methods-are-discarded-today",
+  "kind": "observation",
+  "short_name": "vision methods discarded",
+  "title": "The early computer-vision methods, edges, generalized cylinders and SIFT features, are today all discarded.",
+  "families": [
+   "vision"
+  ],
+  "semantic_query": "SIFT still used 2025 structure from motion COLMAP classical versus learned feature matching",
+  "atoms_for": [
+   "bl-022",
+   "bl-083"
+  ],
+  "atoms_against": [
+   "bl-081",
+   "bl-082"
+  ],
+  "edges": [
+   [
+    "computation-leveraging-methods-win-over-seventy-years",
+    "supports"
+   ]
+  ],
+  "notes": "False as written, and the counter-evidence is recent. A 2025 photogrammetry paper opens by saying that classical handcrafted SIFT matching with nearest-neighbour matching and RANSAC has been state of the art for mobile mapping cameras, and the same paper then reports learned matching beating it on their datasets. Both facts are in the corpus, on opposite sides.\n\nThe honest reading is that the frontier moved and the installed base did not. 'Discarded' is a claim about practice, and in practice the technique is still shipped."
+ },
+ {
+  "id": "modern-vision-networks-use-only-convolution-and-invariances",
+  "kind": "observation",
+  "short_name": "only convolution",
+  "title": "Modern deep-learning vision networks use only the notions of convolution and certain kinds of invariance.",
+  "families": [
+   "vision"
+  ],
+  "semantic_query": "vision transformer residual connections built-in priors architecture inductive bias convolution not necessary",
+  "atoms_for": [
+   "bl-023",
+   "bl-085"
+  ],
+  "atoms_against": [
+   "bl-084",
+   "bl-088",
+   "bl-089",
+   "bl-090",
+   "bl-091",
+   "bl-092"
+  ],
+  "edges": [
+   [
+    "early-computer-vision-methods-are-discarded-today",
+    "supports"
+   ]
+  ],
+  "notes": "The word 'only' fails in both directions at once. Downward: the networks carry much more built-in structure than convolution, including residual reformulation, which the ResNet authors say is where the gain came from, and, on the AlexNet authors' own account, deliberate prior knowledge to compensate for data they did not have. Upward: by the time the essay was eighteen months old the best image models had removed convolution entirely, and the Vision Transformer paper's headline sentence is that reliance on convolutional networks is not necessary.\n\nBrooks makes the same point from the other side six days after the essay: the convolutional front end is human-designed knowledge about translational invariance."
+ },
+ {
+  "id": "the-field-is-still-making-the-same-mistakes",
+  "kind": "argument",
+  "short_name": "still not learned",
+  "title": "The AI field has not thoroughly learned the bitter lesson and continues to make the same kind of mistake.",
+  "families": [
+   "lesson"
+  ],
+  "semantic_query": "research community continues building domain knowledge into models despite scaling evidence",
+  "atoms_for": [
+   "bl-027",
+   "bl-113"
+  ],
+  "atoms_against": [
+   "bl-045",
+   "bl-046",
+   "bl-107",
+   "bl-111"
+  ],
+  "edges": [
+   [
+    "ai-researchers-often-build-knowledge-into-their-agents",
+    "assumes"
+   ],
+   [
+    "built-in-knowledge-plateaus-and-inhibits-progress-in-the-long-run",
+    "assumes"
+   ]
+  ],
+  "notes": "Whether the continuing behaviour is a mistake is the whole question, and the corpus cannot settle it. Brooks reports a backlash toward built-in structure at a National Academy workshop the same month, which is evidence the behaviour continues and no evidence at all that it is wrong. AlphaFold is the case that makes this uncomfortable: a system whose authors credit built-in physical and geometric constraints for a result nobody else came close to."
+ },
+ {
+  "id": "ai-researchers-often-build-knowledge-into-their-agents",
+  "kind": "observation",
+  "short_name": "knowledge gets built in",
+  "title": "AI researchers have often tried to build knowledge into their agents.",
+  "families": [
+   "lesson"
+  ],
+  "semantic_query": "hand-engineered features expert systems domain knowledge in AI systems historical practice",
+  "atoms_for": [
+   "bl-024",
+   "bl-028",
+   "bl-068",
+   "bl-072",
+   "bl-084",
+   "bl-092"
+  ],
+  "edges": [
+   [
+    "computation-leveraging-methods-win-over-seventy-years",
+    "supports"
+   ]
+  ],
+  "notes": "The least controversial of the four historical observations, and the corpus backs it from four decades and three fields: Hearsay-II's semantic grammar, Harpy's hand-derived juncture rules, Deep Blue's hand-tuned evaluation, AlexNet's deliberate priors."
+ },
+ {
+  "id": "building-in-knowledge-always-helps-in-the-short-term",
+  "kind": "observation",
+  "short_name": "always helps short-term",
+  "title": "Building knowledge into an agent always helps in the short term.",
+  "families": [
+   "lesson"
+  ],
+  "semantic_query": "harmful inductive bias prior knowledge hurts performance counterexample short term machine learning",
+  "atoms_for": [
+   "bl-024",
+   "bl-085",
+   "bl-115"
+  ],
+  "surveys": [
+   "short-term-knowledge-counterexamples-2026-08-26"
+  ],
+  "edges": [
+   [
+    "computation-leveraging-methods-win-over-seventy-years",
+    "supports"
+   ]
+  ],
+  "notes": "A universal, stated with 'always', and therefore refutable by a single documented case where a built-in prior hurt from the start. The searching did not find one stated in those terms; what it found was a large literature arguing the opposite, that a well-matched inductive bias is necessary for generalization at all. Absence of a counterexample in a web search is weak evidence and the survey says so."
+ },
+ {
+  "id": "built-in-knowledge-plateaus-and-inhibits-progress-in-the-long-run",
+  "kind": "observation",
+  "short_name": "knowledge plateaus",
+  "title": "In the long run, knowledge built into an agent plateaus and even inhibits further progress.",
+  "families": [
+   "lesson"
+  ],
+  "semantic_query": "human expert data ceiling performance limit hand-engineered features surpassed by learned methods",
+  "atoms_for": [
+   "bl-024",
+   "bl-057",
+   "bl-059"
+  ],
+  "atoms_against": [
+   "bl-045",
+   "bl-046",
+   "bl-107",
+   "bl-108",
+   "bl-109",
+   "bl-111"
+  ],
+  "edges": [
+   [
+    "computation-leveraging-methods-win-over-seventy-years",
+    "supports"
+   ]
+  ],
+  "notes": "The AlphaGo Zero authors state the mechanism precisely, that expert data can impose a ceiling, and then demonstrate it by removing the data and winning a hundred to nil. That is the strongest single piece of evidence in the essay's favour anywhere in this corpus.\n\nAgainst it sits AlphaFold, whose authors attribute their result to architectures and training procedures built on the evolutionary, physical and geometric constraints of proteins, and which still ends with a hand-built force field doing the final refinement. Two named practitioners quoted by Nielsen say the same about lattice QCD and molecular dynamics: baking the symmetry in is what makes the problem tractable at all.\n\nThe two sides may both be right about different domains, which is what Rezende says explicitly. The essay does not admit that reading."
+ },
+ {
+  "id": "breakthroughs-arrive-by-scaling-search-and-learning",
+  "kind": "observation",
+  "short_name": "breakthroughs by scaling",
+  "title": "Breakthrough progress eventually arrives by an opposing approach based on scaling computation through search and learning.",
+  "families": [
+   "lesson"
+  ],
+  "semantic_query": "breakthrough results attributed to scale compute GPU training data rather than method design",
+  "atoms_for": [
+   "bl-024",
+   "bl-050",
+   "bl-057",
+   "bl-086",
+   "bl-087",
+   "bl-103",
+   "bl-114"
+  ],
+  "atoms_against": [
+   "bl-088",
+   "bl-107"
+  ],
+  "edges": [
+   [
+    "computation-leveraging-methods-win-over-seventy-years",
+    "supports"
+   ]
+  ],
+  "notes": "The AlexNet authors close their paper saying results can be improved simply by waiting for faster GPUs and bigger datasets, which is the essay's thesis stated by practitioners seven years earlier. Thompson and co-authors then measure the dependency and find it real across many applications. The against side is that some breakthroughs are architectural: ResNet's authors attribute theirs to an explicit reformulation of the layers, not to scale."
+ },
+ {
+  "id": "search-and-learning-scale-arbitrarily-with-computation",
+  "kind": "bet",
+  "short_name": "arbitrary scaling",
+  "title": "Search and learning are methods that continue to scale with increased computation even as the available computation becomes very great.",
+  "families": [
+   "thesis",
+   "compute"
+  ],
+  "semantic_query": "scaling laws limits diminishing returns compute sustainability deep learning energy cost",
+  "atoms_for": [
+   "bl-025",
+   "bl-098"
+  ],
+  "atoms_against": [
+   "bl-095",
+   "bl-096",
+   "bl-100",
+   "bl-102",
+   "bl-104"
+  ],
+  "notes": "Recorded as a bet because nothing available settles it: the essay is making a claim about a regime nobody has been in yet. The word 'seem' in the essay's own sentence concedes as much.\n\nThompson and co-authors put the sharpest number against it: extrapolate the observed compute dependency and progress along current lines becomes economically, technically and environmentally unsustainable. Brooks makes the same point in watts. Neither shows the methods stop scaling; both show that the resource does."
+ },
+ {
+  "id": "the-contents-of-minds-are-irredeemably-complex",
+  "kind": "bet",
+  "short_name": "minds are complex",
+  "title": "The actual contents of minds are tremendously and irredeemably complex, so simple ways of thinking about space, objects, agents or symmetries will not capture them.",
+  "families": [
+   "lesson"
+  ],
+  "semantic_query": "simple principles of intelligence versus irreducible complexity inductive biases few principles hypothesis",
+  "atoms_for": [
+   "bl-026"
+  ],
+  "atoms_against": [
+   "bl-111"
+  ],
+  "notes": "A bet on how the world turns out, stated as a conclusion. Goyal and Bengio open their paper with the opposite hypothesis in as many words, that human and animal intelligence might be explained by a few principles rather than an encyclopedic list of heuristics, and treat that hypothesis as the thing worth working on. Symmetry is on the essay's list of things not to build in and is precisely what Cranmer and Rezende say makes their problems tractable."
+ },
+ {
+  "id": "build-in-only-meta-methods",
+  "kind": "commitment",
+  "short_name": "meta-methods only",
+  "title": "We should build in only the meta-methods that can find and capture arbitrary complexity, and not our own discoveries.",
+  "families": [
+   "lesson"
+  ],
+  "semantic_query": "design principle build in search and learning not domain knowledge meta-methods",
+  "atoms_for": [
+   "bl-026"
+  ],
+  "edges": [
+   [
+    "the-contents-of-minds-are-irredeemably-complex",
+    "assumes"
+   ]
+  ],
+  "notes": "A commitment: chosen conduct, and the essay's only instruction. It owes no backing under the format's contract for its kind, which is the right reading here, because what would check it is whether following it works, and that is the bet above."
+ },
+ {
+  "id": "chess-engines-abandoned-hand-crafted-evaluation-for-learning",
+  "kind": "observation",
+  "short_name": "Stockfish went neural",
+  "title": "The strongest conventional chess engine replaced its hand-crafted evaluation function with a learned one and then removed the hand-crafted evaluation entirely.",
+  "families": [
+   "chess",
+   "lesson"
+  ],
+  "semantic_query": "Stockfish NNUE efficiently updatable neural network hand-crafted evaluation removed 2023",
+  "atoms_for": [
+   "bl-047",
+   "bl-049",
+   "bl-050"
+  ],
+  "atoms_against": [
+   "bl-048"
+  ],
+  "edges": [
+   [
+    "built-in-knowledge-plateaus-and-inhibits-progress-in-the-long-run",
+    "supports"
+   ]
+  ],
+  "notes": "Evidence the essay could not have had in 2019 and which runs its way: the hand-tuned evaluation function, the thing Deep Blue's builders spent years on, was removed from the leading engine in 2023 in favour of a network. The search around it is still alpha-beta with hand-designed heuristics, so the substitution is of evaluation and not of search."
+ }
+]

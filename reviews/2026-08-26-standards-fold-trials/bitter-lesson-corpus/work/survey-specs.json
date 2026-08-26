@@ -1,0 +1,96 @@
+[
+{
+ "id":"chess-researcher-dismay-2026-08-26",
+ "conducted":"2026-08-26",
+ "title":"Contemporaneous evidence that a majority of computer-chess researchers viewed Deep Blue's 1997 victory with dismay",
+ "searches":[
+  {"tool":"WebSearch tool in Claude Code (claude-opus-5 session, US web index)",
+   "query":"survey computer chess researchers 1997 reaction Deep Blue majority dismay poll evidence",
+   "scope":"the open web as that index covers it, English, no date restriction",
+   "hits_reported":"two result sets of nine and nine links; the instrument reports no total and no relevance score",
+   "timestamp":"2026-08-26"},
+  {"tool":"WebSearch tool in Claude Code (claude-opus-5 session, US web index)",
+   "query":"computer chess researchers reaction Deep Blue 1997 \"brute force\" criticism not how humans play chess quotes McCarthy Chomsky",
+   "scope":"the open web as that index covers it, English, no date restriction",
+   "hits_reported":"nine links; no total given",
+   "timestamp":"2026-08-26"}
+ ],
+ "notable_results":[
+  {"what":"Named individuals holding the attitude, but no measurement of how many",
+   "note":"The results name John McCarthy and Edward Feigenbaum as expressing reservations, and describe the community reaction as mixed. Nothing found states a proportion, and no poll or survey of computer-chess researchers taken in or near 1997 surfaced in either act.",
+   "atoms":["bl-040","bl-041"]},
+  {"what":"A secondary page asserting the AI community was 'dismayed'",
+   "note":"An identified summary asserts dismay without a source or a count, which is the same unbacked shape as the essay's own sentence and adds nothing a reader could check. No atom minted."}
+ ],
+ "body":"What was sought: any contemporaneous measurement, a poll, a survey, a conference vote, a count of published objections, that would carry the word 'majority' in the essay's chess paragraph.\n\nWhat came back: named critics and no numbers. McCarthy is the best of them, because he wrote the objection down under his own name and it is now in this corpus as a primary source. What nobody appears to have done is count.\n\nCoverage bounds, and they matter here because the absence is doing work. Both acts ran against one general web index, in English, and reached only material that has been digitised and indexed. The place such a measurement would live, if it exists, is the International Computer Chess Association journal and the conference proceedings of the period, which are largely behind paywalls or in scanned archives that a general web search does not read. This survey therefore supports a sparseness reading, not an absence one: it says the claim is not backed anywhere a reader can easily check, not that no such evidence exists.\n\nWhat I would search differently: the ICCA Journal 1997-1999 volumes directly, and the AI Magazine coverage of the match, rather than the open web."
+},
+
+{
+ "id":"hmm-entrant-darpa-sur-2026-08-26",
+ "conducted":"2026-08-26",
+ "title":"Evidence that a hidden-Markov-model system was the winning statistical side of the 1970s DARPA Speech Understanding Research programme",
+ "searches":[
+  {"tool":"WebSearch tool in Claude Code (claude-opus-5 session, US web index)",
+   "query":"DARPA Speech Understanding Research 1971 1976 Harpy Hearsay-II Dragon HMM which system won Klatt review",
+   "scope":"the open web as that index covers it, English, no date restriction",
+   "hits_reported":"ten links; no total given",
+   "timestamp":"2026-08-26"},
+  {"tool":"WebSearch tool in Claude Code (claude-opus-5 session, US web index)",
+   "query":"Harpy won DARPA speech understanding 1976 met goals \"not\" hidden Markov model beam search precompiled network Sutton bitter lesson wrong speech",
+   "scope":"the open web as that index covers it, English, no date restriction",
+   "hits_reported":"ten links; no total given",
+   "timestamp":"2026-08-26"},
+  {"tool":"grep (BSD grep, macOS) over the corpus's normalized texts",
+   "query":"Markov, case-insensitive, across corpus/normalized/lowerre-1980-harpy.md and corpus/normalized/erman-1980-hearsay-ii.md",
+   "scope":"the two primary DARPA-programme texts this corpus holds",
+   "hits_reported":"0 lines in the held excerpts",
+   "timestamp":"2026-08-26"}
+ ],
+ "notable_results":[
+  {"what":"Harpy, not an HMM system, is the system that met and exceeded the programme's goals",
+   "note":"The primary source found by these acts and then taken into the corpus states that Harpy met all specifications and beat several. Its own account credits a compiled network of hand-specified knowledge sources and a beam search, and credits Baker's Dragon for the network representation. Dragon, the system nearest to the HMM tradition, is not recorded as having met the goals.",
+   "atoms":["bl-067","bl-069"]},
+  {"what":"HMM dominance is dated to the 1980s, not the 1970s",
+   "note":"Two independent statements place the CMU adoption of HMMs about a decade after Baum's late-1960s mathematics, and HMM dominance in the 1980s. That is after the programme the essay's sentence describes.",
+   "atoms":["bl-062","bl-065"]}
+ ],
+ "body":"What was sought: any source placing an HMM-based system on the winning side of the 1971-1976 DARPA programme, which is what the essay's speech paragraph asserts.\n\nWhat came back: the opposite, consistently. The system that met the goals was Harpy, whose own authors describe a knowledge compiler turning hand-written grammar, pronunciation and juncture rules into one large network searched by beam search. The statistical turn the essay is describing is real; it is a decade late for the competition it is attached to.\n\nThis survey is cited for a density reading rather than an absence one: the ground is well covered and it says something other than what the claim says. Coverage bounds: two general web acts plus a grep of the two primary texts this corpus holds in excerpt. The excerpts are short, so the grep result is evidence about the excerpts and not about the whole papers."
+},
+
+{
+ "id":"short-term-knowledge-counterexamples-2026-08-26",
+ "conducted":"2026-08-26",
+ "title":"Documented cases where building human knowledge into a system failed to help even in the short term",
+ "searches":[
+  {"tool":"WebSearch tool in Claude Code (claude-opus-5 session, US web index)",
+   "query":"counterexample \"building in human knowledge\" hurt short term performance machine learning inductive bias no free lunch harmful prior",
+   "scope":"the open web as that index covers it, English, no date restriction",
+   "hits_reported":"ten links; the instrument's own summary states that the specific counterexamples were not addressed in the results",
+   "timestamp":"2026-08-26"}
+ ],
+ "notable_results":[
+  {"what":"A literature arguing the reverse",
+   "note":"What the act returned instead was the inductive-bias literature: that some bias over the space of functions is necessary for generalization at all, and that biases matched to the problem help. That is consistent with the essay's third observation and does not test it.",
+   "atoms":["bl-111"]}
+ ],
+ "body":"What was sought: a single documented instance that would falsify the word 'always' in the essay's second historical observation, a case where built-in human knowledge did not help even at the start.\n\nWhat came back: nothing of that shape, in one act. The instrument's own summary said so.\n\nCoverage bounds, and they are severe. One query, one index, and a phrasing that assumes the counterexample would be described in the essay's vocabulary rather than in the vocabulary of whatever field it happened in. A negative result of this weight is close to no evidence: it says the claim was not cheaply refuted, and nothing more. Recorded so that the reading is visible rather than implied.\n\nWhat I would search differently: ablation studies by field, where a hand-designed component is removed and performance rises, which is where such an instance would actually be reported and which would need a per-field search rather than one general query."
+},
+
+{
+ "id":"field-practice-quantification-2026-08-26",
+ "conducted":"2026-08-26",
+ "title":"A count or survey establishing that most AI research assumes the agent's available computation is constant",
+ "searches":[
+  {"tool":"WebSearch tool in Claude Code (claude-opus-5 session, US web index)",
+   "query":"critiques rebuttals \"The Bitter Lesson\" Sutton wrong misreading AlphaFold inductive bias counterexample essay",
+   "scope":"the open web as that index covers it, English, no date restriction; run as a sweep for both published criticism of the essay and any quantification of its premises",
+   "hits_reported":"ten links; no total given",
+   "timestamp":"2026-08-26"}
+ ],
+ "notable_results":[
+  {"what":"Published criticism exists in quantity; quantification of the field's assumptions does not",
+   "note":"The act returned a substantial critical literature on the essay, several pieces of which are now sources in this corpus. None of it counts papers, and no bibliometric study of the fixed-compute assumption surfaced. The essay's third sentence remains an unmeasured claim about a literature."}
+ ],
+ "body":"What was sought: whether anyone has counted, in the way a bibliometric study counts, how much of the AI literature holds the agent's compute budget fixed.\n\nWhat came back: no count, and a good deal of argument about the essay itself. The sweep was run as one act because the two things live in the same result space, which is itself a finding about the discourse: the essay is argued with and not measured against.\n\nCoverage bounds: one act, one general index. A bibliometric study of this kind would be findable if it existed and were indexed, so a single null act is worth a little more here than in the survey above, but not much. Nothing in this corpus should be read as showing the claim false; it is unmeasured, which is a different state."
+}
+]
