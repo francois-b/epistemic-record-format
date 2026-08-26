@@ -191,7 +191,7 @@ requirements:
   ERF-59:
     tests: [fixtures/invalid/manifest-missing-field, schema]
   ERF-60:
-    tests: [fixtures/invalid/unsupported-major-version]
+    tests: [fixtures/invalid/unsupported-major-version, fixtures/valid/newer-minor-version-extends]
   ERF-61:
     tests: [schema]
     note: was untestable-by-design; the shape half is now in erf.schema.json and the gate holds it

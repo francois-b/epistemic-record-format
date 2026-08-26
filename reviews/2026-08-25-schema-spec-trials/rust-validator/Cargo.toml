@@ -1,0 +1,17 @@
+[package]
+name = "erfval"
+version = "0.1.0"
+edition = "2021"
+description = "A strict validator for the Epistemic Record Format, built cold from SPEC/SCHEMA/BINDING"
+
+[dependencies]
+yaml-rust2 = "0.12"
+serde_json = { version = "1", features = ["preserve_order"] }
+jsonschema = { version = "0.51", default-features = false }
+unicode-normalization = "0.1"
+unicode-general-category = "1"
+walkdir = "2"
+sha2 = "0.11"
+
+[profile.release]
+debug = false

@@ -1076,10 +1076,17 @@ raw or normalized, and are the model's.
   does not support, and MUST say so when it does. For an unsupported MINOR
   version it MUST either preserve unrecognized content losslessly or refuse
   with an explicit diagnostic; silently dropping what it does not
-  understand is forbidden. Reading a corpus under the wrong major version
-  is worse than refusing it, because the failure is silent: fields shift
-  meaning and nothing in the file announces the mismatch. Migrations
-  between majors are explicit.
+  understand is forbidden. A validator therefore reads `spec_version`
+  before anything else and sets its strictness by it: under a version it
+  knows, an unknown record type or field is a producer error (`ERF-55`);
+  under a MINOR version newer than it knows, the same content is expected,
+  and the validator MUST preserve it, report it as unrecognized, and MUST
+  NOT count it as a violation. This is what lets a later minor add a
+  record type without an earlier validator calling the corpus
+  non-conforming. Reading a corpus under the wrong major version is worse
+  than refusing it, because the failure is silent: fields shift meaning
+  and nothing in the file announces the mismatch. Migrations between
+  majors are explicit.
 - **ERF-61** `spec_version` MUST follow Semantic Versioning 2.0.0, where
   a MAJOR increment means records of the previous major are unreadable or
   read with changed meaning, and a MINOR increment is an addition an older

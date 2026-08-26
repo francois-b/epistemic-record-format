@@ -45,11 +45,33 @@ function instance(path: string): unknown {
   return ["claim", "survey", "narrative"].includes(String(d["type"])) ? { ...d, body } : d;
 }
 
+/**
+ * `ERF-60`: strictness follows the declared version. A corpus declaring a
+ * MINOR newer than this schema knows may carry types and fields the schema
+ * has no branch for; validating it against this schema would call expected
+ * content a violation. Such a corpus is skipped here and exercised by the
+ * loader's own test instead.
+ */
+const KNOWN_MINOR = 9;
+function declaresNewerMinor(dir: string): boolean {
+  for (const f of walk(dir)) {
+    if (!/\.ya?ml$/.test(f)) continue;
+    const d = yaml.load(readFileSync(f, "utf8"), { schema: yaml.JSON_SCHEMA }) as Record<string, unknown> | null;
+    if (d && d["type"] === "corpus") {
+      const [maj, min] = String(d["spec_version"] ?? "0.0").split(".");
+      return maj === "0" && Number(min) > KNOWN_MINOR;
+    }
+  }
+  return false;
+}
+
 test("every valid fixture, spirit fixture and example record validates against erf.schema.json", async (t) => {
   let n = 0;
   for (const root of [join(FIXTURES, "valid"), join(FIXTURES, "spirit"), join(REPO, "examples", "corpora", "minimal")]) {
     if (!existsSync(root)) continue;
+    const skip = new Set(readdirSync(root).map((d) => join(root, d)).filter((d) => statSync(d).isDirectory() && declaresNewerMinor(d)));
     for (const f of walk(root)) {
+      if ([...skip].some((d) => f.startsWith(d + "/"))) continue;
       const inst = instance(f); if (inst === null) continue;
       n++;
       await t.test(f.slice(REPO.length + 1), () => {

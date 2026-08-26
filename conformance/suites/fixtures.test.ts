@@ -167,6 +167,21 @@ test("two standings at one instant: the later in the ledger is current, and it i
   assert.equal(standingTies(c).length, 1);
 });
 
+/**
+ * `ERF-60`: a validator sets its strictness by the declared version. A
+ * corpus from a later minor carries a record type and a field this consumer
+ * does not know; both are preserved and reported, and neither is a
+ * violation. The same field under 0.9.0 is ERF-55's violation, which
+ * invalid/unknown-field-originated asserts.
+ */
+test("content from a newer minor version is preserved and reported, not rejected", () => {
+  const c = loadCorpus(join(FIXTURES, "valid", "newer-minor-version-extends"));
+  assert.deepEqual(c.findings, [], "nothing here is a violation under a newer minor");
+  assert.ok(c.newerMinor, "the loader noticed the newer version");
+  assert.equal(c.newerMinor!.fields.length, 1, "the unknown field is reported");
+  assert.ok(c.unrecognized.some((u) => u.type === "question"), "the unknown type is reported");
+});
+
 test("invalid fixtures are rejected, each citing its requirement", async (t) => {
   const dir = join(FIXTURES, "invalid");
   for (const name of dirsIn(dir)) {

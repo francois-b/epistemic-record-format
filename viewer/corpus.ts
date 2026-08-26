@@ -116,7 +116,17 @@ export interface LoadedCorpus {
    * for naming sources it had simply declined to load.
    */
   unrecognized: { path: string; type: string | null }[];
+  /**
+   * `ERF-60`: content from a MINOR version newer than this consumer knows.
+   * Unknown fields under a known record type land here instead of in
+   * `findings`, preserved and reported, never a violation. Null when the
+   * corpus declares a version this consumer knows.
+   */
+  newerMinor: { declared: string; fields: ConformanceFinding[] } | null;
 }
+
+/** The newest MINOR of major 0 this consumer implements (`ERF-60`). */
+const KNOWN_MINOR = 9;
 
 const FM = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;
 
@@ -438,6 +448,13 @@ export function loadCorpus(dir: string): LoadedCorpus {
   // said out loud, and the records are still preserved rather than dropped.
   mustBeString("(declaration)", "spec_version", manifest?.spec_version, findings);
   const major = String(manifest?.spec_version ?? "").split(".")[0];
+  const minor = Number(String(manifest?.spec_version ?? "").split(".")[1] ?? "0");
+  // `ERF-60`: strictness follows the declared version. Under a newer minor,
+  // unknown fields are expected content, reported rather than counted.
+  const newerMinor = major === "0" && minor > KNOWN_MINOR
+    ? { declared: String(manifest.spec_version), fields: [] as ConformanceFinding[] }
+    : null;
+  const fieldSink: ConformanceFinding[] = newerMinor ? newerMinor.fields : findings;
   if (manifest?.spec_version && major !== "0") {
     findings.push({
       record: "(declaration)",
@@ -487,7 +504,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
     const { data } = rec;
     const id = String(data["id"] ?? basename(f, ".md"));
     requireFields(data, id, ["id", "type", "corpus", "finding", "quote", "source", "source_quality", "created"], findings);
-    checkKnownFields(data, id, "atom", findings);
+    checkKnownFields(data, id, "atom", fieldSink);
     checkStampOrder(data, id, findings);
     const fa = arr<{ verdict?: unknown }>(data["finding_audit"]);
     // `ERF-12`: the verdict union is compile-time only, and YAML is cast
@@ -523,7 +540,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
     const { data, body } = rec;
     const id = String(data["id"] ?? basename(f, ".md"));
     requireFields(data, id, ["id", "type", "corpus", "title", "epistemic_kind", "created"], findings);
-    checkKnownFields(data, id, "claim", findings);
+    checkKnownFields(data, id, "claim", fieldSink);
     checkStampOrder(data, id, findings);
     checkBareIds(arr<string>(data["atoms_for"]), id, "atoms_for", findings);
     checkBareIds(arr<string>(data["atoms_against"]), id, "atoms_against", findings);
@@ -578,7 +595,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
     const { data, body } = rec;
     const id = String(data["id"] ?? basename(f, ".md"));
     requireFields(data, id, ["id", "type", "corpus", "title", "conducted"], findings);
-    checkKnownFields(data, id, "survey", findings);
+    checkKnownFields(data, id, "survey", fieldSink);
     checkStampOrder(data, id, findings);
     for (const [i, act] of arr<Record<string, unknown>>(data["searches"]).entries()) {
       for (const k of ["tool", "query", "scope", "hits_reported"]) {
@@ -819,5 +836,5 @@ export function loadCorpus(dir: string): LoadedCorpus {
     }
   }
 
-  return { manifest, atoms, claims, surveys, narratives, sources, findings, unrecognized };
+  return { manifest, atoms, claims, surveys, narratives, sources, findings, unrecognized, newerMinor };
 }

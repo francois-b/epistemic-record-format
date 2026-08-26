@@ -539,6 +539,10 @@ ${list(brokenAnchors(c).map(esc))}
 <p class="sub">Flags, not violations. <span class="id">ERF-43</span>: a withdrawal elsewhere creates this with no edit to the argument.</p>
 ${list(retiredPremises(c).map(esc))}
 
+${c.newerMinor ? `<h2>Content from a newer minor version, preserved</h2>
+<p class="sub">The corpus declares <span class="id">${esc(c.newerMinor.declared)}</span>, newer than this consumer knows. <span class="id">ERF-60</span>: unknown fields are expected, reported, and not violations.</p>
+${list(c.newerMinor.fields.map((f) => `<span class="id">${esc(f.record)}</span> <span class="id">${esc(f.field)}</span>`))}` : ""}
+
 <h2>Files this consumer did not recognize</h2>
 <p class="sub">Reported, not rejected. A tolerant consumer preserves what it cannot interpret and says so; an unrecognized file is not a violation.</p>
 ${list(c.unrecognized.map((u) => `<span class="id">${esc(u.path)}</span> ${u.type ? `declares <span class="t">${esc(u.type)}</span>, which this consumer does not implement` : "carries no <span class=\"id\">type</span>"}`))}

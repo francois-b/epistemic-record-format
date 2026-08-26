@@ -1,0 +1,5 @@
+type: corpus
+id: fixture-newer-minor
+title: "A corpus from a later minor version"
+spec_version: "0.10.0"
+classification: public
