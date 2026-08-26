@@ -1,0 +1,6 @@
+requirement: YAMLB-3
+record: fx-001
+field: (file)
+because: >
+  A document closes at the first line that is exactly `---`; YAML's own
+  document-end marker `...` is not a fence here, so this file never closes.

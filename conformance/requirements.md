@@ -25,7 +25,7 @@ document says, not that no class applies. Every requirement binds the
 Validator class to the extent it is machine-checkable, which is why that class
 is not repeated down the column.
 
-49 requirements.
+50 requirements.
 
 | id | gist | class | what defends it |
 |---|---|---|---|
@@ -73,6 +73,7 @@ is not repeated down the column.
 | [`ERF-72`](../SPEC.md#erf-72) | A field named with the prefix `x_` is an extension field: a producer MAY originate one anywhere, a validator MUST NOT… |  | `fixtures/valid/extension-field`, `schema` |
 | [`ERF-60`](../SPEC.md#erf-60) | A consumer MAY refuse a corpus whose MAJOR `spec_version` it does not support, and MUST say so when it does. | Consumer | `fixtures/invalid/unsupported-major-version`, `fixtures/valid/newer-minor-version-extends` |
 | [`ERF-62`](../SPEC.md#erf-62) | A corpus MUST have exactly one authoritative home. | Corpus | untestable by design: which store is authoritative is a deployment fact |
+| [`YAMLB-3`](../serialization/yaml-markdown.md#yamlb-3) | A document MUST be one file matching `document` below: a frontmatter block fenced by `---` lines, then the body. |  | `fixtures/invalid/fence-closed-with-dots`, `fixtures/invalid/frontmatter-unterminated`, `fixtures/valid/dashes-inside-a-quoted-scalar`, `fixtures/valid/body-leading-blank-lines`, `fixtures/valid/stray-file-without-fence` |
 | [`ERF-67`](../serialization/yaml-markdown.md#erf-67) | A record body is CommonMark, and a file MUST be UTF-8 encoded with LF line endings and no byte-order mark. |  | `fixtures/invalid/bom-file`, `fixtures/invalid/bom-and-crlf` |
 | [`ERF-65`](../serialization/yaml-markdown.md#erf-65) | Frontmatter MUST parse under YAML 1.2 using the **JSON schema**, the narrowest of the three the specification defines. | Producer, Validator | `serialization`, `fixtures/invalid/as-of-date-unquoted-year` |
 | [`YAMLB-2`](../serialization/yaml-markdown.md#yamlb-2) | An empty list MUST be omitted on the wire, and a reader materializes it (`ERF-56`); an optional mapping that is present… |  | `fixtures/valid/evidence-at-stance-faced-nothing`, `hygiene` |

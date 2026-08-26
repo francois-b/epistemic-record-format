@@ -190,6 +190,15 @@ test("an unsearched proposal is flagged, and the flag says nobody stands on it",
   assert.ok(!stoodOn(cl), "and a proposal, not a ruling");
 });
 
+test("YAMLB-3: a file without a fence is unrecognized, and a body starts at its first non-blank line", () => {
+  const stray = loadCorpus(join(FIXTURES, "valid", "stray-file-without-fence"));
+  assert.deepEqual(stray.findings, []);
+  assert.deepEqual(stray.unrecognized.map((u) => u.path), ["notes.md"]);
+  const blank = loadCorpus(join(FIXTURES, "valid", "body-leading-blank-lines"));
+  assert.deepEqual(blank.findings, []);
+  assert.ok(blank.claims.get("fx-claim")!.body.startsWith("The recorded total was seventeen units"), "leading line breaks are not part of the body");
+});
+
 test("invalid fixtures are rejected, each citing its requirement", async (t) => {
   const dir = join(FIXTURES, "invalid");
   for (const name of dirsIn(dir)) {

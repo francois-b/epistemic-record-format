@@ -23,6 +23,13 @@ model to bytes; section 7, `ERF-53`) is a *serialization*. The word
 *binding* now means a narrative binding and nothing else. No requirement
 changed meaning; `YAMLB` ids keep their letters.
 
+`YAMLB-3` added, 2026-08-26: the document grammar (opening `---` line,
+YAML lines, the first later line that is exactly `---`, then the body with
+leading and trailing line breaks removed), in ABNF; a fence-opened file that
+fails it is a finding, a file with no fence is unrecognized. `YAMLB-1`'s
+grammar is now ABNF (RFC 5234 with RFC 7405 `%s`); no rule changed, and
+the case-sensitivity of `claims:` and `bound-at=` is now stated.
+
 ## 0.9.0 — 2026-08-26
 
 First published version: forty-nine requirements, five of them in the

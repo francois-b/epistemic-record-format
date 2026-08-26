@@ -1,0 +1,6 @@
+type: sources
+sources:
+  fx-src:
+    citation_text: "Fixture source, 2026"
+    status: "not-redistributable"
+    reason: "Fixture; no capture ships."

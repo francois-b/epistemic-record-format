@@ -4,7 +4,7 @@ purpose: "How the model of SPEC.md section 3 maps to files: one record per file,
 status: normative
 serialization_version: 1
 spec_version: "0.9.0"
-last_updated: 2026-08-25
+last_updated: 2026-08-26
 ---
 
 # The YAML/Markdown serialization, version 1
@@ -24,6 +24,13 @@ Rules that moved here from `SPEC.md` on 2026-08-25 keep the `ERF` ids they
 carried, so that nothing citing them breaks; they retire there and are never
 reused. Rules that were always this serialization's own carry `YAMLB` ids, a flat
 sequence under the same discipline.
+
+Grammars in this document are ABNF (RFC 5234), with `%s` marking a
+case-sensitive string (RFC 7405). Terminal values are Unicode scalar values,
+since every file is UTF-8 (`ERF-67`), and a rule written between `<` and `>`
+is a prose description delegating to the standard it names (RFC 5234,
+section 4). `YAMLB-1` was written in an informal EBNF until 2026-08-26; the
+conversion changed no rule.
 
 ## 1. The interchange form
 
@@ -62,6 +69,44 @@ body and nothing standard names that pair.
 That a canonical interchange form exists, and that a store may hold a corpus
 any other way provided it round-trips without loss, is `ERF-53` in
 `SPEC.md`. That the form is this one is this section.
+
+- <a id="yamlb-3"></a>**YAMLB-3** A document MUST be one file matching `document` below: a
+  frontmatter block fenced by `---` lines, then the body.
+
+```abnf
+document    = frontmatter body
+frontmatter = fence *yaml-line fence
+fence       = "---" LF                 ; three hyphens alone on a line
+yaml-line   = <any line other than "---", its LF included>
+                ; the yaml-lines together are one YAML 1.2 document in
+                ; the JSON-schema profile (ERF-65, ERF-66)
+body        = *OCTET                   ; CommonMark, UTF-8, LF, no BOM (ERF-67)
+LF          = %x0A
+```
+
+  The frontmatter closes at the first line that is exactly `---`, so no
+  frontmatter value may span a line reading `---`; nothing in the model
+  needs one. `...`, YAML's own document-end marker, does not close a
+  frontmatter block here. The `body` value is the bytes after the closing
+  fence with leading and trailing line breaks removed, so that `ERF-18`'s
+  "opens with the title verbatim" does not turn on a blank line; an atom's
+  body is empty and its file ends at the closing fence, whose final LF a
+  producer MUST write and a reader SHOULD accept as absent at end of file.
+  Recognition precedes validation, as for `YAMLB-1`: a file that does not
+  open with a fence is not a document and is reported as unrecognized
+  (`ERF-54`), never read as a record with empty frontmatter; a file that
+  opens with a fence and does not match `document` is a document that fails
+  this rule, and a validator MUST report it. A held text, raw or normalized,
+  is not a document and carries no frontmatter (what a normalized text may
+  hold beyond the work's text is `B-57`).
+
+  The convention "YAML frontmatter, then markdown" has no standard behind
+  it: Jekyll, Pandoc and Obsidian each split it differently (closing on
+  `...`, tolerating a missing opening fence, keeping or dropping the blank
+  line after it). This is the one seam of the file that no standard the
+  format cites defines, so the format defines it. Everything below the seam
+  is delegated: the frontmatter to YAML 1.2 and the schema, the body to
+  CommonMark.
 
 ## 2. Encoding and body
 
@@ -128,16 +173,21 @@ any other way provided it round-trips without loss, is `ERF-53` in
 <!-- claims: no-continuous-claim-check "no test that runs on claims" bound-at=2026-08-23 -->
 ```
 
-```
-narrative-binding ::= "<!--" ws* "claims:" ws+ ids ws+ anchor
-                      ws+ "bound-at=" date ws* "-->"
-date     ::= YYYY "-" MM "-" DD
-ids      ::= id (ws+ id)*
-id       ::= one or more characters, none of them whitespace, '"', '<' or '>'
-anchor   ::= '"' char+ '"'
-char     ::= any character other than '"' and '\', or one of the
-             two-character escapes '\"' and '\\'
-ws       ::= any Unicode White_Space character, line breaks included
+```abnf
+narrative-binding = "<!--" *ws %s"claims:" 1*ws ids 1*ws anchor
+                    1*ws %s"bound-at=" date *ws "-->"
+ids         = id *(1*ws id)
+id          = 1*id-char
+id-char     = <any Unicode scalar value that is not White_Space and is
+               not DQUOTE, "<" or ">">
+anchor      = DQUOTE 1*anchor-char DQUOTE
+anchor-char = escape / <any Unicode scalar value other than DQUOTE and "\">
+escape      = "\" (DQUOTE / "\")
+date        = 4DIGIT "-" 2DIGIT "-" 2DIGIT
+ws          = <any Unicode scalar value with the White_Space property,
+               line breaks included>
+DQUOTE      = %x22
+DIGIT       = %x30-39
 ```
 
   Ids are separated by whitespace and never by commas, because a comma
@@ -289,5 +339,7 @@ trial and is the proof that the model survives leaving this one.
 ## References
 
 - YAML 1.2: yaml.org/spec/1.2.2
+- ABNF: RFC 5234 (Augmented BNF for Syntax Specifications), RFC 7405
+  (case-sensitive string support)
 - CommonMark 0.31.2: spec.commonmark.org
 - RFC 3629, *UTF-8, a transformation format of ISO 10646* (STD 63)

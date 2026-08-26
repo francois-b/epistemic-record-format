@@ -143,7 +143,30 @@ export interface LoadedCorpus {
 /** The newest MINOR of major 0 this consumer implements (`ERF-60`). */
 const KNOWN_MINOR = 9;
 
-const FM = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;
+/**
+ * `YAMLB-3`: a document is an opening `---` line, YAML lines, and the first
+ * later line that is exactly `---`; the body is what follows, with leading
+ * and trailing line breaks removed. `...` is not a fence. CRLF is tolerated
+ * here and reported under `ERF-67`; a missing final LF at end of file is
+ * accepted, as the rule says a reader should. Returns null when the file
+ * does not open with a fence (not a document), and a string naming the
+ * defect when it opens with one and fails the grammar.
+ */
+function splitDocument(text: string): { fm: string; body: string } | null | string {
+  const lines = text.split(/(?<=\n)/);
+  if (!/^---\r?\n$/.test(lines[0] ?? "") && (lines[0] ?? "") !== "---") return null;
+  for (let i = 1; i < lines.length; i++) {
+    const line = (lines[i] ?? "").replace(/\r?\n$/, "");
+    if (line === "---") {
+      const body = lines.slice(i + 1).join("").replace(/^(\r?\n)+/, "").replace(/(\r?\n)+$/, "");
+      return { fm: lines.slice(1, i).join(""), body };
+    }
+  }
+  const dots = lines.some((l, i) => i > 0 && l.replace(/\r?\n$/, "") === "...");
+  return dots
+    ? "the frontmatter is closed with `...`, which is not a fence; a document closes at the first line that is exactly `---` (YAMLB-3)"
+    : "the frontmatter opens with `---` and no later line is exactly `---`, so the document never closes (YAMLB-3)";
+}
 
 /** `ERF-12`: the three verdicts, and nothing else. A tool failure is not one. */
 const VERDICTS = new Set(["SUPPORTED", "PARTIAL", "UNSUPPORTED"]);
@@ -208,9 +231,10 @@ function checkSchema(instance: unknown, record: string, findings: ConformanceFin
 const YAML_GRAPH = /(^\s*(?:[\w.-]+:|-)\s+|[\[{,]\s*)(&[A-Za-z0-9_-]+|\*[A-Za-z0-9_-]+|!![A-Za-z]+)(\s|$|[,\]}])/m;
 
 function splitFrontmatter(text: string): { data: Record<string, unknown>; body: string } {
-  const m = FM.exec(text);
-  if (!m) throw new Error("no YAML frontmatter");
-  const raw = m[1] ?? "";
+  const split = splitDocument(text);
+  if (split === null) throw new Error("no YAML frontmatter");
+  if (typeof split === "string") throw new Error(split);
+  const raw = split.fm;
   if (YAML_GRAPH.test(raw)) {
     throw new Error(
       "frontmatter uses a YAML anchor, alias, or explicit tag; a record is a "
@@ -218,7 +242,7 @@ function splitFrontmatter(text: string): { data: Record<string, unknown>; body: 
     );
   }
   const data = (yaml.load(raw, YAML_OPTS) ?? {}) as Record<string, unknown>;
-  return { data, body: (m[2] ?? "").trim() };
+  return { data, body: split.body };
 }
 
 /**
@@ -260,7 +284,8 @@ function fileType(path: string): string | null {
   try {
     const raw = readFileSync(path, "utf8");
     const text = raw.charCodeAt(0) === 0xfeff ? raw.slice(1) : raw;
-    const fm = /\.ya?ml$/i.test(path) ? text : (FM.exec(text)?.[1] ?? "");
+    const split = /\.ya?ml$/i.test(path) ? null : splitDocument(text);
+    const fm = /\.ya?ml$/i.test(path) ? text : (typeof split === "object" && split ? split.fm : "");
     const m = /^type:\s*["']?([a-z-]+)["']?\s*$/m.exec(fm);
     return m?.[1] ?? null;
   } catch { return null; }
@@ -480,8 +505,21 @@ export function loadCorpus(dir: string): LoadedCorpus {
   const typed = new Map<string, string>();
   for (const f of files) { const t = fileType(f); if (t) typed.set(f, t); }
   const KNOWN = new Set(["atom", "claim", "survey", "corpus", "sources", "narrative"]);
+  // `YAMLB-3`: recognition precedes validation. A markdown file that opens
+  // with a fence is a document; one that then fails the grammar is reported
+  // here, since it never reaches a record reader, and is not "unrecognized".
+  const malformed = new Set<string>();
+  for (const f of files) {
+    if (typed.has(f) || /\.ya?ml$/i.test(f)) continue;
+    const raw = readFileSync(f, "utf8");
+    const split = splitDocument(raw.charCodeAt(0) === 0xfeff ? raw.slice(1) : raw);
+    if (typeof split === "string") {
+      malformed.add(f);
+      findings.push({ record: basename(f, ".md"), field: "(file)", detail: split });
+    }
+  }
   const unrecognized = files
-    .filter((f) => !KNOWN.has(typed.get(f) ?? ""))
+    .filter((f) => !KNOWN.has(typed.get(f) ?? "") && !malformed.has(f))
     .map((f) => ({ path: relative(dir, f), type: typed.get(f) ?? null }));
   const declarations = [...typed].filter(([, t]) => t === "corpus").map(([f]) => f);
   if (declarations.length > 1) {

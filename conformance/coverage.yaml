@@ -172,3 +172,11 @@ requirements:
   YAMLB-2:
     tests: [fixtures/valid/evidence-at-stance-faced-nothing, hygiene]
     note: the wire spelling of presence; the semantics are ERF-56's.
+  YAMLB-3:
+    tests: [fixtures/invalid/fence-closed-with-dots, fixtures/invalid/frontmatter-unterminated,
+            fixtures/valid/dashes-inside-a-quoted-scalar, fixtures/valid/body-leading-blank-lines,
+            fixtures/valid/stray-file-without-fence]
+    note: >
+      the fence grammar and the body value; a file without a fence is
+      unrecognized (ERF-54), a fence-opened file that fails the grammar is a
+      finding.
