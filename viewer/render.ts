@@ -12,7 +12,7 @@ import type { LoadedCorpus, Narrative } from "./corpus.ts";
 import { bindingCandidates, bindingRe, shipsWithCorpus } from "./corpus.ts";
 import {
   backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,
-  brokenAnchors, evidenceRefsFlagged, retiredPremises, standingTies,
+  brokenAnchors, evidenceRefsFlagged, retiredPremises, standingTies, undatedRetrievals,
   disposition, normalizeForCheck, quoteCheck, resolvable, staleAudits,
   staleEvidenceAudit, unbacked,
 } from "./compute.ts";
@@ -542,6 +542,10 @@ ${list(retiredPremises(c).map(esc))}
 ${c.newerMinor ? `<h2>Content from a newer minor version, preserved</h2>
 <p class="sub">The corpus declares <span class="id">${esc(c.newerMinor.declared)}</span>, newer than this consumer knows. <span class="id">ERF-60</span>: unknown fields are expected, reported, and not violations.</p>
 ${list(c.newerMinor.fields.map((f) => `<span class="id">${esc(f.record)}</span> <span class="id">${esc(f.field)}</span>`))}` : ""}
+
+<h2>Retrievals with no date</h2>
+<p class="sub">Flags. <span class="id">ERF-2</span>: a web page differs between fetches, and without <span class="id">received.timestamp</span> nothing says which version was read.</p>
+${list(undatedRetrievals(c).map(esc))}
 
 <h2>Files this consumer did not recognize</h2>
 <p class="sub">Reported, not rejected. A tolerant consumer preserves what it cannot interpret and says so; an unrecognized file is not a violation.</p>

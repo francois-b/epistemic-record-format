@@ -1,0 +1,5 @@
+type: corpus
+id: fixture-pdf-no-extraction
+title: "A PDF source that names no extracting tool"
+spec_version: "0.9.0"
+classification: public

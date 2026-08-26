@@ -476,6 +476,21 @@ export function brokenAnchors(c: LoadedCorpus): string[] {
 }
 
 /**
+ * `ERF-2`: a source whose raw file is mutable at its location MUST record
+ * `received.timestamp`. Whether a location is mutable is not decidable
+ * from the corpus, so a URL with no timestamp is flagged rather than
+ * failed: a reader cannot tell which version was read. Adopted from the
+ * Rust validator's differential run.
+ */
+export function undatedRetrievals(c: LoadedCorpus): string[] {
+  const out: string[] = [];
+  for (const [id, src] of c.sources) {
+    if (src.received?.url && !src.received.timestamp) out.push(`${id}: received.url with no received.timestamp; nothing says which version was read`);
+  }
+  return out;
+}
+
+/**
  * `ERF-43`: a validator MUST FLAG a closure terminating in a leaf whose
  * disposition is `retired`. A flag and not a violation, because a
  * withdrawal elsewhere creates the condition with no edit to the argument,

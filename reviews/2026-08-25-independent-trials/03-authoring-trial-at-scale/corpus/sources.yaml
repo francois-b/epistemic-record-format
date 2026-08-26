@@ -26,7 +26,7 @@ sources:
     extraction: pymupdf4llm 0.3.4
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-bain-tech-report-2025:
     citation_text: 'Crawford, David; Hoecker, Anne; Aulanier, Dana (eds.), "Technology
       Report 2025: AI leaders are extending their edge" (Bain & Company, 6th annual
@@ -52,7 +52,7 @@ sources:
     extraction: pymupdf4llm 0.3.4
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-burry-nvidia-coreweave-depreciation-2025:
     citation_text: Michael Burry, "Substack Note on CoreWeave's Off-Balance-Sheet
       Structure" (Cassandra Unchained, February 2026)
@@ -71,7 +71,7 @@ sources:
     normalized: captures/bear-burry-nvidia-coreweave-depreciation-2025.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-cahn-600b-question-2024:
     citation_text: David Cahn, "AI's $600B Question" (Sequoia Capital, June 2024)
     citation:
@@ -89,7 +89,7 @@ sources:
     normalized: captures/bear-cahn-600b-question-2024.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-cahn-600b-question-followup:
     citation_text: 'David Cahn, "AI in 2026: A Tale of Two AIs" (Sequoia Capital,
       December 2025)'
@@ -108,7 +108,7 @@ sources:
     normalized: captures/bear-cahn-600b-question-followup.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-chanos-ai-capex-short-thesis:
     citation_text: Jim Chanos (Kynikos Associates), remarks at Global Alts New York
       2026, reported in "Jim Chanos on the AI Bubble & Data Center Short Thesis"
@@ -128,7 +128,7 @@ sources:
     normalized: captures/bear-chanos-ai-capex-short-thesis.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-circular-financing-nvidia-openai-coreweave:
     citation_text: Abhishek Jadhav, "Nvidia, OpenAI, and the Trillion-Dollar Loop"
       (The Register, November 2025)
@@ -147,7 +147,7 @@ sources:
     normalized: captures/bear-circular-financing-nvidia-openai-coreweave.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-covello-goldman-too-much-spend-2024:
     citation_text: 'Covello, Jim (interviewed by Allison Nathan), "Gen AI: Too Much
       Spend, Too Little Benefit?" (Goldman Sachs Research, Top of Mind, Issue 129,
@@ -171,7 +171,7 @@ sources:
     extraction: pymupdf4llm 0.3.4
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-damodaran-ai-bubble-valuation:
     citation_text: 'Aswath Damodaran, "AI''s Bar Mitzvah Moment: From Hype & Hope
       to Business Questions!" (Musings on Markets, August 2026)'
@@ -190,7 +190,7 @@ sources:
     normalized: captures/bear-damodaran-ai-bubble-valuation.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-delloro-datacenter-capex-forecast-2025:
     citation_text: Dell'Oro Group, "Data Center Capex Surges 57 Percent in 2025
       as AI Deployments Accelerate" (Press Release, March 2026)
@@ -209,7 +209,7 @@ sources:
     normalized: captures/bear-delloro-datacenter-capex-forecast-2025.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-doomberg-ai-capex-critique:
     citation_text: Doomberg, "Old Tapes" (Doomberg newsletter, July 2026)
     citation:
@@ -227,7 +227,7 @@ sources:
     normalized: captures/bear-doomberg-ai-capex-critique.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-fortune-circular-ai-deals-accounting:
     citation_text: Fortune, "OpenAI Data Center Deal With Nvidia Comes In $145 Billion
       Lower Than Reported" (Fortune, August 2026)
@@ -247,7 +247,7 @@ sources:
     normalized: captures/bear-fortune-circular-ai-deals-accounting.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-gmo-grantham-chancellor-ai-bubble:
     citation_text: 'Jeremy Grantham and Edward Chancellor, "Valuing AI: Extreme
       Bubble, New Golden Era, or Both?" (GMO Viewpoints, January 2026)'
@@ -274,7 +274,7 @@ sources:
     extraction: pymupdf4llm 0.3.4
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-goldman-ai-bubble-debate-2025:
     citation_text: 'Cahn, David (interviewed by Allison Nathan), "AI: In a Bubble?"
       (Goldman Sachs Research, Top of Mind, Issue 143, October 2025)'
@@ -297,7 +297,7 @@ sources:
     extraction: pymupdf4llm 0.3.4
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-iea-electricity-2025:
     citation_text: International Energy Agency, "Electricity 2025" (IEA, February
       2025)
@@ -318,7 +318,7 @@ sources:
     extraction: pymupdf4llm 0.3.4
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-iea-energy-and-ai-2025:
     citation_text: International Energy Agency, "Energy and AI" (World Energy Outlook
       Special Report, April 2025)
@@ -339,7 +339,7 @@ sources:
     extraction: pymupdf4llm 0.3.4
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-kedrosky-ai-capex-critique:
     citation_text: Paul Kedrosky, "Honey, AI Capex Keeps Eating ... Everything"
       (Applied Complexity, July 2025), excerpted via Edward Conard Macro Roundup
@@ -358,7 +358,7 @@ sources:
     normalized: captures/bear-kedrosky-ai-capex-critique.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-marcus-ai-bubble:
     citation_text: Gary Marcus, "Peak bubble" (Marcus on AI, September 2025)
     citation:
@@ -376,7 +376,7 @@ sources:
     normalized: captures/bear-marcus-ai-bubble.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-mckinsey-cost-of-compute-2025:
     citation_text: 'Noffsinger, Jesse; Patel, Mark; Sachdeva, Pankaj, "The cost
       of compute: A $7 trillion race to scale data centers" (McKinsey Quarterly,
@@ -400,7 +400,7 @@ sources:
     normalized: captures/bear-mckinsey-cost-of-compute-2025.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-mit-nanda-genai-divide-2025:
     citation_text: 'Challapally, Aditya; Pease, Chris; Raskar, Ramesh; Chari, Pradyumna,
       "The GenAI Divide: State of AI in Business 2025" (MIT NANDA / Project NANDA,
@@ -428,7 +428,7 @@ sources:
     extraction: pymupdf4llm 0.3.4
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-slok-apollo-ai-bubble-dotcom:
     citation_text: Torsten Slok, "AI Bubble Today Is Bigger Than the IT Bubble in
       the 1990s" (Apollo Academy, July 2025)
@@ -470,7 +470,7 @@ sources:
     normalized: captures/bear-synergy-hyperscale-capex-2025.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-zitron-haters-guide-ai-bubble:
     citation_text: Ed Zitron, "The Hater's Guide To The AI Bubble" (Where's Your
       Ed At, July 2025)
@@ -489,7 +489,7 @@ sources:
     normalized: captures/bear-zitron-haters-guide-ai-bubble.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bear-zitron-subprime-ai-crisis:
     citation_text: Ed Zitron, "The Subprime AI Crisis" (Where's Your Ed At, September
       2024)
@@ -508,7 +508,7 @@ sources:
     normalized: captures/bear-zitron-subprime-ai-crisis.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-amzn-10q-2026q2:
     citation_text: Amazon.com, Inc., Form 10-Q for the quarter ended June 30, 2026
       (filed 2026-07-31, SEC accession 0001018724-26-000026), Item 2 (MD&A, Liquidity
@@ -521,7 +521,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
     licence_name: U.S. SEC filing, public-record financial disclosure, treated as
       freely shippable per operator instruction
   bull-amzn-earnings-release-2026q2:
@@ -535,7 +535,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-amzn-jassy-shareholder-letter-2025:
     citation_text: Andy Jassy, "Amazon CEO Andy Jassy's 2025 Letter to Shareholders",
       aboutamazon.com, published 2026-04-09
@@ -547,7 +547,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-anthropic-50b-infrastructure:
     citation_text: Anthropic, "Anthropic invests $50 billion in American AI infrastructure",
       anthropic.com/news, 2025-11-12
@@ -559,7 +559,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-anthropic-amazon-compute-2026:
     citation_text: Anthropic/Amazon, "Anthropic and Amazon expand collaboration
       for up to 5 gigawatts of new compute", anthropic.com/news, 2026-04-20
@@ -571,7 +571,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-avgo-earnings-release-2026q2:
     citation_text: Broadcom Inc., Q2 Fiscal Year 2026 earnings press release (Hock
       Tan, Kirsten Spears), Exhibit 99 to Form 8-K, 2026-06-03, SEC accession 0001730168-26-000051
@@ -583,7 +583,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-bea-gdp-q1-2026:
     citation_text: U.S. Bureau of Economic Analysis, "GDP (Advance Estimate), 1st
       Quarter 2026" (BEA 26-21), released 2026-04-30
@@ -595,7 +595,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
     licence_name: U.S. Government Work, public domain under 17 U.S.C. §105 (BEA
       is a federal statistical agency; this release is authored by federal employees
       in the course of official duties)
@@ -625,7 +625,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
     licence_name: U.S. SEC filing, public-record financial disclosure, treated as
       freely shippable per operator instruction
   bull-futurum-ai-capex-2026:
@@ -639,7 +639,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-googl-10q-2026q2:
     citation_text: Alphabet Inc., Form 10-Q for the quarter ended June 30, 2026
       (filed 2026-07-23, SEC accession 0001652044-26-000071), Item 2 (MD&A, Capital
@@ -652,7 +652,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
     licence_name: U.S. SEC filing, public-record financial disclosure, treated as
       freely shippable per operator instruction
   bull-googl-earnings-call-2026q2:
@@ -666,7 +666,7 @@ sources:
     extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-jpmorgan-ai-infrastructure-financing:
     citation_text: J.P. Morgan, "Financing AI infrastructure and U.S. data centers",
       jpmorgan.com/insights (John Servidea, Scott Wilcoxen quoted)
@@ -678,7 +678,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-meta-10q-2026q2:
     citation_text: Meta Platforms, Inc., Form 10-Q for the quarter ended June 30,
       2026 (filed 2026-07-30, SEC accession 0001628280-26-050705), Item 2 (MD&A,
@@ -691,7 +691,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
     licence_name: U.S. SEC filing, public-record financial disclosure, treated as
       freely shippable per operator instruction
   bull-meta-earnings-release-2026q2:
@@ -705,7 +705,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-meta-zuckerberg-superintelligence-letter:
     citation_text: Mark Zuckerberg, "Personal Superintelligence" (open letter),
       meta.com/superintelligence/, 2025-07-30
@@ -717,7 +717,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-msft-10k-2026:
     citation_text: Microsoft Corporation, Form 10-K for the fiscal year ended June
       30, 2026 (filed 2026-07-29, SEC accession 0001193125-26-323660), Item 1A (Risk
@@ -730,7 +730,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
     licence_name: U.S. SEC filing, statutorily mandated public disclosure; treated
       as freely shippable per operator instruction (public-record financial filing,
       not a copyright-asserted work in practice); no SPDX identifier fits precisely,
@@ -746,7 +746,7 @@ sources:
     extraction: pandoc 3.8.3 (docx to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-nvda-10q-2026q1:
     citation_text: NVIDIA Corporation, Form 10-Q for the quarter ended April 26,
       2026 (fiscal Q1 2027; filed 2026-05-20, SEC accession 0001045810-26-000052),
@@ -759,7 +759,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
     licence_name: U.S. SEC filing, public-record financial disclosure, treated as
       freely shippable per operator instruction
   bull-nvda-msft-anthropic-partnership-2026:
@@ -774,7 +774,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-nvda-openai-10gw-partnership-2026:
     citation_text: NVIDIA Corporation, "OpenAI and NVIDIA Announce Strategic Partnership
       to Deploy 10 Gigawatts of NVIDIA Systems", NVIDIA Newsroom press release
@@ -786,7 +786,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-nvda-openai-ports-pike-2026:
     citation_text: NVIDIA Corporation, "NVIDIA Guarantees SB Energy's PORTS-Pike
       Technology Campus in Ohio to Exclusively Host NVIDIA AI Compute" (2026-08-17),
@@ -799,7 +799,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-orcl-10k-2026:
     citation_text: Oracle Corporation, Form 10-K for the fiscal year ended May 31,
       2026 (filed 2026-06-22, SEC accession 0001193125-26-277521), Item 7 (MD&A,
@@ -812,7 +812,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
     licence_name: U.S. SEC filing, public-record financial disclosure, treated as
       freely shippable per operator instruction
   bull-orcl-earnings-release-2026q4:
@@ -827,7 +827,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   bull-samaltman-abundant-intelligence:
     citation_text: Sam Altman, "Abundant Intelligence", blog.samaltman.com, 2025-09-23
     received:
@@ -838,7 +838,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-acemoglu-simple-macroeconomics-ai:
     citation_text: Daron Acemoglu, "The Simple Macroeconomics of AI" (NBER Working
       Paper No. 32487, May 2024)
@@ -858,7 +858,7 @@ sources:
     extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-asml-q2-2026-results:
     citation_text: ASML Holding N.V., "ASML reports €9.3 billion total net sales
       and €2.9 billion net income in Q2 2026" (press release, 2026-07-15), Exhibit
@@ -877,7 +877,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-chen-abundant-intelligence-deficient-demand:
     citation_text: 'Xupeng Chen, "Abundant Intelligence and Deficient Demand: A
       Macro-Financial Stress Test of Rapid AI Adoption" (arXiv:2603.09209 [cs.AI],
@@ -899,7 +899,7 @@ sources:
     extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-constellation-crane-tmi-restart-2024:
     citation_text: Constellation Energy Corporation / Constellation Energy Generation,
       LLC, "Crane Clean Energy Center – Meeting the Country’s Needs for Clean and
@@ -919,7 +919,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-coreweave-ddtl4-8k-2026:
     citation_text: CoreWeave, Inc., "CoreWeave Closes Landmark $8.5 Billion Financing
       Facility, Achieving First Investment-Grade Rated GPU-Backed Financing" (press
@@ -938,7 +938,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-dominion-pjm-load-forecast-2026:
     citation_text: 'Stanley L. Blackwell (Dominion Energy, Director – Data Center
       Practice), letter to the PJM Load Analysis Team re: "Data Center Large Load
@@ -962,7 +962,7 @@ sources:
     extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-ercot-large-load-tac-report-2026:
     citation_text: 'ERCOT Large Load Integration Team, "Large Load Interconnection
       Status Update" (March TAC Report, posted to ercot.com 2026-03-12); NOTE: several
@@ -981,7 +981,7 @@ sources:
     extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-fortune-ai-debt-orgy-2026:
     citation_text: Jason Ma, "After a nearly 1,000% surge, the AI debt orgy can’t
       last forever, while hidden borrowing has exploded to $1.65 trillion" (Fortune,
@@ -1003,7 +1003,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-frb-feds-datacenter-investment-2025:
     citation_text: Eirik Eylands Brandsaas, Daniel Garcia, Robert Kurtzman, Joseph
       Nichols, and Adelia Zytek, "Estimating Aggregate Data Center Investment with
@@ -1082,7 +1082,7 @@ sources:
     extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-jll-na-datacenter-midyear-2026:
     citation_text: 'Andrew Batson and Ben Davalos, "North America Data Center Report
       Midyear 2026: Navigating historic growth and community acceptance" (JLL Insights,
@@ -1106,7 +1106,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-jones-ai-economic-future:
     citation_text: Charles I. Jones, "AI and Our Economic Future" (Stanford GSB
       and NBER, version dated 2026-05-18; also circulated as NBER Working Paper
@@ -1128,7 +1128,7 @@ sources:
     extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-odlyzko-internet-time-myth:
     citation_text: Andrew Odlyzko, "The Myth of Internet Time" (AT&T Labs; undated
       essay, internal evidence — references to "early 2000" as recent past — places
@@ -1148,7 +1148,7 @@ sources:
     normalized: captures/n-odlyzko-internet-time-myth.md
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-odlyzko-railway-mania-hallucinations:
     citation_text: 'Andrew Odlyzko, "Collective Hallucinations and Inefficient Markets:
       The British Railway Mania of the 1840s" (preliminary version, 2010-01-15,
@@ -1171,7 +1171,7 @@ sources:
     extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-pjm-2028-2029-capacity-auction:
     citation_text: PJM Interconnection, "PJM Capacity Auction Procures 138,318 MW
       of Generation Resources as Work Continues To Address Growing Electricity Demand"
@@ -1190,7 +1190,7 @@ sources:
     extraction: pymupdf4llm 0.3.4 (PyMuPDF 1.28.2)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-samsung-q2-2026-results:
     citation_text: Samsung Electronics Co., Ltd., "Samsung Electronics Announces
       Second Quarter 2026 Results" (Samsung Global Newsroom, 2026-07-30)
@@ -1208,7 +1208,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-skhynix-q2-2026-results:
     citation_text: SK hynix Inc., "SK hynix Announces 2Q26 Financial Results" (SK
       hynix Newsroom, 2026-07-29)
@@ -1226,7 +1226,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-softbank-openai-followon-2026:
     citation_text: SoftBank Group Corp., "Announcement Regarding Follow-on Investments
       in OpenAI" (press release, 2026-02-27)
@@ -1243,7 +1243,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-spglobal-datacenter-macro-needle:
     citation_text: S&P Global, "S&P Global Research Reveals Data Center Investments
       Moving The U.S. Macro Needle" (press release, 2025-11-05)
@@ -1261,7 +1261,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-tsmc-q2-2026-earnings-release:
     citation_text: Taiwan Semiconductor Manufacturing Company Limited, "TSMC Reports
       Second Quarter EPS of NT$27.25" (press release, 2026-07-16), Exhibit 99.1
@@ -1279,7 +1279,7 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
   n-tsmc-q2-2026-presentation:
     citation_text: Taiwan Semiconductor Manufacturing Company Limited, "2026 Second
       Quarter Earnings Conference Presentation Material" (2026-07-16), Exhibit 99.2
@@ -1297,4 +1297,4 @@ sources:
     extraction: pandoc 3.8.3 (html to plain)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'

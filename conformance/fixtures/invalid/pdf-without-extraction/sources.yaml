@@ -1,0 +1,9 @@
+type: sources
+sources:
+  fx-src:
+    citation_text: "Fixture report, 2026"
+    received:
+      url: "https://example.org/report.pdf"
+      timestamp: "2026-08-25"
+    status: "shipped-as-quotation"
+    normalized: "normalized/report.md"

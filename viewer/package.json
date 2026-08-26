@@ -4,12 +4,15 @@
   "private": true,
   "description": "Reference consumer for the Epistemic Record Format: renders a corpus as a static site.",
   "type": "module",
-  "bin": { "erf-view": "./erf-view.ts" },
+  "bin": {
+    "erf-view": "./erf-view.ts"
+  },
   "scripts": {
     "build": "tsx erf-view.ts ../examples/corpus -o ../examples/site",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "ajv": "^8.20.0",
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {

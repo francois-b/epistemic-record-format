@@ -8,8 +8,10 @@
  * quietly drift from the specification it is supposed to demonstrate.
  */
 import { readFileSync, readdirSync, existsSync } from "node:fs";
-import { join, basename, relative } from "node:path";
+import { join, basename, relative, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import yaml from "js-yaml";
+import Ajv2020 from "ajv/dist/2020.js";
 import type { Atom, Claim, Survey, Source, CorpusDeclaration } from "../types/erf.ts";
 
 export type { Source, CorpusDeclaration };
@@ -143,6 +145,31 @@ const VERDICTS = new Set(["SUPPORTED", "PARTIAL", "UNSUPPORTED"]);
  * duplicate key rather than taking the last one.
  */
 const YAML_OPTS = { schema: yaml.JSON_SCHEMA, json: false } as const;
+
+/**
+ * The data model, applied at load. Until 2026-08-25 the loader checked a
+ * hand-kept field roster and the schema ran only over the conformance
+ * fixtures, so a source list carrying a quoted `'on'` key in place of
+ * `timestamp` loaded clean in two corpora and was caught by an independent
+ * validator. Every file now validates against erf.schema.json as it is
+ * read; a schema error is a producer error (ERF-55) reported at the field.
+ */
+const SCHEMA_PATH = join(dirname(fileURLToPath(import.meta.url)), "..", "erf.schema.json");
+const ajv = new Ajv2020({ allErrors: true, strict: true, strictRequired: false });
+const validateModel = ajv.compile(JSON.parse(readFileSync(SCHEMA_PATH, "utf8")));
+
+function checkSchema(instance: unknown, record: string, findings: ConformanceFinding[]): void {
+  if (validateModel(instance)) return;
+  for (const e of validateModel.errors ?? []) {
+    // The root is a choice over six types; report the branch's own errors
+    // and skip the "must match exactly one schema" wrapper, which says
+    // nothing a reader can act on.
+    if (e.keyword === "oneOf") continue;
+    const field = (e.instancePath || "/").replace(/^\//, "").replace(/\//g, ".") || "(record)";
+    const extra = e.params && "additionalProperty" in e.params ? ` (${String(e.params.additionalProperty)})` : "";
+    findings.push({ record, field, detail: `${e.message ?? "schema error"}${extra}; the data model is erf.schema.json (ERF-55)` });
+  }
+}
 
 /** `ERF-66`: a record is flat and declines anchors, aliases, and tags. */
 const YAML_GRAPH = /(^|\s)(&[A-Za-z0-9_-]+|\*[A-Za-z0-9_-]+|!![A-Za-z]+)(\s|$)/;
@@ -455,6 +482,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
     ? { declared: String(manifest.spec_version), fields: [] as ConformanceFinding[] }
     : null;
   const fieldSink: ConformanceFinding[] = newerMinor ? newerMinor.fields : findings;
+  if (!newerMinor && existsSync(declPath)) checkSchema(manifest, "(declaration)", findings);
   if (manifest?.spec_version && major !== "0") {
     findings.push({
       record: "(declaration)",
@@ -505,6 +533,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
     const id = String(data["id"] ?? basename(f, ".md"));
     requireFields(data, id, ["id", "type", "corpus", "finding", "quote", "source", "source_quality", "created"], findings);
     checkKnownFields(data, id, "atom", fieldSink);
+    if (!newerMinor) checkSchema(data, id, findings);
     checkStampOrder(data, id, findings);
     const fa = arr<{ verdict?: unknown }>(data["finding_audit"]);
     // `ERF-12`: the verdict union is compile-time only, and YAML is cast
@@ -541,6 +570,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
     const id = String(data["id"] ?? basename(f, ".md"));
     requireFields(data, id, ["id", "type", "corpus", "title", "epistemic_kind", "created"], findings);
     checkKnownFields(data, id, "claim", fieldSink);
+    if (!newerMinor) checkSchema({ ...data, body }, id, findings);
     checkStampOrder(data, id, findings);
     checkBareIds(arr<string>(data["atoms_for"]), id, "atoms_for", findings);
     checkBareIds(arr<string>(data["atoms_against"]), id, "atoms_against", findings);
@@ -596,6 +626,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
     const id = String(data["id"] ?? basename(f, ".md"));
     requireFields(data, id, ["id", "type", "corpus", "title", "conducted"], findings);
     checkKnownFields(data, id, "survey", fieldSink);
+    if (!newerMinor) checkSchema({ ...data, body }, id, findings);
     checkStampOrder(data, id, findings);
     for (const [i, act] of arr<Record<string, unknown>>(data["searches"]).entries()) {
       for (const k of ["tool", "query", "scope", "hits_reported"]) {
@@ -671,6 +702,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
           + `format carries, not a bare date (ERF-34, ERF-19)`,
       });
     }
+    if (!newerMinor) checkSchema({ ...data, body }, slug, findings);
     narratives.push({
       slug,
       title: String(data["title"] ?? basename(f, ".md")),
@@ -799,6 +831,18 @@ export function loadCorpus(dir: string): LoadedCorpus {
   for (const [f, t] of typed) {
     if (t !== "sources") continue;
     const doc = yaml.load(readFileSync(f, "utf8"), YAML_OPTS) as { sources?: Record<string, Source> };
+    if (!newerMinor) checkSchema(doc, "(sources)", findings);
+    // `ERF-70`: a raw file in another format needs its extracting tool
+    // named. Judged by the raw file's extension, which is what a validator
+    // has. Found missing from this loader by the Rust differential run.
+    for (const [sid, src] of Object.entries(doc?.sources ?? {})) {
+      const raw = String(src?.received?.path ?? src?.received?.url ?? "");
+      const nonText = /\.(pdf|epub|docx?|pptx?|xlsx?|odt|rtf)(\?|#|$)/i.test(raw);
+      if (nonText && src?.normalized && !src?.extraction) {
+        findings.push({ record: sid, field: "extraction",
+          detail: `the raw file is not text (${raw.split("/").pop()}), so the normalized text was produced from another format and the extracting tool and its exact version MUST be named (ERF-70)` });
+      }
+    }
     for (const [k, v] of Object.entries(doc?.sources ?? {})) sources.set(k, v);
   }
 

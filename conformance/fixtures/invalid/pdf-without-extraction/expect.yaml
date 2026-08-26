@@ -1,0 +1,7 @@
+requirement: ERF-70
+record: fx-src
+field: extraction
+because: >
+  The raw file is a PDF and the normalized text is markdown, so a tool
+  produced it and its exact version MUST be named. The reference never
+  checked this until the Rust validator reported it on the capex corpus.

@@ -28,7 +28,7 @@ sources:
       0-29), default settings
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
     licence_name: Public domain (United States; published 1792, author died 1788;
       Internet Archive scan of a Library of Congress / microfilm-collection copy,
       no rights restriction declared)
@@ -57,7 +57,7 @@ sources:
       for Table I, whose printed table has no embedded OCR text layer for this scan'
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
     licence_name: Public domain (United States; Jefferson's text first published
       1785, this Library of Congress-held printing 1853)
   jefferson-to-buffon-1787-10-01:
@@ -92,7 +92,7 @@ sources:
       -- see friction-log.md, ERF-70)
     excerpt:
       by: agent/claude-sonnet-5
-      'on': '2026-08-25'
+      timestamp: '2026-08-25'
     licence_name: Public domain (letter written 1787; text as transcribed by the
       National Archives' Founders Online project). This capture ships Jefferson's
       own letter text only. Founders Online's own added annotations and editorial
