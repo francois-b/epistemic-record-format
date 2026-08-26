@@ -1,0 +1,71 @@
+name: Spec bug
+description: A requirement is wrong, contradicts another, or cannot be implemented as written.
+title: "[spec-bug] "
+labels: ["spec-bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is **gate 1** of the findings pipeline, and it asks for an
+        observation rather than a fix. What you file lands in
+        `docs/findings/` as a finding; a second hand then specifies what is
+        actually being claimed about the specification, and a third checks
+        that claim against the text as it stands. Only a finding verified
+        `accurate` becomes a backlog entry. The reasoning is in
+        `docs/findings/README.md`.
+
+        You are deliberately not asked to propose a fix. A raiser who
+        proposes one tends to describe the problem in the shape of that fix.
+  - type: input
+    id: requirement
+    attributes:
+      label: Which requirement, or which section
+      description: A requirement id (`ERF-52`, `YAMLB-1`) or a section number. If you cannot name one, that is itself worth saying here.
+      placeholder: "ERF-52"
+    validations:
+      required: true
+  - type: textarea
+    id: current-text
+    attributes:
+      label: The current text, quoted
+      description: Paste the sentence or sentences you are reporting on, verbatim, so that a later reader can tell what the document said when you read it.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: What you observed
+      description: What is wrong, unclear, or impossible. Describe what happened, not what should change.
+    validations:
+      required: true
+  - type: textarea
+    id: what-it-did
+    attributes:
+      label: What a corpus or an implementation did
+      description: |
+        The concrete event. A corpus that a validator accepted and should not
+        have, a corpus rejected that conforms, two implementations disagreeing
+        on the same input, or a rule you could not implement and where you
+        stopped. Include the input if you can.
+    validations:
+      required: true
+  - type: dropdown
+    id: basis
+    attributes:
+      label: Basis
+      description: How this knows what it says. `anticipated` is the weakest basis there is, and saying so is not a mark against the report.
+      options:
+        - demonstrated (an artifact exists and can be re-run)
+        - reported (a careful reader judged it, nothing failed)
+        - anticipated (nobody has hit this)
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit read
+      description: The `spec_version` in the document's frontmatter, or the commit you read.
+      placeholder: "0.9.0"
+    validations:
+      required: false

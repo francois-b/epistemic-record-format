@@ -30,7 +30,9 @@ these changes what conformance means.
 a stranger checking their own work.
 
 - `conformance/` — the conformance suite: cases, fixtures, and a map from
-  every requirement to what defends it
+  every requirement to what defends it. `conformance/requirements.md` is a
+  generated index over that map and `SPEC.md`; regenerate with
+  `python3 tools/requirements-index.py`
 - `tools/` — checks this repository holds itself to
 - `viewer/` — the reference consumer, one implementation of reading a corpus
 
@@ -47,6 +49,19 @@ a stranger checking their own work.
 than being either.
 
 - `reviews/` — one folder per review, dated. See `reviews/README.md`.
+
+**Governance.** How an outsider takes part, and under what terms. Root
+files, because every one of them is looked for at the root and nowhere else.
+
+- `CONTRIBUTING.md` — where a defect, a proposal, an implementation and a
+  code change each go; it routes and does not repeat
+- `IMPLEMENTATIONS.md` — who has built to this specification, and the cold
+  trials that were built to test it and are not maintained
+- `SECURITY.md` — how to report a vulnerability in the reference
+  implementation or the tooling
+- `CITATION.cff` — how to cite the specification
+- `.github/` — the issue forms, which ask for gate 1 of the findings
+  pipeline and nothing else, and the pull-request template
 
 **History.** Why the format is the way it is, and what it does not yet do.
 

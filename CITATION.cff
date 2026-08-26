@@ -1,0 +1,28 @@
+# How to cite the Epistemic Record Format.
+#
+# `version` and `date-released` describe the tagged release. Both are
+# placeholders until v0.9.0 is actually tagged; correct the date at tag time
+# and bump both on every release.
+cff-version: 1.2.0
+message: "If you cite this specification, please cite it as below."
+title: "The Epistemic Record Format (ERF)"
+abstract: >-
+  A plain-text record format for bringing rigor to working research: the
+  analysis, argumentation, and synthesis done in consulting, strategy, due
+  diligence, and organizational decision-making, where conclusions rest on
+  claims that no one can later trace, check, or stand behind.
+type: software
+authors:
+  - family-names: Bouet
+    given-names: François
+version: 0.9.0
+date-released: "2026-08-26"
+license: CC-BY-4.0
+repository-code: "https://github.com/francois-b/epistemic-record-format"
+url: "https://francois-b.github.io/epistemic-record-format/"
+keywords:
+  - specification
+  - provenance
+  - evidence
+  - knowledge work
+  - research data

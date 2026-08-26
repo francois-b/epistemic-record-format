@@ -1,7 +1,7 @@
 # The published site
 
 What a newcomer sees at
-`https://<owner>.github.io/epistemic-record-format/`: a landing page making
+`https://francois-b.github.io/epistemic-record-format/`: a landing page making
 the case for the format, and the whole 2026-08-26 AI capital-expenditure
 corpus rendered by the reference viewer underneath it.
 
