@@ -384,7 +384,13 @@ export function sourceRead(c: Corpus, a: { id: string; find?: string; window?: n
 export function recordRead(c: Corpus, a: { id: string }): Result {
   for (const t of ["claim", "atom", "survey", "narrative"]) {
     const p = recordFiles(c, t).get(a.id);
-    if (p) return { text: readFileSync(p, "utf8") };
+    if (!p) continue;
+    const text = readFileSync(p, "utf8");
+    if (t !== "atom") return { text };
+    // an atom names its source by id; resolve it, since the reader wants the page, not the key
+    const src = readSourceList(c)[String(readRecordFile(p).fm["source"] ?? "")];
+    const where = src ? `\n\n# source, resolved\ncitation: ${src.citation_text}${src.received?.url ? `\npage: ${src.received.url}` : ""}${src.received?.path ? `\nheld as received: ${src.received.path}` : ""}${src.normalized ? `\nnormalized text (what the quote check reads): ${src.normalized}` : ""}\nstatus: ${src.status}\nsee the quote in the held text: erf_view page=capture:${a.id}` : "\n\n# source: not registered";
+    return { text: text.replace(/\n*$/, "") + where + "\n" };
   }
   if (readSourceList(c)[a.id]) return sourceRead(c, { id: a.id });
   throw new Refusal(`no record with id ${a.id}`);
