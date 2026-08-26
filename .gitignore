@@ -27,3 +27,7 @@ reviews/**/.stack-work/
 reviews/**/dist-newstyle/
 reviews/**/harness/*_pb2.py
 reviews/**/.build/
+
+# Held raw artifacts of third-party works (journal PDFs, HTML captures) stay
+# local; the source list carries their digests. See the trial README.
+reviews/2026-08-26-standards-fold-trials/bitter-lesson-corpus/corpus/raw/

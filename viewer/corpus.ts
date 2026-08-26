@@ -884,5 +884,14 @@ export function loadCorpus(dir: string): LoadedCorpus {
     }
   }
 
-  return { manifest, atoms, claims, surveys, narratives, sources, findings, unrecognized, newerMinor };
+  // A held raw or normalized file is an artifact a source names by path;
+  // it carries no `type` (ERF-73) and is not unrecognized. The Bitter
+  // Lesson trial (2026-08-26) saw one UNRECOGNIZED line per held text.
+  const held = new Set<string>();
+  for (const src of sources.values()) {
+    for (const rel of [src?.received?.path, src?.normalized]) if (rel) held.add(join(dir, String(rel)));
+  }
+  const unrecognizedFiles = unrecognized.filter((u) => !held.has(join(dir, u.path)));
+
+  return { manifest, atoms, claims, surveys, narratives, sources, findings, unrecognized: unrecognizedFiles, newerMinor };
 }
