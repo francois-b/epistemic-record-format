@@ -24,6 +24,13 @@ record. All three numbers are published rather than hidden: this is a draft
 meant to be implemented against and argued with, and what is known to be
 unresolved, unverified, or untested is part of what it says.
 
+### 2026-08-26 — the essay, findable
+
+The essay the format grew out of, *Epistemology for Knowledge Work in the
+LLM Era*, was in the repository only as the raw artifact of the first
+authoring trial. It now lives at `docs/essay/` with the PDF that
+circulated, and the README opens with why the format exists.
+
 ### 2026-08-26 — F-030: six rules said two things, or forbade what no record can hold
 
 `ERF-31` said the anchor MUST occur in its passage and then that a missing

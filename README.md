@@ -2,6 +2,17 @@
 
 The Epistemic Record Format (ERF) is a plain-text record format for bringing rigor to working research: the analysis, argumentation, and synthesis done in consulting, strategy, due diligence, and organizational decision-making, where conclusions rest on claims that no one can later trace, check, or stand behind. Academic publishing has citations and peer review; software has types, tests, and version control; the knowledge work between them has had only prose. ERF supplies the missing substrate: evidence captured verbatim and checkable against frozen copies of its sources; claims typed by what would check them; arguments as typed relations between claims; and an append-only ledger of who stands behind each claim, since when, and why. LLMs make the format maintainable (they draft, extract, classify, and keep the records tidy); people make the judgments; the records show which was which. The result is a working level above raw text: a corpus that people and machines can query, verify, and build on rather than re-read and re-interpret.
 
+## Why this exists
+
+The reasoning is in an essay, [*Epistemology for Knowledge Work in the LLM
+Era*](docs/essay/epistemology-for-knowledge-work-in-the-llm-era.md)
+([PDF](docs/essay/epistemology-for-knowledge-work-in-the-llm-era-6ed2f.pdf)):
+knowledge work outside coding has no equivalent of version control and
+tests, LLMs multiply the volume of plausible text, and what a person needs
+is a record where every statement carries what backs it, who stands behind
+it, and when. The format is that record. [`docs/purpose.md`](docs/purpose.md)
+states what it does and deliberately does not do.
+
 ## Status
 
 This is version 0.9 (draft, August 2026), extracted from a working practice

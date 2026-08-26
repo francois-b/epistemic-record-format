@@ -12,6 +12,7 @@ answers a different question, one document per question.
 
 | Read this | To answer |
 |---|---|
+| [`essay/`](essay/epistemology-for-knowledge-work-in-the-llm-era.md) | Why does this format exist? The essay the format grew out of, with the PDF that circulated. |
 | [`purpose.md`](purpose.md) | What does this format do, and what does it deliberately refuse to do? |
 | [`non-goals.md`](non-goals.md) | Was this idea considered? (Permanent no, with the date and the reason.) |
 | [`findings/`](findings/) | Something was noticed. Is it real, is it one problem or several, and is it still true? The triage box, and the three gates an observation passes before it may become a backlog entry. |
