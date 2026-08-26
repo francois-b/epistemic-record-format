@@ -17,6 +17,8 @@ answers a different question, one document per question.
 | [`non-goals.md`](non-goals.md) | Was this idea considered? (Permanent no, with the date and the reason.) |
 | [`findings/`](findings/) | Something was noticed. Is it real, is it one problem or several, and is it still true? The triage box, and the three gates an observation passes before it may become a backlog entry. |
 | [`backlog/`](backlog/) | Will it ever do X, and is anything known to be wrong? One file per entry, each carrying its basis, its provenance, and a verification verdict; its README is a generated index. |
+| [`objections.md`](objections.md) | What is the strongest honest case that this cannot work, or that it reinvents something that already failed? Seven objections grounded in prior art and measurements, each with the condition under which it bites and where the format stands. |
+| [`writing-with-llms.md`](writing-with-llms.md) | What has the field built for writing prose with an LLM when a human is responsible for the result, and where does this format sit among it? |
 | [`influences.md`](influences.md) | Where do these ideas come from, and what does each tradition already own? |
 | [`history.md`](history.md) | Why is this rule the way it is? What was tried, measured, reversed? |
 
