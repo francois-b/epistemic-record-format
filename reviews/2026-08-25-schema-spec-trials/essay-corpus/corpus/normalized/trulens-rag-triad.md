@@ -1,0 +1,19 @@
+TruEra has innovated the RAG triad to evaluate for hallucinations along each edge of the RAG architecture, shown below:
+
+The RAG triad is made up of 3 evaluations: context relevance, groundedness and answer relevance. Satisfactory evaluations on each provides us confidence that our LLM app is free from hallucination.
+
+## Context Relevance[¶](#context-relevance "Permanent link")
+
+The first step of any RAG application is retrieval; to verify the quality of our retrieval, we want to make sure that each chunk of context is relevant to the input query. This is critical because this context will be used by the LLM to form an answer, so any irrelevant information in the context could be weaved into a hallucination. TruLens enables you to evaluate context relevance by using the structure of the serialized record.
+
+## Groundedness[¶](#groundedness "Permanent link")
+
+After the context is retrieved, it is then formed into an answer by an LLM. LLMs are often prone to stray from the facts provided, exaggerating or expanding to a correct-sounding answer. To verify the groundedness of our application, we can separate the response into individual claims and independently search for evidence that supports each within the retrieved context.
+
+## Answer Relevance[¶](#answer-relevance "Permanent link")
+
+Last, our response still needs to helpfully answer the original question. We can verify this by evaluating the relevance of the final response to the user input.
+
+## Putting it together[¶](#putting-it-together "Permanent link")
+
+By reaching satisfactory evaluations for this triad, we can make a nuanced statement about our application’s correctness; our application is verified to be hallucination free up to the limit of its knowledge base. In other words, if the vector database contains only accurate information, then the answers provided by the RAG are also accurate.

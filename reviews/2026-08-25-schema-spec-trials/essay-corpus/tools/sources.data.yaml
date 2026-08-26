@@ -1,0 +1,540 @@
+sources:
+  essay-2026-08-19:
+    citation_text: "François Bouet, \"Epistemology for Knowledge Work in the LLM Era: A second chance for knowledge management, and an answer to the company-brain trend,\" version 1.0, unpublished manuscript, 19 August 2026"
+    citation:
+      type: manuscript
+      author:
+        - family: Bouet
+          given: François
+      title: "Epistemology for Knowledge Work in the LLM Era"
+      title-short: "Epistemology for Knowledge Work"
+      subtitle: "A second chance for knowledge management, and an answer to the company-brain trend"
+      version: "1.0"
+      issued: "2026-08-19"
+      genre: "unpublished manuscript"
+    received:
+      path: "raw/epistemology-for-knowledge-work-in-the-llm-era-6ed2f-source.md"
+      timestamp: "2026-08-25"
+    status: shipped
+    normalized: "normalized/essay-2026-08-19.md"
+    licence_name: "All rights reserved; held by the author, who is this corpus's owner"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+  yc-rfs-summer-2026-archived:
+    citation_text: "Y Combinator, \"Requests for Startups: Summer 2026\", the \"Company Brain\" entry by Tom Blomfield (Y Combinator, 2026), as captured by the Internet Archive on 29 May 2026"
+    received:
+      url: "https://web.archive.org/web/20260529101651/https://www.ycombinator.com/rfs"
+      path: "raw/yc-rfs-summer-2026-archived.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/yc-rfs-summer-2026-archived.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  notion-verified-pages:
+    citation_text: "Notion Labs, \"Wikis & verified pages\", Notion Help Center, retrieved 25 August 2026"
+    received:
+      url: "https://www.notion.com/help/wikis-and-verified-pages"
+      path: "raw/notion-verified-pages.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/notion-verified-pages.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  nature-model-collapse:
+    citation_text: "Ilia Shumailov, Zakhar Shumaylov, Yiren Zhao, Nicolas Papernot, Ross Anderson and Yarin Gal, \"AI models collapse when trained on recursively generated data\", Nature 631 (July 2024)"
+    received:
+      url: "https://www.nature.com/articles/s41586-024-07566-y"
+      path: "raw/nature-model-collapse.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/nature-model-collapse.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  agile-manifesto-history:
+    citation_text: "Jim Highsmith, \"History: The Agile Manifesto\" (Agile Alliance, 2001)"
+    received:
+      url: "https://agilemanifesto.org/history.html"
+      path: "raw/agile-manifesto-history.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/agile-manifesto-history.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  grammarly-authorship:
+    citation_text: "Grammarly, \"Authorship\" product page, retrieved 25 August 2026"
+    received:
+      url: "https://www.grammarly.com/authorship"
+      path: "raw/grammarly-authorship.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/grammarly-authorship.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  cursor-blame-docs:
+    citation_text: "Anysphere, \"Cursor Blame\", Cursor documentation, retrieved 25 August 2026"
+    received:
+      url: "https://cursor.com/docs/integrations/cursor-blame"
+      path: "raw/cursor-blame-docs.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/cursor-blame-docs.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  agentblame-github:
+    citation_text: "Mesa, \"agentblame: AI code attribution for git\", project README, retrieved 25 August 2026"
+    received:
+      url: "https://github.com/mesa-dot-dev/agentblame"
+      path: "raw/agentblame-github.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/agentblame-github.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  github-co-authored-by:
+    citation_text: "GitHub, \"Creating a commit with multiple authors\", GitHub Docs, retrieved 25 August 2026"
+    received:
+      url: "https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/creating-a-commit-with-multiple-authors"
+      path: "raw/github-co-authored-by.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/github-co-authored-by.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  c2pa-about:
+    citation_text: "Coalition for Content Provenance and Authenticity, \"Advancing digital content transparency and authenticity\", C2PA home page, retrieved 25 August 2026"
+    received:
+      url: "https://c2pa.org/"
+      path: "raw/c2pa-about.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/c2pa-about.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  fowler-ci:
+    citation_text: "Martin Fowler, \"Continuous Integration\", martinfowler.com, 18 January 2024"
+    received:
+      url: "https://martinfowler.com/articles/continuousIntegration.html"
+      path: "raw/fowler-ci.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/fowler-ci.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  adr-nygard:
+    citation_text: "Michael Nygard, \"Documenting Architecture Decisions\", Cognitect blog, 15 November 2011"
+    received:
+      url: "https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions"
+      path: "raw/adr-nygard.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/adr-nygard.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  vertex-check-grounding:
+    citation_text: "Google, \"Check grounding with RAG\", Google Cloud Agent Search documentation, retrieved 25 August 2026"
+    received:
+      url: "https://cloud.google.com/generative-ai-app-builder/docs/check-grounding"
+      path: "raw/vertex-check-grounding.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/vertex-check-grounding.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  ragas-faithfulness:
+    citation_text: "Exploding Gradients, \"Faithfulness\", Ragas documentation, retrieved 25 August 2026"
+    received:
+      url: "https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/faithfulness/"
+      path: "raw/ragas-faithfulness.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/ragas-faithfulness.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  schemaorg-claimreview:
+    citation_text: "Schema.org, \"ClaimReview\" type definition, retrieved 25 August 2026"
+    received:
+      url: "https://schema.org/ClaimReview"
+      path: "raw/schemaorg-claimreview.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/schemaorg-claimreview.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  discourse-graphs:
+    citation_text: "Discourse Graphs project, \"A shared structure for research work in motion\", project site, retrieved 25 August 2026"
+    received:
+      url: "https://discoursegraphs.com/"
+      path: "raw/discourse-graphs.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/discourse-graphs.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  hypothesis-about:
+    citation_text: "Hypothesis, \"The Social Annotation Platform That Gets Students Reading Again\", about page, retrieved 25 August 2026"
+    received:
+      url: "https://web.hypothes.is/about/"
+      path: "raw/hypothesis-about.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/hypothesis-about.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  scite-site:
+    citation_text: "Scite (Research Solutions), Scite home page, retrieved 25 August 2026"
+    received:
+      url: "https://scite.ai/"
+      path: "raw/scite-site.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/scite-site.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  kialo-wikipedia:
+    citation_text: "Wikipedia contributors, \"Kialo\", Wikipedia, revision retrieved 25 August 2026"
+    received:
+      url: "https://en.wikipedia.org/wiki/Kialo"
+      path: "raw/kialo-wikipedia.html"
+      timestamp: "2026-08-25"
+    status: shipped
+    licence: "CC-BY-SA-4.0"
+    licence_name: "Creative Commons Attribution-ShareAlike 4.0 International"
+    normalized: "normalized/kialo-wikipedia.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  argument-map-wikipedia:
+    citation_text: "Wikipedia contributors, \"Argument map\", Wikipedia, revision retrieved 25 August 2026"
+    received:
+      url: "https://en.wikipedia.org/wiki/Argument_map"
+      path: "raw/argument-map-wikipedia.html"
+      timestamp: "2026-08-25"
+    status: shipped
+    licence: "CC-BY-SA-4.0"
+    licence_name: "Creative Commons Attribution-ShareAlike 4.0 International"
+    normalized: "normalized/argument-map-wikipedia.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  argdown-site:
+    citation_text: "Christian Voigt, \"Argdown\" project home page, retrieved 25 August 2026"
+    received:
+      url: "https://argdown.org/"
+      path: "raw/argdown-site.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/argdown-site.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  semantic-web-wikipedia:
+    citation_text: "Wikipedia contributors, \"Semantic Web\", Wikipedia, revision retrieved 25 August 2026"
+    received:
+      url: "https://en.wikipedia.org/wiki/Semantic_Web"
+      path: "raw/semantic-web-wikipedia.html"
+      timestamp: "2026-08-25"
+    status: shipped
+    licence: "CC-BY-SA-4.0"
+    licence_name: "Creative Commons Attribution-ShareAlike 4.0 International"
+    normalized: "normalized/semantic-web-wikipedia.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  xanadu-wikipedia:
+    citation_text: "Wikipedia contributors, \"Project Xanadu\", Wikipedia, revision retrieved 25 August 2026"
+    received:
+      url: "https://en.wikipedia.org/wiki/Project_Xanadu"
+      path: "raw/xanadu-wikipedia.html"
+      timestamp: "2026-08-25"
+    status: shipped
+    licence: "CC-BY-SA-4.0"
+    licence_name: "Creative Commons Attribution-ShareAlike 4.0 International"
+    normalized: "normalized/xanadu-wikipedia.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  graphiti-github:
+    citation_text: "Zep, \"Graphiti: build temporal context graphs for AI agents\", project README, retrieved 25 August 2026"
+    received:
+      url: "https://github.com/getzep/graphiti"
+      path: "raw/graphiti-github.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/graphiti-github.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  sepio-github:
+    citation_text: "Monarch Initiative, \"SEPIO-ontology\" project README, retrieved 25 August 2026"
+    received:
+      url: "https://github.com/monarch-initiative/SEPIO-ontology"
+      path: "raw/sepio-github.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/sepio-github.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  purview-ai:
+    citation_text: "Microsoft, \"Microsoft Purview data security and compliance protections for AI\", Microsoft Learn, retrieved 25 August 2026"
+    received:
+      url: "https://learn.microsoft.com/en-us/purview/ai-microsoft-purview"
+      path: "raw/purview-ai.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/purview-ai.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  prov-wikipedia:
+    citation_text: "Wikipedia contributors, \"W3C Prov\", Wikipedia, revision retrieved 25 August 2026"
+    received:
+      url: "https://en.wikipedia.org/wiki/PROV_(Provenance)"
+      path: "raw/prov-wikipedia.html"
+      timestamp: "2026-08-25"
+    status: shipped
+    licence: "CC-BY-SA-4.0"
+    licence_name: "Creative Commons Attribution-ShareAlike 4.0 International"
+    normalized: "normalized/prov-wikipedia.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  glean-site:
+    citation_text: "Glean Technologies, Glean home page, retrieved 25 August 2026"
+    received:
+      url: "https://www.glean.com/"
+      path: "raw/glean-site.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/glean-site.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  trulens-rag-triad:
+    citation_text: "TruEra, \"The RAG Triad\", TruLens documentation, retrieved 25 August 2026"
+    received:
+      url: "https://www.trulens.org/getting_started/core_concepts/rag_triad/"
+      path: "raw/trulens-rag-triad.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/trulens-rag-triad.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  admiralty-code-wikipedia:
+    citation_text: "Wikipedia contributors, \"Admiralty code\", Wikipedia, revision retrieved 25 August 2026"
+    received:
+      url: "https://en.wikipedia.org/wiki/Admiralty_code"
+      path: "raw/admiralty-code-wikipedia.html"
+      timestamp: "2026-08-25"
+    status: shipped
+    licence: "CC-BY-SA-4.0"
+    licence_name: "Creative Commons Attribution-ShareAlike 4.0 International"
+    normalized: "normalized/admiralty-code-wikipedia.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  palantir-ontology:
+    citation_text: "Palantir Technologies, \"Ontology building\", Palantir Foundry documentation, retrieved 25 August 2026"
+    received:
+      url: "https://palantir.com/docs/foundry/ontology/overview/"
+      path: "raw/palantir-ontology.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/palantir-ontology.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  nist-ai-rmf:
+    citation_text: "National Institute of Standards and Technology, \"AI Risk Management Framework\" programme page, retrieved 25 August 2026"
+    received:
+      url: "https://www.nist.gov/itl/ai-risk-management-framework"
+      path: "raw/nist-ai-rmf.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/nist-ai-rmf.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  graphrag-ms:
+    citation_text: "Microsoft Research, \"Welcome to GraphRAG\", GraphRAG documentation, retrieved 25 August 2026"
+    received:
+      url: "https://microsoft.github.io/graphrag/"
+      path: "raw/graphrag-ms.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/graphrag-ms.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  arxiv-nanopub-claims:
+    citation_text: "Tobias Kuhn and Michael Krauthammer, \"Underspecified Scientific Claims in Nanopublications\", arXiv preprint 1209.1483v1, 7 September 2012"
+    received:
+      url: "https://arxiv.org/pdf/1209.1483"
+      path: "raw/arxiv-nanopub-claims.pdf"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/arxiv-nanopub-claims.md"
+    extraction: "pdftotext 25.12.0 (poppler) -layout -enc UTF-8"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  sciwrite-lint-arxiv:
+    citation_text: "Sergey V. Samsonau, \"sciwrite-lint: Verification Infrastructure for the Age of Science Vibe-Writing\", arXiv preprint 2604.08501, abstract page retrieved 25 August 2026"
+    received:
+      url: "https://arxiv.org/abs/2604.08501"
+      path: "raw/sciwrite-lint-arxiv.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/sciwrite-lint-arxiv.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  computerworld-dictation:
+    citation_text: "Matthew Finnegan, \"Talk, talk, talk: The rise of AI dictation tools at work\", Computerworld, retrieved 25 August 2026"
+    received:
+      url: "https://www.computerworld.com/article/4193378/talk-talk-talk-the-rise-of-ai-dictation-tools-at-work.html"
+      path: "raw/computerworld-dictation.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/computerworld-dictation.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  zoominfo-data-decay:
+    citation_text: "ZoomInfo, \"B2B Data Decay: Rates, Costs, and How to Stop It\", ZoomInfo Pipeline, retrieved 25 August 2026"
+    received:
+      url: "https://pipeline.zoominfo.com/marketing/b2b-data-decay"
+      path: "raw/zoominfo-data-decay.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/zoominfo-data-decay.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  adr-github-io:
+    citation_text: "The GitHub adr organization, \"Architectural Decision Records\", project site, retrieved 25 August 2026"
+    received:
+      url: "https://adr.github.io/"
+      path: "raw/adr-github-io.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/adr-github-io.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  guru-verification-help:
+    citation_text: "Guru, \"What is Verification?\", Guru help documentation, retrieved 25 August 2026"
+    received:
+      url: "https://help.getguru.com/docs/what-is-verifcation"
+      path: "raw/guru-verification-help.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/guru-verification-help.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+  llm-convergence-arxiv:
+    citation_text: "Can Gurkan, Forrest Stonedahl and Uri Wilensky, \"Mutation Without Variation: Convergence Dynamics in LLM-Driven Program Evolution\", arXiv preprint 2606.05408, abstract page retrieved 25 August 2026"
+    received:
+      url: "https://arxiv.org/abs/2606.05408"
+      path: "raw/llm-convergence-arxiv.html"
+      timestamp: "2026-08-25"
+    status: shipped-as-quotation
+    normalized: "normalized/llm-convergence-arxiv.md"
+    extraction: "pandoc 3.8.3 --from=html --to=gfm-raw_html --wrap=none"
+    normalization: "erf-normalize 1.1.0 (tools/erf_normalize.py)"
+    excerpt:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"

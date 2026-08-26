@@ -1,0 +1,443 @@
+# Surveys. Every act below was actually run on 2026-08-25 and its yield is
+# recorded as the instrument reported it. The instrument returns a ranked list
+# of result links and no total, so `hits_reported` counts links and says so:
+# stating "about N results" would be precision the instrument did not give
+# (ERF-27). See friction-log.md F-10 and F-11.
+surveys:
+
+  - id: provenance-and-claim-primitives-2026-08-25
+    title: "Tools and standards that add a primitive for checked provenance, for checking claims, or for recording what someone stands behind"
+    searches:
+      - tool: "WebSearch (Claude Code harness; US-only web index, upstream provider and index version not exposed to the caller)"
+        query: "nanopublication verifiable provenance primitive claim assertion Kuhn Dumontier"
+        scope: "the open web as the harness's index covers it, no domain filter"
+        hits_reported: "10 result links returned; the instrument reports no total and no count"
+        timestamp: "2026-08-25"
+      - tool: "curl 8.7.1 direct retrieval, followed by pandoc 3.8.3 extraction and manual reading"
+        query: "manual review of the retrieved pages for eight candidate systems: nanopublications, SEPIO, W3C PROV, C2PA, Discourse Graphs, Hypothesis, Schema.org ClaimReview, Scite"
+        scope: "the eight project, standard and vendor pages listed, read end to end"
+        hits_reported: "8 pages retrieved; 7 carry a primitive at the grain of a claim or an assertion, 1 (Hypothesis) at the grain of an anchored annotation"
+        timestamp: "2026-08-25"
+    notable_results:
+      - what: "Nanopublications, defined in the literature by 2012"
+        note: "A claim-grain unit carrying its own assertion, provenance and publication metadata, with cryptographic identity. This is the counterexample the essay's universal negative most needs to answer, and it predates the LLM era by a decade."
+        atoms: [ell-118, ell-119]
+      - what: "SEPIO, an OWL ontology for the evidence and provenance behind scientific assertions"
+        note: "Directly names the pairing the essay says nothing adds. Its own README warns that the repository's model is out of date, which is evidence about maintenance cost rather than about absence."
+        atoms: [ell-120, ell-121]
+      - what: "W3C PROV"
+        note: "A W3C recommendation for interchanging provenance information, predating the LLM era. Retrieved at one hop through an encyclopedia because the W3C site served a bot challenge to the fetch."
+        atoms: [ell-122]
+      - what: "C2PA Content Credentials"
+        note: "An open standard for the origin and edits of digital content. It covers media provenance and not the provenance of a quotation, which is why it is a near-neighbour rather than a direct hit."
+        atoms: [ell-108]
+      - what: "Discourse Graphs"
+        note: "Represents research as connected claims, evidence and questions, and separates observations from interpretations. Closest in shape to the essay's own proposal, and it is a protocol with implementations rather than a product."
+        atoms: [ell-123, ell-124]
+      - what: "Hypothesis"
+        note: "A near-miss. Anchored annotation over arbitrary web pages, widely deployed, but nothing in its own description claims that an annotation's quotation is checked against its source, which is the property the essay's atom adds."
+        atoms: [ell-125]
+      - what: "Schema.org ClaimReview and Scite Smart Citations"
+        note: "Two shipped systems whose unit is the claim: one an interchange vocabulary for fact-check verdicts, the other a commercial product classifying later citations as supporting, contrasting or mentioning."
+        atoms: [ell-115, ell-116]
+    body: |
+      What was sought: any tool, standard or protocol that adds a primitive for
+      checked provenance, for checking claims, or for recording what a person or
+      an organization stands behind. The essay asserts that none of the memory,
+      context and knowledge-graph tools it surveyed adds any of the three.
+
+      What was found: the third property, a dated per-person record of standing,
+      was not found anywhere. The first two were found repeatedly, in systems
+      that mostly predate the LLM era: nanopublications, SEPIO, W3C PROV,
+      Schema.org ClaimReview, Scite, and Discourse Graphs. The essay's own note
+      that most of these tools "do a fairly old thing" cuts the other way here:
+      these primitives are old, which makes the claim that nothing adds them
+      harder rather than easier to sustain.
+
+      What surprised me: the gap the essay names is real but is not the gap it
+      states. Checked provenance and claim checking exist and are not adopted
+      inside general knowledge work. Standing, in the essay's sense of a dated,
+      per-person, withdrawable position on a claim, was not found in any system
+      reached by these acts.
+
+      Coverage bounds. Two acts only, one of them a manual read of eight pages
+      chosen from the first act's results and from prior knowledge of the field,
+      which is a biased frame: it finds what is already famous. No patent
+      database, no preprint server, no vendor-documentation corpus, and no
+      non-English source was searched. Hits were inspected to the depth of one
+      page each, not to the depth of a specification. An absence reading taken
+      from this survey would be weak; a presence reading is what it supports,
+      and presence is what it found.
+
+  - id: human-ai-authorship-attribution-2026-08-25
+    title: "Tools that record whether text or code was written by a human or an AI, below the grain of a whole document"
+    searches:
+      - tool: "WebSearch (Claude Code harness; US-only web index, upstream provider and index version not exposed to the caller)"
+        query: "Cursor Blame feature which lines written by AI model attribution"
+        scope: "the open web as the harness's index covers it, no domain filter"
+        hits_reported: "10 result links returned; the instrument reports no total and no count"
+        timestamp: "2026-08-25"
+      - tool: "WebSearch (Claude Code harness; US-only web index, upstream provider and index version not exposed to the caller)"
+        query: "tool records which sentences written by human versus AI across a whole corpus provenance 2026"
+        scope: "the open web as the harness's index covers it, no domain filter"
+        hits_reported: "6 result links returned; the instrument reports no total and no count"
+        timestamp: "2026-08-25"
+    notable_results:
+      - what: "agentblame, an open-source line-level AI attribution tool for git"
+        note: "Works with Cursor, Claude Code and OpenCode, survives squash and rebase, and reports AI versus human line counts on every pull request. The essay names Cursor Blame as the exception; this is a second instance, and it is free."
+        atoms: [ell-103, ell-104]
+      - what: "Grammarly Authorship runs inside Word, Google Docs and Canvas"
+        note: "Directly contradicts the essay's description of it as a sidecar inside Grammarly's own app, and it attributes at the grain of the sentence, not the document."
+        atoms: [ell-106, ell-107]
+      - what: "The Co-authored-by commit trailer"
+        note: "A git-native, GitHub-documented mechanism for attributing one commit to several authors. It is the carrier that AI coding tools use to record their own participation, which makes git's silence about AI a convention gap rather than a mechanism gap."
+        atoms: [ell-105]
+      - what: "GPTZero Writing Replay and OpAI-Bench"
+        note: "Near-misses returned by the second act and not minted. Writing Replay records keystrokes inside Google Docs and replays the session; OpAI-Bench is a benchmark corpus annotated at document, sentence, token and span level. Neither is a working-corpus record, which is the essay's actual subject, and both are about detection rather than declaration."
+    body: |
+      What was sought: counterexamples to two of the essay's universal negatives,
+      that today's tools do not record whether something was written by a human
+      or an AI tool, and that nothing records who wrote what below the grain of a
+      whole page.
+
+      What was found: both fail as stated. Line-level and sentence-level
+      human-versus-AI attribution ships in at least four products, one of them
+      free and open source, and one of them (Grammarly Authorship) operating
+      inside the very Google Docs the essay names as recording nothing finer than
+      the author.
+
+      What survives: the essay's underlying point, which is that no such record
+      spans a working corpus across tools. Every instance found is confined to
+      one editor, one document format or one vendor's app. That is a narrower
+      claim than the one the essay makes and it was not falsified here.
+
+      Coverage bounds: two acts, English only, both phrased around attribution
+      and neither around the adjacent vocabulary of content credentials,
+      watermarking or provenance manifests, where more instances almost
+      certainly sit. Hits were inspected one page deep.
+
+  - id: argument-structure-primitives-2026-08-25
+    title: "A diff for arguments: tools that represent argument structure in a form a machine can compare"
+    searches:
+      - tool: "WebSearch (Claude Code harness; US-only web index, upstream provider and index version not exposed to the caller)"
+        query: "\"argument mapping\" software Kialo Argdown structured debate claims premises tool"
+        scope: "the open web as the harness's index covers it, no domain filter"
+        hits_reported: "8 result links returned; the instrument reports no total and no count"
+        timestamp: "2026-08-25"
+    notable_results:
+      - what: "Argdown, a plain-text notation for arguments that compiles to a map"
+        note: "The sharpest counterexample. Argument structure written as text, usable inside markdown, with premise-conclusion structure explicit. Text in a file is exactly what a line diff operates on, so a diff for arguments follows from the representation without anyone building one."
+        atoms: [ell-130, ell-131]
+      - what: "Kialo"
+        note: "A deployed platform whose unit is the claim, with pro and con children and impact ratings on each. Described in the encyclopedia as the most widely adopted argumentation-based deliberation system as of 2020."
+        atoms: [ell-128, ell-129]
+      - what: "The argument-mapping literature"
+        note: "A named field with a settled vocabulary (conclusion, premise, co-premise, objection, rebuttal, lemma) and a teaching tradition, which is more than the essay's phrasing implies exists."
+        atoms: [ell-126, ell-127]
+      - what: "Carneades, DebateGraph, Arguman, Rationale, Araucaria"
+        note: "Named in the results and not retrieved. Recorded because a reader weighing this survey should know the field is deep rather than three tools wide, and because the format's own specification cites Carneades in its references."
+    body: |
+      What was sought: anything that would count as a diff for arguments, in the
+      essay's sense of a mechanical primitive that a working discipline could
+      form around.
+
+      What was found: a field. Argument mapping has a literature, a vocabulary,
+      at least one plain-text notation (Argdown) whose files a line diff already
+      handles, and a widely used commercial platform (Kialo) whose unit is the
+      claim.
+
+      What survives, and it is the interesting part: none of it is a diff.
+      Argdown makes argument structure diffable as a side effect of being text;
+      nothing found computes or presents a structural difference between two
+      versions of an argument, which is what diff does for code and what the
+      essay is asking for. The essay's sentence is false as written and close to
+      true as meant.
+
+      Coverage bounds: one act, English only, phrased around the two tools
+      already known to the searcher. This is a thin search for a claim about a
+      whole field, and the near-misses listed above were taken from result titles
+      rather than retrieved. An absence reading from this survey would be
+      worthless; it is cited for the presence it found.
+
+  - id: claim-level-checks-and-provenance-lint-2026-08-25
+    title: "A test that runs on claims, and a lint for provenance: shipped mechanical checks over assertions and their citations"
+    searches:
+      - tool: "WebSearch (Claude Code harness; US-only web index, upstream provider and index version not exposed to the caller)"
+        query: "continuous integration lint check citations provenance in documents automated verification tool"
+        scope: "the open web as the harness's index covers it, no domain filter"
+        hits_reported: "10 result links returned; the instrument reports no total and no count"
+        timestamp: "2026-08-25"
+      - tool: "curl 8.7.1 direct retrieval, followed by pandoc 3.8.3 extraction and manual reading"
+        query: "manual review of four candidate systems' own documentation: Google's check grounding API, Ragas Faithfulness, TruLens groundedness, sciwrite-lint"
+        scope: "the four documentation and abstract pages listed, read end to end"
+        hits_reported: "4 pages retrieved; all 4 define a check whose unit is the claim rather than the document"
+        timestamp: "2026-08-25"
+    notable_results:
+      - what: "sciwrite-lint"
+        note: "Names itself after the linting paradigm and applies it to citation verification, checking reference existence, metadata accuracy, retraction status and claim support, fast enough to re-run between revisions. This is a lint for provenance under the essay's own description of what one would be."
+        atoms: [ell-117]
+      - what: "Google's check grounding API"
+        note: "A shipped, latency-budgeted API that returns a support score and per-claim citations, and defines grounding as every claim being wholly entailed by the given facts. Its limit is that it treats a sentence as a claim."
+        atoms: [ell-109, ell-110, ell-111]
+      - what: "Ragas Faithfulness and TruLens groundedness"
+        note: "Two independent open evaluation frameworks that decompose a response into claims and check each against retrieved context. Both are mechanical in their plumbing and LLM-judged in their verdicts, which is the essay's own reading that semantic checks mechanize partially rather than a refutation of it."
+        atoms: [ell-112, ell-113, ell-114]
+    body: |
+      What was sought: a test that runs on claims as a document grows, and a lint
+      for provenance. The essay names both as absent.
+
+      What was found: both exist and ship. The claim-level check is a commodity
+      in the retrieval-augmented-generation stack, with at least one hyperscaler
+      API and two open frameworks implementing the same
+      decomposition-and-entailment procedure. The provenance lint exists as a
+      named tool built for the reason the essay gives, that LLM-assisted writing
+      produces citations nobody checks.
+
+      What surprised me: every instance found runs over a generated answer
+      against retrieved context, not over a document as it grows. The
+      continuous-integration shape the essay asks for, a check that runs on every
+      save against a corpus's own claim graph, is what sciwrite-lint comes
+      closest to and what the RAG evaluators are not. The essay's diagnosis is
+      better than its assertion.
+
+      Coverage bounds: one web act and one manual read of four pages chosen from
+      it and from prior knowledge. No search of package registries, of the
+      software-testing literature, or of the fact-checking literature, where more
+      instances certainly sit.
+
+  - id: judgment-recording-tooling-2026-08-25
+    title: "Tooling for recording human judgment: decision records, rationale registries, and dated positions"
+    searches:
+      - tool: "WebSearch (Claude Code harness; US-only web index, upstream provider and index version not exposed to the caller)"
+        query: "tooling for recording human judgment decisions rationale registry knowledge work beyond architecture decision records"
+        scope: "the open web as the harness's index covers it, no domain filter"
+        hits_reported: "9 result links returned; the instrument reports no total and no count"
+        timestamp: "2026-08-25"
+    notable_results:
+      - what: "Architecture decision records, from Nygard 2011 onward"
+        note: "A fifteen-year-old practice with command-line tooling, a documented format family, templates in Confluence and Notion, and an explicit statement that the practice extends to any decision record. The essay's phrase does not survive it."
+        atoms: [ell-132, ell-133, ell-134, ell-135]
+      - what: "Kialo's impact ratings"
+        note: "Recorded judgment at claim grain, by many people, with the rating attached to the claim. Not dated per person and not withdrawable, which is where it falls short of what the essay proposes."
+        atoms: [ell-128]
+      - what: "The gap the results themselves name"
+        note: "One result observes that ADRs operate at architectural granularity and do not capture implementation-level decisions, which are more numerous and more often lost. That is the essay's point, made from inside the practice it says does not exist."
+    body: |
+      What was sought: any tooling for recording a person's judgment, which the
+      essay calls the newest practice on its list and says has next to no tooling.
+
+      What was found: a mature practice with a name, a founding text from 2011,
+      several open-source tools, a GitHub organization, format variants, and a
+      documented extension beyond architecture to any decision record.
+
+      What survives: the essay's proposal is narrower than the decision record
+      and the difference matters. An ADR records a decision once, in prose, and
+      nothing revisits it. What the essay proposes is a dated ledger of positions
+      on a claim, per person, in which withdrawal is an event rather than a
+      deletion. Nothing found does that. The essay's sentence is wrong about
+      tooling and right about the specific thing it wants.
+
+      Coverage bounds: a single act, English only, phrased in the essay's own
+      vocabulary rather than in the vocabulary of the fields most likely to hold
+      counterexamples: argumentation theory, evidence-based medicine's GRADE,
+      structured expert elicitation, prediction markets. Any absence read from
+      this survey would be an artefact of the phrasing.
+
+  - id: workspace-layer-ai-governance-2026-08-25
+    title: "The workspace layer of AI governance: constraining what an LLM may create inside an operator's own file tree"
+    searches:
+      - tool: "WebSearch (Claude Code harness; US-only web index, upstream provider and index version not exposed to the caller)"
+        query: "governing what an LLM is allowed to create in a workspace document lifecycle folder taxonomy AI governance layer"
+        scope: "the open web as the harness's index covers it, no domain filter"
+        hits_reported: "9 result links returned; the instrument reports no total and no count; none of the 9 addresses the operator's own file tree as the governed object"
+        timestamp: "2026-08-25"
+    notable_results:
+      - what: "Nothing addressing the workspace layer as the essay defines it"
+        note: "This is the survey's finding. Of nine results, none concerns constraining what an LLM produces inside an operator's own files, folders and document classes. The nearest are document lifecycle management, which is organizational policy over a document's phases, and enterprise LLM governance platforms, which operate on models, prompts and risk classification."
+      - what: "Microsoft Purview and the NIST AI Risk Management Framework"
+        note: "Retrieved separately as the two most substantial governance instruments in the space. Both are real and both sit in the essay's operating and data layers, which is consistent with its claim rather than against it."
+        atoms: [ell-158, ell-159]
+    body: |
+      What was sought: evidence against the essay's claim that the workspace
+      layer of AI governance, the working environment itself treated as governed
+      data, is missing from the AI-governance conversation.
+
+      What was found: nothing that answers it. The governance material the search
+      returns is about models, risk classification, data classification,
+      retention and audit. Document lifecycle management is about a document's
+      phases under organizational policy, not about the shape an LLM is permitted
+      to give a new artefact. No result treated the operator's own folder
+      structure, document classes and lifecycle states as the governed object.
+
+      This is the one universal negative in the essay that survived its opposite
+      search, and it is worth saying plainly because the others did not.
+
+      Coverage bounds: one act, and a single phrasing of a concept that has no
+      settled name, which is the weakest possible instrument for an absence
+      reading. The concept's namelessness is part of the essay's point and is
+      also exactly what makes this search unable to find it if it exists under
+      another name. Treat the absence as suggestive and not as established.
+
+  - id: company-brain-naming-and-products-2026-08-25
+    title: "The company-brain naming: its origin, who uses it, and what the products under it actually ship"
+    searches:
+      - tool: "WebSearch (Claude Code harness; US-only web index, upstream provider and index version not exposed to the caller)"
+        query: "Y Combinator request for startups Summer 2026 \"company brain\""
+        scope: "the open web as the harness's index covers it, no domain filter"
+        hits_reported: "8 result links returned; the instrument reports no total and no count; none is ycombinator.com itself"
+        timestamp: "2026-08-25"
+      - tool: "curl 8.7.1 direct retrieval of the live page, then pandoc 3.8.3 extraction and a case-insensitive grep for the word brain"
+        query: "the live Requests for Startups page at ycombinator.com/rfs, read in full"
+        scope: "one page, the current Requests for Startups list"
+        hits_reported: "0 occurrences of the word brain; the page now carries the Fall 2026 list and the Summer 2026 entries are gone"
+        timestamp: "2026-08-25"
+      - tool: "Internet Archive Wayback availability API, then curl 8.7.1 retrieval of the returned capture"
+        query: "ycombinator.com/rfs at timestamp 20260601"
+        scope: "the Internet Archive's captures of one URL"
+        hits_reported: "1 capture returned, status 200, timestamped 20260529101651; it carries the Summer 2026 list including a Company Brain entry"
+        timestamp: "2026-08-25"
+    notable_results:
+      - what: "The primary source has already rotated off the live web"
+        note: "The essay's most checkable factual claim was unverifiable at its stated location three months after publication, and required the Internet Archive. That is a fact about how long a claim of this kind stays checkable, and it is the format's own argument for taking the raw file at first reading."
+        atoms: [ell-143]
+      - what: "The YC entry specifies a mechanism"
+        note: "Cuts against the essay's verdict that the word specifies nothing. The entry names a pipeline (pull from fragmented sources, structure, keep current, emit an executable skills file) and explicitly excludes the two things the essay says these products are."
+        atoms: [ell-144, ell-145]
+      - what: "Glean"
+        note: "Retrieved as the largest product in the category. Its own home page leads on permission-aware access and observability, which corroborates the essay's description of what ships."
+        atoms: [ell-136, ell-137]
+    body: |
+      What was sought: the origin of the phrase company brain, who uses it, and
+      what the products under it ship.
+
+      What was found: the Y Combinator attribution is exact and checks out,
+      through the Internet Archive rather than through the live page. The essay's
+      reading of what ships is corroborated by the one vendor page retrieved.
+
+      What cuts against the essay: the Y Combinator entry it cites is itself a
+      specification of a mechanism, and one that explicitly rejects the two
+      descriptions the essay applies to the category. The word may
+      anthropomorphize; the request for startups it came from does not specify
+      nothing.
+
+      What could not be established: the essay's claims that a cluster of
+      startups use the name and that the business press is pitching enterprise
+      brain at the enterprise vendors. No startup using the name and no
+      business-press piece using that phrase was retrieved as a primary source in
+      these acts, and both are recorded in the corpus as unbacked.
+
+      Coverage bounds: three acts on one naming question. No product survey was
+      conducted; one vendor page stands for a category the essay characterizes in
+      full, which is not coverage and is not claimed as coverage.
+
+  - id: llm-output-reuse-degradation-2026-08-25
+    title: "Evidence that LLM output degrades when it is reused as input, in training and between calls"
+    searches:
+      - tool: "WebSearch (Claude Code harness; US-only web index, upstream provider and index version not exposed to the caller)"
+        query: "quality degradation when LLM output is reused as context across successive prompts iterative rewriting study"
+        scope: "the open web as the harness's index covers it, no domain filter"
+        hits_reported: "9 result links returned; the instrument reports no total and no count"
+        timestamp: "2026-08-25"
+    notable_results:
+      - what: "Gurkan, Stonedahl and Wilensky on LLM-driven mutation chains"
+        note: "The closest thing found to the essay's claim: repeated LLM rewriting of the same artefact converges, with 93 percent of mutations revisiting a previously seen structural form in 87 percent of chains, and a classical operator not converging comparably. In a domain-specific programming language, without selection pressure."
+        atoms: [ell-166, ell-167]
+      - what: "Shumailov and colleagues on model collapse"
+        note: "Rigorous, in Nature, and about the wrong mechanism: recursive training on model output, not reuse between inference calls. Recorded because it is the study most likely to be mistaken for support of the essay's sentence."
+        atoms: [ell-156, ell-157]
+      - what: "Context rot"
+        note: "A near-miss returned by the search and not minted: degradation as input length grows, which is a property of long context rather than of recycled content. A third mechanism again."
+    body: |
+      What was sought: evidence for or against the essay's assertion that loose
+      AI-flavoured prose, recycled from call to call, degrades quickly.
+
+      What was found: three different degradation phenomena, none of which is
+      exactly the one the essay names. Model collapse concerns training. Context
+      rot concerns input length. Mutation convergence concerns repeated LLM
+      rewriting of an artefact, which is the essay's mechanism, measured on
+      programs rather than prose and under conditions harsher than a working
+      corpus.
+
+      The honest reading: the essay's sentence is plausible, adjacent to three
+      measured phenomena, and unmeasured for prose in a working corpus. It is an
+      assertion the author would have to soften or test.
+
+      Coverage bounds: one act. No search of the writing, editing or
+      information-quality literature; no search for the negative result, that is,
+      for work showing reuse not degrading, which would be the harder and more
+      valuable search and was not run.
+
+  - id: speech-to-text-ubiquity-2026-2026-08-25
+    title: "Whether speech-to-text became ubiquitous among knowledge workers in 2026"
+    searches:
+      - tool: "WebSearch (Claude Code harness; US-only web index, upstream provider and index version not exposed to the caller)"
+        query: "\"speech-to-text\" OR dictation adoption 2026 knowledge workers ubiquitous survey percentage"
+        scope: "the open web as the harness's index covers it, no domain filter"
+        hits_reported: "8 result links returned; the instrument reports no total and no count; 6 of the 8 are vendor blogs or content-marketing pages and 2 are trade or business press"
+        timestamp: "2026-08-25"
+    notable_results:
+      - what: "No adoption measurement for speech-to-text specifically"
+        note: "The survey's finding. The only population-level figure returned is a Gallup finding that about half of US workers use AI at work, which is a claim about AI and not about dictation. Every dictation-specific figure returned came from a company selling dictation software."
+      - what: "Computerworld's framing"
+        note: "A trade publication in 2026 still asking whether the technology is good enough to push it into common office use, which is not how a publication writes about something that has become ubiquitous."
+        atoms: [ell-160, ell-161]
+    body: |
+      What was sought: a measurement supporting or refuting the essay's statement
+      that speech-to-text became ubiquitous in 2026.
+
+      What was found: no independent measurement of speech-to-text adoption among
+      knowledge workers. The retrievable numbers are vendor marketing and a
+      market-size projection. The one piece of trade press retrieved treats
+      mainstream office adoption as an open question in 2026.
+
+      This is a sparseness reading rather than an absence reading: the figure may
+      exist behind an analyst paywall or in a survey this instrument does not
+      index. What can be said is that the essay's word ubiquitous has nothing
+      public standing behind it, and that a 2026 trade publication writing on the
+      same subject used markedly weaker language.
+
+      Coverage bounds: one act, English, US-indexed, no analyst databases, no
+      paywalled sources, no vendor telemetry. Hits inspected one page deep.
+
+  - id: knowledge-store-decay-rates-2026-08-25
+    title: "Measured decay rates for CRMs and enterprise knowledge stores, and what causes the decay"
+    searches:
+      - tool: "WebSearch (Claude Code harness; US-only web index, upstream provider and index version not exposed to the caller)"
+        query: "CRM data decay rate per year contact records go stale study"
+        scope: "the open web as the harness's index covers it, no domain filter"
+        hits_reported: "10 result links returned; the instrument reports no total and no count; 9 of the 10 are pages published by companies selling data enrichment or CRM hygiene services"
+        timestamp: "2026-08-25"
+      - tool: "WebSearch (Claude Code harness; US-only web index, upstream provider and index version not exposed to the caller)"
+        query: "Guru card verification knowledge management trust verified expire"
+        scope: "the open web as the harness's index covers it, no domain filter"
+        hits_reported: "8 result links returned; the instrument reports no total and no count"
+        timestamp: "2026-08-25"
+    notable_results:
+      - what: "Decay figures exist and every one of them is published by an interested party"
+        note: "The range returned spans 22.5 to 70 percent a year and the spread is explained by field type. Not one figure in the results came from a disinterested source; the survey is therefore evidence that the number is unestablished rather than evidence for any number in it."
+        atoms: [ell-162]
+      - what: "The cause given is the world moving, not the operator failing to type"
+        note: "Cuts against the essay's diagnosis. The decay literature attributes contact-record decay to job changes and email churn, that is, to facts about the world changing under a record that was correct when written."
+        atoms: [ell-163]
+      - what: "Guru's own figure for verification reach"
+        note: "Manual verification typically reaches 8 to 12 percent of organizational content, per the vendor. If true it is strong support for the essay's staleness claim about enterprise knowledge stores, and it is a vendor's own number for the problem it sells against."
+        atoms: [ell-164, ell-165]
+    body: |
+      What was sought: measured decay rates for CRMs and enterprise knowledge
+      stores, and the mechanism behind the decay, against the essay's claim that
+      both decay because they must be maintained by hand.
+
+      What was found: figures in abundance and disinterested figures nowhere. The
+      mechanism the sources give for CRM decay is not the one the essay gives:
+      records go wrong because people change jobs and email addresses, which is
+      the world moving under a record that was correct when written. Hand
+      maintenance is the remedy those sources describe, not the cause.
+
+      For enterprise knowledge stores the essay fares better. Guru's own
+      documentation says manual verification reaches a tenth of organizational
+      content, and both Guru and Notion have built expiry-and-renotify machinery,
+      which is what a vendor builds when staleness is the default.
+
+      Coverage bounds: two acts, no academic search, no analyst report, and a
+      result set dominated by parties selling the remedy. This survey should be
+      read as a map of who is talking rather than as a measurement.

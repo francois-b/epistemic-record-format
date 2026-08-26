@@ -1,0 +1,994 @@
+# Atoms. `created` defaults to 2026-08-25 / anthropic/claude-opus-5 in the builder.
+#
+# Grading, per ERF-9 and ERF-10: an atom quoting the essay about the author's
+# own practice, stipulations or positions is `high` — the finding's subject is
+# the utterance, the utterer is named and accountable, and there is no relay.
+# An atom quoting the essay about the world (a vendor's feature, a field's
+# history) is `medium`: the author is an identifiable intermediary reporting
+# someone else's fact, and an interested one. Same source, two grades, which is
+# the split section 4.2 says is deliberate.
+atoms:
+
+  # ---- The essay on its own scope, posture and practice (high) ----
+
+  - id: ell-001
+    finding: "The essay's opening asserts a maturity gap: as of its 19 August 2026 version it holds that AI assistance is far advanced for coding while the wider field of knowledge work is undeveloped, which is the gap the whole document is written to address."
+    quote: "So much has been done for AI-assisted coding, but for the wider spectrum of knowledge work it's still the Wild West."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-002
+    finding: "The essay stipulates what it means by knowledge work, and the stipulation is a scope declaration rather than a definition offered for dispute: researching, synthesizing sources, producing documents, and keeping order over accumulated information."
+    quote: "By knowledge work I mean researching a topic, synthesizing sources, producing documents, and keeping order and control over the accumulation of information."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-003
+    finding: "The essay states that it excludes coding from its scope on purpose, giving two reasons, coding's own history and its own specific use of LLMs, which means every claim in the document is to be read as a claim about non-coding knowledge work."
+    quote: "Coding is deliberately set aside because it has its own history and its own specific use of LLMs."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-004
+    finding: "The essay states what it takes epistemology to mean for its purposes, which is the tracking of provenance and trust to the point where a written assertion can be relied on."
+    quote: "In our case, it means tracking provenance and trust so that a written assertion can be relied on."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-005
+    finding: "The essay asserts that the layer managing provenance-and-trust connections is not yet mainstream, which is the gap the document proposes to fill; it is stated as a present-tense fact about available tooling and not as a prediction."
+    quote: "Managing those connections is a whole layer that is not yet mainstream."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-006
+    finding: "The essay proposes that knowledge-work tools should file text by epistemic type, and enumerates seven types the tools should tell apart: a captured source, a verified fact, an asserted claim, an argument over claims, a position held, an open question, and a ruling."
+    quote: "A captured source, a verified fact, an asserted claim, an argument over claims, a position held, an open question, and a ruling are different things, and the tools need to tell them apart."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-007
+    finding: "The essay defines the evidence primitive it calls an atom as one quote from one source, sized to support a single point, which is the granularity commitment the rest of its grounding argument rests on."
+    quote: "Each piece of evidence (I call those \"atoms\") should be one quote from one source, small enough to support a single point."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-008
+    finding: "The essay states the consequence it draws from missing first-party attribution: a year later the operator cannot separate verdicts they adjudicated themselves from verdicts an LLM supplied."
+    quote: "Without a record of authorship, you can't tell a year later which verdicts you adjudicated from the ones the LLM filled in for you."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-009
+    finding: "The essay asserts that recording human judgment is the newest of the practices it lists, that few people think about it, and that tooling for it is close to absent; the tooling half is stated as a fact about the world rather than about the author's setup."
+    quote: "Of everything on this list this is the newest practice. Few people think about it, and there is next to no tooling for it."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-010
+    finding: "The essay states a design constraint on the tools it proposes, that they must bring material in the form the operator needs and must never generate chores of their own, naming correcting the AI's mistakes and re-checking verified material as the chores to avoid."
+    quote: "They should bring the material the task needs, in the form the operator needs it, and they should never create chores of their own (correcting the AI's mistakes, re-checking what has already been verified)."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-011
+    finding: "The essay decomposes AI governance into at least three layers, which is the decomposition the rest of section 1 and section 3 depend on."
+    quote: "\"AI governance\" covers at least three layers."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-012
+    finding: "The essay names its third governance layer, the workspace layer, as files, folders, workflows and lifecycle states, that is, the working environment itself treated as governed data."
+    quote: "The workspace layer: files, folders, workflows, and lifecycle states, the working environment itself treated as governed data."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-013
+    finding: "The essay asserts, of the workspace layer it has just defined, both that the AI-governance conversation omits it and that companies outside regulated industries do not practise it; the assertion is a universal negative over two distinct populations."
+    quote: "This last layer is missing from the AI-governance conversation, and outside regulated industries, from what companies are doing."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-014
+    finding: "The essay records the boundary of its own evidence base: everything it proposes has been tested in a one-person setup, and how the approach would be shared between people is stated by the author as unresolved."
+    quote: "Everything above has been tested within a one-person setup, and how it gets shared is still an open question."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-015
+    finding: "The essay states the sharing requirement it takes from the interoperability literature, that two people need a source, a verified claim and a ruling to mean the same thing on both sides."
+    quote: "Two people need semantic interoperability, which means a source, a verified claim, or a ruling must mean the same thing to both of them."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-016
+    finding: "The essay attributes the term pragmatic interoperability to an existing literature rather than coining it, and glosses it as applying the same standard of care to the data captured."
+    quote: "To go a little further, there is also what the literature calls pragmatic interoperability, which is about applying the same standard of care to the data that gets captured."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-017
+    finding: "The essay states its central diagnostic thesis, that a working discipline forms only once its primitives are mechanical, which is the premise from which its account of why knowledge work has no such discipline follows."
+    quote: "Primitives need to be mechanical for a working discipline to form."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-018
+    finding: "The essay asserts three specific absences in knowledge work, no diff for arguments, no test that runs on claims as a document grows, and no lint for provenance, and draws from them the conclusion that the corresponding disciplines have not crystallized."
+    quote: "Knowledge work has no diff for arguments, no test that runs on claims as a document grows, no lint for provenance, so the corresponding disciplines haven't crystallized."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-019
+    finding: "The essay asserts a repeated historical failure of general-purpose knowledge-work primitives and gives its diagnosis, a tension between being specific enough to be efficient and open enough for varied workflows."
+    quote: "Primitives for knowledge work in general have failed again and again: the space is challenging for one tool to be both specific enough to be efficient and open enough for a great variety of workflows."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-020
+    finding: "The essay asserts that the SaaS products which succeeded in this space did so by picking one use case together with workflow constraints, and that the same constraints are the reason those products frustrate users."
+    quote: "The SaaS products that succeeded picked a use case along with workflow constraints, and frustrate users for that very reason."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-021
+    finding: "The essay characterizes the personal knowledge management field as broadly manual across building, curating and using, which is the labour cost its LLM-economics argument claims to remove."
+    quote: "Building, curating, and then using those systems is manual work, and that is broadly the state of the \"personal knowledge management\" field."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-022
+    finding: "The essay reports the outcome of its own survey of the field: many tools and patterns exist for memory, context and knowledge graphs, most do the pre-LLM thing of storing, linking and retrieving text, and few have moved beyond that."
+    quote: "After researching the field, I found plenty of tools and patterns for \"memory\", \"context\", and knowledge graphs. Most of them do a fairly old thing (storing, linking, and retrieving text), and few have moved beyond what was done before LLMs."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+    limitations: "The essay reports the conclusion of a survey without recording its instrument, its queries, its scope or its yield, so the coverage behind \"after researching the field\" cannot be assessed from this quote or from anything else in the document."
+
+  - id: ell-023
+    finding: "The essay states the sharpest of its universal negatives, that none of the memory, context and knowledge-graph tools it surveyed adds a primitive for checked provenance, for checking claims, or for recording what a person stands behind."
+    quote: "What none of them add is a primitive for checked provenance, for checking claims, or for recording what you stand behind."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-024
+    finding: "The essay states the durability bet it is making, that records, disciplines and surfaces built on the right primitives outlast any particular LLM and grow more useful with each new one."
+    quote: "Built on the right primitives, the records, the disciplines, and the surfaces all outlast any particular LLM, and each new LLM makes them more useful."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-025
+    finding: "The essay distinguishes three kinds of check by what each one reads, and gives a worked question for each: text only, meaning, and interpreter-plus-purpose."
+    quote: "A syntactic check looks only at the text itself, not its meaning: \"is this quote present in that source?\". A semantic check reads its meaning: \"does this claim follow from that quote?\". A pragmatic check depends on the interpreter and the purpose: \"is this the right argument for this reader?\"."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-026
+    finding: "The essay asserts an ordering of how well the three kinds of check mechanize, syntactic reliably, semantic partially, pragmatic least, which is what its case for building on syntactic primitives first rests on."
+    quote: "Syntactic checks mechanize reliably, semantic checks partially, pragmatic checks least."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-027
+    finding: "The essay states the failure mode it attributes to unstructured prose in an LLM pipeline, that the automation becomes undifferentiated and nothing in particular ends up being checked."
+    quote: "Handing unstructured prose to the LLM turns the output into one woolly ball of automation where nothing in particular is being checked."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-028
+    finding: "The essay states that separability of its pieces is a deliberate design decision, gives an adoption reason for it, and names the Unix habit of small composing tools as the model."
+    quote: "Keeping them separable is a design decision. It keeps the whole from becoming a single system nobody adopts, and it follows the Unix habit of small tools that each do one thing and compose."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-029
+    finding: "The essay specifies what its atom primitive carries so the evidence can be used away from its source: a verbatim quote, a link to the original, retrieval metadata with its date, and the context needed to support the quote."
+    quote: "An atom carries everything you need to use a piece of evidence away from its source. A verbatim quote, a link to the original source, metadata about the retrieval and its date, and the context needed to support that quote."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-030
+    finding: "The essay reports a first-party fact about the author's own build: he asserts that nothing keeps an authorship record across a working corpus and that he therefore built a shadow record committing at every file save with who made the change, person or AI."
+    quote: "Nothing keeps that record across a working corpus, so I built one: a shadow record that commits at every file save with who made the change, person or AI."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-031
+    finding: "The essay specifies its standing vocabulary as four values, proposed, held, contested and retired, and specifies that only the operator moves a claim between them."
+    quote: "Each claim carries a standing (proposed, held, contested, or retired), and only the operator moves it."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-032
+    finding: "The essay specifies that a change of standing is dated in the file's history, so that a withdrawal is recorded as an event rather than performed as a deletion."
+    quote: "Each move is dated in the file's history, so a withdrawal is a recorded event rather than a deletion."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-033
+    finding: "The essay reports a first-party finding from the author's own practice: he underestimated how much constraint LLM use and his own workflows needed, and found that adding governance was where most of the value turned out to be."
+    quote: "I had underestimated the amount of constraints I needed to impose on LLM use and on my own workflows. Again and again, I had an artifact that was produced quickly but needed a lot of work to get into a good final shape. The solution was to add more governance and it is where most of the value turned out to be."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-034
+    finding: "The essay reports a first-party side effect the author observed, that shaping a workflow to suit an LLM sharpened his own thinking about the kinds of document he works on."
+    quote: "Optimizing your workflow to fit an LLM turns out to sharpen your own thinking about the kinds of documents you work on."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-035
+    finding: "The essay records the size and shape of the only deployment behind it, 500-plus atoms, one operator, about six months, and states plainly that the author does not know how the approach breaks at larger scale."
+    quote: "What I do not know is how this breaks at larger scale. My system holds 500+ atoms, with one operator, in about six months."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-036
+    finding: "The essay defines knowledge, for its purposes, as text a person can check, combine and stand behind, and asserts that before LLMs those three properties were largely invisible to software."
+    quote: "Knowledge is text you can check, combine, and stand behind. Pre-LLMs, those properties were largely invisible to software."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-037
+    finding: "The essay states the conditional bet at the centre of its forward-looking section: if LLMs make it possible to operate quickly on knowledge, knowledge work gets its own round of methodologies, which it expects to resemble the original Agile field."
+    quote: "LLMs now make it possible to operate quickly on knowledge. If that holds, knowledge work gets its own round of new (or re-newed) methodologies, probably inspired by the original Agile field."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-038
+    finding: "The essay's verdict on the company-brain naming is that the word describes no mechanism: it anthropomorphizes and specifies nothing."
+    quote: "The word anthropomorphizes and specifies nothing."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-039
+    finding: "The essay gives its structural diagnosis of company-brain products, that their unit is the page or the chunk rather than the claim, and derives the three absences it goes on to name from that choice of unit."
+    quote: "The unit in those products is the page or the chunk, not the claim, which is why the rest is absent."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-040
+    finding: "The essay asserts that agentic AI is being marketed while the layer beneath it is underserved, and that non-deterministic workflows need a quality of structure that has not had time to emerge outside coding."
+    quote: "Agentic AI is being marketed while much of what sits underneath it is underserved."
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  - id: ell-041
+    finding: "The essay defines entailment, for its purposes, as a reader test: would someone holding only the quote and its surrounding context accept the claim that cites it."
+    quote: "whether the quote actually supports the claim that cites it: would a reader holding only the quote, with its surrounding context, accept the claim?"
+    source: essay-2026-08-19
+    source_quality: high
+    as_of_date: "2026-08-19"
+
+  # ---- The essay on the world: an identified but interested relay (medium) ----
+
+  - id: ell-042
+    finding: "François Bouet states, in an August 2026 manuscript, that knowledge management was attempted in the 1990s and that the manual work of building and maintaining it created too much friction to scale; he offers no source for the historical claim."
+    quote: "Knowledge management tried this in the '90s, and the manual work it took to build and maintain created too much friction for it to scale."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "A single author's unsourced summary of a decade of practice, relayed at one hop. Graded medium because he is identified and answerable but is neither a participant-witness he cites nor a study he names."
+
+  - id: ell-043
+    finding: "François Bouet states, in an August 2026 manuscript, that LLMs are removing most of the manual labour that sank 1990s knowledge management, and treats that removal as the reason the field is worth reviving now."
+    quote: "LLMs are taking most of that work away, which is why it's timely to give it a second chance."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "The author's own read of what LLMs remove, from a one-operator deployment; he is an interested party in the conclusion, and no measurement is offered."
+
+  - id: ell-044
+    finding: "François Bouet states, in an August 2026 manuscript, that material carrying its sources and its epistemic kind can be fed into further LLM calls with less risk of hallucination; the claim is stated as a general property and not as a measured result."
+    quote: "Material that keeps its sources and its kind (a verbatim quote, a checked claim, a guess) can be fed into further LLM calls with less risk of hallucination."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "An unmeasured mechanism claim about LLM behaviour, made by an author whose proposal depends on it. Nothing in the document quantifies \"less risk\"."
+
+  - id: ell-045
+    finding: "François Bouet states, in an August 2026 manuscript, that loose AI-flavoured prose recycled from call to call degrades quickly; no measurement, corpus or study is cited for the degradation."
+    quote: "Loose AI-flavored prose, recycled from call to call, degrades quickly."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "Unquantified and unsourced; \"degrades\" is not defined and no rate is given."
+
+  - id: ell-046
+    finding: "François Bouet states, in an August 2026 manuscript, that mainstream tools file text by subject, format, author and date, which he offers as the contrast to filing by epistemic type."
+    quote: "Mainstream tools file text by subject, format, author, and date."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "A characterization of a whole product category by one author, with no product named and no survey behind it."
+
+  - id: ell-047
+    finding: "François Bouet states, in an August 2026 manuscript, that trustworthiness of text has been tracked only in niches and only by hand, and names three: legal citators, source grading for intelligence work, and peer review."
+    quote: "How far a piece of text can be trusted has been tracked only in niches, and by hand, in legal citators, in source grading for intelligence work, in peer review."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "Two assertions travel together here, that the practice is confined to niches and that it is manual; the second is checkable against the citators themselves and the author cites nothing."
+
+  - id: ell-048
+    finding: "François Bouet states, in an August 2026 manuscript, that today's tools do not record whether a piece of work was written by a human or an AI tool, stated flatly and without qualification as to product category."
+    quote: "Today's tools don't record whether something was written by a human or an AI tool."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "A universal negative over an unbounded population of tools, from an author who names four exceptions of his own within the next four sentences."
+
+  - id: ell-049
+    finding: "François Bouet states, in an August 2026 manuscript, that a Google Doc names a text's authors but records nothing finer, and that text written with Gemini is filed under the human's name."
+    quote: "A Google Doc names the authors of a text but nothing finer, and text written with Gemini is filed under the human's name."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "A relayed description of a third-party product's behaviour, unsourced; Google Docs' revision history and activity log are not addressed."
+
+  - id: ell-050
+    finding: "François Bouet states, in an August 2026 manuscript, that git records every change but at a coarser grain than he needs and without recording AI use."
+    quote: "Git records every change, but at a coarser grain, and without recording AI use."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "A relayed description of a third-party tool, unsourced; git's own trailer mechanism for co-authorship is not addressed."
+
+  - id: ell-051
+    finding: "François Bouet states, in an August 2026 manuscript, that code is the exception to his no-AI-attribution claim, and that Cursor Blame marks which lines an AI wrote and with which model."
+    quote: "The exception is code, where Cursor Blame now marks which lines an AI wrote and with which model."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "A vendor feature described at one hop, with no citation to the vendor's own documentation and no date for when the feature shipped."
+
+  - id: ell-052
+    finding: "François Bouet states, in an August 2026 manuscript, that the nearest equivalent for prose is Grammarly's authorship report, which he describes as a per-document sidecar living inside Grammarly's own app."
+    quote: "The nearest thing for prose is Grammarly's authorship report, a per-document sidecar inside its own app."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "A vendor feature described at one hop, with no citation; whether it is the nearest equivalent is a judgment resting on a survey the document does not record."
+
+  - id: ell-053
+    finding: "François Bouet states, in an August 2026 manuscript, that a CRM has to be maintained by hand and decays because of it, offered as the company-scale instance of his manual-work diagnosis."
+    quote: "A CRM has to be maintained by hand and decays because of it."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "An unsourced generalization about a product category; no decay rate is given and automated enrichment and activity capture are not addressed."
+
+  - id: ell-054
+    finding: "François Bouet states, in an August 2026 manuscript, that enterprise wikis, naming Confluence and SharePoint, go stale the same way a CRM does, ending in a mass clean-up or abandonment."
+    quote: "The enterprise wiki (Confluence, SharePoint) goes stale the same way, until people have had enough and either go for a big clean-up or drop it entirely."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "Unsourced, and stated without a measure of staleness or a share of deployments to which it applies."
+
+  - id: ell-055
+    finding: "François Bouet states, in an August 2026 manuscript, that speech-to-text became ubiquitous in 2026 and was a major productivity boost, while asserting in the same sentence that little beyond it is more sophisticated than a chatbot."
+    quote: "Speech-to-text became ubiquitous in 2026 and was a major productivity boost, but beyond that little exists that is more sophisticated than a chatbot, and every power user of Claude Code has felt the limitations."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026"
+    limitations: "\"Ubiquitous\" is unquantified and undated within the year; the productivity claim is the author's own experience generalized, and \"every power user of Claude Code\" is a claim about other people's experience with no survey behind it."
+
+  - id: ell-056
+    finding: "François Bouet states, in an August 2026 manuscript, that the web was meant to be semantic while what accumulated was unstructured, and that big data with machine learning was built to make sense of it after the fact."
+    quote: "The web was meant to be semantic but what accumulated was unstructured. Big data, with machine learning, was built to make sense of it after the fact."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "A compressed history relayed without citation."
+
+  - id: ell-057
+    finding: "François Bouet states, in an August 2026 manuscript, that search engines, full-text databases and document management systems all manage text well, listing storage, indexing, versioning and retrieval as the properties they handle."
+    quote: "Search engines, full-text databases, and document management systems all manage text well: stored, indexed, versioned, retrieved."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "A category-level judgment with no product named and no measure of \"well\"."
+
+  - id: ell-058
+    finding: "François Bouet states, in an August 2026 manuscript, that 1980s knowledge engineering approached knowledge from the formal side and that its descendant survives in Palantir's hand-built ontologies, which he says work for operational data."
+    quote: "Knowledge engineering in the 1980s came at it from the formal side, and its descendant is alive in Palantir's hand-built ontologies, which work for operational data."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "A lineage claim and a vendor-capability claim in one sentence, neither sourced; \"hand-built\" is asserted rather than shown."
+
+  - id: ell-059
+    finding: "François Bouet states, in an August 2026 manuscript, that 1990s knowledge management approached knowledge from the people side and that the company-brain startups are its descendants."
+    quote: "Knowledge management in the 1990s came at it from the people side, and its descendants are the company-brain startups."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "A lineage claim asserted without evidence that the startups in question descend from that tradition in any traceable way."
+
+  - id: ell-060
+    finding: "François Bouet states, in an August 2026 manuscript, that faster software iteration is what prompted the new methodologies that became Agile, naming short iterations, continuous integration and refactoring as their content."
+    quote: "When iterating on software became faster, new methodologies were championed: this was the start of Agile, with short iterations, continuous integration, and refactoring."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "A causal reading of a history, relayed without citation; the direction of causation between faster iteration and the methodologies is asserted, not shown."
+
+  - id: ell-061
+    finding: "François Bouet states, in an August 2026 manuscript, three separate facts about the company-brain naming: that it was a Y Combinator request for startups for the Summer 2026 batch, that a cluster of startups use the name, and that the business press is pitching enterprise brain at enterprise vendors."
+    quote: "\"Company brain\" was a Y Combinator request for startups for its Summer 2026 batch, a cluster of startups use the name, and the business press is pitching \"enterprise brain\" at the enterprise vendors."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "Three checkable facts relayed in one sentence with no citation for any of them; \"a cluster\" is unquantified and no startup is named."
+
+  - id: ell-062
+    finding: "François Bouet states, in an August 2026 manuscript, what he says company-brain products actually ship: permission-aware retrieval over a shared corpus, with agents on top, and in a few cases a typed graph or a synthesis layer."
+    quote: "Unpack any of them and what ships today is retrieval over a shared corpus, permission-aware, with agents on top and, in a few, a typed graph or a synthesis layer."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "A claim about every product in a category, from a survey whose instrument, scope and yield the document does not record; \"any of them\" names none."
+
+  - id: ell-063
+    finding: "François Bouet states, in an August 2026 manuscript, that citations in company-brain products point at a page or highlight a passage on screen, and that where a quote is kept nothing checks it, which he summarizes as grounding present but weak."
+    quote: "Citations point at a page, or highlight a passage while the answer is on screen, and where a quote is kept, nothing checks it (grounding, present but weak)."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "A universal negative over a product category, unsourced, with no product named and no test described."
+
+  - id: ell-064
+    finding: "François Bouet states, in an August 2026 manuscript, that nothing records what an organization stands behind claim by claim including withdrawal, and cites Notion's verified pages and Guru's cards as marking whole pages and letting them lapse."
+    quote: "Nothing records what the organization stands behind, claim by claim and including withdrawal (endorsement; Notion's verified pages and Guru's cards mark whole pages and let them lapse)."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "Two vendor behaviours relayed without citation, carrying a universal negative over everything else in the category."
+
+  - id: ell-065
+    finding: "François Bouet states, in an August 2026 manuscript, that nothing records who wrote what, human or AI, below the grain of a whole page."
+    quote: "Nothing records who wrote what, human or AI, below the grain of a whole page (attribution)."
+    source: essay-2026-08-19
+    source_quality: medium
+    as_of_date: "2026-08-19"
+    limitations: "A universal negative over an unbounded population, unsourced, and in tension with the author's own naming of Cursor Blame two sections earlier."
+
+  # ================= External evidence =================
+  # Grading rule used throughout, from ERF-9: reference documentation in which a
+  # vendor or body defines a mechanism it owns is read as `high` (a primary read
+  # directly); a marketing or capability claim by the same party about the same
+  # product is `medium` (a first party with an interest in the answer); an
+  # encyclopedia summarising someone else's work is `medium` (an identifiable
+  # intermediary reporting someone else's fact).
+
+  # ---- Human/AI authorship attribution ----
+
+  - id: ell-100
+    finding: "Anysphere's own documentation for Cursor Blame states that the feature extends git blame with AI attribution so a reader can see which code was AI-generated and which was human-written, which is the fact the essay reports at one hop."
+    quote: "Cursor Blame extends traditional git blame with AI attribution, so you can see what was AI-generated versus human-written."
+    source: cursor-blame-docs
+    source_quality: high
+
+  - id: ell-101
+    finding: "Anysphere's documentation states that Cursor Blame records which model produced agent-generated code, which is the model-level granularity the essay attributes to it."
+    quote: "Agent-generated code shows which model produced it, helping you understand AI tool usage across your codebase."
+    source: cursor-blame-docs
+    source_quality: high
+
+  - id: ell-102
+    finding: "Anysphere's documentation states that Cursor Blame is available on the Enterprise plan, a restriction the essay's description of the feature does not mention."
+    quote: "Available on the [...], it helps you understand the origin of each line when you review or revisit code"
+    source: cursor-blame-docs
+    source_quality: high
+    limitations: "The elision removes a markdown link naming the Enterprise plan and its sales URL; the plan restriction is carried by the link text, not by the surrounding prose, so this quote evidences the sentence and the finding's plan claim rests on the elided link."
+
+  - id: ell-103
+    finding: "The agentblame project's README states that it tracks AI-generated code in git history and works with Cursor, Claude Code and OpenCode, which shows that line-level AI attribution for code is not confined to the one product the essay names as the exception."
+    quote: "Works silently with Cursor, Claude Code, and OpenCode"
+    source: agentblame-github
+    source_quality: medium
+    limitations: "A project README written by the tool's own authors; it states capability and gives no independent evaluation of accuracy or of adoption."
+
+  - id: ell-104
+    finding: "The agentblame project's README states that it puts AI-generated versus human-written line counts and an overall AI percentage at the top of every pull request, which is authorship attribution below the grain of a whole document and outside the one product the essay names."
+    quote: "PR summary at the top of every PR showing AI-generated vs human-written line counts and overall AI percentage"
+    source: agentblame-github
+    source_quality: medium
+    limitations: "A project README written by the tool's own authors; capability claimed, not measured."
+
+  - id: ell-105
+    finding: "GitHub's reference documentation states that a commit message may carry `Co-authored-by` trailers attributing the commit to multiple authors, which is a standing git-native mechanism for recording an additional author on a change."
+    quote: "Add one or more `Co-authored-by` trailers to a commit message to attribute a commit to multiple authors."
+    source: github-co-authored-by
+    source_quality: high
+    limitations: "The mechanism attributes a commit to a named person or account and says nothing about whether that author is a human or an AI tool; it is the carrier the AI-attribution practice uses, not the practice itself."
+
+  - id: ell-106
+    finding: "Grammarly's own product page states that Authorship can be enabled directly in Microsoft Word, Google Docs and Canvas LMS submissions, which contradicts the essay's description of it as a sidecar confined to Grammarly's own app."
+    quote: "You can enable Authorship directly in Microsoft Word, Google Docs, and Canvas LMS submissions."
+    source: grammarly-authorship
+    source_quality: medium
+    limitations: "A vendor marketing page about the vendor's own product; the claim is about where the feature can be turned on and not about how well it works."
+
+  - id: ell-107
+    finding: "Grammarly's own product page states that Authorship identifies, sentence by sentence, whether text was written by the user, came from a website, came from a Grammarly suggestion, or came from a non-web source, which is authorship recorded below the grain of a whole page."
+    quote: "Grammarly Authorship, meanwhile, helps you keep track of version history and where text in your writing came from. It doesn’t just show you where you used AI; it also identifies if sentences were written by you or came from a website, a Grammarly suggestion, or a non-web source."
+    source: grammarly-authorship
+    source_quality: medium
+    limitations: "A vendor marketing page, and the passage is written to distinguish the product from AI detectors, so it is stated in the most favourable terms available; no accuracy figure is given."
+
+  - id: ell-108
+    finding: "The C2PA consortium states that it publishes an open technical standard by which publishers, creators and consumers can establish the origin and edits of a piece of digital content, which is a shipped provenance primitive for content outside the coding domain."
+    quote: "The Coalition for Content Provenance and Authenticity, or C2PA, provides an open technical standard for publishers, creators and consumers to establish the origin and edits of digital content."
+    source: c2pa-about
+    source_quality: medium
+    limitations: "The consortium's own description of its own standard. It evidences that the standard exists and not that any knowledge-work tool has adopted it."
+
+  # ---- Claim-level checking ----
+
+  - id: ell-109
+    finding: "Google's reference documentation for the check grounding API states that the API returns a support score from 0 to 1 and citations to the facts supporting each claim in the text being checked, which is a shipped mechanical check running at the grain of the claim."
+    quote: "The check grounding API returns an overall support score of 0 to 1, which indicates how much the answer candidate agrees with the given facts. The response also includes *citations* to the facts supporting each claim in the answer candidate."
+    source: vertex-check-grounding
+    source_quality: high
+
+  - id: ell-110
+    finding: "Google's reference documentation defines perfect grounding as every claim in the checked text being wholly entailed by the given facts, and states that a partially entailed claim is not grounded, which is an entailment test of exactly the kind the essay defines under the name of a semantic check."
+    quote: "Perfect grounding requires that every claim in the answer candidate must be supported by one or more of the given facts. In other words, the claim is wholly entailed by the facts. If the claim is only partially entailed, it is not considered grounded."
+    source: vertex-check-grounding
+    source_quality: high
+
+  - id: ell-111
+    finding: "Google's reference documentation states that in the current version of the check grounding API a sentence is treated as a single claim, which bounds how far the shipped check reaches toward the claim as a unit."
+    quote: "In this version of the check grounding API, a sentence is considered a single claim."
+    source: vertex-check-grounding
+    source_quality: high
+
+  - id: ell-112
+    finding: "The Ragas documentation defines its Faithfulness metric as scoring a response faithful when all of its claims can be supported by the retrieved context, which is a published, re-runnable test defined over claims."
+    quote: "A response is considered **faithful** if all its claims can be supported by the retrieved context."
+    source: ragas-faithfulness
+    source_quality: high
+
+  - id: ell-113
+    finding: "The Ragas documentation gives the procedure its Faithfulness metric runs: identify all the claims in a response, then check each claim against the retrieved context, then compute a score as the ratio of supported claims to total claims."
+    quote: "To calculate this: 1. Identify all the claims in the response. 2. Check each claim to see if it can be inferred from the retrieved context."
+    source: ragas-faithfulness
+    source_quality: high
+    limitations: "The claim decomposition and the entailment judgment are both performed by an LLM, so the test is mechanical in its plumbing and probabilistic in its verdicts; the documentation states the procedure, not its reliability."
+
+  - id: ell-114
+    finding: "The TruLens documentation states that its groundedness evaluation separates a response into individual claims and searches for evidence supporting each within the retrieved context, which is a second independent implementation of a claim-level check."
+    quote: "To verify the groundedness of our application, we can separate the response into individual claims and independently search for evidence that supports each within the retrieved context."
+    source: trulens-rag-triad
+    source_quality: medium
+    limitations: "A vendor describing the method of its own evaluation product; the method is described and not measured."
+
+  - id: ell-115
+    finding: "Schema.org defines a ClaimReview type as a fact-checking review of claims made or reported in some creative work, which is a published interchange vocabulary whose unit is the claim rather than the page."
+    quote: "A fact-checking review of claims made (or reported) in some creative work (referenced via itemReviewed)."
+    source: schemaorg-claimreview
+    source_quality: high
+
+  - id: ell-116
+    finding: "Scite states that its Smart Citations show how later research supported, challenged or discussed a paper, claim, method, journal, author, institution or funder, which is a shipped commercial product whose unit of evidence classification is the claim."
+    quote: "Smart Citations show how later research has supported, challenged, or discussed a paper, claim, method, journal, author, institution, or funder, while Scite’s AI Assistant uses those same evidence signals to ground answers in the broader literature."
+    source: scite-site
+    source_quality: medium
+    limitations: "A vendor marketing page about the vendor's own product; classification accuracy is asserted rather than reported."
+
+  - id: ell-117
+    finding: "Samsonau's arXiv abstract states that sciwrite-lint applies the linting paradigm from software engineering to citation verification and checks reference existence, metadata accuracy, retraction status and claim support, which is a lint for provenance in the essay's own sense of the word."
+    quote: "sciwrite-lint applies the linting paradigm from software engineering to citation verification: it runs entirely on the researcher's machine (free public databases, a single consumer GPU, and open-weights models), is fast enough to re-lint between revisions so authors catch problems at the source"
+    source: sciwrite-lint-arxiv
+    source_quality: medium
+    as_of_date: "2026"
+    limitations: "An arXiv preprint's abstract, describing the authors' own tool and not reviewed; the capability is stated and the evaluation is not in the quoted text."
+
+  # ---- Provenance and evidence primitives that predate LLMs ----
+
+  - id: ell-118
+    finding: "Kuhn and Krauthammer's 2012 position paper states that nanopublications were developed to make core scientific statements easier to find, connect and curate and to determine their attribution, quality and provenance, which places a claim-grain provenance primitive in the literature more than a decade before the essay."
+    quote: "Nanopublications have been developed to make it easier to find, connect and curate core scientific statements and to determine their attribution, quality and provenance [2]."
+    source: arxiv-nanopub-claims
+    source_quality: high
+    as_of_date: "2012"
+
+  - id: ell-119
+    finding: "Kuhn and Krauthammer's 2012 position paper distinguishes two kinds of nanopublication, claims and data, with claims obtained by generalizing from data, which is a typed distinction of the kind the essay says mainstream tools do not make."
+    quote: "There seem to be two possible types of nanopublications: they can represent claims or data."
+    source: arxiv-nanopub-claims
+    source_quality: high
+    as_of_date: "2012"
+
+  - id: ell-120
+    finding: "The Monarch Initiative states that SEPIO is an OWL ontology built to support computable representations of the evidence and provenance behind scientific assertions, which is a published primitive for exactly the pairing of evidence and provenance the essay says no tool adds."
+    quote: "The **Scientific Evidence and Provenance Information Ontology** (**SEPIO**) is an OWL ontology developed to support rich, computable representations of the evidence and provenance behind scientific assertions."
+    source: sepio-github
+    source_quality: high
+
+  - id: ell-121
+    finding: "The Monarch Initiative's own README warns that the SEPIO ontology in that repository is out of date with the SEPIO model's later development, which is evidence about the maintenance cost of such a primitive rather than about its absence."
+    quote: "The ontology here is out of date with the most recent developments in the SEPIO Model"
+    source: sepio-github
+    source_quality: high
+
+  - id: ell-122
+    finding: "Wikipedia's article on W3C PROV states that the PROV standard defines a data model, serializations and definitions for interchanging provenance information on the web, which is a W3C recommendation for provenance interchange predating the LLM era."
+    quote: "The PROV standard defines a data model, serializations, and definitions to support the interchange of provenance information on the Web."
+    source: prov-wikipedia
+    source_quality: medium
+    limitations: "An encyclopedia summarising a standards document; identifiable but one hop from the recommendation itself, which could not be retrieved directly because the W3C site served a bot challenge to the fetch."
+
+  - id: ell-123
+    finding: "The Discourse Graphs project states that it represents research as connected claims, evidence, questions and projects, which is a shipped model whose unit is the claim rather than the page or the chunk."
+    quote: "Discourse Graphs help teams move beyond static documents by representing research as connected claims, evidence, questions, and projects."
+    source: discourse-graphs
+    source_quality: medium
+    limitations: "The project's own description of itself; adoption and whether any implementation performs a check are not addressed."
+
+  - id: ell-124
+    finding: "The Discourse Graphs project states that its model separates observations from interpretations so that shared knowledge can be compared and updated without flattening disagreement, which is a typed distinction between evidence and assertion of the kind the essay proposes."
+    quote: "Separate observations from interpretations so researchers can compare, remix, and update shared knowledge without flattening disagreement."
+    source: discourse-graphs
+    source_quality: medium
+    limitations: "The project's own description of itself; no implementation or check is named in the quoted text."
+
+  - id: ell-125
+    finding: "Hypothesis states that its users can highlight and comment directly on online articles, websites and videos without leaving the page, which is an anchored annotation layer over third-party sources and the nearest widely deployed relative of the essay's capture primitive."
+    quote: "Students, faculty, and colleagues can highlight and comment directly on online articles, websites, videos, and more without switching platforms."
+    source: hypothesis-about
+    source_quality: medium
+    limitations: "A marketing page aimed at higher education, describing annotation only; nothing in it claims that an annotation's quote is checked against its source, which is why this is a near-miss and not a counterexample."
+
+  # ---- Argument structure as a mechanical primitive ----
+
+  - id: ell-126
+    finding: "Wikipedia's article on argument maps states that the different styles are often functionally equivalent and represent an argument's individual claims and the relationships between them, which is a claim-grain representation of argument structure with a literature behind it."
+    quote: "There are different styles of argument map but they are often functionally equivalent and represent an argument's individual claims and the relationships between them."
+    source: argument-map-wikipedia
+    source_quality: medium
+    limitations: "An encyclopedia summary of a field rather than a primary text from it."
+
+  - id: ell-127
+    finding: "Wikipedia's article on argument maps states that the purpose of mapping is to uncover logical structure, identify unstated assumptions and evaluate the support an argument offers for a conclusion, which is the work the essay says knowledge work has no primitive for."
+    quote: "The purpose of mapping is to uncover the logical structure of arguments, identify unstated assumptions, evaluate the support an argument offers for a conclusion, and aid understanding of debates."
+    source: argument-map-wikipedia
+    source_quality: medium
+    limitations: "An encyclopedia summary; it states the purpose of a practice, not the existence or adoption of any tool."
+
+  - id: ell-128
+    finding: "Wikipedia's article on Kialo states that a Kialo debate divides into pro and con columns in which registered users add arguments and rate their impact on the weight or validity of the parent claim, which is a deployed system operating on claims and their relations."
+    quote: "A debate is divided into Pro (supporting) and Con (refuting or devaluing) columns where registered users can add arguments and [...] the impact on the weight or validity of the parent claim."
+    source: kialo-wikipedia
+    source_quality: medium
+    limitations: "An encyclopedia summary of a commercial platform; the elision removes a markdown link on the word rating."
+
+  - id: ell-129
+    finding: "Wikipedia's article on Kialo states that its argument tree structure enables detailed scrutiny of claims at all levels of the tree, which is claim-level scrutiny in a shipped product."
+    quote: "Its argument tree structure enables detailed scrutiny of claims at all levels of the tree"
+    source: kialo-wikipedia
+    source_quality: medium
+    limitations: "An encyclopedia summary of a commercial platform, sourced in the article to a third party."
+
+  - id: ell-130
+    finding: "The Argdown project states that its notation can be used inside markdown and is transformed into an argument map as the author types, which puts argument structure into plain text files where an ordinary line diff applies to it."
+    quote: "Argdown can even be used within Markdown! Your code is transformed into an argument map while you are typing."
+    source: argdown-site
+    source_quality: medium
+    limitations: "The project's own home page; that the structure is plain text is checkable from the notation itself, that anyone diffs it is not claimed here."
+
+  - id: ell-131
+    finding: "The Argdown project states that its rules let an author define relations between arguments and the logical premise-conclusion structure inside them, which is the premise relation the essay's own claim model needs, expressed in a text format that predates the essay."
+    quote: "With these simple rules you will be able to define more complex relations between arguments or dive into the details of their logical premise-conclusion structures."
+    source: argdown-site
+    source_quality: medium
+    limitations: "The project's own home page, stating capability."
+
+  # ---- Recording judgment ----
+
+  - id: ell-132
+    finding: "Nygard's 2011 post proposes keeping a collection of records for architecturally significant decisions, which is the founding text of a recorded-judgment practice that predates the essay by fifteen years."
+    quote: "We will keep a collection of records for \"architecturally significant\" decisions: those that affect the structure, non-functional characteristics, dependencies, interfaces, or construction techniques."
+    source: adr-nygard
+    source_quality: high
+    as_of_date: "2011-11-15"
+
+  - id: ell-133
+    finding: "Nygard's 2011 post names the problem the practice addresses in terms close to the essay's own: that the motivation behind past decisions is among the hardest things to track over a project's life."
+    quote: "One of the hardest things to track during the life of a project is the motivation behind certain decisions."
+    source: adr-nygard
+    source_quality: high
+    as_of_date: "2011-11-15"
+
+  - id: ell-134
+    finding: "Nygard's 2011 post specifies that decision records are numbered sequentially and monotonically and that numbers are never reused, which is the same permanent-identifier discipline the essay's claim model assumes."
+    quote: "ADRs will be numbered sequentially and monotonically. Numbers will not be reused."
+    source: adr-nygard
+    source_quality: high
+    as_of_date: "2011-11-15"
+
+  - id: ell-135
+    finding: "The adr organization states that a decision record captures a single decision and its rationale, that a project's collection of them constitutes its decision log, and that the practice extends beyond architecture to any decision record."
+    quote: "The collection of ADRs created and maintained in a project constitute its *decision log*. All these are within the topic of Architectural Knowledge Management (AKM), but ADR usage can be extended to design and other decisions (“any decision record”)."
+    source: adr-github-io
+    source_quality: high
+
+  # ---- Retrieval products and graph tooling ----
+
+  - id: ell-136
+    finding: "Glean's home page states that permission-aware access is built into the product, which corroborates the permission-aware half of the essay's description of what company-brain products actually ship."
+    quote: "Permissions. Secure, permission-aware access built in from day one."
+    source: glean-site
+    source_quality: medium
+    limitations: "A vendor home page; the claim is marketing copy about the vendor's own product and carries no detail about the permission model."
+
+  - id: ell-137
+    finding: "Glean's home page states that enterprise AI works only when answers are secure, explainable and permission-aware, which is the vendor's own framing of what its product is for and matches the essay's read of the category."
+    quote: "AI only works in the enterprise when answers are secure, explainable, and permission-aware."
+    source: glean-site
+    source_quality: medium
+    limitations: "Vendor marketing copy; a normative claim about the category from a participant in it."
+
+  - id: ell-138
+    finding: "Microsoft Research states that GraphRAG extracts a knowledge graph from raw text, builds a community hierarchy and generates summaries over it before retrieval, which is an LLM-built structure rather than the pre-LLM storing, linking and retrieving the essay says most tools still do."
+    quote: "The GraphRAG process involves extracting a knowledge graph out of raw text, building a community hierarchy, generating summaries for these communities, and then leveraging these structures when perform RAG-based tasks."
+    source: graphrag-ms
+    source_quality: medium
+    limitations: "The producing organization's own documentation for its own method; the quoted sentence describes the process and reports no result. The sentence contains a grammatical error present in the source."
+
+  - id: ell-139
+    finding: "Zep states that Graphiti's context graphs track how facts change over time and maintain provenance to source data, which is a shipped graph tool whose stored unit carries provenance rather than only text."
+    quote: "Graphiti's context graphs track how facts change over time, maintain provenance to source data, and support both prescribed and learned ontology"
+    source: graphiti-github
+    source_quality: medium
+    limitations: "A project README written by the vendor; provenance to source data is claimed and its granularity is not specified in the quoted text."
+
+  - id: ell-140
+    finding: "Zep states that each fact in a Graphiti context graph carries a validity window recording when it became true and when it was superseded, which is a dated lifecycle on a unit smaller than a document."
+    quote: "Unlike traditional knowledge graphs, each fact in a context graph has a validity window: when it became true, and when (if ever) it was superseded."
+    source: graphiti-github
+    source_quality: medium
+    limitations: "A vendor README; the mechanism is described and no evaluation of its accuracy is offered."
+
+  - id: ell-141
+    finding: "Notion's help documentation states that a workspace page can be verified to show its contents are up to date, for a chosen period or indefinitely, which is the whole-page verification the essay attributes to it."
+    quote: "You can verify content in your workspace to show that its contents are up to date. You can choose to keep a page verified for a certain period of time or indefinitely."
+    source: notion-verified-pages
+    source_quality: high
+
+  - id: ell-142
+    finding: "Notion's help documentation states that when a page's verification expires the owner is notified to re-verify it, which is the lapse behaviour the essay attributes to Notion and Guru alike."
+    quote: "Once verification expires, page owners will be notified to re-verify the page."
+    source: notion-verified-pages
+    source_quality: high
+
+  # ---- The company-brain trend ----
+
+  - id: ell-143
+    finding: "Y Combinator's Summer 2026 Requests for Startups, as captured by the Internet Archive on 29 May 2026, carries a Company Brain entry written by Tom Blomfield, which confirms the essay's attribution of the phrase to a YC request for startups for that batch."
+    quote: "If we want every company to run on AI automation, we need a new primitive: a company brain."
+    source: yc-rfs-summer-2026-archived
+    source_quality: high
+    as_of_date: "2026-05-29"
+
+  - id: ell-144
+    finding: "Y Combinator's Company Brain entry describes the thing it is asking founders to build as a system that pulls knowledge from fragmented sources, structures it, keeps it current and turns it into an executable skills file for AI, which is a specification of a mechanism rather than the empty word the essay says the name is."
+    quote: "A system that pulls knowledge out of all these fragmented sources, structures it, keeps it current, and turns it into an executable skills file for AI. This isn't a company-wide search or a chatbot over documents."
+    source: yc-rfs-summer-2026-archived
+    source_quality: high
+    as_of_date: "2026-05-29"
+
+  - id: ell-145
+    finding: "Y Combinator's Company Brain entry states that the blocker to AI automation is domain knowledge rather than model capability, which is the diagnosis the request for startups rests on."
+    quote: "The biggest blocker to AI automation of companies is no longer the models, they just got so good so quickly. Now the blocker is the domain knowledge."
+    source: yc-rfs-summer-2026-archived
+    source_quality: high
+    as_of_date: "2026-05-29"
+
+  # ---- History ----
+
+  - id: ell-146
+    finding: "Highsmith's first-hand account states that the Agile Manifesto came out of a meeting of seventeen people at Snowbird on 11 to 13 February 2001, which dates the event the essay refers to as the start of Agile."
+    quote: "On February 11-13, 2001, at The Lodge at Snowbird ski resort in the Wasatch mountains of Utah, seventeen people met to talk, ski, relax, and try to find common ground—and of course, to eat."
+    source: agile-manifesto-history
+    source_quality: high
+    as_of_date: "2001"
+
+  - id: ell-147
+    finding: "Highsmith's first-hand account states that the participants convened out of a shared need for an alternative to documentation-driven, heavyweight software development processes, which gives a different motivating cause from the faster iteration the essay names."
+    quote: "Representatives from Extreme Programming, SCRUM, DSDM, Adaptive Software Development, Crystal, Feature-Driven Development, Pragmatic Programming, and others sympathetic to the need for an alternative to documentation driven, heavyweight software development processes convened."
+    source: agile-manifesto-history
+    source_quality: high
+    as_of_date: "2001"
+
+  - id: ell-148
+    finding: "Highsmith's first-hand account places the deeper theme of the meeting in a set of shared values about people and collaboration rather than in any property of the development cycle."
+    quote: "a set of values based on trust and respect for each other and promoting organizational models based on people, collaboration, and building the types of organizational communities in which we would want to work"
+    source: agile-manifesto-history
+    source_quality: high
+    as_of_date: "2001"
+
+  - id: ell-149
+    finding: "Fowler's definition of continuous integration makes automated verification constitutive of the practice: each integration is verified by an automated build including test, which is the mechanical primitive the essay says the discipline formed around."
+    quote: "Each of these integrations is verified by an automated build (including test) to detect integration errors as quickly as possible."
+    source: fowler-ci
+    source_quality: high
+    as_of_date: "2024-01-18"
+
+  - id: ell-150
+    finding: "Wikipedia's article on the Semantic Web quotes Berners-Lee and colleagues stating in 2006 that the idea remained largely unrealized, and reports that in 2013 about four million of roughly 250 million web domains carried Semantic Web markup."
+    quote: "In 2006, Berners-Lee and colleagues stated that: \"This simple idea…remains largely unrealized\".[...] In 2013, more than four million Web domains (out of roughly 250 million total) contained Semantic Web markup."
+    source: semantic-web-wikipedia
+    source_quality: medium
+    as_of_date: "2013"
+    limitations: "An encyclopedia relaying a 2006 quotation and a 2013 count; the count's own source is not read here. The ellipsis inside the quoted sentence is a character the source itself contains and is matched literally under ERF-52; the elision marker between the two sentences removes a footnote reference link."
+
+  - id: ell-151
+    finding: "Wikipedia's article on Project Xanadu reports that Wired called it the longest-running vaporware story in the history of the computer industry, which is one instance of the repeated failure of general-purpose knowledge primitives the essay asserts."
+    quote: "magazine published an article entitled \"The Curse of Xanadu\", calling Project Xanadu \"the longest-running [...] story in the history of the computer industry\"."
+    source: xanadu-wikipedia
+    source_quality: medium
+    limitations: "An encyclopedia relaying a magazine's characterization; the elision removes a markdown link on the word vaporware."
+
+  - id: ell-152
+    finding: "Wikipedia's article on the Admiralty code states that it is a two-character notation assessing source reliability and confidence in the information, used by NATO members, which shows that source grading for intelligence work is a codified standard and not only a hand practice."
+    quote: "The system comprises a two-character notation assessing the reliability of the source and the assessed level of confidence on the information."
+    source: admiralty-code-wikipedia
+    source_quality: medium
+    limitations: "An encyclopedia summary of a military standard; the standard document itself is not read here."
+
+  - id: ell-153
+    finding: "Wikipedia's article on the Admiralty code states that each descriptor is assessed in isolation so that a source's reliability does not influence the assessed accuracy of the report, which is a separation of axes the essay's own grading proposal does not discuss."
+    quote: "Each descriptor is considered in isolation to ensure that the reliability of the source does not influence the assessed accuracy of the report."
+    source: admiralty-code-wikipedia
+    source_quality: medium
+    limitations: "An encyclopedia summary of a military standard."
+
+  - id: ell-154
+    finding: "Palantir's own documentation describes the Ontology as an operational layer that connects integrated datasets to their real-world counterparts, which corroborates the essay's characterization of it as a formal-side descendant working on operational data."
+    quote: "The Palantir **Ontology** is an operational layer for the organization."
+    source: palantir-ontology
+    source_quality: medium
+    limitations: "Vendor documentation about the vendor's own product; the essay's further claim that these ontologies are hand-built is not settled by this quote."
+
+  - id: ell-155
+    finding: "Palantir's own documentation states that the semantics of an organization are defined by mapping existing data sources into objects, properties and links in the Ontology, which is a manual modelling step and the nearest thing in the source to the essay's hand-built characterization."
+    quote: "Defining the semantics of your organization happens by mapping existing datasources into **objects, properties, and links** in the Ontology."
+    source: palantir-ontology
+    source_quality: medium
+    limitations: "Vendor documentation; the quote says the mapping happens and does not say who or what performs it, so it under-determines whether the work is done by hand."
+
+  # ---- Degradation, governance, dictation, decay ----
+
+  - id: ell-156
+    finding: "Shumailov and colleagues report in Nature that indiscriminate use of model-generated content in training causes irreversible defects in the resulting models, with the tails of the original content distribution disappearing."
+    quote: "We find that indiscriminate use of model-generated content in training causes irreversible defects in the resulting models, in which tails of the original content distribution disappear."
+    source: nature-model-collapse
+    source_quality: high
+    as_of_date: "2024-07"
+
+  - id: ell-157
+    finding: "Shumailov and colleagues define model collapse as a degenerative process across generations of models in which each generation's output pollutes the next generation's training set, which locates the mechanism in training rather than in the reuse of text between calls."
+    quote: "Model collapse is a degenerative process affecting generations of learned generative models, in which the data they generate end up polluting the training set of the next generation."
+    source: nature-model-collapse
+    source_quality: high
+    as_of_date: "2024-07"
+    limitations: "The mechanism reported is recursive training on model output. It is not evidence about the reuse of model-written prose inside a working corpus between inference calls, which is the essay's subject."
+
+  - id: ell-158
+    finding: "Microsoft states that Purview is used to manage the risks of AI usage and to implement protection and governance controls over it, which is a shipped governance product operating on the workspace the essay says the conversation omits."
+    quote: "Use Microsoft Purview to mitigate and manage the risks associated with AI usage, and implement corresponding protection and governance controls."
+    source: purview-ai
+    source_quality: medium
+    limitations: "Vendor documentation about the vendor's own product; the quoted sentence states purpose and not what the controls do."
+
+  - id: ell-159
+    finding: "NIST states that its AI Risk Management Framework is intended for voluntary use, to improve the ability to incorporate trustworthiness into the design, development, use and evaluation of AI products and systems, which is a public governance framework outside regulated-industry mandate."
+    quote: "is intended for voluntary use and to improve the ability to incorporate trustworthiness considerations into the design, development, use, and evaluation of AI products, services, and systems."
+    source: nist-ai-rmf
+    source_quality: high
+
+  - id: ell-160
+    finding: "Computerworld reports that a new generation of dictation tools uses large language models to produce polished, edited text rather than the verbatim transcripts earlier dictation apps aimed at, which is the change the article credits for renewed interest in voice at work."
+    quote: "Unlike previous generations of dictation apps that aimed to produce a verbatim transcript, newer tools rely on large language models (LLMs) to craft polished, edited text."
+    source: computerworld-dictation
+    source_quality: medium
+    as_of_date: "2026"
+    limitations: "Trade press describing a product category. The finding was rewritten on 2026-08-25 after a cross-vendor finding audit returned UNSUPPORTED against the original wording, which asserted facts (a named CTO, four named startups, a 2025 date) that the attached quote did not carry. ERF-48 stamps the edit; the audit on record ran after it."
+    last_modified:
+      timestamp: "2026-08-25"
+      by: "anthropic/claude-opus-5"
+
+  - id: ell-161
+    finding: "Computerworld frames the state of AI dictation at work as an open question about whether the technology is yet good enough to reach common office use, which is weaker than the essay's assertion that speech-to-text became ubiquitous in 2026."
+    quote: "The use of large language models has made it easier for dictation software to quickly deliver better results. Is that enough to push the technology into common use in the office?"
+    source: computerworld-dictation
+    source_quality: medium
+    as_of_date: "2026"
+    limitations: "A subheadline written to frame an article, so it is a rhetorical question rather than a measurement; it is evidence about how a trade publication reads the state of adoption, not about adoption itself."
+
+  - id: ell-162
+    finding: "ZoomInfo reports that B2B databases lose between 22.5 and 70 percent of their accuracy annually depending on data type and industry, attributing the lower aggregate to HubSpot benchmarks and the higher email-field figure to Landbase."
+    quote: "B2B databases lose between 22.5% and 70% of their accuracy annually, depending on data type and industry."
+    source: zoominfo-data-decay
+    source_quality: medium
+    as_of_date: "2026"
+    limitations: "A data vendor publishing decay figures for the problem its own product sells against, relaying two other parties' benchmarks without their methods; the interest and the double relay both cut against the number."
+
+  - id: ell-163
+    finding: "ZoomInfo characterizes CRM decay as a continuous structural condition in which every unverified record accumulates as a liability, which locates the cause in the world changing rather than in the operator failing to maintain the record by hand."
+    quote: "Every CRM record that goes unverified is a liability accumulating silently in your pipeline, misrouting leads, corrupting scoring models, and degrading the outreach that depends on it."
+    source: zoominfo-data-decay
+    source_quality: medium
+    as_of_date: "2026"
+    limitations: "A data vendor's framing of the problem its own product addresses."
+
+  - id: ell-164
+    finding: "Guru's help documentation states that verification is its system for marking content as trusted and current and that every piece of content carries one of three verification states, which is the whole-page verification the essay attributes to Guru's cards."
+    quote: "Verification is a trust signal that tells users whether content has been reviewed and confirmed as accurate."
+    source: guru-verification-help
+    source_quality: high
+
+  - id: ell-165
+    finding: "Guru states that manual verification processes typically reach only 8 to 12 percent of an organization's content, leaving the rest to go out of date, which is a quantified version of the staleness the essay attributes to enterprise wikis."
+    quote: "Most organizations face a fundamental knowledge quality problem: content decays faster than teams can review it. Manual verification processes typically reach only 8-12% of organizational content, leaving the rest to slowly become outdated."
+    source: guru-verification-help
+    source_quality: medium
+    as_of_date: "2026"
+    limitations: "A vendor stating the size of the problem its own product is sold to solve; no method, sample or study is named for the 8 to 12 percent figure."
+
+  - id: ell-166
+    finding: "Gurkan, Stonedahl and Wilensky report that when an LLM repeatedly mutates a program without selection pressure, the chains converge: in 87 percent of chains, over 93 percent of mutations revisit a previously seen structural form."
+    quote: "We find that LLM-based mutation consistently converges toward restricted attractor regions in program space. Convergence is especially severe at the structural level: in 87% of chains, over 93% of mutations revisit a previously seen structural form, with most variation confined to terminal substitutions within recurring templates."
+    source: llm-convergence-arxiv
+    source_quality: high
+    as_of_date: "2026"
+    limitations: "An arXiv preprint's abstract, not peer reviewed at the time of reading. The domain is programs in a domain-specific language, not prose, and the chains run without selection pressure, which is a harsher condition than a working corpus with an operator in the loop."
+
+  - id: ell-167
+    finding: "Gurkan, Stonedahl and Wilensky report that a classical genetic-programming mutation operator does not converge comparably, which they take to mean the convergence is intrinsic to the LLM pipeline rather than to iterative mutation as such."
+    quote: "A classical GP subtree mutation operator does not exhibit comparable convergence, suggesting that the effect is intrinsic to the LLM mutation pipeline."
+    source: llm-convergence-arxiv
+    source_quality: high
+    as_of_date: "2026"

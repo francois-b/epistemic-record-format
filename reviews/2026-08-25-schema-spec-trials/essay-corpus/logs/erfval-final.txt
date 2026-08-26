@@ -1,0 +1,111 @@
+FLAG        ERF-6     atoms/ell-150.md: the quote carries a bare `...` or `…` outside an elision marker; under ERF-52 that is a literal source character and is checked as one
+FLAG        ERF-68    sources.yaml [essay-2026-08-19]: a source whose normalized text ships SHOULD name its licence; absent, it is unclear whether `status: shipped-as-quotation` was owed instead
+UNPERFORMED ERF-2     a raw file's immutability, and that a later revision was minted as a new source rather than an overwrite: not decidable from one snapshot of the corpus
+UNPERFORMED ERF-8     that `citation_text` is rendered from `citation` and carries everything it shows: needs a CSL processor and a judgment about what the string shows
+UNPERFORMED ERF-9     the grade itself (provenance distance and attester accountability): a judgment about the source, not a fact in the corpus
+UNPERFORMED ERF-10    that the grade was assessed against the substance rather than the utterance: a judgment
+UNPERFORMED ERF-11    that a finding audit's verdict is the judgment it claims to be, and that no mechanical-check result is stored under a name the schema happens to allow
+UNPERFORMED ERF-12    that a failed, unparseable or abandoned audit was not written as a verdict: the corpus records the verdict, never the run
+UNPERFORMED ERF-13    that an id was never renamed and never reused: needs the substrate's history
+UNPERFORMED ERF-14    that `as_of_date` is at the precision the source gave and no finer: needs the source read as a human reads it
+UNPERFORMED ERF-18    that the title states the claim: a reading
+UNPERFORMED ERF-19    that `standings` was never edited or deleted: needs the substrate's history (ERF-63)
+UNPERFORMED ERF-22    that a claim's origin story lives in working notes: a reading
+UNPERFORMED ERF-23    that evidence against a claim is not modelled as a rival claim: a judgment about two records' content
+UNPERFORMED ERF-24    the backing audit's own question, per epistemic kind: the judgment the audit records, not a fact a validator recomputes
+UNPERFORMED ERF-25    that a universal negative was audited as scoped: detecting a universal negative from a title is a reading
+UNPERFORMED ERF-26    that `tool` names a concrete instrument rather than a category: a judgment
+UNPERFORMED ERF-27    that `hits_reported` states no precision the instrument did not give: a judgment
+UNPERFORMED ERF-28    that `searches` and each act's reported yield never changed after the fact: needs the substrate's history
+UNPERFORMED ERF-37    that a producer verified an id was unused before writing: a producer-class duty with no trace in the corpus
+UNPERFORMED ERF-40    append-only enforcement for `standings`, `finding_audit` and `evidence_audit`: "verified against the substrate's history", which this validator does not read
+UNPERFORMED ERF-42    how a consumer presents `rejected` and `retired`: a consumer rule. This validator never conflates them; it prints both by name
+UNPERFORMED ERF-48    that `last_modified` is later than any *prior* `last_modified`, and that a same-day second edit was written as a full instant: only the current stamp survives in the file
+UNPERFORMED ERF-50    that the quote check ran as a gate at minting and after any transform that moves atoms between homes: a producer-class duty
+UNPERFORMED ERF-51    the conformance case files (`conformance/cases/normalization.txt`, `conformance/cases/quote-check.yaml`) are normative for this check's exact behavior and govern over any reading of the prose. This validator was built from the prose alone and has not been run against them
+UNPERFORMED ERF-53    that a store round-trips this corpus through the model without loss: a property of a store, not of the bytes on disk. The one loss vector reachable from the file is checked, under ERF-65
+UNPERFORMED ERF-54    that no meaning lives in a path: unfalsifiable from the corpus. This validator dispatches on `type` alone and reads no path as a signal
+UNPERFORMED ERF-55    that no field the *declared* spec_version leaves undefined was originated: this validator holds one schema, 0.9.0, and checks against that
+UNPERFORMED ERF-57    consumer tolerance: a validator's duty is detection, which is the opposite half of the same rule
+UNPERFORMED ERF-62    that the corpus has exactly one authoritative home and every index over it is a projection: a deployment fact
+UNPERFORMED ERF-63    that the substrate preserves an edit history sufficient to verify ERF-40
+UNPERFORMED ERF-67    that a record body is valid CommonMark: every UTF-8 string is valid CommonMark, so the clause excludes nothing a validator can fail. Encoding, LF endings and the BOM are checked
+UNPERFORMED ERF-68    that a named `licence` is a real SPDX identifier: the SPDX list is a network fact this validator does not hold
+UNPERFORMED ERF-69    the fidelity check one level up (that the normalized text occurs, under the fold, in the normalization of the whole extracted source): needs the raw file and the tools of ERF-70. The sliver that is checkable from the corpus — a normalized text that holds its quote and nothing else — is checked
+UNPERFORMED ERF-70    that the named extracting and normalizing tools are deterministic, and that the named versions are the ones that ran
+PARTIAL     ERF-35    reference resolution is deployment-wide ("MUST resolve within the deployment") and this run saw one corpus; an unresolved id here may resolve in a sibling corpus
+PARTIAL     ERF-36    deployment-unique ids checked over one corpus only; a deployment is "the set of corpora read and cited together" and this run saw one
+PARTIAL     ERF-38    duplicate-id rejection is deployment-wide and this run saw one corpus
+INFO        ERF-41    claims/agentic-marketing-outruns-its-substrate.md: disposition: proposal
+INFO        ERF-41    claims/agile-began-when-software-iteration-got-faster.md: disposition: proposal
+INFO        ERF-41    claims/ai-tooling-is-further-along-for-coding-than-for-knowledge-work.md: disposition: proposal
+INFO        ERF-41    claims/an-epistemic-layer-is-missing-from-knowledge-work-tooling.md: disposition: proposal
+INFO        ERF-41    claims/atom-is-one-quote-from-one-source.md: disposition: proposal
+INFO        ERF-41    claims/author-built-a-save-time-authorship-shadow-record.md: disposition: proposal
+INFO        ERF-41    claims/author-system-holds-500-atoms-one-operator-six-months.md: disposition: proposal
+INFO        ERF-41    claims/checks-mechanize-in-the-order-syntactic-semantic-pragmatic.md: disposition: proposal
+INFO        ERF-41    claims/code-review-formed-around-diff.md: disposition: proposal
+INFO        ERF-41    claims/company-brain-citations-are-not-checked.md: disposition: proposal
+INFO        ERF-41    claims/company-brain-names-no-mechanism.md: disposition: proposal
+INFO        ERF-41    claims/company-brain-products-ship-permission-aware-retrieval-with-agents.md: disposition: proposal
+INFO        ERF-41    claims/company-brain-was-a-yc-request-for-startups-for-summer-2026.md: disposition: proposal
+INFO        ERF-41    claims/continuous-integration-formed-around-automated-tests.md: disposition: proposal
+INFO        ERF-41    claims/crm-decays-because-it-must-be-maintained-by-hand.md: disposition: proposal
+INFO        ERF-41    claims/cursor-blame-is-not-the-only-line-level-ai-attribution-tool.md: disposition: proposal
+INFO        ERF-41    claims/cursor-blame-marks-ai-written-lines-with-their-model.md: disposition: proposal
+INFO        ERF-41    claims/disciplines-form-around-mechanical-primitives.md: disposition: proposal
+INFO        ERF-41    claims/entailment-is-the-cold-reader-test.md: disposition: proposal
+INFO        ERF-41    claims/enterprise-wikis-go-stale-and-are-cleaned-up-or-abandoned.md: disposition: proposal
+INFO        ERF-41    claims/epistemology-means-tracking-provenance-and-trust.md: disposition: proposal
+INFO        ERF-41    claims/file-text-by-epistemic-type.md: disposition: proposal
+INFO        ERF-41    claims/general-primitives-fail-on-the-specific-versus-open-tension.md: disposition: proposal
+INFO        ERF-41    claims/general-purpose-knowledge-primitives-have-repeatedly-failed.md: disposition: proposal
+INFO        ERF-41    claims/git-records-changes-without-recording-ai-use.md: disposition: proposal
+INFO        ERF-41    claims/google-docs-records-authorship-no-finer-than-the-document.md: disposition: proposal
+INFO        ERF-41    claims/governance-was-where-most-of-the-value-turned-out-to-be.md: disposition: proposal
+INFO        ERF-41    claims/grammarly-authorship-is-a-per-document-sidecar-in-its-own-app.md: disposition: proposal
+INFO        ERF-41    claims/grounded-material-lowers-hallucination-risk-downstream.md: disposition: proposal
+INFO        ERF-41    claims/intelligence-source-grading-is-a-codified-two-axis-standard.md: disposition: proposal
+INFO        ERF-41    claims/km-1990s-failed-on-the-cost-of-manual-maintenance.md: disposition: proposal
+INFO        ERF-41    claims/knowledge-engineering-descends-to-palantirs-ontologies.md: disposition: proposal
+INFO        ERF-41    claims/knowledge-is-text-you-can-check-combine-and-stand-behind.md: disposition: proposal
+INFO        ERF-41    claims/knowledge-work-gets-its-own-agile.md: disposition: proposal
+INFO        ERF-41    claims/knowledge-work-has-no-diff-for-arguments.md: disposition: proposal
+INFO        ERF-41    claims/knowledge-work-has-no-lint-for-provenance.md: disposition: proposal
+INFO        ERF-41    claims/knowledge-work-has-no-test-that-runs-on-claims.md: disposition: proposal
+INFO        ERF-41    claims/knowledge-work-lacks-the-three-mechanical-primitives.md: disposition: proposal
+INFO        ERF-41    claims/llm-economics-remove-the-labour-that-sank-km.md: disposition: proposal
+INFO        ERF-41    claims/llm-fit-sharpened-the-authors-document-thinking.md: disposition: proposal
+INFO        ERF-41    claims/mainstream-tools-file-text-by-subject-format-author-and-date.md: disposition: proposal
+INFO        ERF-41    claims/memory-and-graph-tools-have-not-moved-beyond-pre-llm-work.md: disposition: proposal
+INFO        ERF-41    claims/no-tool-adds-checked-provenance-claim-checking-or-standing.md: disposition: proposal
+INFO        ERF-41    claims/no-tool-records-human-versus-ai-authorship.md: disposition: proposal
+INFO        ERF-41    claims/nothing-records-authorship-below-the-grain-of-a-whole-page.md: disposition: proposal
+INFO        ERF-41    claims/notion-and-guru-verify-whole-pages-and-let-them-lapse.md: disposition: proposal
+INFO        ERF-41    claims/page-grain-explains-the-three-absences.md: disposition: proposal
+INFO        ERF-41    claims/pieces-must-be-separately-adoptable.md: disposition: proposal
+INFO        ERF-41    claims/pkm-is-broadly-manual-work.md: disposition: proposal
+INFO        ERF-41    claims/pragmatic-interoperability-is-an-established-term.md: disposition: proposal
+INFO        ERF-41    claims/recording-human-judgment-has-next-to-no-tooling.md: disposition: proposal
+INFO        ERF-41    claims/records-and-disciplines-outlast-any-particular-llm.md: disposition: proposal
+INFO        ERF-41    claims/recursive-training-on-model-output-causes-model-collapse.md: disposition: proposal
+INFO        ERF-41    claims/recycled-llm-prose-degrades-quickly.md: disposition: proposal
+INFO        ERF-41    claims/scope-excludes-coding.md: disposition: proposal
+INFO        ERF-41    claims/separability-improves-the-odds-of-adoption.md: disposition: proposal
+INFO        ERF-41    claims/sharing-requires-semantic-and-pragmatic-interoperability.md: disposition: proposal
+INFO        ERF-41    claims/speech-to-text-became-ubiquitous-in-2026.md: disposition: proposal
+INFO        ERF-41    claims/standing-is-operator-only-and-dated.md: disposition: proposal
+INFO        ERF-41    claims/successful-saas-picked-a-use-case-with-workflow-constraints.md: disposition: proposal
+INFO        ERF-41    claims/the-approach-is-untested-beyond-one-person.md: disposition: proposal
+INFO        ERF-41    claims/the-one-operator-evidence-base-bounds-every-claim.md: disposition: proposal
+INFO        ERF-41    claims/the-semantic-web-vision-produced-an-unstructured-web.md: disposition: proposal
+INFO        ERF-41    claims/the-workspace-governance-layer-is-where-the-value-is.md: disposition: proposal
+INFO        ERF-41    claims/the-workspace-layer-is-absent-from-ai-governance.md: disposition: proposal
+INFO        ERF-41    claims/three-kinds-of-check-are-distinct.md: disposition: proposal
+INFO        ERF-41    claims/tools-must-not-create-chores-of-their-own.md: disposition: proposal
+INFO        ERF-41    claims/trust-tracking-is-confined-to-niches-and-done-by-hand.md: disposition: proposal
+INFO        ERF-41    claims/unstructured-prose-defeats-checking.md: disposition: proposal
+INFO        ERF-41    claims/without-attribution-past-verdicts-cannot-be-separated.md: disposition: proposal
+
+0 violation(s), 2 flag(s), 33 unperformed check(s), 3 partial, 70 note(s).
+The corpus conforms. A flag is not a violation (SPEC section 1).

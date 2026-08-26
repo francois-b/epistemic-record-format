@@ -1,0 +1,1279 @@
+# Claims. Every claim in this corpus is a proposal: no `standings` entry is
+# written anywhere, because only a person takes a stance (ERF-21) and the
+# author has not ruled. The builder writes the title verbatim as the first line
+# of each body (ERF-18) and the working notes follow it.
+claims:
+
+  # ============================ Commitments ============================
+  # The essay's own design decisions. `commitment` owes no backing: the
+  # author's decision is the backing (section 5), so these carry the essay's
+  # own words and nothing else.
+
+  - id: scope-excludes-coding
+    title: "This document's subject is knowledge work outside coding: researching a topic, synthesizing sources, producing documents, and keeping order over accumulated information, with coding deliberately excluded"
+    epistemic_kind: commitment
+    short_name: "scope"
+    semantic_query: "definition of knowledge work excluding software development, research synthesis document production information management"
+    families: [scope]
+    atoms_for: [ell-002, ell-003]
+    body: |
+      ## Working notes
+
+      A stipulation, not a proposition about the world, which is why it is a
+      commitment. It matters downstream: every universal negative in the essay
+      is to be read as scoped to non-coding knowledge work, and several of the
+      counterexamples this corpus records (Cursor Blame, agentblame, argument
+      notations aimed at programmers) sit on or across that line. Where a
+      counterexample comes from coding, the claim it cuts against says so.
+
+  - id: file-text-by-epistemic-type
+    title: "Knowledge-work tools should file text by epistemic type, distinguishing a captured source, a verified fact, an asserted claim, an argument over claims, a position held, an open question, and a ruling"
+    epistemic_kind: commitment
+    short_name: "epistemic types"
+    semantic_query: "typed knowledge units source claim argument question ruling distinguished by what backs them"
+    families: [proposal]
+    atoms_for: [ell-006]
+    body: |
+      ## Working notes
+
+      Seven types are asserted as different things. The corpus records that at
+      least three of the seven (source, claim, argument) are typed in existing
+      systems (nanopublications, Discourse Graphs, argument maps); the ruling
+      and the position held were found nowhere.
+
+  - id: atom-is-one-quote-from-one-source
+    title: "The unit of evidence should be one verbatim quote from one source, small enough to support a single point, carrying its link, its retrieval metadata and enough context to be used away from the source"
+    epistemic_kind: commitment
+    short_name: "the atom"
+    semantic_query: "evidence unit single verbatim quotation with source link retrieval date and surrounding context"
+    families: [proposal]
+    atoms_for: [ell-007, ell-029]
+    body: |
+      ## Working notes
+
+      The commitment is to granularity and to self-sufficiency away from the
+      source. Nanopublications make the same granularity choice at the level of
+      an RDF assertion rather than a quotation, which is the nearest prior art
+      and is a difference worth the author's attention rather than a refutation.
+
+  - id: standing-is-operator-only-and-dated
+    title: "Each claim should carry a standing that only the operator moves, with every move dated in the file's history so that a withdrawal is a recorded event rather than a deletion"
+    epistemic_kind: commitment
+    short_name: "standing"
+    semantic_query: "dated per-person endorsement ledger on a claim with withdrawal recorded as an event not a deletion"
+    families: [proposal]
+    atoms_for: [ell-031, ell-032]
+    body: |
+      ## Working notes
+
+      This is the one of the essay's three named properties for which the
+      opposite search found nothing at all. Notion and Guru mark whole pages
+      and let them lapse; Kialo records ratings without dating them per person;
+      ADRs record a decision once and never revisit it. A dated, per-person,
+      withdrawable position on a claim was not found in any system this corpus
+      reached.
+
+  - id: tools-must-not-create-chores-of-their-own
+    title: "Knowledge-work tools should bring the material a task needs in the form the operator needs it, and should never create chores of their own such as correcting the AI's mistakes or re-checking what has already been verified"
+    epistemic_kind: commitment
+    short_name: "no new chores"
+    semantic_query: "tool design principle avoid generating maintenance work for the user attention protection"
+    families: [proposal]
+    atoms_for: [ell-010]
+    body: |
+      ## Working notes
+
+      Stated as a design constraint the author holds himself to. It is in
+      tension with the essay's own governance finding, which is that the value
+      came from adding constraints, and constraints are chores until they pay.
+
+  - id: pieces-must-be-separately-adoptable
+    title: "The pieces of the proposed system should each be adoptable on their own, following the Unix habit of small tools that do one thing and compose"
+    epistemic_kind: commitment
+    short_name: "separability"
+    semantic_query: "modular composable tools each adoptable independently unix philosophy small tools"
+    families: [proposal]
+    atoms_for: [ell-028]
+    body: |
+      ## Working notes
+
+      A design decision the essay states as such, with an adoption rationale
+      attached. The rationale is a separate claim and is argued rather than
+      asserted here.
+
+  - id: epistemology-means-tracking-provenance-and-trust
+    title: "In this document epistemology means tracking provenance and trust to the point where a written assertion can be relied on, with claims pointing to sources, arguments pointing to claims, and both recording who stands behind them"
+    epistemic_kind: commitment
+    short_name: "epistemology, here"
+    semantic_query: "provenance and trust tracking so a written assertion can be relied upon claims sources arguments endorsement"
+    families: [scope]
+    atoms_for: [ell-004]
+    body: |
+      ## Working notes
+
+      A stipulative definition. It is the hinge of the document: everything
+      after it is offered as an instance of this definition.
+
+  - id: knowledge-is-text-you-can-check-combine-and-stand-behind
+    title: "Knowledge, for this document's purposes, is text a person can check, combine and stand behind, as distinct from text that is merely stored, indexed, versioned and retrieved"
+    epistemic_kind: commitment
+    short_name: "knowledge vs text"
+    semantic_query: "distinction between managing text and managing knowledge checkable combinable endorsable"
+    families: [scope]
+    atoms_for: [ell-036]
+    body: |
+      ## Working notes
+
+      The definition does real work: the essay's whole diagnosis of prior
+      systems follows from taking these three properties as constitutive.
+
+  - id: three-kinds-of-check-are-distinct
+    title: "Checks come in three distinct kinds: a syntactic check reads only the text, a semantic check reads its meaning, and a pragmatic check depends on the interpreter and the purpose"
+    epistemic_kind: commitment
+    short_name: "three checks"
+    semantic_query: "syntactic semantic pragmatic distinction applied to verification of quotations and claims"
+    families: [scope]
+    atoms_for: [ell-025]
+    body: |
+      ## Working notes
+
+      A stipulation borrowed from linguistics, and the essay flags in its
+      glossary that pragmatic carries the linguistic sense. The three-way split
+      is the frame for the mechanization claim, which is separate.
+
+  - id: entailment-is-the-cold-reader-test
+    title: "Entailment, for this document's purposes, is whether a reader holding only the quote and its surrounding context would accept the claim that cites it"
+    epistemic_kind: commitment
+    short_name: "entailment"
+    semantic_query: "entailment test does the quotation support the claim for a reader holding only the quotation"
+    families: [scope]
+    atoms_for: [ell-041]
+    body: |
+      ## Working notes
+
+      Worth recording separately because it is the operational definition on
+      which the whole grounding proposal depends, and because the shipped
+      claim-checking systems this corpus records (Google's check grounding API,
+      Ragas, TruLens) all implement a version of it with an LLM as the reader.
+
+  # ==================== First-party observations ====================
+
+  - id: author-system-holds-500-atoms-one-operator-six-months
+    title: "The author's own system held more than 500 atoms, with one operator, after about six months, and he does not know how the approach breaks at larger scale"
+    epistemic_kind: observation
+    short_name: "the deployment"
+    semantic_query: "personal knowledge system scale five hundred evidence units single operator six months"
+    families: [evidence-base]
+    atoms_for: [ell-035]
+    body: |
+      ## Working notes
+
+      The whole evidence base for the essay's proposals. It is stated plainly
+      by the author, including the limit, which is to his credit and is also the
+      reason the corpus grades every proposal claim as untested at scale.
+
+  - id: author-built-a-save-time-authorship-shadow-record
+    title: "The author built a shadow record that commits at every file save with who made the change, person or AI"
+    epistemic_kind: observation
+    short_name: "shadow record"
+    semantic_query: "per-save authorship record committing human or AI attribution across a working corpus"
+    families: [evidence-base]
+    atoms_for: [ell-030]
+    body: |
+      ## Working notes
+
+      First-party and only first-party: nothing outside the essay evidences
+      this system's existence or behaviour, and nothing could without access to
+      it. It is recorded because the essay's attribution argument rests on it
+      being possible, and the essay is the only witness that it is.
+
+  - id: governance-was-where-most-of-the-value-turned-out-to-be
+    title: "In the author's own practice, adding governance over LLM use and over his own workflows was where most of the value turned out to be, and he had underestimated how much constraint was needed"
+    epistemic_kind: observation
+    short_name: "governance paid"
+    semantic_query: "constraints on LLM output document contracts produced most of the value in practice"
+    families: [evidence-base]
+    atoms_for: [ell-033]
+    body: |
+      ## Working notes
+
+      A first-party report about one operator's experience, offered as the
+      lesson of the essay's third section. Nothing outside the essay bears on
+      it and it is not the kind of claim an outside source could settle.
+
+  - id: llm-fit-sharpened-the-authors-document-thinking
+    title: "Shaping a workflow to suit an LLM sharpened the author's own thinking about the kinds of document he works on"
+    epistemic_kind: observation
+    short_name: "LLM fit sharpens"
+    semantic_query: "specifying document types for an LLM improves the author's own clarity about document purpose"
+    families: [evidence-base]
+    atoms_for: [ell-034]
+    body: |
+      ## Working notes
+
+      A first-party observation, and one of the essay's more interesting
+      side-claims. It generalizes badly on one data point and is recorded as
+      what it is.
+
+  - id: the-approach-is-untested-beyond-one-person
+    title: "Everything the document proposes has been tested only within a one-person setup, and how it would be shared between people is unresolved"
+    epistemic_kind: observation
+    short_name: "one operator only"
+    semantic_query: "single-user validation of a knowledge system multi-user sharing unresolved"
+    families: [evidence-base]
+    atoms_for: [ell-014]
+    body: |
+      ## Working notes
+
+      The author states this himself. It is the premise of the strongest
+      argument against the essay, which is that its confidence and its evidence
+      base are not the same size.
+
+  # =================== Observations about the world ===================
+
+  - id: ai-tooling-is-further-along-for-coding-than-for-knowledge-work
+    title: "AI assistance is substantially further developed for software coding than for the wider spectrum of knowledge work"
+    epistemic_kind: observation
+    short_name: "coding is ahead"
+    semantic_query: "maturity comparison AI tooling software development versus general knowledge work research writing"
+    families: [diagnosis]
+    atoms_for: [ell-001]
+    body: |
+      ## Working notes
+
+      Backed only by the essay's own assertion. No comparative measure of
+      tooling maturity across the two domains was sought or found, and the
+      claim is a comparative one, so it would need one. Listed in README.md
+      among the assertions this corpus could not back.
+
+  - id: mainstream-tools-file-text-by-subject-format-author-and-date
+    title: "Mainstream knowledge-work tools file text by subject, format, author and date, and not by what stands behind it"
+    epistemic_kind: observation
+    short_name: "filing axes"
+    semantic_query: "document management taxonomy metadata subject format author date not provenance or verification status"
+    families: [diagnosis]
+    atoms_for: [ell-046]
+    atoms_against: [ell-115, ell-118, ell-123]
+    surveys: [provenance-and-claim-primitives-2026-08-25]
+    body: |
+      ## Working notes
+
+      True of the mass-market tools the essay has in mind and false as a
+      statement about available systems: Schema.org ClaimReview files by
+      fact-check verdict, nanopublications file by assertion with provenance,
+      Discourse Graphs file by claim, evidence and question. The word
+      "mainstream" is carrying the claim, and it is not defined.
+
+  - id: trust-tracking-is-confined-to-niches-and-done-by-hand
+    title: "How far a piece of text can be trusted has been tracked only in niches, and by hand: in legal citators, in source grading for intelligence work, and in peer review"
+    epistemic_kind: observation
+    short_name: "trust in niches"
+    semantic_query: "source reliability grading practices legal citators intelligence source evaluation peer review manual"
+    families: [diagnosis]
+    atoms_for: [ell-047]
+    atoms_against: [ell-152, ell-153, ell-115, ell-116]
+    surveys: [provenance-and-claim-primitives-2026-08-25]
+    edges:
+      - to: intelligence-source-grading-is-a-codified-two-axis-standard
+        relation: conflicts-with
+    body: |
+      ## Working notes
+
+      Two assertions travel in one sentence. The niche half is defensible. The
+      by-hand half is not: the Admiralty code is a published two-axis notation
+      used across NATO, Schema.org ClaimReview is a machine-readable
+      interchange vocabulary, and Scite classifies citations at scale. The
+      author would need to drop "by hand" or say what he means by it.
+
+      No source was retrieved for the legal-citator half of the sentence, and
+      the automation of citator treatment flags is the place a reader would
+      press hardest. Recorded as partially unbacked.
+
+  - id: intelligence-source-grading-is-a-codified-two-axis-standard
+    title: "Source grading for intelligence work is a codified two-character standard, the Admiralty or NATO system, which grades source reliability and information credibility on separate axes so that one does not contaminate the other"
+    epistemic_kind: observation
+    short_name: "Admiralty code"
+    semantic_query: "Admiralty NATO source reliability credibility two character notation A1 F6 intelligence evaluation"
+    families: [prior-art]
+    atoms_for: [ell-152, ell-153]
+    body: |
+      ## Working notes
+
+      Recorded as its own claim because it is a fact about the world with
+      standing independent of the essay, and because the separation-of-axes
+      rule is a design lesson the essay's own grading proposal does not
+      address. It stands in tension with the by-hand half of the niche claim
+      and the tension is stored there.
+
+  - id: km-1990s-failed-on-the-cost-of-manual-maintenance
+    title: "Knowledge management was attempted in the 1990s and the manual work of building and maintaining it created too much friction for it to scale"
+    epistemic_kind: observation
+    short_name: "KM's first failure"
+    semantic_query: "1990s knowledge management programmes failure rate maintenance burden taxonomy curation abandoned"
+    families: [history]
+    atoms_for: [ell-042]
+    body: |
+      ## Working notes
+
+      Backed only by the essay. No history of 1990s knowledge management was
+      searched or retrieved, and this is the load the essay's whole
+      second-chance argument rests on. Listed in README.md among the assertions
+      this corpus could not back, and it is the one most worth backing.
+
+  - id: pkm-is-broadly-manual-work
+    title: "Building, curating and using personal knowledge management systems is manual work, and that is broadly the state of the field"
+    epistemic_kind: observation
+    short_name: "PKM is manual"
+    semantic_query: "personal knowledge management note-taking systems manual curation maintenance burden"
+    families: [diagnosis]
+    atoms_for: [ell-021]
+    body: |
+      ## Working notes
+
+      Backed only by the essay. Not searched: the LLM-native note tools that
+      have appeared since 2023 are the obvious place a counterexample would
+      sit, and no act in this corpus went looking. Recorded as unbacked.
+
+  - id: crm-decays-because-it-must-be-maintained-by-hand
+    title: "A CRM has to be maintained by hand and decays because of it"
+    epistemic_kind: observation
+    short_name: "CRM decay"
+    semantic_query: "CRM data quality decay rate cause manual entry maintenance contact records"
+    families: [diagnosis]
+    atoms_for: [ell-053]
+    atoms_against: [ell-162, ell-163]
+    surveys: [knowledge-store-decay-rates-2026-08-25]
+    body: |
+      ## Working notes
+
+      The decay is real and measured, in the 22 to 70 percent a year range,
+      but every figure comes from a company selling the remedy. More
+      importantly the mechanism is wrong: the sources attribute decay to job
+      changes and email churn, which is the world moving under a record that
+      was correct when written, not to a record nobody maintained. The essay's
+      causal claim and the literature's causal claim are different claims.
+
+  - id: enterprise-wikis-go-stale-and-are-cleaned-up-or-abandoned
+    title: "Enterprise wikis such as Confluence and SharePoint go stale until people either mount a big clean-up or drop them entirely"
+    epistemic_kind: observation
+    short_name: "wikis go stale"
+    semantic_query: "enterprise wiki content staleness Confluence SharePoint abandonment content sprawl audit"
+    families: [diagnosis]
+    atoms_for: [ell-054, ell-165, ell-141, ell-142, ell-164]
+    surveys: [knowledge-store-decay-rates-2026-08-25]
+    body: |
+      ## Working notes
+
+      Better backed than the CRM claim and by a sideways route: two vendors,
+      Notion and Guru, have built verification with expiry and re-notification,
+      which is machinery you build when staleness is the default state. Guru
+      puts a number on it, saying manual verification reaches 8 to 12 percent
+      of organizational content. That number is the vendor's own and no method
+      is given for it.
+
+      Nothing was retrieved about Confluence or SharePoint specifically, which
+      are the two products the essay names.
+
+  - id: successful-saas-picked-a-use-case-with-workflow-constraints
+    title: "The SaaS products that succeeded in knowledge work picked one use case together with workflow constraints, and frustrate users for that very reason"
+    epistemic_kind: observation
+    short_name: "constrained SaaS wins"
+    semantic_query: "successful productivity SaaS narrow use case opinionated workflow constraints user frustration"
+    families: [diagnosis]
+    atoms_for: [ell-020]
+    body: |
+      ## Working notes
+
+      Backed only by the essay, and it is a claim about a whole product
+      category with no product named. Recorded as unbacked.
+
+  - id: general-purpose-knowledge-primitives-have-repeatedly-failed
+    title: "Primitives for knowledge work in general have failed repeatedly"
+    epistemic_kind: observation
+    short_name: "general primitives fail"
+    semantic_query: "history of failed general purpose knowledge representation hypertext semantic web unrealized"
+    families: [history]
+    atoms_for: [ell-019, ell-150, ell-151]
+    edges:
+      - to: general-primitives-fail-on-the-specific-versus-open-tension
+        relation: supports
+    body: |
+      ## Working notes
+
+      Two instances retrieved: Project Xanadu, which Wired called the
+      longest-running vaporware story in the industry, and the Semantic Web,
+      whose own originators said in 2006 that the idea remained largely
+      unrealized. Two instances are not a pattern; they are the two everyone
+      already names. A reader could fairly ask which general-purpose primitives
+      succeeded and whether the essay's sample is chosen by its conclusion.
+
+  - id: knowledge-work-lacks-the-three-mechanical-primitives
+    title: "Knowledge work has no diff for arguments, no test that runs on claims as a document grows, and no lint for provenance"
+    epistemic_kind: observation
+    short_name: "no primitives"
+    semantic_query: "missing mechanical primitives for knowledge work argument diff claim test provenance lint"
+    families: [diagnosis]
+    atoms_for: [ell-018]
+    edges:
+      - to: knowledge-work-has-no-diff-for-arguments
+        relation: decomposes-into
+      - to: knowledge-work-has-no-test-that-runs-on-claims
+        relation: decomposes-into
+      - to: knowledge-work-has-no-lint-for-provenance
+        relation: decomposes-into
+    body: |
+      ## Working notes
+
+      One sentence of the essay carrying three universal negatives. Decomposed
+      because each part has different evidence and a different verdict, and
+      because a single backing audit over the three could not answer any of
+      them. Two of the three parts are false as written; the third is closest
+      to true. Read the parts.
+
+  - id: knowledge-work-has-no-diff-for-arguments
+    title: "There is no diff for arguments: no mechanical primitive that shows what changed between two versions of an argument"
+    epistemic_kind: observation
+    short_name: "no argument diff"
+    semantic_query: "compare two versions of an argument structurally argument mapping notation version control diff"
+    families: [diagnosis]
+    atoms_for: [ell-018]
+    atoms_against: [ell-126, ell-127, ell-128, ell-129, ell-130, ell-131]
+    surveys: [argument-structure-primitives-2026-08-25]
+    body: |
+      ## Working notes
+
+      The most interesting near-miss in the corpus. Argument mapping is a
+      field with a literature and a vocabulary; Argdown writes argument
+      structure as plain text inside markdown, which a line diff handles today;
+      Kialo runs claim trees at scale. And still nothing found computes or
+      presents a structural difference between two versions of an argument.
+      The sentence is false as written and close to true as meant, and the
+      author should say the true version.
+
+  - id: knowledge-work-has-no-test-that-runs-on-claims
+    title: "There is no test that runs on claims as a document grows, in the way a test suite runs on code"
+    epistemic_kind: observation
+    short_name: "no claim test"
+    semantic_query: "automated check over assertions in a document entailment against sources run continuously"
+    families: [diagnosis]
+    atoms_for: [ell-018]
+    atoms_against: [ell-109, ell-110, ell-111, ell-112, ell-113, ell-114, ell-115, ell-116]
+    surveys: [claim-level-checks-and-provenance-lint-2026-08-25]
+    body: |
+      ## Working notes
+
+      False as written. Claim-level entailment checking is a commodity: Google
+      ships an API that returns per-claim citations and a support score with a
+      sub-500ms latency budget, and Ragas and TruLens both decompose a response
+      into claims and check each against retrieved context.
+
+      What survives is the phrase "as a document grows". Every instance found
+      checks a generated answer against retrieved context at inference time.
+      None runs over a document's own claim graph on every save, which is the
+      continuous-integration shape the essay is asking for.
+
+  - id: knowledge-work-has-no-lint-for-provenance
+    title: "There is no lint for provenance: no automated check that a document's citations exist, say what they are said to say, and are themselves sound"
+    epistemic_kind: observation
+    short_name: "no provenance lint"
+    semantic_query: "automated citation verification pipeline reference existence metadata retraction claim support lint"
+    families: [diagnosis]
+    atoms_for: [ell-018]
+    atoms_against: [ell-117, ell-122, ell-108]
+    surveys: [claim-level-checks-and-provenance-lint-2026-08-25]
+    body: |
+      ## Working notes
+
+      False as written, and falsified by a tool that uses the essay's own
+      word: sciwrite-lint applies the linting paradigm to citation
+      verification, checks reference existence, metadata accuracy, retraction
+      status and claim support, runs locally, and is fast enough to re-run
+      between revisions. It is a 2026 preprint rather than an established tool,
+      which is the strongest thing that can be said in the essay's defence.
+
+  - id: memory-and-graph-tools-have-not-moved-beyond-pre-llm-work
+    title: "Most of the memory, context and knowledge-graph tools available do the pre-LLM thing of storing, linking and retrieving text, and few have moved beyond it"
+    epistemic_kind: observation
+    short_name: "old wine"
+    semantic_query: "LLM memory context knowledge graph tools novelty beyond storage linking retrieval"
+    families: [diagnosis]
+    atoms_for: [ell-022]
+    atoms_against: [ell-138, ell-139, ell-140]
+    surveys: [provenance-and-claim-primitives-2026-08-25]
+    body: |
+      ## Working notes
+
+      Two counterexamples, both partial. GraphRAG has the LLM build the graph
+      and the community summaries rather than storing what it was given, which
+      is not a pre-LLM operation. Graphiti attaches a validity window and
+      provenance to each fact, which is more than storing and linking.
+
+      Neither checks anything, so the essay's stronger claim, that none of them
+      adds a checking primitive, is untouched by these two.
+
+  - id: no-tool-adds-checked-provenance-claim-checking-or-standing
+    title: "None of the available memory, context and knowledge-graph tools adds a primitive for checked provenance, for checking claims, or for recording what a person stands behind"
+    epistemic_kind: observation
+    short_name: "the three absences"
+    semantic_query: "tool combining verified quotation provenance claim entailment checking and dated human endorsement"
+    families: [diagnosis, universal-negative]
+    atoms_for: [ell-023]
+    atoms_against: [ell-115, ell-116, ell-117, ell-118, ell-119, ell-120, ell-122, ell-123, ell-124, ell-109, ell-110, ell-135]
+    surveys: [provenance-and-claim-primitives-2026-08-25, claim-level-checks-and-provenance-lint-2026-08-25, judgment-recording-tooling-2026-08-25]
+    body: |
+      ## Working notes
+
+      This is the essay's sharpest sentence and it does not survive. Two of the
+      three primitives are present in the wild and have been for over a decade.
+      Checked provenance: nanopublications from 2012, SEPIO, W3C PROV,
+      sciwrite-lint. Claim checking: Schema.org ClaimReview, Scite, Google's
+      check grounding API. Recording what a person stands behind: nothing found
+      anywhere, and the nearest relatives (ADRs, Notion and Guru page
+      verification, Kialo ratings) all fail on one of dated, per-person, or
+      withdrawable.
+
+      The defensible version of the sentence is one third as long and much
+      stronger: nothing records what a person stands behind, claim by claim,
+      with withdrawal as an event. Three surveys back the reading and their
+      coverage bounds are stated in each; none of them is a systematic review,
+      so the absence half rests on thin ground even where it holds.
+
+  - id: no-tool-records-human-versus-ai-authorship
+    title: "Today's tools do not record whether a piece of work was written by a human or by an AI tool"
+    epistemic_kind: observation
+    short_name: "no AI attribution"
+    semantic_query: "recording whether text or code was authored by a human or an AI model per line per sentence"
+    families: [diagnosis, universal-negative]
+    atoms_for: [ell-048]
+    atoms_against: [ell-100, ell-101, ell-103, ell-104, ell-106, ell-107]
+    surveys: [human-ai-authorship-attribution-2026-08-25]
+    edges:
+      - to: cursor-blame-marks-ai-written-lines-with-their-model
+        relation: conflicts-with
+    body: |
+      ## Working notes
+
+      False as a universal, and the essay refutes it itself four sentences
+      later by naming Cursor Blame. The corpus adds three more: agentblame,
+      Grammarly Authorship at sentence grain, and the Co-authored-by trailer
+      that AI coding tools already use.
+
+      What survives, and it is what the essay actually needs: no such record
+      spans a working corpus across tools. Every instance is confined to one
+      editor, one format or one vendor's app.
+
+  - id: cursor-blame-marks-ai-written-lines-with-their-model
+    title: "Cursor Blame extends git blame with AI attribution, showing which lines were AI-generated and which model produced them, on the Enterprise plan"
+    epistemic_kind: observation
+    short_name: "Cursor Blame"
+    semantic_query: "Cursor Blame git blame AI attribution per line model tab agent human"
+    families: [prior-art]
+    atoms_for: [ell-051, ell-100, ell-101, ell-102]
+    body: |
+      ## Working notes
+
+      The essay's description is accurate. The corpus adds one fact the essay
+      omits: the feature is gated to the Enterprise plan, which bears on how
+      far it counts as an available primitive.
+
+  - id: cursor-blame-is-not-the-only-line-level-ai-attribution-tool
+    title: "Line-level human-versus-AI code attribution is not confined to one product: an open-source tool provides it across Cursor, Claude Code and OpenCode, with per-pull-request AI percentages"
+    epistemic_kind: observation
+    short_name: "not just Cursor"
+    semantic_query: "open source AI code attribution git hooks per line percentage pull request"
+    families: [prior-art]
+    atoms_for: [ell-103, ell-104]
+    body: |
+      ## Working notes
+
+      Recorded separately because the essay's framing treats Cursor Blame as
+      an isolated exception, and a second free implementation changes what kind
+      of thing it is: not a vendor curiosity but an emerging convention.
+
+  - id: google-docs-records-authorship-no-finer-than-the-document
+    title: "A Google Doc names the authors of a text but records nothing finer, and text written with Gemini is filed under the human's name"
+    epistemic_kind: observation
+    short_name: "Docs authorship"
+    semantic_query: "Google Docs authorship attribution granularity revision history AI generated text credited to user"
+    families: [prior-art]
+    atoms_for: [ell-049]
+    atoms_against: [ell-106]
+    body: |
+      ## Working notes
+
+      No Google source was retrieved, so the claim rests on the essay alone
+      and is recorded as unbacked. What was retrieved cuts against it from the
+      side: Grammarly Authorship runs inside Google Docs and attributes at the
+      sentence, so the platform does not prevent finer attribution even if
+      Google does not provide it. Google Docs' own revision history and
+      activity log were not examined.
+
+  - id: git-records-changes-without-recording-ai-use
+    title: "Git records every change but at a coarser grain than a knowledge corpus needs, and without recording AI use"
+    epistemic_kind: observation
+    short_name: "git and AI"
+    semantic_query: "git commit attribution granularity recording AI assistance authorship trailers"
+    families: [prior-art]
+    atoms_for: [ell-050]
+    atoms_against: [ell-105]
+    body: |
+      ## Working notes
+
+      The mechanism half is wrong. Git carries commit trailers, GitHub
+      documents Co-authored-by as the way to attribute one commit to several
+      authors, and AI coding tools already write themselves into that field.
+      Git records no AI use by default; it is not unable to.
+
+  - id: grammarly-authorship-is-a-per-document-sidecar-in-its-own-app
+    title: "Grammarly's authorship report is a per-document sidecar living inside Grammarly's own app"
+    epistemic_kind: observation
+    short_name: "Grammarly sidecar"
+    semantic_query: "Grammarly Authorship report scope where it runs which applications document or sentence granularity"
+    families: [prior-art]
+    atoms_for: [ell-052]
+    atoms_against: [ell-106, ell-107]
+    surveys: [human-ai-authorship-attribution-2026-08-25]
+    body: |
+      ## Working notes
+
+      Wrong on both counts, per Grammarly's own page. It runs inside Microsoft
+      Word, Google Docs and Canvas rather than only in Grammarly's app, and it
+      attributes at the sentence rather than at the document. The essay's
+      description understates its nearest competitor, which weakens the
+      novelty claim that follows it.
+
+  - id: nothing-records-authorship-below-the-grain-of-a-whole-page
+    title: "Nothing records who wrote what, human or AI, below the grain of a whole page"
+    epistemic_kind: observation
+    short_name: "page-grain authorship"
+    semantic_query: "sub-document authorship attribution sentence level line level human versus AI record"
+    families: [diagnosis, universal-negative]
+    atoms_for: [ell-065]
+    atoms_against: [ell-100, ell-104, ell-107]
+    surveys: [human-ai-authorship-attribution-2026-08-25]
+    edges:
+      - to: cursor-blame-is-not-the-only-line-level-ai-attribution-tool
+        relation: conflicts-with
+    body: |
+      ## Working notes
+
+      False, three times over, and one of the three counterexamples is named
+      by the essay itself two sections earlier. This is the clearest instance
+      in the document of a rhetorical universal negative outrunning what the
+      author knows and has already written down.
+
+  - id: company-brain-was-a-yc-request-for-startups-for-summer-2026
+    title: "\"Company Brain\" was a Y Combinator request for startups in the Summer 2026 batch, written by Tom Blomfield"
+    epistemic_kind: observation
+    short_name: "the YC RFS"
+    semantic_query: "Y Combinator request for startups Summer 2026 Company Brain Tom Blomfield"
+    families: [company-brain]
+    atoms_for: [ell-061, ell-143, ell-144, ell-145]
+    surveys: [company-brain-naming-and-products-2026-08-25]
+    body: |
+      ## Working notes
+
+      Checks out exactly, and only through the Internet Archive: the live
+      ycombinator.com/rfs page now carries the Fall 2026 list and the word
+      brain does not appear on it. Three months from publication to an
+      unverifiable primary source is worth the author knowing.
+
+      The essay's two companion assertions in the same sentence, that a cluster
+      of startups use the name and that the business press is pitching
+      "enterprise brain", were not backed by any source in this corpus.
+
+  - id: company-brain-products-ship-permission-aware-retrieval-with-agents
+    title: "What company-brain products ship today is permission-aware retrieval over a shared corpus with agents on top, and in a few cases a typed graph or a synthesis layer"
+    epistemic_kind: observation
+    short_name: "what ships"
+    semantic_query: "enterprise AI knowledge assistant permission aware retrieval agents graph synthesis layer product capability"
+    families: [company-brain]
+    atoms_for: [ell-062, ell-136, ell-137]
+    surveys: [company-brain-naming-and-products-2026-08-25]
+    body: |
+      ## Working notes
+
+      One vendor page was retrieved for a claim the essay makes about every
+      product in the category ("unpack any of them"). Glean corroborates the
+      permission-aware and observability half. No product survey was run and
+      none is claimed; this is the weakest evidence-to-scope ratio of any
+      claim in the corpus that has any evidence at all.
+
+  - id: company-brain-citations-are-not-checked
+    title: "In company-brain products, citations point at a page or highlight a passage on screen, and where a quote is kept nothing checks it"
+    epistemic_kind: observation
+    short_name: "unchecked citations"
+    semantic_query: "enterprise AI assistant citation verification quotation checked against source document highlight"
+    families: [company-brain, universal-negative]
+    atoms_for: [ell-063]
+    atoms_against: [ell-109, ell-110, ell-116]
+    surveys: [claim-level-checks-and-provenance-lint-2026-08-25]
+    body: |
+      ## Working notes
+
+      The mechanism to check a citation is available to every one of these
+      products as a cloud API and at least one product category (research
+      tools) ships it. Whether any given company-brain product calls it was not
+      established, so the claim is neither backed nor refuted here: what is
+      established is that "nothing checks it" cannot mean "nothing can".
+
+  - id: notion-and-guru-verify-whole-pages-and-let-them-lapse
+    title: "Notion's verified pages and Guru's cards mark whole pages as current, with an expiry after which the owner is asked to re-verify"
+    epistemic_kind: observation
+    short_name: "page verification"
+    semantic_query: "Notion verified pages Guru card verification expiry re-verify whole page trust signal"
+    families: [company-brain, prior-art]
+    atoms_for: [ell-064, ell-141, ell-142, ell-164]
+    body: |
+      ## Working notes
+
+      Accurate, and the corpus adds the detail that makes the essay's point
+      for it: both vendors verify a whole page, both attach an expiry, and
+      neither records who stands behind which statement inside the page. The
+      unit is the page, exactly as the essay says.
+
+  - id: speech-to-text-became-ubiquitous-in-2026
+    title: "Speech-to-text became ubiquitous in 2026 and was a major productivity boost"
+    epistemic_kind: observation
+    short_name: "STT ubiquity"
+    semantic_query: "speech to text dictation adoption rate knowledge workers 2026 measurement survey"
+    families: [diagnosis]
+    atoms_for: [ell-055, ell-160]
+    atoms_against: [ell-161]
+    surveys: [speech-to-text-ubiquity-2026-2026-08-25]
+    body: |
+      ## Working notes
+
+      Nothing public supports the word "ubiquitous". The only population-level
+      number retrievable is about AI use generally, not dictation. A trade
+      publication writing on the subject in 2026 was still asking whether the
+      technology was good enough for common office use, which is not the
+      language used about something ubiquitous. The class of tool is real and
+      growing; the quantifier is the author's own.
+
+  - id: the-semantic-web-vision-produced-an-unstructured-web
+    title: "The web was meant to be semantic and what accumulated was unstructured, with the semantic vision remaining largely unrealized"
+    epistemic_kind: observation
+    short_name: "semantic web"
+    semantic_query: "semantic web vision Berners-Lee unrealized adoption structured data markup share of web"
+    families: [history]
+    atoms_for: [ell-056, ell-150]
+    body: |
+      ## Working notes
+
+      Backed by the originators' own 2006 statement that the idea remained
+      largely unrealized and by a 2013 count of about four million domains
+      carrying markup out of roughly 250 million. Both figures are relayed
+      through an encyclopedia and are thirteen and twenty years old; schema.org
+      adoption since is not addressed and would cut the other way.
+
+  - id: knowledge-engineering-descends-to-palantirs-ontologies
+    title: "Knowledge engineering of the 1980s came at knowledge from the formal side and its descendant survives in Palantir's hand-built ontologies, which work for operational data"
+    epistemic_kind: observation
+    short_name: "the formal line"
+    semantic_query: "knowledge engineering expert systems 1980s lineage enterprise ontology operational digital twin"
+    families: [history]
+    atoms_for: [ell-058, ell-154, ell-155]
+    body: |
+      ## Working notes
+
+      The Palantir half is corroborated by Palantir's own documentation: the
+      Ontology is an operational layer, defined by mapping data sources into
+      objects, properties and links. The word "hand-built" is not settled by
+      that documentation, which says the mapping happens without saying who or
+      what performs it. The 1980s lineage claim is backed by nothing here.
+
+  - id: agile-began-when-software-iteration-got-faster
+    title: "Faster iteration on software is what prompted the new methodologies that became Agile"
+    epistemic_kind: observation
+    short_name: "Agile's cause"
+    semantic_query: "origins of agile software development 2001 Snowbird motivation lightweight methods causes"
+    families: [history]
+    atoms_for: [ell-060]
+    atoms_against: [ell-146, ell-147, ell-148]
+    body: |
+      ## Working notes
+
+      The primary account gives a different cause. Highsmith, who was in the
+      room, says the participants convened out of a shared need for an
+      alternative to documentation-driven, heavyweight processes, and locates
+      the deeper theme in a set of values about people and collaboration.
+      Nothing in the account attributes the movement to iteration having become
+      faster.
+
+      This matters beyond the history: the essay's forward bet is that LLMs
+      making knowledge work faster will produce an Agile-shaped methodological
+      wave. If speed was not what produced Agile, the analogy loses its motor.
+
+  - id: continuous-integration-formed-around-automated-tests
+    title: "Continuous integration formed around automated tests: an automated build including test is what verifies each integration, and is constitutive of the practice rather than incidental to it"
+    epistemic_kind: observation
+    short_name: "CI and tests"
+    semantic_query: "continuous integration definition automated build verification test practice formation"
+    families: [prior-art]
+    atoms_for: [ell-149]
+    body: |
+      ## Working notes
+
+      Backed by the practice's principal documenter, whose definition makes
+      automated verification part of what the practice is. This is the strongest
+      single piece of support for the essay's mechanical-primitives thesis.
+
+  - id: code-review-formed-around-diff
+    title: "Code review as a working discipline formed around the diff"
+    epistemic_kind: observation
+    short_name: "review and diff"
+    semantic_query: "history of code review practice diff based review tooling origins"
+    families: [prior-art]
+    body: |
+      ## Working notes
+
+      No search was run for this and no source backs it. It is recorded
+      unbacked, and deliberately: it is one of the two premises of the essay's
+      central argument, it is the half of the pair that everyone accepts
+      without checking, and a corpus that quietly omitted it would be
+      flattering the argument. Listed in README.md.
+
+  - id: the-workspace-layer-is-absent-from-ai-governance
+    title: "The workspace layer of governance, the working environment of files, folders, workflows and lifecycle states treated as governed data, is missing from the AI-governance conversation and from what companies outside regulated industries are doing"
+    epistemic_kind: observation
+    short_name: "workspace layer"
+    semantic_query: "AI governance covering the operator's own file tree document classes lifecycle constraining what an LLM may create"
+    families: [diagnosis, universal-negative]
+    atoms_for: [ell-013, ell-012]
+    atoms_against: [ell-158, ell-159]
+    surveys: [workspace-layer-ai-governance-2026-08-25]
+    body: |
+      ## Working notes
+
+      The one universal negative in the essay that survived its opposite
+      search. Nine results, none addressing the operator's own file tree as the
+      governed object. The two substantial instruments retrieved, Microsoft
+      Purview and the NIST framework, both sit in the operating and data layers
+      and are therefore consistent with the claim rather than against it; they
+      are filed as atoms_against because a reader could reasonably say they are
+      what an AI-governance conversation about the workspace would look like,
+      and the claim should have to face them.
+
+      The survey's own coverage bound is the honest caveat: the concept has no
+      settled name, so a single phrasing is the weakest instrument for an
+      absence.
+
+  - id: recording-human-judgment-has-next-to-no-tooling
+    title: "Recording human judgment is the newest of these practices, few people think about it, and there is next to no tooling for it"
+    epistemic_kind: observation
+    short_name: "no judgment tooling"
+    semantic_query: "tools for recording a person's judgment position rationale dated withdrawable on a claim"
+    families: [diagnosis, universal-negative]
+    atoms_for: [ell-009]
+    atoms_against: [ell-132, ell-133, ell-134, ell-135, ell-128]
+    surveys: [judgment-recording-tooling-2026-08-25]
+    body: |
+      ## Working notes
+
+      "Next to no tooling" does not survive: architecture decision records
+      are a fifteen-year-old practice with a founding text, command-line tools,
+      a GitHub organization, format variants, and an explicit extension to any
+      decision record.
+
+      "Newest practice" does not survive either, on the same evidence.
+
+      What survives is narrower and is the thing worth saying: an ADR records
+      a decision once, in prose, and nothing revisits it. A dated, per-person,
+      withdrawable position on a claim was found nowhere.
+
+  - id: pragmatic-interoperability-is-an-established-term
+    title: "Pragmatic interoperability is an established term in the interoperability literature, meaning that two parties apply the same standard of care when they capture and use data"
+    epistemic_kind: observation
+    short_name: "pragmatic interop"
+    semantic_query: "pragmatic interoperability levels of conceptual interoperability model definition literature"
+    families: [prior-art]
+    atoms_for: [ell-016]
+    body: |
+      ## Working notes
+
+      Backed only by the essay's own attribution to "the literature". No
+      source from that literature was retrieved. The term is checkable in one
+      search and no search was run, which is an omission of this corpus rather
+      than of the essay. Listed in README.md.
+
+  - id: recycled-llm-prose-degrades-quickly
+    title: "Loose AI-flavoured prose, recycled from call to call, degrades quickly"
+    epistemic_kind: observation
+    short_name: "prose degrades"
+    semantic_query: "iterative LLM rewriting of the same text quality degradation homogenization across successive calls"
+    families: [diagnosis]
+    atoms_for: [ell-045, ell-166, ell-167]
+    atoms_against: [ell-157]
+    surveys: [llm-output-reuse-degradation-2026-08-25]
+    body: |
+      ## Working notes
+
+      The nearest measured phenomenon is convergence in LLM-driven mutation
+      chains: 93 percent of mutations revisiting a previously seen structural
+      form in 87 percent of chains, and a classical operator not converging
+      comparably. That is the essay's mechanism, measured on programs in a
+      domain-specific language, without selection pressure, in a preprint.
+
+      Model collapse is filed against the claim rather than for it because it
+      is the study most likely to be mistaken for support and concerns a
+      different mechanism: recursive training, not reuse between calls.
+
+      For prose in a working corpus with an operator in the loop, nothing was
+      found either way. "Degrades quickly" has no measurement behind it.
+
+  - id: recursive-training-on-model-output-causes-model-collapse
+    title: "Indiscriminate use of model-generated content in training causes irreversible defects in the resulting models, with the tails of the original content distribution disappearing"
+    epistemic_kind: observation
+    short_name: "model collapse"
+    semantic_query: "model collapse recursive training on generated data distribution tails disappear Nature 2024"
+    families: [prior-art]
+    atoms_for: [ell-156, ell-157]
+    body: |
+      ## Working notes
+
+      Recorded as its own claim, at the scope its source actually supports, so
+      that it is available to a reader without being silently borrowed as
+      backing for the essay's different claim about call-to-call reuse.
+
+  - id: grounded-material-lowers-hallucination-risk-downstream
+    title: "Material that keeps its sources and its epistemic kind can be fed into further LLM calls with less risk of hallucination than loose prose"
+    epistemic_kind: observation
+    short_name: "grounding helps"
+    semantic_query: "providing verbatim sourced evidence to a language model reduces hallucination compared to unstructured prose measurement"
+    families: [diagnosis]
+    atoms_for: [ell-044]
+    body: |
+      ## Working notes
+
+      The mechanism the whole proposal depends on, and the corpus could not
+      back it. No measurement comparing grounded, typed material against loose
+      prose as LLM input was sought or found. The claim-checking tools this
+      corpus records presuppose that grounding helps rather than demonstrating
+      it. Listed in README.md, and it is the assertion whose backing would be
+      worth the most to the essay.
+
+  # ============================= Arguments =============================
+
+  - id: disciplines-form-around-mechanical-primitives
+    title: "A working discipline forms only once its primitives are mechanical, which is why code review formed around the diff and continuous integration around tests, and why no comparable discipline has crystallized in knowledge work"
+    epistemic_kind: argument
+    short_name: "primitives first"
+    semantic_query: "mechanical primitive precedes practice formation software engineering discipline diff tests"
+    families: [thesis]
+    atoms_for: [ell-017]
+    edges:
+      - to: knowledge-work-lacks-the-three-mechanical-primitives
+        relation: assumes
+      - to: continuous-integration-formed-around-automated-tests
+        relation: assumes
+      - to: code-review-formed-around-diff
+        relation: assumes
+    body: |
+      ## Working notes
+
+      The essay's central argument. Granting the premises the conclusion
+      follows, and the premises are in trouble: one is unbacked (code review
+      and the diff), and the third is decomposed into three parts of which two
+      are false as written.
+
+      The argument also has a form problem the corpus cannot settle: two
+      confirming instances from one field, both selected after the conclusion
+      was formed. A reader who wanted to attack this would ask for a
+      discipline that formed without a mechanical primitive, and would find
+      several outside software.
+
+  - id: an-epistemic-layer-is-missing-from-knowledge-work-tooling
+    title: "Knowledge work in the LLM era needs a layer that tracks provenance, checking and standing, and that layer is not present in mainstream tooling"
+    epistemic_kind: argument
+    short_name: "the missing layer"
+    semantic_query: "missing epistemic layer over knowledge work tooling provenance verification endorsement not mainstream"
+    families: [thesis]
+    atoms_for: [ell-005]
+    edges:
+      - to: mainstream-tools-file-text-by-subject-format-author-and-date
+        relation: assumes
+      - to: no-tool-adds-checked-provenance-claim-checking-or-standing
+        relation: assumes
+      - to: no-tool-records-human-versus-ai-authorship
+        relation: assumes
+      - to: recording-human-judgment-has-next-to-no-tooling
+        relation: assumes
+    body: |
+      ## Working notes
+
+      The document's thesis. Three of its four premises are false as the essay
+      states them and true in a narrower form; the argument survives the
+      narrowing, because "not present in mainstream tooling" is weaker than
+      "nobody has built it" and is what the premises actually support.
+
+      The honest restatement: these primitives exist, in scholarly publishing,
+      in fact-checking, in RAG evaluation and in media provenance, and none of
+      them has reached general knowledge work. That is a claim about adoption
+      rather than about invention, and it is a better claim.
+
+  - id: page-grain-explains-the-three-absences
+    title: "Company-brain products are missing grounding, endorsement and attribution because their unit is the page or the chunk rather than the claim"
+    epistemic_kind: argument
+    short_name: "page grain"
+    semantic_query: "chunk or page as retrieval unit explains absence of claim level verification endorsement attribution"
+    families: [company-brain]
+    atoms_for: [ell-039]
+    edges:
+      - to: company-brain-products-ship-permission-aware-retrieval-with-agents
+        relation: assumes
+      - to: company-brain-citations-are-not-checked
+        relation: assumes
+      - to: notion-and-guru-verify-whole-pages-and-let-them-lapse
+        relation: assumes
+      - to: nothing-records-authorship-below-the-grain-of-a-whole-page
+        relation: assumes
+    body: |
+      ## Working notes
+
+      The best argument in the essay: it explains three separate observations
+      with one structural cause rather than listing them. The page-verification
+      premise is well backed by both vendors' own documentation. The
+      authorship premise is false as stated, which weakens the third leg
+      without touching the mechanism.
+
+  - id: company-brain-names-no-mechanism
+    title: "The phrase \"company brain\" anthropomorphizes and specifies nothing"
+    epistemic_kind: argument
+    short_name: "brain names nothing"
+    semantic_query: "anthropomorphic product naming without mechanism enterprise brain company brain marketing term"
+    families: [company-brain]
+    atoms_for: [ell-038]
+    edges:
+      - to: company-brain-was-a-yc-request-for-startups-for-summer-2026
+        relation: assumes
+      - to: company-brain-products-ship-permission-aware-retrieval-with-agents
+        relation: assumes
+    body: |
+      ## Working notes
+
+      The premise the essay cites cuts against the conclusion. The Y Combinator
+      entry it points to names a pipeline, states what the thing is not ("not a
+      company-wide search or a chatbot over documents"), and gives a target
+      artefact (an executable skills file). The word anthropomorphizes; the
+      request for startups behind it is specific.
+
+      The argument survives only if it is about the word as used in the
+      market rather than about the source the essay cites, and the essay does
+      not make that distinction.
+
+  - id: without-attribution-past-verdicts-cannot-be-separated
+    title: "Without a record of authorship at a fine grain, an operator cannot later separate the verdicts they adjudicated themselves from the ones an LLM supplied"
+    epistemic_kind: argument
+    short_name: "verdict amnesia"
+    semantic_query: "distinguishing human adjudicated judgments from AI supplied ones after the fact authorship record"
+    families: [thesis]
+    atoms_for: [ell-008]
+    edges:
+      - to: no-tool-records-human-versus-ai-authorship
+        relation: assumes
+    body: |
+      ## Working notes
+
+      Granting the premise the conclusion follows immediately. The premise is
+      false as a universal, so the argument's real force is conditional: where
+      no such record is kept, the amnesia follows. That is enough for the
+      essay's purposes and less than it claims.
+
+  - id: checks-mechanize-in-the-order-syntactic-semantic-pragmatic
+    title: "Syntactic checks mechanize reliably, semantic checks partially, and pragmatic checks least, so a system that wants mechanical guarantees should build on syntactic primitives first"
+    epistemic_kind: argument
+    short_name: "check gradient"
+    semantic_query: "reliability of automating string level checks versus meaning level versus purpose dependent judgment"
+    families: [thesis]
+    atoms_for: [ell-026]
+    edges:
+      - to: three-kinds-of-check-are-distinct
+        relation: assumes
+    body: |
+      ## Working notes
+
+      Corroborated sideways by what the corpus found: the shipped claim
+      checkers are all syntactic in their plumbing and LLM-judged in their
+      verdicts, which is exactly "semantic checks mechanize partially" observed
+      in the field. Nothing found bears on the pragmatic end.
+
+  - id: unstructured-prose-defeats-checking
+    title: "Handing unstructured prose to an LLM produces automation in which nothing in particular is being checked, because there is no unit for a check to attach to"
+    epistemic_kind: argument
+    short_name: "woolly ball"
+    semantic_query: "unstructured prose input to LLM pipeline nothing verifiable no unit of verification"
+    families: [thesis]
+    atoms_for: [ell-027]
+    edges:
+      - to: checks-mechanize-in-the-order-syntactic-semantic-pragmatic
+        relation: assumes
+    body: |
+      ## Working notes
+
+      An argument resting on an argument, which the format allows so long as
+      the chain ends somewhere that is not one. It ends at the three-kinds-of-
+      check stipulation.
+
+      A reader could object that the claim-checking tools this corpus records
+      take unstructured prose as input and impose the unit themselves, by
+      decomposing a response into claims. That is a real objection and the
+      essay does not answer it.
+
+  - id: separability-improves-the-odds-of-adoption
+    title: "Keeping the pieces separately adoptable improves the odds of adoption, because a single system that must be taken whole is one nobody adopts"
+    epistemic_kind: argument
+    short_name: "separability pays"
+    semantic_query: "modular adoption path versus monolithic system adoption failure knowledge tools"
+    families: [thesis]
+    atoms_for: [ell-028]
+    edges:
+      - to: successful-saas-picked-a-use-case-with-workflow-constraints
+        relation: assumes
+    body: |
+      ## Working notes
+
+      Its premise is unbacked, and there is a counter-argument the essay does
+      not face: the successful SaaS products it cites succeeded by being taken
+      whole, with their constraints, which is the opposite lesson.
+
+  - id: sharing-requires-semantic-and-pragmatic-interoperability
+    title: "Two people sharing this kind of corpus need a source, a verified claim and a ruling to mean the same thing on both sides, and need the same standard of care applied at capture, which must be agreed before the data is captured rather than converted afterwards"
+    epistemic_kind: argument
+    short_name: "sharing needs agreement"
+    semantic_query: "semantic and pragmatic interoperability prerequisite for exchanging evidence and rulings between people"
+    families: [thesis]
+    atoms_for: [ell-015, ell-016]
+    edges:
+      - to: pragmatic-interoperability-is-an-established-term
+        relation: assumes
+      - to: the-approach-is-untested-beyond-one-person
+        relation: assumes
+    body: |
+      ## Working notes
+
+      The essay flags this as unresolved and the corpus agrees: it is an
+      argument from definitions, with no instance behind it, about a case the
+      author has never run.
+
+  - id: the-one-operator-evidence-base-bounds-every-claim
+    title: "Every proposal in this document is evidenced by a single six-month, one-operator deployment of about 500 atoms, which bounds how far any of it can be asserted"
+    epistemic_kind: argument
+    short_name: "n equals one"
+    semantic_query: "single case evidence base limits generalization of a proposed system"
+    families: [evidence-base]
+    atoms_for: [ell-014, ell-035]
+    edges:
+      - to: author-system-holds-500-atoms-one-operator-six-months
+        relation: assumes
+      - to: the-approach-is-untested-beyond-one-person
+        relation: assumes
+    body: |
+      ## Working notes
+
+      Not an argument the essay makes; an argument the corpus makes from the
+      essay's own two admissions, because the top-down pass kept arriving at
+      it. The author states both premises plainly and then writes in the
+      register of a general diagnosis. That gap is the largest single thing a
+      hostile reader would attack, and it is fixable by tone rather than by
+      evidence.
+
+  - id: general-primitives-fail-on-the-specific-versus-open-tension
+    title: "General-purpose knowledge-work primitives fail because one tool cannot be both specific enough to be efficient and open enough for a great variety of workflows"
+    epistemic_kind: argument
+    short_name: "the general-tool trap"
+    semantic_query: "tension between specificity and generality in knowledge tools cause of repeated failure"
+    families: [diagnosis]
+    atoms_for: [ell-019]
+    body: |
+      ## Working notes
+
+      Its premises arrive from the other direction, as incoming supports:
+      the repeated-failure observation and the constrained-SaaS observation.
+      The diagnosis is plausible and the two supporting observations are thin,
+      one being backed by two famous failures and the other by nothing.
+
+  # =============================== Bets ===============================
+
+  - id: knowledge-work-gets-its-own-agile
+    title: "If LLMs make it possible to operate quickly on knowledge, knowledge work will get its own round of new or renewed methodologies, probably resembling the original Agile field"
+    epistemic_kind: bet
+    short_name: "an Agile for knowledge work"
+    semantic_query: "new methodologies for knowledge work emerging from faster iteration analogous to agile software"
+    families: [forecast]
+    atoms_for: [ell-037]
+    body: |
+      ## Working notes
+
+      What would settle it: a named methodology for non-coding knowledge work,
+      with published practices and more than one organization using it, by
+      2029. Recorded here because the format's only slot for a bet's
+      resolution criterion is the `why` of a standing entry, which an LLM must
+      not write. See friction-log.md F-12.
+
+      The bet's motor is the analogy, and the analogy is in trouble: the
+      primary account of Agile's origin gives heavyweight process and shared
+      values as the cause, not iteration speed.
+
+  - id: records-and-disciplines-outlast-any-particular-llm
+    title: "Records, disciplines and surfaces built on the right primitives outlast any particular LLM, and each new LLM makes them more useful"
+    epistemic_kind: bet
+    short_name: "durability"
+    semantic_query: "durability of structured knowledge records across successive model generations increasing usefulness"
+    families: [forecast]
+    atoms_for: [ell-024]
+    body: |
+      ## Working notes
+
+      What would settle it: the same corpus, unchanged in format, in
+      productive use across at least two model generations that break other
+      tooling, with the operator reporting increased rather than decreased
+      usefulness. Two model generations is about eighteen months at the
+      current cadence.
+
+  - id: llm-economics-remove-the-labour-that-sank-km
+    title: "LLMs remove most of the manual labour that made 1990s knowledge management unscalable, which is what makes the field worth reviving now"
+    epistemic_kind: bet
+    short_name: "the second chance"
+    semantic_query: "LLM automation of knowledge curation removing the maintenance cost that defeated earlier knowledge management"
+    families: [forecast]
+    atoms_for: [ell-043]
+    body: |
+      ## Working notes
+
+      The premise it leans on, that manual maintenance is what sank 1990s
+      knowledge management, is itself unbacked in this corpus.
+
+      What would settle it: a knowledge corpus of comparable ambition
+      maintained at a labour cost per record an order of magnitude below the
+      1990s baseline, with the baseline stated. Nobody has stated the baseline.
+
+  - id: the-workspace-governance-layer-is-where-the-value-is
+    title: "Adding governance over LLM use and over the operator's own workflows is where most of the value of this approach lies"
+    epistemic_kind: bet
+    short_name: "governance is the value"
+    semantic_query: "value of constraining LLM output with document contracts and workflow rules relative to other components"
+    families: [forecast]
+    atoms_for: [ell-033]
+    body: |
+      ## Working notes
+
+      A bet rather than an observation because "most of the value" is a
+      comparison across components that no one has measured, in a deployment of
+      one. What would settle it: the same operator, or another, running the
+      grounding and attribution layers without the governance layer, and
+      reporting which loss hurts more.
+
+  - id: agentic-marketing-outruns-its-substrate
+    title: "Agentic AI is being marketed while much of the structure that would have to sit underneath it is underserved, and non-deterministic workflows need a quality of structure that has not had time to emerge outside coding"
+    epistemic_kind: observation
+    short_name: "top of the stack"
+    semantic_query: "agentic AI marketing outpacing underlying data and verification infrastructure non-deterministic workflow reliability"
+    families: [diagnosis]
+    atoms_for: [ell-040]
+    body: |
+      ## Working notes
+
+      Backed only by the essay. No market or product survey of agentic
+      offerings was run, and "underserved" is a comparative judgment that would
+      need one. Recorded as unbacked.
