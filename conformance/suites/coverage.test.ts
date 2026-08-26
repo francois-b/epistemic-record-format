@@ -28,7 +28,7 @@ export function specRequirements(): string[] {
     ? readdirSync(BINDINGS).filter((f) => f.endsWith(".md")).sort().map((f) => join(BINDINGS, f))
     : [])];
   return files.flatMap((f) =>
-    [...readFileSync(f, "utf8").matchAll(/^- \*\*(ERF-\d+)\*\*/gm)].map((m) => m[1]!));
+    [...readFileSync(f, "utf8").matchAll(/^- \*\*((?:ERF|YAMLB)-\d+)\*\*/gm)].map((m) => m[1]!));
 }
 
 export function coverage(): Record<string, CoverageEntry> {

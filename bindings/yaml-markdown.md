@@ -15,10 +15,10 @@ recipient's binding ships this one, and every corpus in this repository is
 held in it. `SPEC.md` section 7 states what every binding must satisfy;
 this document states what this one does.
 
-Requirement ids here are the ids the rules carried in `SPEC.md` before they
-moved on 2026-08-25. They keep them so that nothing already citing them
-breaks. A later version of this document takes its own id namespace, and
-these ids retire in `SPEC.md` and are never reused.
+Rules that moved here from `SPEC.md` on 2026-08-25 keep the `ERF` ids they
+carried, so that nothing citing them breaks; they retire there and are never
+reused. Rules that were always this binding's own carry `YAMLB` ids, a flat
+sequence under the same discipline.
 
 ## 1. The interchange form
 
@@ -92,12 +92,41 @@ any other way provided it round-trips without loss, is `ERF-53` in
 
 ## 5. The narrative binding's spelling
 
-The grammar of a narrative binding, an HTML comment closing a passage with
-its claim ids, a quoted anchor carrying two escapes, and `bound-at`, is
-stated in `ERF-31`. The concept (a passage bound to claims, with an anchor
-that must occur in it and a date the binding was made) belongs to the
-model; the spelling as an HTML comment in CommonMark belongs to this
-binding, and will move here when `ERF-31` is split.
+- **YAMLB-1** A narrative binding MUST be spelled as an HTML comment, so
+  that it is invisible in every render and survives any markdown pipeline:
+
+```markdown
+<!-- claims: no-continuous-claim-check "no test that runs on claims" bound-at=2026-08-23 -->
+```
+
+```
+narrative-binding ::= "<!--" ws* "claims:" ws+ ids ws+ anchor
+                      ws+ "bound-at=" date ws* "-->"
+date     ::= YYYY "-" MM "-" DD
+ids      ::= id (ws+ id)*
+id       ::= one or more characters, none of them whitespace, '"', '<' or '>'
+anchor   ::= '"' char+ '"'
+char     ::= any character other than '"' and '\', or one of the
+             two-character escapes '\"' and '\\'
+ws       ::= any Unicode White_Space character, line breaks included
+```
+
+  Ids are separated by whitespace and never by commas, because a comma
+  inside an unquoted list invites a parser to guess. The anchor carries
+  two escapes because a grammar that cannot express a legal value is a
+  defect in the grammar: a passage whose own words sit in quotation marks
+  would otherwise have no anchor. The escapes are decoded before the
+  anchor is folded (`ERF-31`).
+
+  Recognition precedes validation. A candidate is `<!--` followed by
+  `claims:` where CommonMark would read an HTML comment, never inside a
+  code span or a code block, since a document explaining bindings mentions
+  `<!--` in a code span and a raw scan then swallows the next real binding
+  as comment text. A candidate is delimited at the first `-->` before the
+  grammar is applied, so that a greedy `ids` cannot eat the next binding; a
+  candidate whose first `-->` comes after another `<!--`, or never, is
+  unterminated, extends to the end of its own line so the bindings after
+  it stay visible, and is reported (`ERF-31`).
 
 ## 6. What this binding costs (non-normative)
 

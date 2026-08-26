@@ -212,3 +212,10 @@ requirements:
       not yet probed
   ERF-68:
     uncovered: no fixture ships a capture without an SPDX identifier
+  YAMLB-1:
+    tests: [output, fixtures/invalid/binding-without-bound-at, fixtures/invalid/binding-empty-anchor,
+            fixtures/invalid/binding-unterminated, fixtures/valid/binding-after-a-code-span,
+            fixtures/valid/anchor-with-escaped-quote]
+    note: >
+      the HTML-comment spelling and its recognition; the passage and the
+      anchor test stay with ERF-31.

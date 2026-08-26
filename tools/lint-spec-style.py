@@ -38,8 +38,8 @@ if lines and lines[0] == "---":
 
 violations = []
 KEYWORD = re.compile(r"\b(MUST NOT|MUST|SHOULD NOT|SHOULD|MAY)\b")
-ERF_ID = re.compile(r"ERF-\d+(?:\.\d+)?[a-z]?")
-DEF_LINE = re.compile(r"^\s*- \*\*(ERF-\d+(?:\.\d+)?[a-z]?)\*\* ")
+ERF_ID = re.compile(r"(?:ERF|YAMLB)-\d+(?:\.\d+)?[a-z]?")
+DEF_LINE = re.compile(r"^\s*- \*\*((?:ERF|YAMLB)-\d+(?:\.\d+)?[a-z]?)\*\* ")
 NOTE_OPENER = re.compile(r"^> \*Note \(non-normative\):\*")
 LEGACY_NOTE = re.compile(r"\*\(?Non-normative")
 

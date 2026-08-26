@@ -134,7 +134,7 @@ shown here.
 - *disposition*: the computed reading of a claim's standings, one of
   `proposal`, `active`, `contested`, `rejected`, `retired` (`ERF-41`).
   Never a stored field.
-- *narrative binding*: an HTML comment closing a passage of prose, naming
+- *narrative binding*: a marker closing a passage of prose, naming
   the claims that passage rests on and quoting a verbatim anchor from it,
   so software can find the passage again after the prose moves
   (`ERF-31`). Always written in full: "binding" alone reads as a
@@ -765,85 +765,27 @@ the bound claims, as a structured list a collaborator can dispute line by
 line, is a matter for whoever writes the narrative.
 
 - **ERF-31** A passage that asserts something SHOULD end with a narrative
-  binding: a marker naming the claims it rests on plus a few exact words
-  from the passage, so software can find the spot after edits. The marker
-  MUST be an HTML comment, so that it is invisible in every render and
-  survives any markdown pipeline:
+  binding: a marker naming the claims the passage rests on, an anchor of a
+  few exact words from it, and `bound-at`, the date the binding was made.
+  Every part is required; every id MUST resolve to a claim; and the anchor
+  MUST occur in its passage under the test a quote meets (`ERF-52`), the
+  fold and whole words. A binding's passage is the text from the end of
+  the previous binding's marker, or the start of the body where there is
+  none, to the start of its own marker. A candidate that fails the
+  binding's grammar is not a binding, closes no passage, and MUST be
+  reported rather than skipped: a binding dropped in silence makes the
+  claims it named vanish from the narrative. A validator MUST flag an
+  anchor that does not occur in its passage, a flag and not a violation on
+  section 2's principle, because anchors break for the ordinary reason that
+  someone edited the prose. *Spelling: in the default binding the marker is
+  an HTML comment, `YAMLB-1`.*
 
-```markdown
-<!-- claims: no-continuous-claim-check "no test that runs on claims" bound-at=2026-08-23 -->
-```
-
-  The grammar, which is the smallest one that covers real usage:
-
-```
-narrative-binding ::= "<!--" ws* "claims:" ws+ ids ws+ anchor
-                      ws+ "bound-at=" date ws* "-->"
-date     ::= YYYY "-" MM "-" DD
-ids      ::= id (ws+ id)*
-id       ::= one or more characters, none of them whitespace, '"', '<' or '>'
-anchor   ::= '"' char+ '"'
-char     ::= any character other than '"' and '\', or one of the
-             two-character escapes '\"' and '\\'
-ws       ::= any Unicode White_Space character, line breaks included
-```
-
-  The grammar is applied to a comment already delimited: recognition finds
-  `<!--` followed by `claims:` where CommonMark would read an HTML comment,
-  never inside a code span or a code block, and runs it to the first `-->`
-  before the grammar sees it, so that a greedy `ids` cannot eat the next
-  binding. A candidate whose first `-->` comes after another `<!--`, or
-  never, is unterminated: it extends to the end of its own line, so the
-  bindings after it stay visible, and it is reported. The escapes are
-  decoded before the anchor is folded. Every id MUST resolve to a claim.
-
-  Every part is required. Ids are separated by whitespace, never by commas,
-  because a comma inside an unquoted list invites a parser to guess.
-  `bound-at` is the date the binding was made, and `ERF-32` is what it is
-  for. The anchor is how software finds the spot after the prose moves; a
+  The anchor is how software finds the spot after the prose moves; a
   binding without one could only point at a line number, which edits
-  destroy. It carries two escapes because a grammar that cannot express a
-  legal value is a defect in the grammar: a passage whose own words are in
-  quotation marks would otherwise have no anchor at all.
-
-  **The anchor occurs in its passage under `ERF-51`**, the same fold the
-  quote check uses, applied to the anchor and to the passage alike. A
-  binding's passage is the text from the end of the previous binding's
-  marker, or the start of the body where there is none, to the start of
-  its own marker: a binding closes the passage above it (section 2), and
-  the previous binding closed the one before. A candidate that fails the
-  grammar is not a binding, closes nothing, and is blanked out of
-  whichever passage holds it. The anchor meets the test a quote meets
-  (`ERF-52`): the fold, and whole words. Nothing wider serves. The
-  whole body as the passage makes the check nearly vacuous, since an
-  anchor lifted from anywhere in a long document matches and the
-  mechanism that exists to detect moved prose then detects almost nothing;
-  a paragraph as the passage false-flags a sentence split across a break.
-  This format answers *does this string occur in that text* exactly once, and
-  two occurrence tests would be two verdicts for one question. It also
-  settles the case that raised this: prose hand-wrapped at some column puts
-  a newline inside a sentence, which is a space in CommonMark and a
-  collapsed whitespace run under `ERF-51`, so an anchor that reads as one
-  phrase matches as one phrase. Nothing here reflows anything, and nothing
-  needs to: the fold that already exists is enough.
-
-  **A validator MUST flag an anchor that does not occur in its passage.**
-  Anchors break, and they break for the ordinary reason that someone edited
-  the prose. A flag rather than a violation, on section 2's principle: an
-  edit to the passage is an act the format permits. Without this the
-  failure is silent, which is how two anchors in one trial and one in
-  another went unnoticed until something else happened to look.
-
-  **A binding that does not match this grammar MUST be reported, never
-  skipped.** A comment opening `<!--` followed by `claims:` IS a narrative
-  binding: recognizing one and validating one are separate acts, and a
-  consumer performs them in that order. Without this rule a required part
-  does not make a binding invalid, it makes it invisible, because a comment
-  failing the grammar is indistinguishable from any other HTML comment and
-  the claims it named simply vanish from the narrative. That is `ERF-33`'s
-  failure moved down to the parse layer, and it is the same answer: a
-  broken citation reported is a defect, a broken citation hidden is a
-  confident sentence.
+  destroy. The passage is defined narrowly because the whole body as the
+  haystack makes the check nearly vacuous, an anchor lifted from anywhere
+  in a long document matching, and a paragraph false-flags a sentence
+  split across a break.
 
 - **ERF-32** A narrative binding MUST be checkable: it is stale when the
   claim it names carries a `last_modified` later than the binding's
@@ -1199,14 +1141,11 @@ give every verdict the store did.
 
 The rules below are the model's own. Presence, extension and versioning
 hold in every binding. Rules that hold only for YAML, markdown and files
-moved to the binding document on 2026-08-25 (`ERF-65`, `ERF-66`, `ERF-67`,
-and the YAML half of `ERF-53`), keeping their ids. Eighteen requirements
-outside it still carry a clause that names a file, YAML, markdown or
-CommonMark: `ERF-1`, `ERF-2`, `ERF-3`, `ERF-7`, `ERF-14`, `ERF-25`,
-`ERF-28`, `ERF-31`, `ERF-34`, `ERF-37`, `ERF-51`, `ERF-52`, `ERF-54`,
-`ERF-59`, `ERF-63`, `ERF-69`, `ERF-70`, `ERF-71`. Each splits into its
-model half and its binding half in the next minor version, which
-renumbers nothing.
+live in the binding document: `ERF-65`, `ERF-66`, `ERF-67` and the YAML
+half of `ERF-53` moved there on 2026-08-25 keeping their ids, and the
+narrative binding's spelling as an HTML comment is the binding's own
+`YAMLB-1`. Requirements that speak of a *file* mean a held byte sequence,
+raw or normalized, and are the model's.
 
 - **ERF-53** A corpus MUST have a canonical interchange form, given by
   a binding (this section's opening). A store MAY hold a corpus any other
