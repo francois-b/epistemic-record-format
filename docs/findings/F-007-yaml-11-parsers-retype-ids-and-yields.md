@@ -24,7 +24,8 @@ verifications:
       Reached the same defect from a different direction and found a case
       this finding missed: `spec_version: 1.0` silently loses its minor
       version, which ERF-61's version discipline rests on.
-outcome: open
+outcome: promoted
+promoted_to: "ERF-65, ruled directly 2026-08-25"
 ---
 
 # F-007 · A YAML 1.1 parser retypes ids, queries and yields
@@ -106,3 +107,18 @@ the serialization rules requires the quoting that makes it text.
   in `ERF-13`; making that binding for every id class would close it).
 - Say plainly that `as_of_date` is a string in every precision.
 - Require quoting for the fields whose type is carried by prose.
+
+## Resolution
+
+Ruled 2026-08-25 after the operator reframed it. The model was never
+ambiguous: `as_of_date` is a string in `types/erf.ts`, the specification's
+examples quote it, and every corpus in the repository quotes it. The fault
+sits at the interchange layer, which the format chose and therefore owns.
+
+One sentence on `ERF-65`: where the model types a field as a string and its
+bare spelling would resolve otherwise under the JSON schema, a producer MUST
+quote it, and a validator MUST report a string-typed field that arrived as
+any other type. The loader now does, for `as_of_date`, `spec_version`, and
+each search act's four text fields. Fixture
+`invalid/as-of-date-unquoted-year`. The general class of ids and family
+names resolving to non-strings is the same rule and the same obligation.

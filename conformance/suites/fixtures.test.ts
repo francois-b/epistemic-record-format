@@ -138,6 +138,14 @@ test("evidence_at_stance present-and-empty is not the same as absent", () => {
     "never-stamped MUST stay absent");
 });
 
+test("an anchor found only in an earlier passage is flagged", () => {
+  const c = loadCorpus(join(FIXTURES, "valid", "anchor-in-an-earlier-passage"));
+  assert.deepEqual(c.findings, [], "both bindings are well formed");
+  const flags = brokenAnchors(c);
+  assert.equal(flags.length, 1, `expected the second binding flagged, got ${JSON.stringify(flags)}`);
+  assert.match(flags[0], /fx-second/);
+});
+
 test("invalid fixtures are rejected, each citing its requirement", async (t) => {
   const dir = join(FIXTURES, "invalid");
   for (const name of dirsIn(dir)) {

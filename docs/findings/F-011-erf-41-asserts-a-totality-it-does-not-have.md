@@ -24,7 +24,8 @@ verifications:
     Confirmed in SPEC.md: ERF-41 reads "Every input has exactly one
     reading" and its enumeration covers three stance values. Nothing states
     what an unrecognised stance contributes to the computation.
-outcome: open
+outcome: promoted
+promoted_to: "ERF-41, ruled directly 2026-08-25"
 ---
 
 # F-011 · `ERF-41` asserts a totality it does not have
@@ -61,3 +62,13 @@ class of defect `F-003` established that 0.9 must not carry.
    a consumer MUST show rather than resolve.
 3. Make the vocabulary closed at the validator and treat the case as
    unreachable, which contradicts `ERF-57`.
+
+## Resolution
+
+Ruled 2026-08-25, option 1: a stance outside the vocabulary is a producer
+error (`ERF-55`), MUST be reported, and MUST be left out of the computation
+as though the entry were absent. The disposition is then defined for every
+input, which is what `ERF-41` claimed and could not deliver. Fixture
+`invalid/standing-unknown-stance`, whose one standing reads `maybe` and
+whose disposition therefore computes to `proposal` rather than to one of the
+three inventions the protobuf trial enumerated.

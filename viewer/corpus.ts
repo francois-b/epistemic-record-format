@@ -26,7 +26,7 @@ export interface Narrative {
   title: string;
   body: string;
   /** `ERF-31` bindings: claims plus the anchor words. */
-  bindings: { claims: string[]; anchor: string; boundAt?: string; index: number }[];
+  bindings: { claims: string[]; anchor: string; boundAt?: string; index: number; end: number }[];
 }
 
 /**
@@ -179,6 +179,23 @@ function listDir(dir: string, ext = ".md"): string[] {
  * types them as total. Every loader therefore has to materialize them, and
  * this is the one place that happens.
  */
+/**
+ * `ERF-65`: where the model types a field as a string and its bare spelling
+ * resolves to another type under the JSON schema, the producer MUST quote
+ * it. `as_of_date: 2018` arrives as a number and `spec_version: 1.0` loses
+ * its minor version (F-007). Reported at the field, never coerced.
+ */
+function mustBeString(
+  record: string, field: string, v: unknown, findings: ConformanceFinding[],
+): void {
+  if (v === undefined || typeof v === "string") return;
+  findings.push({
+    record, field,
+    detail: `parsed as ${typeof v} (${JSON.stringify(v)}); the model types it as a `
+      + `string, so a producer MUST quote it (ERF-65)`,
+  });
+}
+
 function arr<T>(v: unknown): T[] {
   return Array.isArray(v) ? (v as T[]) : [];
 }
@@ -391,6 +408,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
   // `ERF-60`: refuse an unsupported major version openly, never by guessing.
   // This loader implements spec_version major 0; the finding is the refusal
   // said out loud, and the records are still preserved rather than dropped.
+  mustBeString("(declaration)", "spec_version", manifest?.spec_version, findings);
   const major = String(manifest?.spec_version ?? "").split(".")[0];
   if (manifest?.spec_version && major !== "0") {
     findings.push({
@@ -459,6 +477,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
         });
       }
     }
+    mustBeString(id, "as_of_date", data["as_of_date"], findings);
     setUnique(atoms, id, {
       ...(data as unknown as Atom),
       id,
@@ -489,7 +508,16 @@ export function loadCorpus(dir: string): LoadedCorpus {
     // regex only matched flow-style entries, so a block-style standing with a
     // bare date passed unexamined; found by an adversarial fixture from the
     // v0.9 stress battery, lane 4.)
-    for (const st of arr<{ timestamp?: unknown }>(data["standings"])) {
+    for (const st of arr<{ timestamp?: unknown; stance?: unknown }>(data["standings"])) {
+      // `ERF-41`: a stance outside the vocabulary is reported here and left
+      // out of the disposition, so the computation stays total (F-011).
+      if (!["for", "against", "withdrawn"].includes(String(st?.stance))) {
+        findings.push({
+          record: id, field: "standings",
+          detail: `stance ${JSON.stringify(st?.stance)} is not for, against or withdrawn; `
+            + `reported and left out of the disposition (ERF-41, ERF-55)`,
+        });
+      }
       const ts = String(st?.timestamp ?? "").trim();
       if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(ts)) {
         findings.push({
@@ -524,6 +552,11 @@ export function loadCorpus(dir: string): LoadedCorpus {
     requireFields(data, id, ["id", "type", "corpus", "title", "conducted"], findings);
     checkKnownFields(data, id, "survey", findings);
     checkStampOrder(data, id, findings);
+    for (const [i, act] of arr<Record<string, unknown>>(data["searches"]).entries()) {
+      for (const k of ["tool", "query", "scope", "hits_reported"]) {
+        mustBeString(id, `searches[${i}].${k}`, act?.[k], findings);
+      }
+    }
     setUnique(surveys, id, {
       ...(data as unknown as Survey),
       id,
@@ -562,6 +595,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
         anchor: unescapeAnchor(m[2] ?? ""),
         boundAt: m[3],
         index: c.index,
+        end: c.index + c[0].length,
       });
     }
     // `ERF-34`: the three frontmatter fields, typed. Naming them without
@@ -658,27 +692,49 @@ export function loadCorpus(dir: string): LoadedCorpus {
     }
   }
   {
-    const acyclic = new Set(["assumes", "decomposes-into"]);
-    const state = new Map<string, 0 | 1 | 2>(); // 1 = on stack, 2 = done
-    const visit = (id: string, path: string[]): void => {
-      if (state.get(id) === 2) return;
-      if (state.get(id) === 1) {
-        const cycle = [...path.slice(path.indexOf(id)), id];
-        findings.push({
-          record: id,
-          field: "edges",
-          detail: `cycle through ${cycle.join(" -> ")}; assumes and `
-            + `decomposes-into MUST admit no cycles (ERF-43)`,
-        });
-        return;
-      }
-      state.set(id, 1);
-      for (const e of claims.get(id)?.edges ?? []) {
-        if (acyclic.has(e.relation) && claims.has(e.to)) visit(e.to, [...path, id]);
-      }
-      state.set(id, 2);
+    // `ERF-43`: the premise relation admits no cycles. Oriented so that
+    // `X assumes Y` and `Y supports X` both say "Y is X's premise", because
+    // a cycle in the premise relation, not in the raw edge list, is what
+    // makes a chain of premises return to its own argument. `supports` was
+    // missing from the prohibition while present in the closure, so two
+    // mutually supporting arguments made a literal traversal non-terminating
+    // (F-009, found by the Haskell trial by writing the function).
+    const premises = new Map<string, Set<string>>();
+    const addPremise = (of: string, is: string) => {
+      if (!premises.has(of)) premises.set(of, new Set());
+      premises.get(of)!.add(is);
     };
-    for (const id of claims.keys()) visit(id, []);
+    for (const [id, cl] of claims) {
+      for (const e of cl.edges) {
+        if (!claims.has(e.to)) continue;
+        if (e.relation === "assumes") addPremise(id, e.to);
+        if (e.relation === "supports") addPremise(e.to, id);
+      }
+    }
+    const findCycles = (next: (id: string) => Iterable<string>, label: string) => {
+      const state = new Map<string, 0 | 1 | 2>(); // 1 = on stack, 2 = done
+      const visit = (id: string, path: string[]): void => {
+        if (state.get(id) === 2) return;
+        if (state.get(id) === 1) {
+          const cycle = [...path.slice(path.indexOf(id)), id];
+          findings.push({
+            record: id,
+            field: "edges",
+            detail: `cycle through ${cycle.join(" -> ")}; ${label} MUST admit no cycles (ERF-43)`,
+          });
+          return;
+        }
+        state.set(id, 1);
+        for (const to of next(id)) visit(to, [...path, id]);
+        state.set(id, 2);
+      };
+      for (const id of claims.keys()) visit(id, []);
+    };
+    findCycles((id) => premises.get(id) ?? [], "the premise relation (assumes and supports)");
+    findCycles(
+      (id) => (claims.get(id)?.edges ?? []).filter((e) => e.relation === "decomposes-into" && claims.has(e.to)).map((e) => e.to),
+      "decomposes-into",
+    );
   }
 
   // ---- sources ------------------------------------------------------------

@@ -1,0 +1,5 @@
+type: corpus
+id: fixture-unknown-stance
+title: "A standing outside the vocabulary"
+spec_version: "0.9.0"
+classification: public

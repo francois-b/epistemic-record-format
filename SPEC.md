@@ -55,9 +55,13 @@ Conformance is claimed per class, not against the whole document:
   as opaque data, reporting what it did not recognize (the same stance the
   Open Knowledge Format takes).
 - Validator: a tool that checks. Binds every machine-checkable MUST that
-  applies to the input it accepts: section 6 in full, the serialization
-  rules of section 7, and the declaration and source list named under the
-  Corpus class.
+  applies to the input it accepts, including section 6 in full, the
+  record-type requirements of section 4 (the quote check, the verdict and
+  stance vocabularies, ids, dates, search acts, narrative bindings), the
+  serialization rules of section 7, and the declaration and source list
+  named under the Corpus class. The list illustrates the duty and does not
+  bound it: a tool that never opens a normalized text or parses a
+  narrative binding is not a validator.
 
 Strict producers, tolerant consumers: divergence is caught by validators
 and surfaced, never by consumers refusing to read.
@@ -933,8 +937,16 @@ char     ::= any character other than '"' and '\', or one of the
   quotation marks would otherwise have no anchor at all.
 
   **The anchor occurs in its passage under `ERF-51`**, the same fold the
-  quote check uses, applied to the anchor and to the passage alike. This
-  format answers *does this string occur in that text* exactly once, and
+  quote check uses, applied to the anchor and to the passage alike. A
+  binding's passage is the text from the end of the previous binding's
+  marker, or the start of the body where there is none, to the start of
+  its own marker: a binding closes the passage above it (section 2), and
+  the previous binding closed the one before. Nothing wider serves. The
+  whole body as the passage makes the check nearly vacuous, since an
+  anchor lifted from anywhere in a long document matches and the
+  mechanism that exists to detect moved prose then detects almost nothing;
+  a paragraph as the passage false-flags a sentence split across a break.
+  This format answers *does this string occur in that text* exactly once, and
   two occurrence tests would be two verdicts for one question. It also
   settles the case that raised this: prose hand-wrapped at some column puts
   a newline inside a sentence, which is a space in CommonMark and a
@@ -1087,8 +1099,12 @@ checks the relations no type can see.
   of `withdrawn`, because withdrawal is exit rather than opposition, and
   read what remains: nothing remaining means `retired`; all `for` means
   `active`; all `against` means `rejected`; both `for` and `against`
-  remaining means `contested`. Every input has exactly one reading. No
-  stance outranks another and the format supplies no tie-break: `contested`
+  remaining means `contested`. A standing whose `stance` is outside that
+  vocabulary is a producer error (`ERF-55`), MUST be reported, and MUST be
+  left out of this computation as though the entry were absent: `ERF-57`
+  obliges a consumer to load such a record, and a reading it cannot
+  compute is one it would otherwise invent. With that, every input has
+  exactly one reading. No stance outranks another and the format supplies no tie-break: `contested`
   is the terminal reading of a disagreement, not a state resolved by
   arithmetic. What any particular use requires of a
   disposition is not specified here: the format computes the reading and a
@@ -1106,8 +1122,15 @@ checks the relations no type can see.
   vacuously: what is wrong with such an argument is that nothing backs it,
   which is `ERF-49`'s flag, not that its closure ends badly. Reading the
   root into its own closure would make the same record a violation here and
-  a flag there. Self-edges MUST NOT exist; `assumes` and `decomposes-into`
-  MUST admit no cycles. A validator MUST flag a closure that terminates in
+  a flag there. Self-edges MUST NOT exist. The premise relation MUST admit
+  no cycles, where `X assumes Y` and `Y supports X` both make `Y` a premise
+  of `X` (`ERF-24`): a chain of premises that returns to its own argument
+  grounds nothing. `decomposes-into` MUST admit no cycles likewise. The
+  closure is followed over distinct claims, a claim reached twice being
+  visited once, so that a validator terminates on any input, conforming or
+  not. `supports` was absent from the prohibition while present in the
+  closure, and two mutually supporting arguments made a literal traversal
+  run forever. A validator MUST flag a closure that terminates in
   a leaf whose disposition is `retired`: a flag rather than a violation,
   like `ERF-49`, because a withdrawal elsewhere can create the condition
   without any edit to the argument, and an act the format permits cannot
@@ -1152,7 +1175,7 @@ checks the relations no type can see.
   identically to the quote and to the normalized text, so that two conforming tools
   reach the same verdict on the same pair:
 
-  1. Unicode NFKC.
+  1. Unicode NFC.
   2. Remove the markdown emphasis and code markers `*`, `_`, and `` ` ``.
   3. Collapse whitespace runs to a single space, then trim.
 
@@ -1160,9 +1183,18 @@ checks the relations no type can see.
   lets a mis-cased quote pass a check whose whole job is fidelity.
 
   Three steps, and each earns its place by describing a difference the
-  author did not introduce. NFKC because an extractor emits compatibility
-  characters nobody types, a ligature as one glyph rather than two letters,
-  and an editor may silently decompose it. The emphasis markers because the
+  author did not introduce. NFC because an editor may silently compose or
+  decompose an accented letter, and the two spellings are one character by
+  definition. NFC and not NFKC, which was the first choice: NFKC is a
+  package of compatibility folds, and among the ligatures and fullwidth
+  forms an extractor emits, it also folds characters an author retypes,
+  the long s of a pre-1800 scan to a modern s and the ellipsis to three
+  periods, which `ERF-52` requires to be matched literally. Measured over
+  164 quotes in three corpora, NFC and NFKC gave identical verdicts, and
+  the only compatibility characters present were 684 long-s glyphs in two
+  scans. A ligature or a fullwidth form in extracted text is the extraction
+  tool's output, and decomposing it is that tool's job (`ERF-70`) or the
+  normalization tool's (`normalization`), both of which the source names. The emphasis markers because the
   normalized text is markdown and the quote is the prose inside it, so a source that
   italicises a word mid-sentence yields `*however*` in one and `however` in
   the other. Whitespace because line structure differs between a text and
@@ -1270,7 +1302,15 @@ checks the relations no type can see.
   an unquoted `timestamp` became a date object and made a claim's computed
   disposition depend on how a weekday name sorts. A producer SHOULD quote
   a timestamp regardless, so that a reader on a legacy schema still
-  receives a string.
+  receives a string. Where the model types
+  a field as a string and its bare spelling would resolve to another type
+  under this schema, a producer MUST quote it: `as_of_date: "2018"`,
+  `hits_reported: "0"`, `spec_version: "0.9.0"`, and a source id or family
+  name such as `"012"` or `"no"`. A bare year is JSON number grammar, so
+  the schema that stops the timestamp hazard does not stop this one, and
+  `spec_version: 1.0` arrives as a number that renders back as `1` with
+  the minor version gone. A validator MUST report a string-typed field that
+  arrived as any other type.
 - **ERF-66** A record's frontmatter MUST NOT contain a duplicate key, an
   anchor, an alias, or an explicit tag. YAML permits all four and leaves a
   processor's response to duplicates at its own discretion, so two

@@ -1,0 +1,5 @@
+type: corpus
+id: fixture-supports-cycle
+title: "Two arguments that support each other"
+spec_version: "0.9.0"
+classification: public

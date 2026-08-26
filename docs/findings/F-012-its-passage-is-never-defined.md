@@ -22,7 +22,8 @@ verifications:
     Confirmed in SPEC.md. Both trials chose 'since the previous binding'
     and both recorded the choice as unforced; the Go trial exposed all
     three readings behind a flag rather than pick one silently.
-outcome: open
+outcome: promoted
+promoted_to: "ERF-31, ruled directly 2026-08-25"
 ---
 
 # F-012 · "Its passage" is never defined, so the anchor check has no haystack
@@ -60,3 +61,18 @@ four on the Go trial's reading. This finding reopens that.
    the body when there is none.
 2. Define it as the containing CommonMark block.
 3. Define it as the text since the last heading of any level.
+
+## Resolution
+
+Ruled 2026-08-25: a binding's passage is the text from the end of the
+previous binding's marker, or the start of the body where there is none, to
+the start of its own marker. Both cold implementations had chosen this
+reading independently and recorded it as unforced; it is now forced. The
+whole-body reading, which the earlier `B-34` ruling had taken without
+recording a choice, is named in the requirement as the one that makes the
+check nearly vacuous.
+
+Measured: all 26 anchors across the three live corpora still occur within
+their own passage. Fixture `valid/anchor-in-an-earlier-passage` carries an
+anchor whose words occur only above the previous binding, and asserts the
+flag fires.

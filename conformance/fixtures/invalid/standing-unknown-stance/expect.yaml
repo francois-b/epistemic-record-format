@@ -1,0 +1,7 @@
+requirement: ERF-41
+record: fx-claim
+field: standings
+because: >
+  `maybe` is not `for`, `against` or `withdrawn`. It is reported and left
+  out of the disposition, which therefore reads `proposal` rather than one
+  of three inventions (F-011).

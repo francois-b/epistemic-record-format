@@ -22,7 +22,8 @@ verifications:
     note: >
     Run against the reference: normalizeForCheck(U+2026) and
     normalizeForCheck("...") both return "..." and compare equal.
-outcome: open
+outcome: promoted
+promoted_to: "ERF-51, ruled directly 2026-08-25"
 ---
 
 # F-010 · NFKC reintroduces a character fold `ERF-51` deliberately deleted
@@ -66,3 +67,20 @@ on principle, and NFKC is a fold.
    extraction tools emit, which was the reason for choosing it.
 3. Keep NFKC and enumerate, in the non-normative note, which folds it
    brings, so the choice is at least visible.
+
+## Resolution
+
+Ruled 2026-08-25: NFC replaces NFKC as step 1. Measured first across all 164
+quotes in three corpora: identical verdicts under both, and the only
+compatibility characters present in any normalized text were 684 long-s
+glyphs in two pre-1800 scans, one superscript digit, and one trademark sign.
+NFKC folds the long s to a modern s and the ellipsis to three periods; both
+are an author retyping their evidence, which is the thing `ERF-51` cut the
+character folds to stop forgiving. `ERF-52`'s literal-match sentence is now
+true.
+
+The ligature and fullwidth cases NFKC was chosen for are the extraction
+tool's output, and decomposing them is that tool's job or the normalization
+tool's, both of which the source already names. The conformance case file
+was rewritten for NFC: composed and decomposed accents unify, and ligatures,
+fullwidth forms, the long s and the ellipsis are asserted to stay as written.

@@ -1,0 +1,5 @@
+type: corpus
+id: fixture-earlier-passage
+title: "An anchor that occurs only above the previous binding"
+spec_version: "0.9.0"
+classification: public

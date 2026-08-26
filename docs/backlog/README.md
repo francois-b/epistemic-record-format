@@ -95,7 +95,7 @@ Raised but not yet checked by anyone other than whoever raised them. **Not ready
 | [`B-45`](B-45-erf-28-asserts-a-computed-staleness-that-nothing-defines.md) | **P2** | `ERF-28` asserts a computed staleness that nothing defines | `reported` | `accurate` · `unverified` ⚠ split |
 | [`B-46`](B-46-an-atom-may-name-a-corpus-that-was-never-declared.md) | **P2** | An atom may name a corpus that was never declared | `reported` | `accurate` · `unverified` ⚠ split |
 | [`B-47`](B-47-the-serialization-rules-are-written-about-records-and-miss.md) | **P2** | The serialization rules are written about records and miss the other files | `reported` | `accurate` · `unverified` ⚠ split |
-| [`B-48`](B-48-the-validator-conformance-class-omits-section-4.md) | **P1** | The Validator conformance class omits section 4 | `demonstrated` | `accurate` · `accurate` · `unverified` ⚠ split |
+| [`B-48`](B-48-the-validator-conformance-class-omits-section-4.md) | **closed** | The Validator conformance class omits section 4 | `demonstrated` | `accurate` · `accurate` · `unverified` ⚠ split |
 | [`B-51`](B-51-erf-55s-omit-rule-stops-at-lists-and-an-empty-mapping-carries-meaning.md) | **closed** | `ERF-55`'s omit rule stops at lists, and one empty mapping carries meaning | `reported` | `unverified` · `accurate` ⚠ split |
 | [`B-52`](B-52-the-base-for-a-capture-path-is-stated-only-in-a-comment.md) | **closed** | The base for a capture `path` is stated only in a comment | `reported` | `unverified` |
 | [`B-53`](B-53-erf-67s-encoding-clause-does-not-clearly-reach-captures.md) | **P2** | `ERF-67`'s encoding clause does not clearly reach captures | `reported` | `unverified` |

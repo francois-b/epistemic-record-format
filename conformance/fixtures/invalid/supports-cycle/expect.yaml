@@ -1,0 +1,8 @@
+requirement: ERF-43
+record: fx-a
+field: edges
+because: >
+  `fx-a` supports `fx-b` and `fx-b` supports `fx-a`, so each is the other's
+  premise and the premise relation has a cycle. Before F-009 the prohibition
+  named only `assumes` and `decomposes-into` while the closure drew in
+  `supports`, and a literal traversal of this corpus never terminated.

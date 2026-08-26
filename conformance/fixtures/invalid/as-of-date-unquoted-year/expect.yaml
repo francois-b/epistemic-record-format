@@ -1,0 +1,7 @@
+requirement: ERF-65
+record: fx-001
+field: as_of_date
+because: >
+  `2018` unquoted is JSON number grammar, so the schema that stops the
+  timestamp hazard lets this one through and the field arrives as a number.
+  The model types it as a string; the producer MUST quote it (F-007).

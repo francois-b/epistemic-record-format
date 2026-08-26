@@ -27,9 +27,16 @@ function instant(v: unknown): number {
   return Number.isNaN(n) ? 0 : n;
 }
 
+/** `ERF-41`'s vocabulary. A stance outside it is left out of the computation. */
+const STANCES = new Set(["for", "against", "withdrawn"]);
+
 export function currentStances(standings: StandingEntry[]): StandingEntry[] {
   const newest = new Map<string, StandingEntry>();
   for (const s of standings) {
+    // `ERF-41`: an unrecognised stance is a producer error the loader
+    // reports; here it is treated as though the entry were absent, so the
+    // disposition is defined for every input (F-011).
+    if (!STANCES.has(String(s.stance))) continue;
     const prev = newest.get(s.by);
     if (!prev || instant(s.timestamp) > instant(prev.timestamp)) newest.set(s.by, s);
   }
@@ -169,7 +176,7 @@ export function normalizeForCheck(s: string): string {
   return s
     // 1. Unicode NFKC: an extractor emits compatibility characters nobody
     //    types, and an editor may silently decompose them.
-    .normalize("NFKC")
+    .normalize("NFC")
     // 2. Markdown emphasis and code markers: the capture is markdown and
     //    the quote is the prose inside it.
     .replace(/[*_`]/g, "")
@@ -378,12 +385,19 @@ export function argumentLeaves(root: Claim, c: LoadedCorpus): string[] {
 export function brokenAnchors(c: LoadedCorpus): string[] {
   const out: string[] = [];
   for (const n of c.narratives) {
-    // The markers are stripped before folding. Left in, every anchor
-    // occurs inside its own comment and the check passes vacuously: it
-    // would report a corpus where every anchor is broken as clean. Caught
-    // by valid/anchor-broken-by-an-edit on the first run.
-    const hay = normalizeForCheck(n.body.replace(bindingCandidateRe(), " "));
-    for (const b of n.bindings) {
+    // `ERF-31`: a binding's passage is the text from the end of the
+    // previous binding's marker (or the start of the body) to the start of
+    // its own marker. The whole body as the haystack made the check nearly
+    // vacuous, since an anchor lifted from anywhere in a long document
+    // matched (F-012, found by two cold implementations independently).
+    // Markers inside the slice are stripped: a malformed candidate between
+    // two bindings must not serve as the haystack for either.
+    const ordered = [...n.bindings].sort((a, b) => a.index - b.index);
+    let prevEnd = 0;
+    for (const b of ordered) {
+      const passage = n.body.slice(prevEnd, b.index);
+      prevEnd = b.end;
+      const hay = normalizeForCheck(passage.replace(bindingCandidateRe(), " "));
       const needle = normalizeForCheck(b.anchor);
       if (needle && !hay.includes(needle)) {
         out.push(`${n.slug}: anchor "${b.anchor}" no longer occurs in the passage `

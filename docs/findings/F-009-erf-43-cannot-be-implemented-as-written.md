@@ -24,7 +24,8 @@ verifications:
     relations, and the closure definition draws in incoming `supports`.
     The reference implementation terminates only because it carries a
     visited set the specification does not authorise.
-outcome: open
+outcome: promoted
+promoted_to: "ERF-43, ruled directly 2026-08-25"
 ---
 
 # F-009 · `ERF-43` cannot be implemented as written
@@ -65,3 +66,18 @@ reading.
    corpus and makes the tool total.
 3. Both: forbid the cycle AND require termination, so a validator meeting a
    non-conforming corpus still halts.
+
+## Resolution
+
+Ruled 2026-08-25, option 3: the prohibition is stated over the premise
+relation, oriented so that `X assumes Y` and `Y supports X` both make `Y` a
+premise of `X`, and that relation MUST admit no cycles. `decomposes-into` is
+prohibited likewise. Separately, the closure is followed over distinct
+claims, a claim reached twice being visited once, so a validator terminates
+on any input including a non-conforming one.
+
+The reference implementation rebuilt its cycle check on the oriented premise
+graph rather than the raw edge list, which is what made `supports` checkable
+at all: a `supports` edge points from premise to argument, the opposite way
+from `assumes`, and a cycle in the raw union of the two says nothing about
+circular grounding. Fixture `invalid/supports-cycle`.

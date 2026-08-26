@@ -5,19 +5,24 @@
 # \n in either column means a newline, \t a tab; nothing else is escaped.
 #
 # The sequence is three steps, applied identically to a quote and to a
-# capture: NFKC, remove markdown emphasis and code markers, collapse
+# capture: NFC, remove markdown emphasis and code markers, collapse
 # whitespace. Case is never folded.
 #
 # A failing line is a finding about the implementation, not a licence to
 # edit the expectation. See README.md.
 
-# --- 1. Unicode NFKC ------------------------------------------------------
-# Compatibility characters an extractor emits and nobody types.
-The eﬃcient classiﬁcation of ﬁnancial records	The efficient classification of financial records
-ﬀ ﬁ ﬂ ﬃ ﬄ	ff fi fl ffi ffl
-Ⅻ and ½	XII and 1⁄2
-ｆｕｌｌｗｉｄｔｈ	fullwidth
-á stays composed as NFKC composes it	á stays composed as NFKC composes it
+# --- 1. Unicode NFC -------------------------------------------------------
+# Canonical composition only. A decomposed accent and a composed one are one
+# character by definition; nothing else is folded. Compatibility characters
+# (ligatures, fullwidth forms, the long s, the ellipsis) stay as written,
+# because folding them forgives an author retyping their evidence (ERF-51,
+# ERF-52). A ligature an extractor emits is the extraction tool's to decompose.
+café decomposed	café decomposed
+café composed	café composed
+The eﬃcient classiﬁcation of ﬁnancial records	The eﬃcient classiﬁcation of ﬁnancial records
+ｆｕｌｌｗｉｄｔｈ stays	ｆｕｌｌｗｉｄｔｈ stays
+the aſſertion, long s preserved	the aſſertion, long s preserved
+an ellipsis … is not three periods	an ellipsis … is not three periods
 
 # --- 2. markdown emphasis and code markers --------------------------------
 # The capture is markdown; the quote is the prose inside it.

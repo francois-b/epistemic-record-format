@@ -89,7 +89,7 @@ requirements:
   ERF-31:
     tests: [output, fixtures/invalid/binding-without-bound-at,
             fixtures/valid/anchor-spans-a-line-wrap, fixtures/valid/anchor-with-escaped-quote,
-            fixtures/valid/anchor-broken-by-an-edit]
+            fixtures/valid/anchor-broken-by-an-edit, fixtures/valid/anchor-in-an-earlier-passage]
     note: >
       the binding grammar through the shared bindingRe, plus the recognition
       rule: a candidate that fails the grammar is reported rather than
@@ -125,12 +125,12 @@ requirements:
   ERF-40:
     untestable-by-design: verified against substrate history, which a loaded corpus does not carry
   ERF-41:
-    tests: [disposition]
+    tests: [disposition, fixtures/invalid/standing-unknown-stance]
   ERF-42:
     tests: [disposition, output]
   ERF-43:
     tests: [fixtures/invalid/self-edge, fixtures/invalid/assumes-cycle, fixtures/invalid/assumes-cycle-two-node,
-            fixtures/invalid/closure-ends-in-argument-leaf, fixtures/valid/premise-less-argument-is-a-flag]
+            fixtures/invalid/closure-ends-in-argument-leaf, fixtures/valid/premise-less-argument-is-a-flag, fixtures/invalid/supports-cycle]
     note: >
       self-edges, both cycle shapes, and the flag boundary ruled in B-30: a
       closure ending in an argument leaf is a violation on the claim built
@@ -158,7 +158,7 @@ requirements:
   ERF-51:
     tests: [normalization, quote-check]
   ERF-52:
-    tests: [quote-check, fixtures/invalid/quote-all-empty-spans, fixtures/invalid/quote-spans-out-of-order]
+    tests: [quote-check, fixtures/invalid/quote-all-empty-spans, fixtures/invalid/quote-spans-out-of-order, cases/quote-check]
     note: >
       the elision rules gained fixtures on 2026-08-25 by adoption from the
       independent trials; before that the cases file tested them and no
@@ -197,7 +197,7 @@ requirements:
   ERF-63:
     untestable-by-design: a permission, satisfiable by any substrate
   ERF-65:
-    tests: [serialization]
+    tests: [serialization, fixtures/invalid/as-of-date-unquoted-year]
     note: asserts a date-shaped scalar loads as a string, not a date object
   ERF-66:
     tests: [fixtures/invalid/frontmatter-duplicate-key, fixtures/invalid/frontmatter-anchor]

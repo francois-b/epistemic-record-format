@@ -1,8 +1,8 @@
 ---
 id: B-48
 kind: defect
-status: open
-priority: P1
+status: closed
+priority: closed
 priority_because: >
   Both reviewers: the class opens with every machine-checkable MUST that
   applies, and ERF-50 to 52 sit in section 6; the fix is an "including".
@@ -37,3 +37,13 @@ Section 1 binds a validator to "section 6 in full, the serialization rules of se
 ## Proposed resolution
 
 Widen the Validator class to every machine-checkable MUST wherever it sits.
+
+## Resolution
+
+Ruled 2026-08-25. The colon became "including", section 4 is named with its
+checkable contents listed, and a closing sentence says the list illustrates
+the duty rather than bounding it: a tool that never opens a normalized text
+or parses a narrative binding is not a validator. Escalated from P2 the same
+day after a cold Go implementer, reading the specification alone, ranked
+this first of twenty-nine ambiguities and stated the consequence in those
+words.
