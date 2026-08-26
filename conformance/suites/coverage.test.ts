@@ -10,7 +10,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import yaml from "js-yaml";
 import { join } from "node:path";
-import { BINDINGS, ROOT, SPEC } from "../paths.ts";
+import { SERIALIZATION, ROOT, SPEC } from "../paths.ts";
 
 export interface CoverageEntry {
   tests?: string[];
@@ -21,11 +21,11 @@ export interface CoverageEntry {
 
 /**
  * The normative surface is SPEC.md plus every binding document: a rule that
- * moved to bindings/ on 2026-08-25 kept its id and is still a requirement.
+ * moved to the binding document (bindings/, now serialization/) on 2026-08-25 kept its id and is still a requirement.
  */
 export function specRequirements(): string[] {
-  const files = [SPEC, ...(existsSync(BINDINGS)
-    ? readdirSync(BINDINGS).filter((f) => f.endsWith(".md")).sort().map((f) => join(BINDINGS, f))
+  const files = [SPEC, ...(existsSync(SERIALIZATION)
+    ? readdirSync(SERIALIZATION).filter((f) => f.endsWith(".md")).sort().map((f) => join(SERIALIZATION, f))
     : [])];
   // A definition line carries its HTML anchor, so that SPEC.md#erf-6 resolves
   // on GitHub: `- <a id="erf-6"></a>**ERF-6** ...`. The anchor is optional in

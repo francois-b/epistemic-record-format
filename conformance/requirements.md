@@ -9,7 +9,7 @@ model: claude-opus-5
 # The requirement index
 
 **Generated. Never edit this file by hand.** It is derived from `SPEC.md`,
-`bindings/yaml-markdown.md` and `coverage.yaml`, which are the three places a
+`serialization/yaml-markdown.md` and `coverage.yaml`, which are the three places a
 requirement's text, its home and its coverage actually live. Regenerate with:
 
 ```
@@ -73,11 +73,11 @@ is not repeated down the column.
 | [`ERF-72`](../SPEC.md#erf-72) | A field named with the prefix `x_` is an extension field: a producer MAY originate one anywhere, a validator MUST NOT… |  | `fixtures/valid/extension-field`, `schema` |
 | [`ERF-60`](../SPEC.md#erf-60) | A consumer MAY refuse a corpus whose MAJOR `spec_version` it does not support, and MUST say so when it does. | Consumer | `fixtures/invalid/unsupported-major-version`, `fixtures/valid/newer-minor-version-extends` |
 | [`ERF-62`](../SPEC.md#erf-62) | A corpus MUST have exactly one authoritative home. | Corpus | untestable by design: which store is authoritative is a deployment fact |
-| [`ERF-67`](../bindings/yaml-markdown.md#erf-67) | A record body is CommonMark, and a file MUST be UTF-8 encoded with LF line endings and no byte-order mark. |  | `fixtures/invalid/bom-file`, `fixtures/invalid/bom-and-crlf` |
-| [`ERF-65`](../bindings/yaml-markdown.md#erf-65) | Frontmatter MUST parse under YAML 1.2 using the **JSON schema**, the narrowest of the three the specification defines. | Producer, Validator | `serialization`, `fixtures/invalid/as-of-date-unquoted-year` |
-| [`YAMLB-2`](../bindings/yaml-markdown.md#yamlb-2) | An empty list MUST be omitted on the wire, and a reader materializes it (`ERF-56`); an optional mapping that is present… |  | `fixtures/valid/evidence-at-stance-faced-nothing`, `hygiene` |
-| [`ERF-66`](../bindings/yaml-markdown.md#erf-66) | A document's frontmatter MUST NOT contain a duplicate key, an anchor, an alias, or an explicit tag. |  | `fixtures/invalid/frontmatter-duplicate-key`, `fixtures/invalid/frontmatter-anchor` |
-| [`YAMLB-1`](../bindings/yaml-markdown.md#yamlb-1) | A narrative binding MUST be spelled as an HTML comment, so that it is invisible in every render and survives any markdown pipeline: |  | `output`, `fixtures/invalid/binding-without-bound-at`, `fixtures/invalid/binding-empty-anchor`, `fixtures/invalid/binding-unterminated`, `fixtures/valid/binding-after-a-code-span`, `fixtures/valid/anchor-with-escaped-quote` |
+| [`ERF-67`](../serialization/yaml-markdown.md#erf-67) | A record body is CommonMark, and a file MUST be UTF-8 encoded with LF line endings and no byte-order mark. |  | `fixtures/invalid/bom-file`, `fixtures/invalid/bom-and-crlf` |
+| [`ERF-65`](../serialization/yaml-markdown.md#erf-65) | Frontmatter MUST parse under YAML 1.2 using the **JSON schema**, the narrowest of the three the specification defines. | Producer, Validator | `serialization`, `fixtures/invalid/as-of-date-unquoted-year` |
+| [`YAMLB-2`](../serialization/yaml-markdown.md#yamlb-2) | An empty list MUST be omitted on the wire, and a reader materializes it (`ERF-56`); an optional mapping that is present… |  | `fixtures/valid/evidence-at-stance-faced-nothing`, `hygiene` |
+| [`ERF-66`](../serialization/yaml-markdown.md#erf-66) | A document's frontmatter MUST NOT contain a duplicate key, an anchor, an alias, or an explicit tag. |  | `fixtures/invalid/frontmatter-duplicate-key`, `fixtures/invalid/frontmatter-anchor` |
+| [`YAMLB-1`](../serialization/yaml-markdown.md#yamlb-1) | A narrative binding MUST be spelled as an HTML comment, so that it is invisible in every render and survives any markdown pipeline: |  | `output`, `fixtures/invalid/binding-without-bound-at`, `fixtures/invalid/binding-empty-anchor`, `fixtures/invalid/binding-unterminated`, `fixtures/valid/binding-after-a-code-span`, `fixtures/valid/anchor-with-escaped-quote` |
 
 ## Retired ids
 

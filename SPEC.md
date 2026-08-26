@@ -19,7 +19,7 @@ deliberately does not do is `docs/purpose.md`, what was ruled out is
 **What is normative.** Three things, and nothing else: this document; the
 data model, [`schema/erf.schema.json`](schema/erf.schema.json) (section 3); and a
 binding document, for any corpus exchanged in that binding
-([`bindings/yaml-markdown.md`](bindings/yaml-markdown.md) today). Where a
+([`serialization/yaml-markdown.md`](serialization/yaml-markdown.md) today). Where a
 rule leans on a standard, CommonMark, Unicode, RFC 3339, CSL, SemVer,
 SPDX, the standard is cited and governs its own ground. Everything else in
 this repository, the reference implementation, the conformance suite and
@@ -997,7 +997,7 @@ is reporting.
 Every binding MUST round-trip a corpus through the model without changing
 any record, any field, or any verdict (`ERF-53`); a binding that cannot is
 not one. The YAML/Markdown binding, version 1
-([`bindings/yaml-markdown.md`](bindings/yaml-markdown.md), normative), is
+([`serialization/yaml-markdown.md`](serialization/yaml-markdown.md), normative), is
 the interchange default: a producer that does not know its recipient's
 binding ships that one. Storage is unconstrained (section 8); interchange
 is not. A corpus held in a SQL store conforms if it loads to a conforming
@@ -1109,7 +1109,7 @@ raw or normalized, and are the model's.
   `ERF-61`.)
 - A requirement is cited by its id and linked by its anchor. Every definition
   line carries one, lowercased from the id, so `SPEC.md#erf-6` and
-  `bindings/yaml-markdown.md#yamlb-1` resolve to the requirement itself
+  `serialization/yaml-markdown.md#yamlb-1` resolve to the requirement itself
   wherever the file is rendered. The anchor is part of the line rather than of
   a heading, because requirements are not headings and a section can be
   reorganized without moving one.

@@ -19,7 +19,7 @@ conformance suite, and a real corpus you can read.
 
 [**Read the specification**](SPEC.md) ·
 [Data model](schema/erf.schema.json) ·
-[Binding](bindings/yaml-markdown.md) ·
+[Serialization](serialization/yaml-markdown.md) ·
 [Every requirement, indexed](conformance/requirements.md) ·
 [Contributing](CONTRIBUTING.md)
 

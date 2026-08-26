@@ -52,7 +52,7 @@ cd tools/viewer && npx tsc --noEmit    # the viewer over it
 cd conformance && npx tsc --noEmit     # types, suite
 cd conformance && npm test             # every case, then the coverage line
 python3 tools/lint-spec-style.py SPEC.md
-python3 tools/lint-spec-style.py bindings/yaml-markdown.md
+python3 tools/lint-spec-style.py serialization/yaml-markdown.md
 python3 tools/lint-field-names.py
 python3 tools/generate-types.py --check   # schema/erf.ts is generated; the pre-commit hook in .githooks/ regenerates it
 python3 tools/backlog-index.py         # regenerates docs/backlog/README.md
@@ -67,7 +67,7 @@ message. Adding a requirement means adding a row to
 
 ## Licensing of contributions
 
-Two licences, split the way the repository is. Prose (`SPEC.md`, `bindings/`,
+Two licences, split the way the repository is. Prose (`SPEC.md`, `serialization/`,
 `docs/`, `examples/`, `reviews/`, `CHANGELOG.md`, this file, and
 the fixture corpora and case tables under `conformance/`) is contributed under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), the text in

@@ -6,7 +6,7 @@ binds it where a document says so, and what defends it. Three inputs and no
 judgment of its own:
 
   SPEC.md                    the requirement text, and the retired-id list
-  bindings/yaml-markdown.md  the requirements that moved to the binding
+  serialization/yaml-markdown.md  the requirements that moved to the binding
   conformance/coverage.yaml  the coverage state of each
 
 The class column is filled only where a document names the class. Section 1's
@@ -25,7 +25,7 @@ import yaml
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SPEC = ROOT / "SPEC.md"
-BINDINGS = ROOT / "bindings"
+SERIALIZATION = ROOT / "serialization"
 COVERAGE = ROOT / "conformance" / "coverage.yaml"
 INDEX = ROOT / "conformance" / "requirements.md"
 
@@ -48,7 +48,7 @@ model: claude-opus-5
 # The requirement index
 
 **Generated. Never edit this file by hand.** It is derived from `SPEC.md`,
-`bindings/yaml-markdown.md` and `coverage.yaml`, which are the three places a
+`serialization/yaml-markdown.md` and `coverage.yaml`, which are the three places a
 requirement's text, its home and its coverage actually live. Regenerate with:
 
 ```
@@ -154,8 +154,8 @@ def cell(s):
 def main():
     spec_text = SPEC.read_text()
     reqs = requirements(SPEC, "../SPEC.md")
-    for p in sorted(BINDINGS.glob("*.md")):
-        reqs += requirements(p, f"../bindings/{p.name}")
+    for p in sorted(SERIALIZATION.glob("*.md")):
+        reqs += requirements(p, f"../serialization/{p.name}")
 
     cov = (yaml.safe_load(COVERAGE.read_text()) or {}).get("requirements") or {}
     named = named_classes(spec_text)

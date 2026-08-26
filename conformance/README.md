@@ -132,7 +132,7 @@ so it cannot quietly grow.
 `requirements.md` beside this file is the whole map on one page: every
 requirement, a phrase of what it says, the conformance class that binds it
 where a document names one, and what defends it. It is generated from
-`SPEC.md`, `bindings/yaml-markdown.md` and `coverage.yaml`, and never edited
+`SPEC.md`, `serialization/yaml-markdown.md` and `coverage.yaml`, and never edited
 by hand. Regenerate it after adding, changing or retiring a requirement:
 
 ```
