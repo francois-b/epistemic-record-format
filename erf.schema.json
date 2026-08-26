@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://erf.example/erf.schema.json",
+  "$id": "https://francois-b.github.io/epistemic-record-format/schema/0.9.0/erf.schema.json",
   "title": "Epistemic Record Format, data model",
   "description": "The normative data model (SPEC.md section 3, ERF-73): what every document a corpus holds looks like once loaded, with its body attached where the model has one. Every definition refuses fields the declared version does not define, outside the x_ namespace (ERF-72). Lists total in the model may be omitted on the wire when empty (ERF-56). The reason each definition takes its shape is written on the definition. Rules over more than one record, the quote check, and the obligations on acts are in SPEC.md and cannot be stated here.",
   "oneOf": [

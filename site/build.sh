@@ -28,7 +28,7 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-REPO_URL="${ERF_REPO_URL:-https://github.com/OWNER/epistemic-record-format}"
+REPO_URL="${ERF_REPO_URL:-https://github.com/francois-b/epistemic-record-format}"
 
 echo "==> repository url: $REPO_URL"
 echo "==> corpus:         $CORPUS"
@@ -54,6 +54,10 @@ npx tsx erf-view.ts "$CORPUS" -o "$OUT/corpus" \
 # The landing page reads the same one, so the two halves of the site cannot
 # drift apart visually.
 cp "$OUT/corpus/assets/erf.css" "$OUT/assets/erf.css"
+
+# The schema at the URL its $id declares, version-scoped, so $ref and tooling resolve it.
+mkdir -p "$OUT/schema/0.9.0"
+cp "$REPO_ROOT/erf.schema.json" "$OUT/schema/0.9.0/erf.schema.json"
 
 echo "==> writing the landing page"
 sed "s#{{REPO}}#${REPO_URL}#g" "$REPO_ROOT/site/landing.html" > "$OUT/index.html"
