@@ -73,8 +73,8 @@ Conformance is claimed per class, not against the whole document:
   network, a judgment, or a second party. The list illustrates the duty
   and does not bound it: a tool that never opens a normalized text or
   parses a narrative binding is not a validator. A validator MUST name the
-  requirements it does not check, and a deployment-wide check (`ERF-36`,
-  `ERF-36`) run over a single corpus MUST be named as partial.
+  requirements it does not check, and a deployment-wide check (`ERF-36`)
+  run over a single corpus MUST be named as partial.
 
 Strict producers, tolerant consumers: divergence is caught by validators
 and surfaced, never by consumers refusing to read.
