@@ -47,7 +47,7 @@ the linters, so a green suite means those passed too; run them alone when
 editing prose. The last two files are generated and never hand-edited.
 
 ```
-cd validator && npx tsc --noEmit       # types, reference validator
+cd validator/yaml-markdown/typescript && npx tsc --noEmit   # types, reference validator
 cd tools/viewer && npx tsc --noEmit    # the viewer over it
 cd conformance && npx tsc --noEmit     # types, suite
 cd conformance && npm test             # every case, then the coverage line

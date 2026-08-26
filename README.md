@@ -110,7 +110,7 @@ Absence is evidenced by surveys; presence by atoms.
 
 [`examples/corpora/minimal/`](examples/corpora/minimal/) is a small corpus of real records,
 copied from a working practice: nine atoms, six claims, three
-surveys, and a narrative whose passages bind to the claims they rest on. [`validator/`](validator/) checks it and [`tools/viewer/`](tools/viewer/) renders it to static HTML.
+surveys, and a narrative whose passages bind to the claims they rest on. [`validator/yaml-markdown/typescript/`](validator/yaml-markdown/typescript/) checks it and [`tools/viewer/`](tools/viewer/) renders it to static HTML.
 
 ```
 npm install                                   # installs the validator, the viewer and the conformance suite
@@ -165,7 +165,7 @@ checks it.
 | [`docs/`](docs/) | Why is a rule the way it is (`history.md`), was an idea already declined (`non-goals.md`), will it ever do X (`backlog/`), where do the ideas come from (`influences.md`). |
 | [`examples/`](examples/) | What does it look like in use? Single-record examples, plus [`examples/corpora/minimal/`](examples/corpora/minimal/), a complete small corpus, and [`examples/site/`](examples/site/), that corpus rendered. |
 | [`conformance/`](conformance/) | Does my implementation obey the rules? Cases, fixtures, a map from every requirement to what defends it, and [`requirements.md`](conformance/requirements.md), that map as one page. |
-| [`validator/`](validator/) | What does one implementation look like? `erf-check`, the reference validator: loads a corpus against the schema and computes every derived reading from the specification text. The conformance suite tests this code. |
+| [`validator/`](validator/) | What does one implementation look like? One folder per serialization, one per language under it: [`yaml-markdown/typescript/`](validator/yaml-markdown/typescript/) is `erf-check`, the reference validator, which loads a corpus against the schema and computes every derived reading from the specification text. The conformance suite tests this code. |
 | [`tools/viewer/`](tools/viewer/) | What does a corpus look like rendered? `erf-view`, the reference consumer, a static-site renderer over the validator. |
 | [`reviews/`](reviews/) | Does the document itself work? Evaluations of the specification: adversarial reads, and independent trials that tested it by building from it. |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | How do I report a defect, propose a capability, or change the code? The findings pipeline, the backlog's basis and trigger discipline, and the gates. |

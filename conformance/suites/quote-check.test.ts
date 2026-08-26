@@ -9,8 +9,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import type { Atom } from "../../validator/corpus.ts";
-import { quoteCheck } from "../../validator/compute.ts";
+import type { Atom } from "../../validator/yaml-markdown/typescript/corpus.ts";
+import { quoteCheck } from "../../validator/yaml-markdown/typescript/compute.ts";
 import { QUOTE_CASES } from "../paths.ts";
 
 interface QuoteCase {

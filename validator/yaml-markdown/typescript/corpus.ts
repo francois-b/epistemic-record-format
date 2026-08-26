@@ -14,7 +14,7 @@ import { join, basename, relative, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import yaml from "js-yaml";
 import Ajv2020 from "ajv/dist/2020.js";
-import type { Atom as AtomOnWire, Claim as ClaimOnWire, Survey as SurveyOnWire, Source, CorpusDeclaration } from "../schema/erf.ts";
+import type { Atom as AtomOnWire, Claim as ClaimOnWire, Survey as SurveyOnWire, Source, CorpusDeclaration } from "../../../schema/erf.ts";
 
 /**
  * The wire types in `schema/erf.ts` are generated from the schema and say
@@ -190,7 +190,7 @@ const YAML_OPTS = { schema: yaml.JSON_SCHEMA, json: false } as const;
  * validator. Every file now validates against erf.schema.json as it is
  * read; a schema error is a producer error (ERF-73) reported at the field.
  */
-const SCHEMA_PATH = join(dirname(fileURLToPath(import.meta.url)), "..", "schema", "erf.schema.json");
+const SCHEMA_PATH = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "schema", "erf.schema.json");
 const ajv = new Ajv2020({ allErrors: true, strict: true, strictRequired: false });
 const schemaJson = JSON.parse(readFileSync(SCHEMA_PATH, "utf8")) as { $id: string };
 const validateModel = ajv.compile(schemaJson);

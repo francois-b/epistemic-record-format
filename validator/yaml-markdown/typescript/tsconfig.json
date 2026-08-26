@@ -12,5 +12,5 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": false
   },
-  "include": ["*.ts", "../schema/*.ts"]
+  "include": ["*.ts", "../../../schema/*.ts"]
 }

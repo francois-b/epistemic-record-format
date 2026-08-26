@@ -36,7 +36,7 @@ echo "==> output:         $OUT"
 
 # The site never publishes a corpus that does not conform. erf-check exits
 # non-zero on any violation, and `set -e` stops the build here if it does.
-cd "$REPO_ROOT/validator"
+cd "$REPO_ROOT/validator/yaml-markdown/typescript"
 [ -d node_modules ] || npm install --no-audit --no-fund
 echo "==> checking the corpus"
 npx tsx erf-check.ts "$CORPUS" | tail -n 2
