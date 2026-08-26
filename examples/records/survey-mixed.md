@@ -1,17 +1,11 @@
-# A survey record (SPEC.md, section 4.5) backing a DENSITY reading, and
-# the mixed case: web probes beside a private-corpus probe. The body's
-# closing coverage bounds carry the universe-relation judgment the type
-# cannot: the private-library act bears only on that library's holdings,
-# so its yield is recorded as color, not coverage. A real record from a
-# working corpus; every query was actually run and every hit count is as
-# the instrument reported it.
+---
 type: survey
 id: citator-agreement-studies-2026-08-22
 corpus: knowledge-work-governance
 title: >-
   Empirical studies measuring agreement between legal citators on
   negative treatment
-conducted: {timestamp: 2026-08-22, by: "agent/claude-fable-5"}
+conducted: {timestamp: "2026-08-22", by: "agent/claude-fable-5"}
 searches:
   - tool: "WebSearch (Claude Code web search tool)"
     query: "citator agreement negative treatment Shepard's KeyCite empirical study"
@@ -51,13 +45,14 @@ notable_results:
     note: >-
       The line is active in the LLM era: precedent-treatment
       classification is now an LLM benchmark task.
-body: |
-  Empirical studies measuring agreement between legal citators on
-  negative treatment: sought and found in quantity. Two web probes and
-  one private-corpus probe converge on a 25-year literature line (Shapiro
-  1998 through Hellyer 2018 to a 2026 LLM benchmark), with the definitive
-  study already captured in the corpus. The survey backs a density
-  reading: this ground is studied, and claims about citator disagreement
-  rest on a real literature, not a single stray source.
+---
 
-  Coverage bounds: The private-library act bears only on that library's holdings; its yield (passages tracing to one already-captured study) carries no weight for the state of the published literature and is recorded as color, not coverage. Web probes inspected as returned, one results page each; law-review databases (HeinOnline, SSRN) and non-English scholarship not searched directly.
+Empirical studies measuring agreement between legal citators on
+negative treatment: sought and found in quantity. Two web probes and
+one private-corpus probe converge on a 25-year literature line (Shapiro
+1998 through Hellyer 2018 to a 2026 LLM benchmark), with the definitive
+study already captured in the corpus. The survey backs a density
+reading: this ground is studied, and claims about citator disagreement
+rest on a real literature, not a single stray source.
+
+Coverage bounds: The private-library act bears only on that library's holdings; its yield (passages tracing to one already-captured study) carries no weight for the state of the published literature and is recorded as color, not coverage. Web probes inspected as returned, one results page each; law-review databases (HeinOnline, SSRN) and non-English scholarship not searched directly.

@@ -1,16 +1,10 @@
-# A survey record (SPEC.md, section 4.5) over a CLOSED corpus: the
-# searched universe is the claim's universe and the probes are complete
-# over it, so absence is conclusive and the body correctly states no
-# coverage bounds (a complete search of a closed corpus has none). A real record from a
-# working corpus: the probes measure the corpus's own retired `granted`
-# field, so the format's subtraction ledger cites a record instead of
-# asserting a measurement in prose.
+---
 type: survey
 id: granted-flag-uses-2026-08-22
 corpus: knowledge-work-governance
 title: >-
   Current uses of the granted field across the registered corpora
-conducted: {timestamp: 2026-08-22, by: "agent/claude-fable-5"}
+conducted: {timestamp: "2026-08-22", by: "agent/claude-fable-5"}
 searches:
   - tool: "grep -rnE (BSD grep, macOS)"
     query: "^granted:|^  granted:"
@@ -40,11 +34,12 @@ notable_results:
     note: >-
       One record uses the word in its everyday sense ("access granted");
       not a field.
-body: |
-  Current uses of the granted field across the registered corpora: zero.
-  The key-position probe over every claim and question file returns no
-  hits; the word-level probe returns four lines in three files, each a
-  documentation mention, a prose rationale, or ordinary English rather
-  than a field use; the atom records contain the word nowhere. Anyone
-  holding the corpus can re-run the three probes and falsify this
-  record.
+---
+
+Current uses of the granted field across the registered corpora: zero.
+The key-position probe over every claim and question file returns no
+hits; the word-level probe returns four lines in three files, each a
+documentation mention, a prose rationale, or ordinary English rather
+than a field use; the atom records contain the word nowhere. Anyone
+holding the corpus can re-run the three probes and falsify this
+record.

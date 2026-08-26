@@ -1,18 +1,11 @@
-# A survey record (SPEC.md, section 4.5) backing an ABSENCE reading: the
-# sought was not found, and the record carries the acts, their yields, and,
-# closing its body, the coverage bounds a gap claim needs. This is a real record from a
-# working corpus, minted retroactively from a saved research scan; where
-# the scan did not record a query or a yield, the record says "not
-# recorded" rather than reconstructing one. The citing claim lists this
-# record in `surveys:`; its atoms evidence the near-misses (presence),
-# the survey evidences the absence.
+---
 type: survey
 id: continuous-claim-check-tools-2026-08-19
 corpus: knowledge-work-governance
 title: >-
   Shipped tools running claim-against-source checks continuously over
   maintained documents
-conducted: {timestamp: 2026-08-19, by: "agent/claude-fable-5"}
+conducted: {timestamp: "2026-08-19", by: "agent/claude-fable-5"}
 searches:
   - tool: "Claude Sonnet research subagent (web search plus primary-doc fetch, 30-40 tool calls)"
     query: >-
@@ -60,13 +53,14 @@ notable_results:
     note: >-
       Genuinely continuous, but watches source drift, not claim validity:
       continuity without entailment.
-body: |
-  Shipped tools running claim-against-source checks continuously over
-  maintained documents: sought and not found. Four parallel research
-  passes graded ~95 tools and standards against five epistemic
-  capacities; the entailment mechanism is mature and cheap, and every
-  shipped implementation found runs once per answer, per request, or on
-  demand at review time. None runs as a standing lint over a document
-  that keeps growing.
+---
 
-  Coverage bounds: Territory covered by two earlier scans was deliberately skipped (grounding-check and memory-layer territories, including Scite/Elicit/Consensus). English-language sources; capabilities read from vendor documentation and marketing, not trials; several primary pages 403'd or unread and are flagged UNVERIFIED in the scan. Per-query yields were mostly not recorded: the hit counts above are tools-graded counts, not search-result counts, and only two null queries survive verbatim.
+Shipped tools running claim-against-source checks continuously over
+maintained documents: sought and not found. Four parallel research
+passes graded ~95 tools and standards against five epistemic
+capacities; the entailment mechanism is mature and cheap, and every
+shipped implementation found runs once per answer, per request, or on
+demand at review time. None runs as a standing lint over a document
+that keeps growing.
+
+Coverage bounds: Territory covered by two earlier scans was deliberately skipped (grounding-check and memory-layer territories, including Scite/Elicit/Consensus). English-language sources; capabilities read from vendor documentation and marketing, not trials; several primary pages 403'd or unread and are flagged UNVERIFIED in the scan. Per-query yields were mostly not recorded: the hit counts above are tools-graded counts, not search-result counts, and only two null queries survive verbatim.

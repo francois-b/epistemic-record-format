@@ -1,8 +1,4 @@
-# A standalone atom record (SPEC.md, section 4.2) quoting a web-native
-# work. The atom names its source by id (ERF-35); the source entry carries
-# the citation and the retrieval locator (`source-web.yaml`). The
-# backslash in the quote is verbatim from the source abstract; capture
-# fidelity beats cleanup.
+---
 type: atom
 corpus: knowledge-work-governance
 id: kwg-038
@@ -19,10 +15,11 @@ quote: >-
 source: lightman-2023-verify
 source_quality: high
 as_of_date: "2023-05-31"
-created: {timestamp: 2026-07-19, by: "agent/claude-fable-5"}
-last_modified: {timestamp: 2026-07-19, by: "agent/claude-fable-5"}
+created: {timestamp: "2026-07-19", by: "agent/claude-fable-5"}
+last_modified: {timestamp: "2026-07-19", by: "agent/claude-fable-5"}
 finding_audit:
-  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: 2026-07-19,
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: "2026-07-19",
      protocol: finding-audit-v2}
-  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: 2026-07-19,
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: "2026-07-19",
      protocol: finding-audit-v2}
+---

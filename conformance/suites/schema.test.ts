@@ -67,7 +67,7 @@ function declaresNewerMinor(dir: string): boolean {
 
 test("every valid fixture, spirit fixture and example record validates against erf.schema.json", async (t) => {
   let n = 0;
-  for (const root of [join(FIXTURES, "valid"), join(FIXTURES, "spirit"), join(REPO, "examples", "corpora", "minimal")]) {
+  for (const root of [join(FIXTURES, "valid"), join(FIXTURES, "spirit"), join(REPO, "examples", "corpora", "minimal"), join(REPO, "examples", "records")]) {
     if (!existsSync(root)) continue;
     const skip = new Set(readdirSync(root).map((d) => join(root, d)).filter((d) => statSync(d).isDirectory() && declaresNewerMinor(d)));
     for (const f of walk(root)) {
