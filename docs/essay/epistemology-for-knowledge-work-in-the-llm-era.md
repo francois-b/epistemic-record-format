@@ -14,7 +14,9 @@ model: claude-opus-5
 > version that circulated (the five characters are its content hash), and
 > the same text is the subject of the first authoring trial in
 > `reviews/2026-08-25-schema-spec-trials/essay-corpus/`, where it is held
-> as a source and its assertions are bound to claims.
+> as a source and its assertions are bound to claims. The essay describes
+> five things to build; this repository is the first of them, the record
+> format, and the other four are not here.
 
 
 This document is about knowledge work in the LLM era. So much has been done
