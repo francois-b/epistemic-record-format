@@ -17,7 +17,7 @@ import pathlib, re, subprocess, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 SCHEMA = ROOT / "schema" / "erf.schema.json"
-OUT = ROOT / "schema" / "erf.ts"
+OUT = ROOT / "schema" / "erf.generated.ts"
 BIN = ROOT / "node_modules" / ".bin" / "json2ts"
 BANNER = (
     "/* GENERATED from schema/erf.schema.json by tools/generate/generate-types.py. Do not edit:\n"

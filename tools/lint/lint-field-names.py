@@ -26,7 +26,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 SPEC = ROOT / "SPEC.md"
-TYPES = ROOT / "schema" / "erf.ts"
+TYPES = ROOT / "schema" / "erf.generated.ts"
 
 # The interfaces the specification is answerable for. A type that exists
 # only to serve the reference implementation does not belong here.
