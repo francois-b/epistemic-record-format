@@ -1,0 +1,18 @@
+[
+  {
+    "id": "bl-001",
+    "source": "sutton-2019-bitter-lesson",
+    "spans": [["The biggest lesson that can be read from 70 years", "and by a large margin."]],
+    "finding": "Sutton states, as the essay's headline thesis, that seventy years of AI research show general methods that leverage computation to be ultimately the most effective, and by a large margin.",
+    "source_quality": "high",
+    "as_of_date": "2019-03-13"
+  },
+  {
+    "id": "bl-002",
+    "source": "sutton-2019-bitter-lesson",
+    "spans": [["The ultimate reason for this is", "cost per unit of computation."]],
+    "finding": "Sutton attributes the effectiveness of computation-leveraging methods to Moore's law, generalized as a continued exponential fall in cost per unit of computation.",
+    "source_quality": "high",
+    "as_of_date": "2019-03-13"
+  }
+]

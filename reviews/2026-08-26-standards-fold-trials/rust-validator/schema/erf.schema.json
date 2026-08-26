@@ -26,8 +26,8 @@
   "$defs": {
     "Id": {
       "type": "string",
-      "pattern": "^[^\\s\"<>/]+$",
-      "description": "An identifier: one or more characters, none whitespace, '\"', '<', '>' or '/'. A path separator is excluded because an id names a record and never where it lives (ERF-15). Deployment-unique across record types (ERF-36)."
+      "pattern": "^[^\\s\"<>]+$",
+      "description": "An identifier: one or more characters, none whitespace, '\"', '<' or '>'. Deployment-unique across record types (ERF-36)."
     },
     "Date": {
       "type": "string",
@@ -207,14 +207,14 @@
         "atoms_for": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/AtomId"
+            "$ref": "#/$defs/Id"
           },
           "description": "Evidence for, as the ruler faced it. Total in the model; omitted on the wire when empty (ERF-55, ERF-56)."
         },
         "atoms_against": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/AtomId"
+            "$ref": "#/$defs/Id"
           },
           "description": "Evidence against, as the ruler faced it. Total in the model; omitted on the wire when empty (ERF-55, ERF-56)."
         }
@@ -334,7 +334,7 @@
         "atoms": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/AtomId"
+            "$ref": "#/$defs/Id"
           },
           "description": "Atoms minted from this result. Total in the model; omitted on the wire when empty (ERF-55, ERF-56)."
         }
@@ -476,7 +476,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "$ref": "#/$defs/AtomId"
+          "$ref": "#/$defs/Id"
         },
         "type": {
           "const": "atom"
@@ -574,14 +574,14 @@
         "atoms_for": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/AtomId"
+            "$ref": "#/$defs/Id"
           },
           "description": "Evidence for. Total in the model; omitted on the wire when empty (ERF-55, ERF-56)."
         },
         "atoms_against": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/AtomId"
+            "$ref": "#/$defs/Id"
           },
           "description": "Evidence against. Total in the model; omitted on the wire when empty (ERF-55, ERF-56)."
         },
@@ -798,11 +798,6 @@
         "body"
       ],
       "description": "A document, not a record (ERF-34)."
-    },
-    "AtomId": {
-      "type": "string",
-      "pattern": "^[^\\s\"<>/]+-\\d+$",
-      "description": "An atom's id: a mint-time prefix, a hyphen, and a sequence number, e.g. kwg-117; permanent, never renamed, never reused (ERF-13)."
     }
   }
 }

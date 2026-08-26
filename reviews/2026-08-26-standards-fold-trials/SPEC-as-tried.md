@@ -723,9 +723,7 @@ line, is a matter for whoever writes the narrative.
 - **ERF-32** A narrative binding MUST be checkable: it is stale when the
   claim it names carries a `last_modified` later than the binding's
   `bound-at`, a complete mechanical test using only fields the format
-  already defines, and its mixed-precision case resolves as `ERF-47` says,
-  to stale. Where the comparison cannot be run at all, because the binding
-  failed the grammar and was reported under `ERF-31`, a consumer MUST show
+  already defines. Where the comparison cannot be run, a consumer MUST show
   the binding as staleness `indeterminate` and MUST NOT show it as current:
   a check that cannot tell says look, never rest. A binding reported broken
   under `ERF-31` is the ordinary case of this, and the two go together, one
@@ -951,8 +949,11 @@ checks the relations no type can see.
   A validator therefore never converts. Facing a normalized text that is not text or
   markdown it MUST report the check as unavailable rather than pass or fail
   it, exactly as it does for a text it does not hold. The prose above
-  names each transformation and the standards it cites fix each one; the
-  conformance suite's case files test an implementation and bind nothing.
+  names each transformation; the case files beside this document,
+  [`erf-cases-normalization.txt`](erf-cases-normalization.txt) and
+  [`erf-cases-quote-check.txt`](erf-cases-quote-check.txt), are normative
+  for its exact behavior: where a reading of the prose and a case disagree, the
+  case governs, and a conforming implementation reproduces every pair.
 - **ERF-52** Only the exact marker `[...]` MUST be treated as an
   omission, and it is the only wildcard; a bare `...` or `…` is a literal
   source character (`ERF-6`). The quote MUST be split on `[...]` BEFORE
@@ -969,8 +970,9 @@ checks the relations no type can see.
   percent`. The elision marker is not a boundary: the test reads the
   normalized text on either side of the span, whatever sat beside it in
   the quote. No span crosses a paragraph separator (`ERF-51`) unless the
-  quote holds the same break. A quote whose spans are all empty MUST fail
-  rather than trivially pass. The text
+  quote holds the same break.
+(`ERF-51`) unless the quote holds the same blank line. A quote whose
+  spans are all empty MUST fail rather than trivially pass. The text
   between two spans is unbounded by design: an elision marker is the
   author's assertion that they removed material, and whether the removal
   misleads is a judgment for the audit, not a distance a validator can
@@ -1065,10 +1067,9 @@ raw or normalized, and are the model's.
   omits one is complete rather than partial. This applies to
   `finding_audit`: an atom nobody has audited yet carries no audit key and
   is a complete record with an empty audit list, not a malformed one. The
-  schema does not require a list field, because a file omits one that is
-  empty; a loaded record always carries it, materialized, so a consumer
-  never asks whether a list is present. A file should not spend a line
-  saying nothing.
+  data model types these fields as required because they are always present
+  in a loaded record; the serialization omits them because a file should
+  not spend a line saying nothing.
 - **ERF-57** A consumer MUST preserve unknown fields and unknown record
   types as opaque data, MUST report them, and MUST NOT reject a corpus
   solely because it contains them. Strictness belongs to the producer and
@@ -1126,9 +1127,6 @@ raw or normalized, and are the model's.
 - The `spec_version` on a corpus declaration (`ERF-59`) governs the semantics
   of that corpus's records; migrations between versions are explicit, never
   inferred from field absence.
-- Retired ids, never reused: `ERF-16`, `ERF-29`, `ERF-30`, `ERF-45`,
-  `ERF-46`, `ERF-49`, `ERF-64`. A requirement-by-requirement diff can tell
-  a retired id from a lost one only if the list is here.
 - Requirement ids are a flat sequence and carry no meaning beyond identity:
   a number does not say which section a requirement lives in, so moving a
   section can never make an id wrong. Ids are stable once published.

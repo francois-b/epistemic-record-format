@@ -1,0 +1,25 @@
+type: "sources"
+sources:
+  sutton-2019-bitter-lesson:
+    citation_text: "Richard S. Sutton, \"The Bitter Lesson,\" Incomplete Ideas, March 13, 2019."
+    citation:
+      type: "post-weblog"
+      author:
+        - family: "Sutton"
+          given: "Richard S."
+      title: "The Bitter Lesson"
+      container-title: "Incomplete Ideas"
+      issued: "2019-03-13"
+    received:
+      url: "http://www.incompleteideas.net/IncIdeas/BitterLesson.html"
+      path: "raw/sutton-2019-bitter-lesson.html"
+      digest: "sha256:f1baabbabfde3e2a368104fe91cb7efcf3566e8a9dd2c5fe50ccd1d96ec1acb6"
+      timestamp: "2026-08-26"
+    status: "shipped-as-quotation"
+    normalized: "normalized/sutton-2019-bitter-lesson.md"
+    normalized_digest: "sha256:3b343c24752fd6d65dcbe69c15d5f0deb051b588d7ccdce992b0761ae151c822"
+    excerpt:
+      timestamp: "2026-08-26"
+      by: "agent/claude-opus-5"
+    extraction: "pandoc 3.8.3 -f html -t commonmark_x --wrap=none"
+    normalization: "bl-normalize.py 1.0.0"

@@ -69,7 +69,7 @@ test("evidence a standing faced is flagged when it goes, never a violation", () 
   assert.deepEqual(danglingRefs(c), [], "a historical reference is not a dangling reference");
   const flags = evidenceRefsFlagged(c);
   assert.equal(flags.length, 1, `expected one flag, got ${JSON.stringify(flags)}`);
-  assert.match(flags[0], /fx-vendor-total/);
+  assert.match(flags[0], /fx-001/);
 });
 
 /**

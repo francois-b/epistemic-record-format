@@ -1,0 +1,6 @@
+type: "corpus"
+id: "bitter-lesson"
+title: "Rich Sutton's The Bitter Lesson (2019), taken apart and backed"
+spec_version: "0.9.0"
+classification: "public"
+owner: "human:francois-bouet"
