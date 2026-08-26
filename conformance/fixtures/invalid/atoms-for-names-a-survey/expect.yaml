@@ -1,0 +1,8 @@
+requirement: ERF-35
+record: fx-claim
+field: atoms_for
+because: >
+  `fx-survey` exists and is a survey; `atoms_for` names atoms. The Rust
+  trial read "one lookup serves every type" as untyped resolution, under
+  which nothing catches survey ids in an atom list. The reference had
+  always typed the lookup; the text now says so.

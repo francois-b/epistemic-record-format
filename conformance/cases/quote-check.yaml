@@ -232,3 +232,14 @@ cases:
     quote: "twelve percent"
     capture: "It fell twelve\u00a0percent."
     expect: pass
+  - name: an elision marker is not a boundary; the text beside the span decides
+    requirement: ERF-52
+    note: found by the Rust trial; the natural implementation splits on the marker and forgets the quote's edge.
+    quote: "[...]binding, and management did not recommend"
+    capture: "the plan was non-binding, and management did not recommend proceeding"
+    expect: fail
+  - name: a run of strong-emphasis markers folds as one delimiter
+    requirement: ERF-51
+    quote: "the debit side"
+    capture: "the **debit** side"
+    expect: pass

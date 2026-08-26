@@ -48,11 +48,15 @@ any other way provided it round-trips without loss, is `ERF-53` in
 
 ## 2. Encoding and body
 
-- **ERF-67** A record body MUST be valid CommonMark, and a file MUST be
-  UTF-8 encoded with LF line endings and no byte-order mark. Markdown
-  without a named dialect is not a format, which is the gap CommonMark was
-  written to close, and an unstated encoding is a verbatim check waiting to
-  fail on a byte nobody chose.
+- **ERF-67** A record body is CommonMark, and a file MUST be UTF-8
+  encoded with LF line endings and no byte-order mark. Markdown without a
+  named dialect is not a format, which is the gap CommonMark was written
+  to close; every UTF-8 string is valid CommonMark, so naming the dialect
+  fixes how a body renders and folds rather than excluding any body. An
+  unstated encoding is a verbatim check waiting to fail on a byte nobody
+  chose. `ERF-66` cannot be checked through a YAML library's tree, since
+  duplicate keys, anchors, aliases and tags are resolved away before a
+  tree exists; a validator reads the parser's event stream.
 
 ## 3. Parsing frontmatter
 

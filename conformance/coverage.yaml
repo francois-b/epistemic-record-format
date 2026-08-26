@@ -109,7 +109,7 @@ requirements:
       document rather than a record remains a modelling rule with no runtime
       surface; its frontmatter is checkable and now checked.
   ERF-35:
-    tests: [fixtures/invalid/prior-survey-dangling, fixtures/valid/evidence-at-stance-outlives-atom]
+    tests: [fixtures/invalid/prior-survey-dangling, fixtures/valid/evidence-at-stance-outlives-atom, fixtures/invalid/atoms-for-names-a-survey]
     note: >
       both halves. Every valid fixture is asserted free of dangling
       references; the invalid one breaks prior_survey, which asserts a

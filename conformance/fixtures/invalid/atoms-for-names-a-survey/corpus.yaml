@@ -1,0 +1,5 @@
+type: corpus
+id: fixture-typed-refs
+title: "An atom list that names a survey"
+spec_version: "0.9.0"
+classification: public

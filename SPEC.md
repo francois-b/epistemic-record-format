@@ -780,8 +780,11 @@ checks the relations no type can see.
 - **ERF-35** A reference asserting a *current* relationship MUST resolve
   within the deployment, the corpora read and cited together: `atoms_for`,
   `atoms_against`, `edges.to`, `surveys`, `prior_survey` and each
-  `notable_results` entry's `atoms` name existing records, and ids are
-  deployment-unique (`ERF-36`), so one lookup serves every type. A
+  `notable_results` entry's `atoms` name existing records **of the type
+  the field's name says**: an atom list names atoms, `surveys` and
+  `prior_survey` name surveys, `edges.to` names claims. Ids are
+  deployment-unique (`ERF-36`), so one lookup finds the record and its
+  type says whether the reference is well formed. A
   reference recording a *past state* MUST NOT be a violation when it fails
   to resolve, and a validator MUST flag it instead: `evidence_at_stance`
   names what a ruler faced at the moment of ruling, and a corpus changing
@@ -888,9 +891,11 @@ checks the relations no type can see.
 
   1. Unicode NFC, then remove every format character (Unicode General
      Category `Cf`: the soft hyphen, the zero-width space, the joiners).
-  2. Remove a marker `*`, `_` or `` ` `` that has a word character on
-     exactly one side; keep one that has word characters on both sides
-     (`MAX_LEN`, `3*4`) or on neither (`a * b`, a lone footnote star).
+  2. Remove a run of one marker, `*`, `_` or `` ` `` repeated, that has
+     a word character on exactly one side of the run; keep a run that has
+     word characters on both sides (`MAX_LEN`, `3*4`) or on neither
+     (`a * b`, a lone footnote star). One pass, decided against the text
+     as it entered the step: `**bold**` folds to `bold`.
   3. Collapse each whitespace run (Unicode `White_Space`) to a single
      space, except a run holding a blank line, which is a paragraph
      boundary and collapses to U+2029 PARAGRAPH SEPARATOR; then trim.
@@ -950,7 +955,10 @@ checks the relations no type can see.
   letters (`board's`), a hyphen between word characters (`non-binding`).
   So `Revenue fell 12` does not occur in `Revenue fell 12.5 percent`, and
   `binding, and management did not recommend` does not occur in `the plan
-  was non-binding, and management did not recommend`. A span opening or
+  was non-binding, and management did not recommend`. The elision marker
+  is not a boundary: the test reads the character beside the span *in the
+  text*, whatever sat beside it in the quote, so `[...]binding, and
+  management` fails against the same source. A span opening or
   closing on any other character is unconstrained on that side, that
   character being the boundary, and no span crosses a paragraph boundary
   (`ERF-51`) unless the quote holds the same blank line. A quote whose
