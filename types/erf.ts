@@ -77,7 +77,7 @@ export interface StandingEntry {
   };
 }
 
-/** One search act within a survey (ERF-26, ERF-27). Named for what a
+/** One search act within a survey (ERF-27). Named for what a
  *  line of `searches` records: an act, conducted once. */
 export interface SearchAct {
   /** The concrete instrument, named: which search engine, which database,
@@ -124,7 +124,7 @@ export interface Atom {
   finding: string;
   /** Verbatim from the normalized text; `[...]` marks elision (ERF-6). */
   quote: string;
-  /** The source quoted, named in the corpus's source list (ERF-4). */
+  /** The source quoted, named in the corpus's source list (ERF-35). */
   source: SourceId;
   source_quality: SourceQuality;
   /** The date the FACT is true of, distinct from when the atom recorded
@@ -190,7 +190,7 @@ export interface Survey {
   /** When, and which actor, conducted the search. Machine actors are legal
    *  here: searching is machine work; judgment stays on the citing claim. */
   conducted: ActorStamp;
-  /** The acts, one or more, each self-contained (ERF-26). */
+  /** The acts, one or more, each self-contained (ERF-27). */
   searches: SearchAct[];
   /** The curated subset worth recording; entries mint atoms when a hit
    *  deserves quoting (ERF-27). */
@@ -207,7 +207,7 @@ export interface Survey {
 
 // ---------------------------------------------------------------------------
 // Beside the records, a corpus has structure of its own: its declaration
-// and its sources (ERF-3, ERF-4, ERF-5, ERF-59). Neither is a record.
+// and its sources (ERF-73). Neither is a record.
 // ---------------------------------------------------------------------------
 
 /** The corpus declaration (ERF-59). */
@@ -217,7 +217,7 @@ export interface CorpusDeclaration {
   type: "corpus";
   id: CorpusId;
   title: string;
-  /** SemVer (ERF-61). */
+  /** SemVer; what MAJOR and MINOR mean is change control's. */
   spec_version: string;
   /** Opaque label; the format records it and does not read it (ERF-59). */
   classification?: string;

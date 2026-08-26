@@ -1,5 +1,5 @@
 # A standalone atom record (SPEC.md, section 4.2) quoting a web-native
-# work. The atom names its source by id (ERF-4); the source entry carries
+# work. The atom names its source by id (ERF-35); the source entry carries
 # the citation and the retrieval locator (`source-web.yaml`). The
 # backslash in the quote is verbatim from the source abstract; capture
 # fidelity beats cleanup.

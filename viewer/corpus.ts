@@ -391,14 +391,14 @@ function checkCitationText(data: Record<string, unknown>, id: string, findings: 
   }
 }
 
-/** `ERF-15`: references are bare ids and MUST NOT encode location. */
+/** References are bare ids; the schema's `Id` excludes a path separator (ERF-73, once ERF-15). */
 function checkBareIds(refs: string[], id: string, field: string, findings: ConformanceFinding[]): void {
   for (const r of refs) {
     if (/[\\/]|\.md$/i.test(r)) {
       findings.push({
         record: id,
         field,
-        detail: `"${r}" encodes a location; references MUST be bare ids (ERF-15)`,
+        detail: `"${r}" encodes a location; references are bare ids (ERF-73)`,
       });
     }
   }
@@ -897,7 +897,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
         record: sid,
         field: "status",
         detail: "source carries no status; every source records a capture "
-          + "or an explicit absence with a reason (ERF-4).",
+          + "or an explicit absence with a reason (ERF-73).",
       });
     } else if (!shipsWithCorpus(src) && !src.reason) {
       findings.push({
@@ -908,7 +908,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
     }
   }
 
-  // `ERF-4`: every atom names a source that exists. Explicitness is the
+  // `ERF-35`: every atom names a source that exists. Explicitness is the
   // rule's point: a validator can tell a recorded absence from an omission
   // and cannot tell an omission from an oversight.
   for (const [id, a] of atoms) {
@@ -918,7 +918,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
         record: id,
         field: "source",
         detail: `names source ${a.source}, which the source list does not `
-          + "hold (ERF-4).",
+          + "hold (ERF-35).",
       });
     }
   }

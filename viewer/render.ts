@@ -457,7 +457,7 @@ ${users.length === 0
       `<li><a href="claim-${esc(id)}.html">${esc(c.claims.get(id)?.title ?? id)}</a></li>`).join("")}</ul>`}
 
 <h3>The source</h3>
-${src ? sourceTable(a.source, src) : `<p class="sub">The source list holds no entry for <span class="id">${esc(a.source)}</span>, which is a defect in the corpus (<span class="id">ERF-4</span>).</p>`}`;
+${src ? sourceTable(a.source, src) : `<p class="sub">The source list holds no entry for <span class="id">${esc(a.source)}</span>, which is a defect in the corpus (<span class="id">ERF-35</span>).</p>`}`;
   return page(a.id, body, c.manifest.title);
 }
 
@@ -549,7 +549,7 @@ quote check runs here for every atom quoting one of these.</p>
 <h2>Texts that do not travel (${withheld.length})</h2>
 <p class="sub">Each records a reason rather than being left out, because a validator can tell a
 recorded absence from an omission and cannot tell an omission from an oversight
-(<span class="id">ERF-4</span>).</p>
+(<span class="id">ERF-35</span>).</p>
 <ul class="plain">${withheld.map(entry).join("")}</ul>`;
   return page("Sources", body, c.manifest.title);
 }

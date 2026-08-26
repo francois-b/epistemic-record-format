@@ -1,8 +1,8 @@
 ---
 id: B-66
 kind: defect
-status: open
-priority: P2
+status: closed
+priority: closed
 priority_because: "Retiring dead text changes nothing that conforms, so it does not block; but the fourteen retirements of option B landed before the push so that the published numbering would be the one meant to last, and these seven are the same decision left half-taken. Rule by rule, before the push, is cheaper than a changelog line per rule after it."
 basis: reported
 raised: "F-028, the four-reader rubric review (Opus, Gemini 3.1 Pro, Gemini 3.5 Flash, GPT-5.6 Sol), 2026-08-26, collated by the session"
@@ -38,3 +38,7 @@ at HEAD; none has been retired since the finding was raised.
 A ruling per row: retire into the named home, or keep and say what the
 number still binds. `ERF-68`'s row waits on `B-64`; `ERF-63`'s touches
 `B-68` (`ERF-62` describes a topology).
+
+## Resolution
+
+Ruled by the operator 2026-08-26, ahead of 0.9.0: `ERF-4`, `ERF-15`, `ERF-26`, `ERF-61` and `ERF-63` retired into `ERF-6`/`ERF-35`, the schema's `Id`, `ERF-27`, change control, and `ERF-40` respectively; `ERF-13` and `ERF-68` kept.

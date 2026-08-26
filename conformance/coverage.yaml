@@ -16,8 +16,6 @@ requirements:
     note: the uncheckable case asserts a check never runs without a capture
   ERF-2:
     untestable-by-design: how a capture is made and dated is a producer practice, not a property of a loaded record
-  ERF-4:
-    tests: [fixtures/invalid/atom-absent-from-mapping]
   ERF-72:
     tests: [fixtures/valid/extension-field, schema]
     note: an x_ field on a record loads with zero findings
@@ -46,8 +44,6 @@ requirements:
   ERF-14:
     tests: [schema]
     note: was untestable-by-design; the shape half is now in erf.schema.json and the gate holds it
-  ERF-15:
-    tests: [fixtures/invalid/reference-encodes-location]
   ERF-17:
     tests: [fixtures/valid/minimal, schema]
     note: the loader requires corpus on every record
@@ -61,8 +57,6 @@ requirements:
     untestable-by-design: whether atoms jointly entail a statement is the audit judgment itself
   ERF-25:
     untestable-by-design: whether a claim is a universal negative is a reading of the claim
-  ERF-26:
-    uncovered: no fixture asserts a search act naming a category rather than an instrument
   ERF-27:
     uncovered: no fixture asserts hits_reported rejects invented precision
   ERF-28:
@@ -82,7 +76,8 @@ requirements:
   ERF-33:
     tests: [output]
   ERF-35:
-    tests: [fixtures/invalid/prior-survey-dangling, fixtures/valid/evidence-at-stance-outlives-atom, fixtures/invalid/atoms-for-names-a-survey]
+    tests: [fixtures/invalid/prior-survey-dangling, fixtures/valid/evidence-at-stance-outlives-atom, fixtures/invalid/atoms-for-names-a-survey,
+            fixtures/invalid/atom-absent-from-mapping]
     note: >
       both halves. Every valid fixture is asserted free of dangling
       references; the invalid one breaks prior_survey, which asserts a
@@ -143,13 +138,8 @@ requirements:
     tests: [serialization]
   ERF-60:
     tests: [fixtures/invalid/unsupported-major-version, fixtures/valid/newer-minor-version-extends]
-  ERF-61:
-    tests: [schema]
-    note: was untestable-by-design; the shape half is now in erf.schema.json and the gate holds it
   ERF-62:
     untestable-by-design: which store is authoritative is a deployment fact
-  ERF-63:
-    untestable-by-design: a permission, satisfiable by any substrate
   ERF-65:
     tests: [serialization, fixtures/invalid/as-of-date-unquoted-year]
     note: asserts a date-shaped scalar loads as a string, not a date object
@@ -174,7 +164,7 @@ requirements:
     tests: [schema, fixtures/invalid/absence-without-reason, fixtures/invalid/citation-text-carries-url,
             fixtures/invalid/manifest-missing-field, fixtures/invalid/narrative-created-is-a-bare-date,
             fixtures/invalid/standing-bare-date, fixtures/invalid/standing-bare-date-block-style,
-            fixtures/invalid/stored-state-field, fixtures/invalid/unknown-field-originated]
+            fixtures/invalid/stored-state-field, fixtures/invalid/unknown-field-originated, fixtures/invalid/reference-encodes-location, fixtures/invalid/source-entries-at-top-level]
     note: >
       the whole shape: every valid fixture validates against the schema, and
       each invalid fixture here breaks a definition that used to be its own

@@ -1,5 +1,5 @@
 # A standalone atom record (SPEC.md, section 4.2). The atom names its
-# source by id (ERF-4); the work's citation, locator, and capture live on
+# source by id (ERF-35); the work's citation, locator, and capture live on
 # the source entry, shown standalone in `source-book.yaml`. Every atom
 # carries its own `type` and `corpus`, in a collection document or
 # standalone alike: a record extracted from a store is complete without it

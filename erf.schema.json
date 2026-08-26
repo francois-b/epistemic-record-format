@@ -27,7 +27,7 @@
     "Id": {
       "type": "string",
       "pattern": "^[^\\s\"<>/]+$",
-      "description": "An identifier: one or more characters, none whitespace, '\"', '<', '>' or '/'. A path separator is excluded because an id names a record and never where it lives (ERF-15). Deployment-unique across record types (ERF-36)."
+      "description": "An identifier: one or more characters, none whitespace, '\"', '<', '>' or '/'. A path separator is excluded because an id names a record and never where it lives (once ERF-15; the schema is the requirement, ERF-73). Deployment-unique across record types (ERF-36)."
     },
     "Date": {
       "type": "string",
@@ -58,7 +58,7 @@
     "SemVer": {
       "type": "string",
       "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z.-]+)?(\\+[0-9A-Za-z.-]+)?$",
-      "description": "Semantic Versioning 2.0.0 (ERF-61)."
+      "description": "Semantic Versioning 2.0.0. What a MAJOR or MINOR increment means is stated under change control (once ERF-61)."
     },
     "HumanActor": {
       "type": "string",
@@ -268,7 +268,7 @@
         "tool": {
           "type": "string",
           "minLength": 1,
-          "description": "The concrete instrument, never a category (ERF-26)."
+          "description": "The concrete instrument, never a category (ERF-27; once ERF-26)."
         },
         "query": {
           "type": "string",
@@ -297,7 +297,7 @@
         "query",
         "hits_reported"
       ],
-      "description": "One search act (ERF-26, ERF-27)."
+      "description": "One search act (ERF-27)."
     },
     "Edge": {
       "type": "object",
@@ -384,7 +384,7 @@
           "description": "Extension field (ERF-72)."
         }
       },
-      "description": "One work in the source list (ERF-2, ERF-4, ERF-6, ERF-8, ERF-68 to ERF-71).",
+      "description": "One work in the source list (ERF-2, ERF-6, ERF-8, ERF-68 to ERF-71).",
       "properties": {
         "citation_text": {
           "type": "string",
@@ -414,7 +414,7 @@
         "normalized": {
           "type": "string",
           "minLength": 1,
-          "description": "Path of the normalized text, relative to the source list (ERF-1, ERF-4)."
+          "description": "Path of the normalized text, relative to the source list (ERF-1, ERF-35)."
         },
         "normalized_digest": {
           "$ref": "#/$defs/Digest"
@@ -463,7 +463,7 @@
         "required": [
           "normalized"
         ],
-        "description": "A source that ships gives the path of its normalized text (ERF-4)."
+        "description": "A source that ships gives the path of its normalized text; a recorded absence says why. Once ERF-4; the schema is the requirement (ERF-73)."
       },
       "else": {
         "required": [

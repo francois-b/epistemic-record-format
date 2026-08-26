@@ -1,8 +1,8 @@
 ---
 id: B-67
 kind: defect
-status: open
-priority: P2
+status: closed
+priority: closed
 priority_because: "Attributing a MUST to its party changes no verdict, so it does not block; it is P2 rather than P3 because a reader implementing a validator today reads fourteen MUSTs it cannot decide and has to guess whether that is its failure or the rule's, and the guess is what the rubric's four readers made four different ways. Rewording numbered requirements is cheapest before the ids are published."
 basis: reported
 raised: "F-029, the four-reader rubric review (Opus, Gemini 3.1 Pro, Gemini 3.5 Flash, GPT-5.6 Sol), 2026-08-26, collated by the session: all four marked the same fifteen as MUSTs no validator can decide"
@@ -53,3 +53,7 @@ One ruling with three parts, any of which may be declined:
   to the vocabulary it grades in section 5, as Flash and Sol proposed,
   keeping any MUST that remains attributed. `B-69` (definitions repeated)
   touches the same four.
+
+## Resolution
+
+Ruled by the operator 2026-08-26, ahead of 0.9.0: attributed, not downgraded: each of the fourteen opens with its party (a producer, an author, an auditor). `ERF-8`'s "carries everything the string shows" and `ERF-27`'s precision clause are SHOULDs.

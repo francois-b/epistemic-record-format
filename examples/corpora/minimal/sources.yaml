@@ -1,4 +1,4 @@
-# The source list (`ERF-3`, `ERF-4`, `ERF-5`).
+# The source list (the schema's `SourceList`, `ERF-73`).
 #
 # One entry per work: its citation, its retrieval locator where a fetch
 # happened, and its capture or the recorded reason none ships. Every atom
@@ -7,7 +7,7 @@
 #
 # The mechanical check reads the capture, never the live web. Where a
 # capture cannot ship, the entry says so explicitly rather than going
-# silently absent (`ERF-4`): a list is only checkable when it is complete,
+# silently absent (`ERF-73`): a list is only checkable when it is complete,
 # and a missing key is indistinguishable from an oversight.
 #
 # The four shipped captures carry no `licence`: they ship under the W3C

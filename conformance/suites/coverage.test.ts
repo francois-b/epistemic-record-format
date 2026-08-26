@@ -72,7 +72,7 @@ test("a retired id is not silently refilled", () => {
   // reading, and authoring judgment is not numbered. Retired ids are never
   // reused, so a reappearance would mean the numbering discipline broke
   // rather than that a rule came back.
-  for (const id of ["ERF-3", "ERF-5", "ERF-7", "ERF-12", "ERF-16", "ERF-19", "ERF-21", "ERF-22", "ERF-29", "ERF-30", "ERF-34", "ERF-37", "ERF-38", "ERF-39", "ERF-45", "ERF-46", "ERF-49", "ERF-55", "ERF-58", "ERF-59", "ERF-64"]) {
+  for (const id of ["ERF-3", "ERF-4", "ERF-5", "ERF-7", "ERF-12", "ERF-15", "ERF-16", "ERF-19", "ERF-21", "ERF-22", "ERF-26", "ERF-29", "ERF-30", "ERF-34", "ERF-37", "ERF-38", "ERF-39", "ERF-45", "ERF-46", "ERF-49", "ERF-55", "ERF-58", "ERF-59", "ERF-61", "ERF-63", "ERF-64"]) {
     assert.ok(!specRequirements().includes(id), `${id} is retired and must not reappear`);
     assert.ok(!(id in coverage()), `coverage names retired ${id}`);
   }

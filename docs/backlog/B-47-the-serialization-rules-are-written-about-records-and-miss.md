@@ -1,8 +1,8 @@
 ---
 id: B-47
 kind: defect
-status: open
-priority: P2
+status: closed
+priority: closed
 priority_because: "Verified against the spec: ERF-3 already puts the source list under section 7, so only the narrative file is unscoped. Fold into B-36."
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
@@ -38,3 +38,7 @@ The residual is therefore `ERF-66`, which is the rule the entry called
 list and the declaration may carry a duplicate key, and two parsers may
 legally disagree about them. One word ("A document's frontmatter") is the
 fix; the priority stands because that is the interoperability case.
+
+## Resolution
+
+Ruled by the operator 2026-08-26, ahead of 0.9.0: `ERF-66` now reads "A document's frontmatter", so the declaration and the source list may not carry a duplicate key, an anchor, an alias or a tag either.

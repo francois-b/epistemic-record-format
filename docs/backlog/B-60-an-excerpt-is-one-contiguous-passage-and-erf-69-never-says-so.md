@@ -1,8 +1,8 @@
 ---
 id: B-60
 kind: defect
-status: open
-priority: P2
+status: closed
+priority: closed
 priority_because: "The rule as written forces a cost the format never chose (hold sixteen pages to quote two sentences), and two corpora have paid it. Widening ERF-69 to a sequence of passages is non-breaking, since a single-passage excerpt still satisfies it, and is cheapest before anyone builds a fidelity checker to the current sentence."
 basis: demonstrated
 raised: "F-019, the top-down essay corpus trial, 2026-08-25 (the excerpt tool was rewritten to accept exactly one range; one source holds 8 KB for two paragraphs); second demonstration in the Bitter Lesson trial, 2026-08-26, friction-log entry F-02 (Deep Blue's figure taken from Wikipedia rather than the paper, a high atom downgraded to low for no epistemic reason)"
@@ -45,3 +45,7 @@ already forbids a span from crossing one.
 
 Related: `B-64` (the status vocabulary has no slot for a full text held for
 checking), which this would relieve without settling.
+
+## Resolution
+
+Ruled by the operator 2026-08-26, ahead of 0.9.0: `ERF-69` now says an excerpt MAY be a sequence of passages, each contiguous in the work, in the work's order, separated in the normalized text by a paragraph consisting only of `[...]`; fidelity is checked per passage. Fixtures `valid/excerpt-in-passages` and `invalid/quote-crosses-an-excerpt-gap`.

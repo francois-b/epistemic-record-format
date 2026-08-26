@@ -138,7 +138,7 @@ export function disposition(claim: Claim): DispositionReading {
  */
 export function resolvable(atomId: string, c: LoadedCorpus): { ok: boolean; why: string } {
   const src = c.sources.get(c.atoms.get(atomId)?.source ?? "");
-  // `ERF-4` exists so these are distinguishable. An atom naming no listed
+  // `ERF-35` and the schema's status conditional keep these distinguishable. An atom naming no listed
   // source is a defect in the corpus; a source with a recorded absence is a
   // corpus saying, deliberately, that this capture could not travel.
   // Reporting both as "no capture recorded" collapses the distinction the

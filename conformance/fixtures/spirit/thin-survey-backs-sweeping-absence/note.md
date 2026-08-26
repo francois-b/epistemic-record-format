@@ -3,7 +3,7 @@
 Structurally this is a textbook-legal universal negative per ERF-25:
 `atoms_for` is correctly absent, `surveys` names a real survey record,
 the survey's one search act names a concrete instrument (`tool`) and a
-`query` in that instrument's own terms (ERF-26), and `hits_reported` is
+`query` in that instrument's own terms (ERF-27), and `hits_reported` is
 recorded as the instrument actually reported it, in words rather than
 false precision (ERF-27). The claim carries an `evidence_audit` entry
 with a legal verdict and protocol (ERF-24). Nothing here is malformed.

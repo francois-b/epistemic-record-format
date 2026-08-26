@@ -99,7 +99,7 @@ Raised but not yet checked by anyone other than whoever raised them. **Not ready
 | [`B-44`](B-44-erf-2-requires-a-dated-capture-and-no-field-holds-the-date.md) | **closed** | `ERF-2` requires a dated capture and no field holds the date | `demonstrated` | `accurate` · `unverified` ⚠ split |
 | [`B-45`](B-45-erf-28-asserts-a-computed-staleness-that-nothing-defines.md) | **P2** | `ERF-28` asserts a computed staleness that nothing defines | `reported` | `accurate` · `unverified` ⚠ split |
 | [`B-46`](B-46-an-atom-may-name-a-corpus-that-was-never-declared.md) | **closed** | An atom may name a corpus that was never declared | `reported` | `accurate` · `unverified` · `stale` ⚠ split |
-| [`B-47`](B-47-the-serialization-rules-are-written-about-records-and-miss.md) | **P2** | The serialization rules are written about records and miss the other files | `reported` | `accurate` · `unverified` ⚠ split |
+| [`B-47`](B-47-the-serialization-rules-are-written-about-records-and-miss.md) | **closed** | The serialization rules are written about records and miss the other files | `reported` | `accurate` · `unverified` ⚠ split |
 | [`B-48`](B-48-the-validator-conformance-class-omits-section-4.md) | **closed** | The Validator conformance class omits section 4 | `demonstrated` | `accurate` · `accurate` · `unverified` ⚠ split |
 | [`B-51`](B-51-erf-55s-omit-rule-stops-at-lists-and-an-empty-mapping-carries-meaning.md) | **closed** | `ERF-55`'s omit rule stops at lists, and one empty mapping carries meaning | `reported` | `unverified` · `accurate` ⚠ split |
 | [`B-52`](B-52-the-base-for-a-capture-path-is-stated-only-in-a-comment.md) | **closed** | The base for a capture `path` is stated only in a comment | `reported` | `unverified` |
@@ -110,14 +110,14 @@ Raised but not yet checked by anyone other than whoever raised them. **Not ready
 | [`B-57`](B-57-a-normalized-text-may-hold-what-is-not-the-works-text.md) | **P3** | A normalized text may hold what is not the work's text, and nothing says so | `demonstrated` | `unverified` |
 | [`B-58`](B-58-a-consumer-that-cannot-read-a-document-blames-the-records.md) | **P2** | A consumer that cannot read a document reports its failure as findings against the records that depend on it | `demonstrated` | `unverified` |
 | [`B-59`](B-59-an-audit-of-an-elided-quote-is-not-obliged-to-read-what-was-elided.md) | **P2** | An audit of an elided quote is not obliged to read what was elided | `demonstrated` | `unverified` |
-| [`B-60`](B-60-an-excerpt-is-one-contiguous-passage-and-erf-69-never-says-so.md) | **P2** | An excerpt is one contiguous passage, and `ERF-69` never says so | `demonstrated` | `unverified` |
+| [`B-60`](B-60-an-excerpt-is-one-contiguous-passage-and-erf-69-never-says-so.md) | **closed** | An excerpt is one contiguous passage, and `ERF-69` never says so | `demonstrated` | `unverified` |
 | [`B-61`](B-61-a-narrative-cannot-name-the-source-it-is-drawn-from.md) | **P3** | A narrative cannot name the source it is drawn from | `demonstrated` | `unverified` |
 | [`B-62`](B-62-a-bets-resolution-criterion-has-no-home-before-anyone-stands.md) | **P3** | A bet's resolution criterion has no home before anyone stands | `demonstrated` | `unverified` |
 | [`B-63`](B-63-section-42-gives-four-sentences-to-the-act-where-a-third-of-atoms-fail.md) | **P3** | Section 4.2 gives four sentences to the act where a third of atoms fail | `demonstrated` | `unverified` |
 | [`B-64`](B-64-no-status-for-a-text-held-in-full-for-checking.md) | **P2** | No status for a text held in full for checking | `demonstrated` | `unverified` |
-| [`B-65`](B-65-conflicts-with-has-no-forcing-instance.md) | **P2** | `conflicts-with` has no forcing instance | `demonstrated` | `unverified` |
-| [`B-66`](B-66-seven-rules-the-rubric-marked-retire-survived-as-trims.md) | **P2** | Seven rules the rubric marked retire survived as trims | `reported` | `unverified` |
-| [`B-67`](B-67-fourteen-act-musts-do-not-name-the-party-they-bind.md) | **P2** | Fourteen act MUSTs do not name the party they bind | `reported` | `unverified` |
+| [`B-65`](B-65-conflicts-with-has-no-forcing-instance.md) | **closed** | `conflicts-with` has no forcing instance | `demonstrated` | `unverified` |
+| [`B-66`](B-66-seven-rules-the-rubric-marked-retire-survived-as-trims.md) | **closed** | Seven rules the rubric marked retire survived as trims | `reported` | `unverified` |
+| [`B-67`](B-67-fourteen-act-musts-do-not-name-the-party-they-bind.md) | **closed** | Fourteen act MUSTs do not name the party they bind | `reported` | `unverified` |
 | [`B-68`](B-68-erf-60-prescribes-a-parser-order-and-erf-62-a-topology.md) | **P3** | `ERF-60` prescribes a parser order, and `ERF-62` a topology | `reported` | `unverified` |
 | [`B-69`](B-69-definitions-stated-two-or-three-times-and-a-lifecycle-nobody-is-bound-by.md) | **P3** | Definitions stated two or three times, and a lifecycle nobody is bound by | `reported` | `unverified` |
 

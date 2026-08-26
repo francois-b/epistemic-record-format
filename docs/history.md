@@ -431,6 +431,20 @@ under one version heading was answering the second question in the first
 place. The terse record they were split from, requirement id by requirement
 id, is [`../CHANGELOG.md`](../CHANGELOG.md) under `0.9.0`.
 
+### 2026-08-26 — the pre-push rulings
+
+Five backlog entries the consolidation pass had marked for ruling before
+publication were ruled in one sitting. B-66: `ERF-4`, `ERF-15`, `ERF-26`,
+`ERF-61` and `ERF-63` retired into the rules and schema definitions that
+already carried their content; `ERF-13` and `ERF-68` kept. B-67: fourteen
+requirements that only a producer, an author or an auditor can honour now
+open with that party, and the two that were advice (`ERF-8`, `ERF-27`)
+say SHOULD. B-65: `conflicts-with` stays, with a sentence saying what a
+rival claim is that evidence against is not. B-60: an excerpt is a
+sequence of passages separated by a `[...]` paragraph, pinned by two
+fixtures. B-47: `ERF-66` binds every document's frontmatter. Nine
+contested entries closed against HEAD. Forty-nine requirements remain.
+
 ### 2026-08-26 — the essay, findable
 
 The essay the format grew out of, *Epistemology for Knowledge Work in the

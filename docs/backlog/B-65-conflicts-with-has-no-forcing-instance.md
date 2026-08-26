@@ -1,8 +1,8 @@
 ---
 id: B-65
 kind: defect
-status: open
-priority: P2
+status: closed
+priority: closed
 priority_because: "If the ruling retires the relation, that is a breaking change to the vocabulary, free before publication and a migration after, which is the README's P1 test; one corpus and one producer are a thin basis for retiring anything, which is why it is not P1. Ruling it before the push costs a look; ruling it after costs a major."
 basis: demonstrated
 raised: "F-027, the Bitter Lesson closed-loop trial, 2026-08-26: 32 claims built to search for the opposite of each, 18 carrying atoms_against, and conflicts-with never once the honest choice"
@@ -43,3 +43,7 @@ against is not, so a producer can tell when it is the honest choice; or
 retire the relation and let two claims disagree through their evidence,
 which is a vocabulary change and belongs before 0.9.0 ships if it happens
 at all.
+
+## Resolution
+
+Ruled by the operator 2026-08-26, ahead of 0.9.0: kept. `ERF-23` and section 5 now say what a rival claim is that evidence against is not: a second claim someone stands on that cannot hold together with the first. The relation's forcing instance needs a corpus with standings, which no shipped corpus has.

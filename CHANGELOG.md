@@ -20,11 +20,11 @@ retired ids are never reused, and every change lands in this file with a
 date. Breaking changes to a numbered requirement wait for a major version;
 clarifications that do not change what conforms may land in a patch.
 
-Fifty-four requirements, four of them with no conformance fixture and named
-as such by the coverage line on every run. Nineteen open backlog defects at
+Forty-nine requirements, three of them with no conformance fixture and named
+as such by the coverage line on every run. Fourteen open backlog defects at
 P2 and P3, each with a priority and a basis, plus eleven capabilities waiting
-on a trigger; six of the defects carry a verification by a hand that did not
-raise them, and thirteen do not and say so in their own record. All three
+on a trigger; five of the defects carry a verification by a hand that did not
+raise them, and nine do not and say so in their own record. All three
 numbers are published rather than hidden: this is a draft meant to be
 implemented against and argued with, and what is known to be unresolved,
 unverified, or untested is part of what it says.
@@ -45,6 +45,11 @@ and its measurements, moved to [`docs/history.md`](docs/history.md) on
 
 ### Changed
 
+- `ERF-2`, `ERF-6`, `ERF-8`, `ERF-9`, `ERF-10`, `ERF-14`, `ERF-18`, `ERF-23`, `ERF-24`, `ERF-25`, `ERF-27`, `ERF-28`, `ERF-69`, `ERF-70` Each opens with the party it binds, a producer, an author or an auditor (B-67); `ERF-8`'s "carries everything the string shows" and `ERF-27`'s precision clause are SHOULDs. (2026-08-26)
+- `ERF-69` An excerpt MAY be a sequence of passages, each contiguous in the work, separated in the normalized text by a `[...]` paragraph; fidelity is checked per passage (B-60). (2026-08-26)
+- `ERF-23` and section 5 say what a rival claim is that evidence against is not; `conflicts-with` stays (B-65). (2026-08-26)
+- `ERF-66` binds a document's frontmatter, not only a record's (B-47). (2026-08-26)
+- `ERF-40` names the substrate precondition, once `ERF-63`. (2026-08-26)
 - Requirement ids flattened from `ERF-<section>.<sequence>` to a flat sequence carrying no meaning beyond identity; the old-to-new mapping is in `docs/history.md`. (2026-08-23)
 - `ERF-1`, `ERF-50` Lost their workflow gates: the rules describe a corpus's state whatever order it was built in. (2026-08-26)
 - `ERF-4` Trimmed to what a schema cannot hold: an atom names a source the corpus's source list holds. (2026-08-26)
@@ -80,6 +85,7 @@ and its measurements, moved to [`docs/history.md`](docs/history.md) on
 Retired ids are never reused and never refilled; the conformance suite guards
 each one against reappearing.
 
+- `ERF-4`, `ERF-15`, `ERF-26`, `ERF-61`, `ERF-63` Retired on the pre-push rulings (B-66): the source resolves (`ERF-35`), an id names no location (the schema's `Id`), a search act names an instrument (`ERF-27`), what MAJOR and MINOR mean (change control), and the substrate precondition (`ERF-40`). (2026-08-26)
 - `ERF-3`, `ERF-5`, `ERF-7`, `ERF-12`, `ERF-19`, `ERF-21`, `ERF-22`, `ERF-34`, `ERF-37`, `ERF-38`, `ERF-39`, `ERF-55`, `ERF-58`, `ERF-59` Fourteen shape rules the schema already enforced, retired together under `ERF-73` after four cold readers applying one rubric reached the same deletion test. Each reason moved onto the schema definition it explains, and `ERF-37` and `ERF-38` had restated `ERF-36`. Requirement count 66 to 54. (2026-08-26)
 - `ERF-16` Cross-realm reference resolution, retired with the realm concept: ids are scoped to the deployment. (2026-08-24)
 - `ERF-29` The survey `limitations` field, retired into the survey section's guidance: a record with a body carries its caveats there. (2026-08-23)

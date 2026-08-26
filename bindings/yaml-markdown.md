@@ -110,7 +110,7 @@ any other way provided it round-trips without loss, is `ERF-53` in
   list rule to mappings destroys the one fact `ERF-20` calls
   unrecoverable.
 
-- <a id="erf-66"></a>**ERF-66** A record's frontmatter MUST NOT contain a duplicate key, an
+- <a id="erf-66"></a>**ERF-66** A document's frontmatter MUST NOT contain a duplicate key, an
   anchor, an alias, or an explicit tag. YAML permits all four and leaves a
   processor's response to duplicates at its own discretion, so two
   conforming parsers may legally disagree about the same file. A record is
