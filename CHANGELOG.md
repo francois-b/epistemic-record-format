@@ -24,6 +24,28 @@ record. All three numbers are published rather than hidden: this is a draft
 meant to be implemented against and argued with, and what is known to be
 unresolved, unverified, or untested is part of what it says.
 
+### 2026-08-26 — the cold Rust validator, and the rubric's remainder filed
+
+A second cold Rust validator, built from the `d124820` snapshot without
+sight of the reference, addressed all 66 ids, tried 21 fabrications (14
+stopped, 6 green by design, the first of them `F-017`) and listed 38
+ambiguities. Checked against HEAD (`rust-triage.md`): `ERF-51` step 3 was
+collapsing the U+2029 step 1 inserts, since U+2029 carries `White_Space`;
+it is now exempt. `ERF-43` says vacuity holds for the root alone. `ERF-52`
+says each span is taken at its earliest occurrence. `ERF-71` makes a
+recorded digest a MUST against the held artifact, and the loader checks
+it (`fixtures/invalid/digest-mismatch`). The schema's `Instant` admitted
+seconds-less stamps RFC 3339 forbids; seconds are mandatory. Ten schema
+descriptions cited retired ids; the binding skipped a section number.
+
+What the four rubric readers said about the surviving rules, beyond the
+fourteen retirements, is filed as five findings so it can be ruled rule by
+rule: `F-028` (seven retire candidates that survived as trims), `F-029`
+(fifteen MUSTs only a producer or auditor can honour, unattributed),
+`F-030` (six self-contradictions or prohibitions on fields the schema
+cannot hold), `F-031` (three rules still describing an order of work or a
+topology), `F-032` (repeated definitions and an unbound lifecycle).
+
 ### 2026-08-26 — the Bitter Lesson closed loop: two validator gaps, four findings
 
 A cold agent built a corpus top-down over Sutton's "The Bitter Lesson"
