@@ -152,7 +152,7 @@ const KNOWN_MINOR = 9;
  * does not open with a fence (not a document), and a string naming the
  * defect when it opens with one and fails the grammar.
  */
-function splitDocument(text: string): { fm: string; body: string } | null | string {
+export function splitDocument(text: string): { fm: string; body: string } | null | string {
   const lines = text.split(/(?<=\n)/);
   if (!/^---\r?\n$/.test(lines[0] ?? "") && (lines[0] ?? "") !== "---") return null;
   for (let i = 1; i < lines.length; i++) {
