@@ -201,6 +201,15 @@ test("source_read: the held text, and windows around a phrase under the fold", a
   assert.throws(() => T.sourceRead(c, { id: "nope" }), /no source nope/);
 });
 
+test("render_site writes the viewer's pages inside the corpus and ignores them in git", () => {
+  const c = fresh();
+  const r = T.renderSiteTool(c, {});
+  assert.match(r.text, /rendered \d+ pages/);
+  assert.ok(existsSync(join(c.dir, "site", "index.html")));
+  assert.ok(existsSync(join(c.dir, "site", "health.html")));
+  assert.throws(() => T.renderSiteTool(c, { out: "../elsewhere" }), /inside the corpus/);
+});
+
 test("record_read and record_list", () => {
   const c = fresh();
   assert.match(T.recordList(c, { type: "claim" }).text, /^claim /m);

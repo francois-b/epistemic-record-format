@@ -12,6 +12,7 @@ import {
   declarationPath, sourceListPath, commit, frontmatter,
 } from "./corpus.ts";
 import { captureUrl, capturePath } from "./capture.ts";
+import { renderSite } from "../../viewer/erf-view.ts";
 import { splitDocument } from "../../../validator/yaml-markdown/typescript/corpus.ts";
 import {
   quoteCheck, normalizeForCheck, disposition, unbacked, stoodOn, danglingRefs, brokenAnchors,
@@ -306,6 +307,25 @@ export function narrativeCheck(c: Corpus, a: { narrative?: string }): Result {
   }
   const anchors = brokenAnchors(l); if (anchors.length) lines.push(`broken anchors (flag, ERF-31): ${anchors.join("; ")}`);
   return { text: lines.join("\n") };
+}
+
+// ---------- rendering ----------
+
+/** The viewer, run into a folder inside the corpus: what a reader opens in a browser. Derived output, never committed. */
+export function renderSiteTool(c: Corpus, a: { out?: string }): Result {
+  readDeclaration(c);
+  const rel = (a.out ?? "site").replace(/^\/+/, "");
+  if (rel.includes("..")) throw new Refusal("out is a folder inside the corpus");
+  const outDir = join(c.dir, rel);
+  const r = renderSite(c.dir, outDir);
+  // derived output: keep it out of the corpus's history
+  const gi = join(c.dir, ".gitignore");
+  if (existsSync(join(c.dir, ".git"))) {
+    const cur = existsSync(gi) ? readFileSync(gi, "utf8") : "";
+    const line = rel.replace(/\/+$/, "") + "/";
+    if (!cur.split("\n").some((l) => l.trim() === line)) writeFileSync(gi, cur.replace(/\n*$/, "\n") + `\n# rendered by erf_render_site; derived, rebuilt on demand\n${line}\n`, "utf8");
+  }
+  return { text: `rendered ${r.pages} pages for ${r.corpus} into ${rel}/ (${r.atoms} atoms, ${r.claims} claims, ${r.surveys} surveys${r.findings ? `; ${r.findings} records diverge, see health.html` : ""})\nopen: ${join(outDir, "index.html")}` };
 }
 
 // ---------- reading ----------

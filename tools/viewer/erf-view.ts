@@ -22,28 +22,11 @@ import {
   renderNarrative, renderSources, renderSurvey, setSiteLinks, stylesheet,
 } from "./render.ts";
 
-function main(argv: string[]): number {
-  const args = argv.slice(2);
-  const oi = args.findIndex((a) => a === "-o" || a === "--out");
-  const corpusDir = resolve(args[0] ?? "");
-  const outDir = resolve(oi >= 0 ? (args[oi + 1] ?? "site") : "site");
+export interface RenderedSite { corpus: string; pages: number; atoms: number; claims: number; surveys: number; findings: number; outDir: string }
 
-  if (!args[0] || !existsSync(join(corpusDir, "corpus.yaml"))) {
-    console.error("usage: erf-view <corpus-dir> -o <out-dir> [--link \"Label=href\"]");
-    console.error("  <corpus-dir> must contain corpus.yaml");
-    return 2;
-  }
-
-  const links: { label: string; href: string }[] = [];
-  for (const [i, a] of args.entries()) {
-    if (a !== "--link") continue;
-    const raw = args[i + 1] ?? "";
-    const at = raw.indexOf("=");
-    if (at <= 0) { console.error(`--link wants "Label=href", got ${JSON.stringify(raw)}`); return 2; }
-    links.push({ label: raw.slice(0, at), href: raw.slice(at + 1) });
-  }
+/** Render a corpus to a folder of self-contained pages. The library entry; the CLI below wraps it. */
+export function renderSite(corpusDir: string, outDir: string, links: { label: string; href: string }[] = []): RenderedSite {
   setSiteLinks(links);
-
   const c = loadCorpus(corpusDir);
   mkdirSync(outDir, { recursive: true });
   // One stylesheet for the whole render, with the faces inside it: inlining
@@ -77,12 +60,35 @@ function main(argv: string[]): number {
 
   const pages = 3 + c.narratives.length + c.claims.size
     + c.surveys.size + c.atoms.size * 2;
-  console.log(`${c.manifest.id}: ${pages} pages -> ${outDir}`);
-  console.log(`  ${c.atoms.size} atoms, ${c.claims.size} claims, ${c.surveys.size} surveys`);
-  if (c.findings.length) {
-    console.log(`  ${c.findings.length} records diverge from the normative model (see health.html)`);
+  return { corpus: String(c.manifest.id), pages, atoms: c.atoms.size, claims: c.claims.size, surveys: c.surveys.size, findings: c.findings.length, outDir };
+}
+
+function main(argv: string[]): number {
+  const args = argv.slice(2);
+  const oi = args.findIndex((a) => a === "-o" || a === "--out");
+  const corpusDir = resolve(args[0] ?? "");
+  const outDir = resolve(oi >= 0 ? (args[oi + 1] ?? "site") : "site");
+
+  if (!args[0] || !existsSync(join(corpusDir, "corpus.yaml"))) {
+    console.error("usage: erf-view <corpus-dir> -o <out-dir> [--link \"Label=href\"]");
+    console.error("  <corpus-dir> must contain corpus.yaml");
+    return 2;
   }
+
+  const links: { label: string; href: string }[] = [];
+  for (const [i, a] of args.entries()) {
+    if (a !== "--link") continue;
+    const raw = args[i + 1] ?? "";
+    const at = raw.indexOf("=");
+    if (at <= 0) { console.error(`--link wants "Label=href", got ${JSON.stringify(raw)}`); return 2; }
+    links.push({ label: raw.slice(0, at), href: raw.slice(at + 1) });
+  }
+  const r = renderSite(corpusDir, outDir, links);
+  console.log(`${r.corpus}: ${r.pages} pages -> ${outDir}`);
+  console.log(`  ${r.atoms} atoms, ${r.claims} claims, ${r.surveys} surveys`);
+  if (r.findings) console.log(`  ${r.findings} records diverge from the normative model (see health.html)`);
   return 0;
 }
 
-process.exit(main(process.argv));
+const isMain = process.argv[1] && /erf-view(\.ts)?$/.test(process.argv[1]);
+if (isMain) process.exit(main(process.argv));
