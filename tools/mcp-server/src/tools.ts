@@ -150,7 +150,8 @@ export function atomMint(c: Corpus, a: { source: string; quote: string; finding:
   if (q.state !== "pass") throw new Refusal(`quote not found in the normalized text of ${a.source} (ERF-50): ${q.detail}\nnearest passage: "${nearestPassage(text, a.quote)}"`);
   const fm = { id, type: "atom", corpus: decl.id, finding: a.finding, quote: a.quote, source: a.source, source_quality: a.source_quality, as_of_date: a.as_of_date, limitations: a.limitations, created: { timestamp: today(), by: c.options.agent } };
   const path = writeRecord(c, "atom", id, fm, null);
-  return finish(c, `atom ${id} minted; quote check: present`, [path], `mint atom ${id}`);
+  const where = src.received?.url ? `\nsource page: ${src.received.url}` : src.received?.path ? `\nsource file: ${src.received.path}` : "";
+  return finish(c, `atom ${id} minted; quote check: present\ncites ${a.source}: ${src.citation_text}${where}\nsee the quote in the held text: erf_view page=capture:${id}`, [path], `mint atom ${id}`);
 }
 
 // ---------- claims ----------
