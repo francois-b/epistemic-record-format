@@ -31,6 +31,10 @@ fails it is a finding, a file with no fence is unrecognized. `YAMLB-1`'s
 grammar is now ABNF (RFC 5234 with RFC 7405 `%s`); no rule changed, and
 the case-sensitivity of `claims:` and `bound-at=` is now stated.
 
+`YAMLB-1`, 2026-08-26: `bound-at` admits an RFC 3339 instant beside a date,
+and `ERF-31` says so. A same-day rebind after a same-day edit had read stale
+under `ERF-47` with nothing finer to compare (`F-034`).
+
 ## 0.9.0 — 2026-08-26
 
 First published version: forty-nine requirements, five of them in the

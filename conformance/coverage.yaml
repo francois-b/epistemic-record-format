@@ -156,10 +156,10 @@ requirements:
   YAMLB-1:
     tests: [output, fixtures/invalid/binding-without-bound-at, fixtures/invalid/binding-empty-anchor,
             fixtures/invalid/binding-unterminated, fixtures/valid/binding-after-a-code-span,
-            fixtures/valid/anchor-with-escaped-quote]
+            fixtures/valid/anchor-with-escaped-quote, fixtures/valid/binding-bound-at-instant]
     note: >
-      the HTML-comment spelling and its recognition; the passage and the
-      anchor test stay with ERF-31.
+      the HTML-comment spelling and its recognition, and bound-at as a date
+      or an instant; the passage and the anchor test stay with ERF-31.
   ERF-73:
     tests: [schema, fixtures/invalid/absence-without-reason, fixtures/invalid/citation-text-carries-url,
             fixtures/invalid/manifest-missing-field, fixtures/invalid/narrative-created-is-a-bare-date,

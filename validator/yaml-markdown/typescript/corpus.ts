@@ -47,7 +47,7 @@ export interface Narrative {
 /**
  * The narrative-binding grammar of `ERF-31`, in one place.
  *
- * Groups: 1 the ids, 2 the anchor, 3 the optional `bound-at` date.
+ * Groups: 1 the ids, 2 the anchor, 3 `bound-at`, a date or an RFC 3339 instant.
  *
  * This is a function rather than a constant because a `/g` regex carries
  * `lastIndex` between uses, so sharing one object across call sites makes
@@ -57,7 +57,7 @@ export interface Narrative {
  * comments leaked into the page. One grammar, one definition.
  */
 export function bindingRe(): RegExp {
-  return /<!--\s*claims:\s*([^"<>]+?)\s*"((?:[^"\\]|\\.)+)"\s+bound-at=(\d{4}-\d{2}-\d{2})\s*-->/g;
+  return /<!--\s*claims:\s*([^"<>]+?)\s*"((?:[^"\\]|\\.)+)"\s+bound-at=(\d{4}-\d{2}-\d{2}(?:T[0-9:.Z+\-]+)?)\s*-->/g;
 }
 
 export interface BindingCandidate { index: number; end: number; text: string; terminated: boolean }

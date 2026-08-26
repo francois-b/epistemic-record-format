@@ -273,11 +273,11 @@ export function narrativeBind(c: Corpus, a: { narrative: string; anchor: string;
   const existing = /\s*<!--\s*claims:[\s\S]*?-->\s*$/.exec(tail);
   if (existing && !a.replace) throw new Refusal("this passage already ends with a binding; pass replace=true to rewrite it");
   const escaped = a.anchor.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-  const marker = `  <!-- claims: ${a.claims.join(" ")} "${escaped}" bound-at=${today()} -->`;
+  const marker = `  <!-- claims: ${a.claims.join(" ")} "${escaped}" bound-at=${now()} -->`;
   const cut = existing ? first + existing.index : end;
   const newBody = body.slice(0, cut).replace(/\s+$/, "") + marker + body.slice(end);
   writeFileSync(path, raw.slice(0, bodyStart) + newBody + raw.slice(bodyStart + body.length), "utf8");
-  return finish(c, `bound ${a.claims.length} claim(s) to "${a.anchor}" (bound-at ${today()})`, [path], `bind narrative passage "${a.anchor.slice(0, 40)}"`);
+  return finish(c, `bound ${a.claims.length} claim(s) to "${a.anchor}" (bound-at ${now()})`, [path], `bind narrative passage "${a.anchor.slice(0, 40)}"`);
 }
 
 export function narrativeCheck(c: Corpus, a: { narrative?: string }): Result {

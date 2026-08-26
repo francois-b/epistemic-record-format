@@ -165,9 +165,8 @@ test("narratives: bind inserts a marker the validator reads; check reports; upda
   assert.match(rb.text, /bound 1 claim/);
   const rebound = loadCorpus(c.dir).narratives[0]!.bindings.filter((x) => x.claims.includes("bound-claim"));
   assert.equal(rebound.length, 1, "replace rewrote the marker rather than adding a second");
-  assert.equal(rebound[0]!.boundAt, new Date().toISOString().slice(0, 10));
-  // ERF-47: bound-at is a date and last_modified an instant, so a same-day rebind still reads stale until tomorrow.
-  assert.match(T.narrativeCheck(c, { narrative: n.slug }).text, /1 stale/);
+  assert.match(String(rebound[0]!.boundAt), /^\d{4}-\d{2}-\d{2}T/, "bound at an instant (YAMLB-1), so a same-day rebind can read current");
+  assert.doesNotMatch(T.narrativeCheck(c, { narrative: n.slug }).text, /1 stale/);
   clean(c);
 });
 

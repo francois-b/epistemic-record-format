@@ -78,7 +78,7 @@ is not repeated down the column.
 | [`ERF-65`](../serialization/yaml-markdown.md#erf-65) | Frontmatter MUST parse under YAML 1.2 using the **JSON schema**, the narrowest of the three the specification defines. | Producer, Validator | `serialization`, `fixtures/invalid/as-of-date-unquoted-year` |
 | [`YAMLB-2`](../serialization/yaml-markdown.md#yamlb-2) | An empty list MUST be omitted on the wire, and a reader materializes it (`ERF-56`); an optional mapping that is present… |  | `fixtures/valid/evidence-at-stance-faced-nothing`, `hygiene` |
 | [`ERF-66`](../serialization/yaml-markdown.md#erf-66) | A document's frontmatter MUST NOT contain a duplicate key, an anchor, an alias, or an explicit tag. |  | `fixtures/invalid/frontmatter-duplicate-key`, `fixtures/invalid/frontmatter-anchor` |
-| [`YAMLB-1`](../serialization/yaml-markdown.md#yamlb-1) | A narrative binding MUST be spelled as an HTML comment, so that it is invisible in every render and survives any markdown pipeline: |  | `output`, `fixtures/invalid/binding-without-bound-at`, `fixtures/invalid/binding-empty-anchor`, `fixtures/invalid/binding-unterminated`, `fixtures/valid/binding-after-a-code-span`, `fixtures/valid/anchor-with-escaped-quote` |
+| [`YAMLB-1`](../serialization/yaml-markdown.md#yamlb-1) | A narrative binding MUST be spelled as an HTML comment, so that it is invisible in every render and survives any markdown pipeline: |  | `output`, `fixtures/invalid/binding-without-bound-at`, `fixtures/invalid/binding-empty-anchor`, `fixtures/invalid/binding-unterminated`, `fixtures/valid/binding-after-a-code-span`, `fixtures/valid/anchor-with-escaped-quote`, `fixtures/valid/binding-bound-at-instant` |
 
 ## Retired ids
 

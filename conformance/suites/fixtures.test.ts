@@ -13,7 +13,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import yaml from "js-yaml";
 import { loadCorpus } from "../../validator/yaml-markdown/typescript/corpus.ts";
-import { brokenAnchors, danglingRefs, disposition, evidenceRefsFlagged, quoteCheck, standingTies, stoodOn, unbacked } from "../../validator/yaml-markdown/typescript/compute.ts";
+import { bindingStaleness, brokenAnchors, danglingRefs, disposition, evidenceRefsFlagged, quoteCheck, standingTies, stoodOn, unbacked } from "../../validator/yaml-markdown/typescript/compute.ts";
 import { FIXTURES } from "../paths.ts";
 
 interface Expectation {
@@ -197,6 +197,14 @@ test("YAMLB-3: a file without a fence is unrecognized, and a body starts at its 
   const blank = loadCorpus(join(FIXTURES, "valid", "body-leading-blank-lines"));
   assert.deepEqual(blank.findings, []);
   assert.ok(blank.claims.get("fx-claim")!.body.startsWith("The recorded total was seventeen units"), "leading line breaks are not part of the body");
+});
+
+test("YAMLB-1: bound-at admits an instant, so a same-day rebind after a same-day edit reads current (F-034)", () => {
+  const c = loadCorpus(join(FIXTURES, "valid", "binding-bound-at-instant"));
+  assert.deepEqual(c.findings, []);
+  const b = c.narratives[0]!.bindings[0]!;
+  assert.match(String(b.boundAt), /T10:05:00Z$/);
+  assert.equal(bindingStaleness(b.boundAt, b.claims, c).state, "current");
 });
 
 test("invalid fixtures are rejected, each citing its requirement", async (t) => {

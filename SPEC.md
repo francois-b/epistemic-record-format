@@ -683,7 +683,8 @@ line, is a matter for whoever writes the narrative.
 
 - <a id="erf-31"></a>**ERF-31** A passage that asserts something SHOULD end with a narrative
   binding: a marker naming the claims the passage rests on, an anchor of a
-  few exact words from it, and `bound-at`, the date the binding was made.
+  few exact words from it, and `bound-at`, the date or instant the binding
+  was made.
   Every part is required; every id MUST resolve to a claim; and the anchor
   is checked against its passage under the test a quote meets (`ERF-52`),
   the fold and whole words. A binding's passage is the text from the end of

@@ -175,7 +175,7 @@ LF          = %x0A
 
 ```abnf
 narrative-binding = "<!--" *ws %s"claims:" 1*ws ids 1*ws anchor
-                    1*ws %s"bound-at=" date *ws "-->"
+                    1*ws %s"bound-at=" (date / instant) *ws "-->"
 ids         = id *(1*ws id)
 id          = 1*id-char
 id-char     = <any Unicode scalar value that is not White_Space and is
@@ -184,14 +184,20 @@ anchor      = DQUOTE 1*anchor-char DQUOTE
 anchor-char = escape / <any Unicode scalar value other than DQUOTE and "\">
 escape      = "\" (DQUOTE / "\")
 date        = 4DIGIT "-" 2DIGIT "-" 2DIGIT
+instant     = <an RFC 3339 date-time, e.g. 2026-08-26T15:42:10Z>
 ws          = <any Unicode scalar value with the White_Space property,
                line breaks included>
 DQUOTE      = %x22
 DIGIT       = %x30-39
 ```
 
-  Ids are separated by whitespace and never by commas, because a comma
-  inside an unquoted list invites a parser to guess. The anchor carries
+  `bound-at` is a date or an instant. A date is enough for a binding made
+  once; an instant is what lets a passage rebound on the day its claim
+  changed read current rather than stale, since `ERF-47` resolves a date
+  against a same-day instant to stale (ruled 2026-08-26, raised by the
+  first tool that rebinds). Ids are separated by whitespace and never by
+  commas, because a comma inside an unquoted list invites a parser to
+  guess. The anchor carries
   two escapes because a grammar that cannot express a legal value is a
   defect in the grammar: a passage whose own words sit in quotation marks
   would otherwise have no anchor. The escapes are decoded before the

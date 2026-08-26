@@ -137,10 +137,9 @@ trial.
 - **Same-day rebinding reads stale.** `bound-at` is a date (`YAMLB-1`) and
   `last_modified` an instant; `ERF-47` resolves the mixed comparison to
   stale. A claim edited and rebound within one day therefore stays flagged
-  until the next day, which the tool cannot avoid and the user will meet on
-  their first session. To raise as a finding: either `bound-at` admits an
-  instant, or staleness compares at the coarser precision when both fall on
-  one day.
+  until the next day. Ruled 2026-08-26 (`F-034`): `bound-at` admits an RFC
+  3339 instant, and the server writes one; a same-day rebind now reads
+  current.
 - An existing marker quotes its own anchor, so anchor uniqueness must be
   checked over the prose with markers masked, not over the body.
 
