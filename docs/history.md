@@ -35,6 +35,14 @@ something in that corpus, and the ones that weren't were reversed.
 
 ## The subtraction ledger
 
+- **Fourteen shape rules** (`ERF-3`, `5`, `7`, `12`, `19`, `21`, `22`, `34`,
+  `37`, `38`, `39`, `55`, `58`, `59`): retired 2026-08-26 under the ruling
+  the operator called option B. Four cold readers applying one rubric
+  retired the same core with the same deletion test: the schema already
+  forced each. `ERF-73` says every document validates against the schema;
+  each rule's reason moved onto the definition it explains; `ERF-37` and
+  `ERF-38` restated `ERF-36`. Requirement count 66 to 54.
+
 - **`ERF-49`, unbacked as a validator duty**: retired 2026-08-26. It said
   a claim must not store whether it is backed, and the schema has no such
   field, so it forbade nothing; what remained was a definition, and

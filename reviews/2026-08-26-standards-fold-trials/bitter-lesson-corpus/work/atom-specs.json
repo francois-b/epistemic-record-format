@@ -1,18 +1,1548 @@
 [
-  {
-    "id": "bl-001",
-    "source": "sutton-2019-bitter-lesson",
-    "spans": [["The biggest lesson that can be read from 70 years", "and by a large margin."]],
-    "finding": "Sutton states, as the essay's headline thesis, that seventy years of AI research show general methods that leverage computation to be ultimately the most effective, and by a large margin.",
-    "source_quality": "high",
-    "as_of_date": "2019-03-13"
-  },
-  {
-    "id": "bl-002",
-    "source": "sutton-2019-bitter-lesson",
-    "spans": [["The ultimate reason for this is", "cost per unit of computation."]],
-    "finding": "Sutton attributes the effectiveness of computation-leveraging methods to Moore's law, generalized as a continued exponential fall in cost per unit of computation.",
-    "source_quality": "high",
-    "as_of_date": "2019-03-13"
-  }
+ {
+  "id": "bl-001",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "The biggest lesson that can be read from 70 years",
+    "and by a large margin."
+   ]
+  ],
+  "finding": "Sutton states, as the headline thesis of the essay, that seventy years of AI research show general methods that leverage computation to be ultimately the most effective, and by a large margin.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-002",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "The ultimate reason for this is",
+    "cost per unit of computation."
+   ]
+  ],
+  "finding": "Sutton attributes the effectiveness of computation-leveraging methods to Moore's law, generalized as a continued exponential fall in the cost per unit of computation.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-003",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "Most AI research has been conducted as if",
+    "were constant"
+   ]
+  ],
+  "finding": "Sutton asserts that most AI research has been conducted as if the computation available to the agent were constant.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13",
+  "limitations": "An assertion about the practice of a whole field, stated without a citation, a count, or a sample; Sutton is the proponent of the thesis it supports."
+ },
+ {
+  "id": "bl-004",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "over a slightly longer time than a typical research project",
+    "massively more computation inevitably becomes available"
+   ]
+  ],
+  "finding": "Sutton asserts that over a period slightly longer than a typical research project, massively more computation inevitably becomes available.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-005",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "These two need not run counter to each other",
+    "time not spent on the other."
+   ]
+  ],
+  "finding": "Sutton argues that leveraging human knowledge and leveraging computation need not conflict in principle but do in practice, because time spent on one is time not spent on the other.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-006",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "And the human-knowledge approach tends to complicate methods",
+    "general methods leveraging computation."
+   ]
+  ],
+  "finding": "Sutton argues that the human-knowledge approach complicates methods in ways that make them less suited to exploiting general computation-leveraging methods.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-007",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "In computer chess, the methods that defeated",
+    "based on massive, deep search."
+   ]
+  ],
+  "finding": "Sutton states that the methods that defeated world chess champion Kasparov in 1997 were based on massive, deep search.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13",
+  "limitations": "Sutton is reporting a historical fact about a system he did not build; for the design of Deep Blue the builders' own account is the primary source."
+ },
+ {
+  "id": "bl-008",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "At the time, this was looked upon with dismay",
+    "the special structure of chess."
+   ]
+  ],
+  "finding": "Sutton asserts that Deep Blue's 1997 win was viewed with dismay by the majority of computer-chess researchers, who had pursued methods leveraging human understanding of chess.",
+  "source_quality": "high",
+  "as_of_date": "1997",
+  "limitations": "A quantified claim about the beliefs of a professional population, the majority, offered with no survey, count or citation."
+ },
+ {
+  "id": "bl-009",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "When a simpler, search-based approach",
+    "proved vastly more effective"
+   ]
+  ],
+  "finding": "Sutton characterises the winning 1997 chess approach as simpler than its human-knowledge rivals, search-based, and helped by special hardware and software.",
+  "source_quality": "high",
+  "as_of_date": "1997"
+ },
+ {
+  "id": "bl-010",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "They said that",
+    "it was not how people played chess."
+   ]
+  ],
+  "finding": "Sutton reports that the defeated human-knowledge chess researchers said brute-force search had won this time but was neither a general strategy nor how people play chess.",
+  "source_quality": "high",
+  "as_of_date": "1997",
+  "limitations": "Reported speech with no named speaker and no citation; the utterance is attributed to a class of researchers rather than to anyone in particular.",
+  "allow_markup": "`"
+ },
+ {
+  "id": "bl-011",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "A similar pattern of research progress was seen in computer Go",
+    "delayed by a further 20 years."
+   ]
+  ],
+  "finding": "Sutton states that computer Go repeated the computer-chess pattern about twenty years later.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-012",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "Enormous initial efforts went into avoiding search",
+    "once search was applied effectively at scale."
+   ]
+  ],
+  "finding": "Sutton asserts that the human-knowledge and game-specific efforts in computer Go proved irrelevant or worse once search was applied at scale.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-013",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "although learning did not play a big role",
+    "first beat a world champion"
+   ]
+  ],
+  "finding": "Sutton states that learning did not play a big role in the 1997 program that first beat a world chess champion.",
+  "source_quality": "high",
+  "as_of_date": "1997"
+ },
+ {
+  "id": "bl-014",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "Search and learning are the two most important classes",
+    "in AI research."
+   ]
+  ],
+  "finding": "Sutton claims search and learning are the two most important classes of technique for utilizing massive computation in AI research.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-015",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "In speech recognition, there was an early competition",
+    "in the 1970s."
+   ]
+  ],
+  "finding": "Sutton states there was an early DARPA-sponsored speech recognition competition in the 1970s.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-016",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "Entrants included a host of special methods",
+    "the human vocal tract, etc."
+   ]
+  ],
+  "finding": "Sutton states that entrants to the 1970s DARPA speech competition included methods exploiting human knowledge of words, phonemes and the vocal tract.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-017",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "On the other side were newer methods",
+    "hidden Markov models (HMMs)."
+   ]
+  ],
+  "finding": "Sutton states that the opposing entrants in the 1970s DARPA speech competition were newer, more statistical, more computational methods based on hidden Markov models.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13",
+  "limitations": "A dated historical claim about which methods were entered in a specific 1970s programme, offered without citation."
+ },
+ {
+  "id": "bl-018",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "Again, the statistical methods won out",
+    "the human-knowledge-based methods."
+   ]
+  ],
+  "finding": "Sutton states that in the 1970s speech competition the statistical methods won out over the human-knowledge-based methods.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-019",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "This led to a major change in all of natural language processing",
+    "came to dominate the field."
+   ]
+  ],
+  "finding": "Sutton states that the statistical turn in speech recognition led over decades to statistics and computation dominating all of natural language processing.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-020",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "Deep learning methods rely even less on human knowledge",
+    "better speech recognition systems."
+   ]
+  ],
+  "finding": "Sutton states that deep learning speech methods rely less on human knowledge, use more computation and huge training sets, and produce dramatically better recognition.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-021",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "Early methods conceived of vision as searching for edges",
+    "in terms of SIFT features."
+   ]
+  ],
+  "finding": "Sutton states that early computer vision conceived of vision as a search for edges, generalized cylinders, or SIFT features.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-022",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "But today all this is discarded."
+   ]
+  ],
+  "finding": "Sutton asserts that the early computer-vision approaches, edges, generalized cylinders and SIFT features, are today all discarded.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-023",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "Modern deep-learning neural networks use only the notions",
+    "and perform much better."
+   ]
+  ],
+  "finding": "Sutton asserts that modern deep-learning vision networks use only convolution and certain kinds of invariance, and perform much better than the methods they replaced.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-024",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "The bitter lesson is based on the historical observations",
+    "by search and learning."
+   ]
+  ],
+  "finding": "Sutton states the four historical observations his bitter lesson rests on: researchers build knowledge in; this always helps in the short term; in the long run it plateaus and inhibits progress; and breakthroughs arrive by scaling computation through search and learning.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-025",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "The two methods that seem to scale arbitrarily",
+    "are search and learning."
+   ]
+  ],
+  "finding": "Sutton claims that search and learning are the two methods that seem to scale arbitrarily with increased computation.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-026",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "the actual contents of minds are tremendously, irredeemably complex"
+   ],
+   [
+    "instead we should build in only the meta-methods",
+    "capture this arbitrary complexity."
+   ]
+  ],
+  "finding": "Sutton claims the contents of minds are irredeemably complex and concludes that only meta-methods able to find and capture that complexity should be built in.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-027",
+  "source": "sutton-2019-bitter-lesson",
+  "spans": [
+   [
+    "As a field, we still have not thoroughly learned it",
+    "the same kind of mistakes."
+   ]
+  ],
+  "finding": "Sutton asserts that as of March 2019 the AI field has not thoroughly learned the bitter lesson and continues to make the same kind of mistakes.",
+  "source_quality": "high",
+  "as_of_date": "2019-03-13"
+ },
+ {
+  "id": "bl-028",
+  "source": "campbell-2002-deep-blue",
+  "spans": [
+   [
+    "Although the large majority of the features and weights",
+    "were created/tuned by hand"
+   ]
+  ],
+  "finding": "Deep Blue's three builders report that the large majority of the features and weights in its evaluation function were created and tuned by hand.",
+  "source_quality": "high",
+  "as_of_date": "2002",
+  "limitations": "An excerpt of sections 7.3 and 8 of the paper; the sections describing search and hardware are not held in the normalized text."
+ },
+ {
+  "id": "bl-029",
+  "source": "campbell-2002-deep-blue",
+  "spans": [
+   [
+    "The opening book in Deep Blue was created by hand",
+    "Miguel Illescas."
+   ]
+  ],
+  "finding": "Deep Blue's builders report that its opening book was created by hand, primarily by grandmaster Joel Benjamin with three other grandmasters assisting.",
+  "source_quality": "high",
+  "as_of_date": "1997"
+ },
+ {
+  "id": "bl-030",
+  "source": "campbell-2002-deep-blue",
+  "spans": [
+   [
+    "a large Grandmaster game database to influence and direct Deep Blue",
+    "opening book information."
+   ],
+   [
+    "summarize the information available at each position of a 700,000 game database",
+    "consensus direction of chess opening theory."
+   ]
+  ],
+  "finding": "Deep Blue's builders report an extended book that summarised a 700,000-game grandmaster database and nudged the program toward the consensus of human opening theory where its opening book ran out.",
+  "source_quality": "high",
+  "as_of_date": "1997"
+ },
+ {
+  "id": "bl-031",
+  "source": "campbell-2002-deep-blue",
+  "spans": [
+   [
+    "A second tool was developed with the goal of tuning evaluation function weights."
+   ],
+   [
+    "Training results showed that the hand-tuned weights were systematically too low"
+   ]
+  ],
+  "finding": "Deep Blue's builders report an automated comparison-training tool that learned pawn-shelter weights and showed the hand-tuned weights were systematically too low, which were then raised before the 1997 match.",
+  "source_quality": "high",
+  "as_of_date": "1997"
+ },
+ {
+  "id": "bl-032",
+  "source": "campbell-2002-deep-blue",
+  "spans": [
+   [
+    "This feature was of critical importance in Game 2",
+    "Garry Kasparov and Deep Blue."
+   ]
+  ],
+  "finding": "Deep Blue's builders report that one hand-crafted evaluation feature, the semi-transparency of a levering pawn to a rook, was of critical importance in Game 2 of the 1997 Kasparov match.",
+  "source_quality": "high",
+  "as_of_date": "1997"
+ },
+ {
+  "id": "bl-033",
+  "source": "wikipedia-deep-blue",
+  "spans": [
+   [
+    "Deep Blue, with its capability of evaluating 200",
+    "positions per second"
+   ]
+  ],
+  "finding": "Wikipedia states that Deep Blue could evaluate 200 million chess positions per second.",
+  "source_quality": "low",
+  "as_of_date": "1997",
+  "limitations": "A tertiary encyclopedia with no identifiable attester; the article cites a numbered source for this figure that the corpus has not pulled to primary."
+ },
+ {
+  "id": "bl-034",
+  "source": "wikipedia-deep-blue",
+  "spans": [
+   [
+    "it was a then-state-of-the-art expert system",
+    "by chess masters and computer scientists."
+   ]
+  ],
+  "finding": "Wikipedia characterises Deep Blue as a then-state-of-the-art expert system relying on rules and variables defined and fine-tuned by chess masters and computer scientists.",
+  "source_quality": "low",
+  "as_of_date": "1997",
+  "limitations": "A tertiary encyclopedia's characterisation, not a builder's statement; it is corroborated in this corpus by the builders' own account."
+ },
+ {
+  "id": "bl-035",
+  "source": "wikipedia-deep-blue",
+  "spans": [
+   [
+    "The evaluation function was then split into 8,000 parts",
+    "designed for special positions."
+   ]
+  ],
+  "finding": "Wikipedia states that Deep Blue's evaluation function was split into 8,000 parts, many designed for special positions.",
+  "source_quality": "low",
+  "as_of_date": "1997",
+  "limitations": "Tertiary; no identifiable attester."
+ },
+ {
+  "id": "bl-036",
+  "source": "wikipedia-deep-blue",
+  "spans": [
+   [
+    "Values for these parameters were determined by analyzing thousands of master games."
+   ]
+  ],
+  "finding": "Wikipedia states that the parameters of Deep Blue's evaluation function were determined by analyzing thousands of master games.",
+  "source_quality": "low",
+  "as_of_date": "1997",
+  "limitations": "Tertiary; no identifiable attester. It bears on whether learning played a role in the 1997 program and is not corroborated in the excerpt of the builders' paper held here."
+ },
+ {
+  "id": "bl-037",
+  "source": "wikipedia-deep-blue",
+  "spans": [
+   [
+    "Deep Blue used custom VLSI chips to parallelize the alpha",
+    "beta search algorithm"
+   ],
+   [
+    "The system derived its playing strength mainly from computing power."
+   ]
+  ],
+  "finding": "Wikipedia states that Deep Blue parallelized alpha-beta search on custom VLSI chips and derived its playing strength mainly from computing power.",
+  "source_quality": "low",
+  "as_of_date": "1997",
+  "limitations": "Tertiary; the judgment that strength came mainly from computing power is the encyclopedia's, not a builder's."
+ },
+ {
+  "id": "bl-038",
+  "source": "wikipedia-deep-blue",
+  "spans": [
+   [
+    "Before the second match, the program",
+    "Nick de Firmian."
+   ]
+  ],
+  "finding": "Wikipedia states that before the 1997 match Deep Blue's rules were fine-tuned by grandmaster Joel Benjamin and its opening library was provided by three named grandmasters.",
+  "source_quality": "low",
+  "as_of_date": "1997",
+  "limitations": "Tertiary; corroborated by the builders' own paper in this corpus."
+ },
+ {
+  "id": "bl-039",
+  "source": "mccarthy-1989-drosophila",
+  "spans": [
+   [
+    "All programs succeeded, needing from three to twenty seconds",
+    "mitigated by transposition tables."
+   ]
+  ],
+  "finding": "McCarthy reports that every program at the Sixth World Computer Chess Championship solved his test position, and did so by brute force mitigated by transposition tables.",
+  "source_quality": "high",
+  "as_of_date": "1989"
+ },
+ {
+  "id": "bl-040",
+  "source": "mccarthy-1989-drosophila",
+  "spans": [
+   [
+    "However, it seems to me that humans use a much simpler thought process"
+   ]
+  ],
+  "finding": "McCarthy, a founder of the field, states his own view that humans use a much simpler thought process than brute force, an identified instance of the objection Sutton attributes to unnamed chess researchers.",
+  "source_quality": "high",
+  "as_of_date": "1989"
+ },
+ {
+  "id": "bl-041",
+  "source": "mccarthy-1989-drosophila",
+  "spans": [
+   [
+    "the lack of global ideas is frequently obscured"
+   ],
+   [
+    "(1997 note: Deep Blue has problems with global ideas)."
+   ]
+  ],
+  "finding": "McCarthy endorses Berliner's charge that chess programs lack global ideas and adds a 1997 note applying the same charge to Deep Blue.",
+  "source_quality": "high",
+  "as_of_date": "1997"
+ },
+ {
+  "id": "bl-042",
+  "source": "nielsen-2021-reflections-bitter-lesson",
+  "spans": [
+   [
+    "Sutton is correct that Deep Blue was a triumph of",
+    "a triumph of expert knowledge of chess."
+   ]
+  ],
+  "finding": "Nielsen grants that Deep Blue was a triumph of massive deep search and argues it was equally a triumph of expert chess knowledge, that is, a hybrid.",
+  "source_quality": "medium",
+  "as_of_date": "2021",
+  "limitations": "A blog essay by a named author who describes himself in the same document as an interested non-expert outsider; his supporting quotations come from the builders' paper, which this corpus holds directly."
+ },
+ {
+  "id": "bl-043",
+  "source": "nielsen-2021-reflections-bitter-lesson",
+  "spans": [
+   [
+    "the roughly 8,000 features which Deep Blue used to evaluate board positions"
+   ],
+   [
+    "many were based on expert analysis of games lost by Deep Blue’s predecessor systems"
+   ]
+  ],
+  "finding": "Nielsen states that Deep Blue used roughly 8,000 evaluation features and that many were based on expert analysis of games lost by its predecessor systems.",
+  "source_quality": "medium",
+  "as_of_date": "2021",
+  "limitations": "One hop from the builders' paper, which Nielsen quotes."
+ },
+ {
+  "id": "bl-044",
+  "source": "nielsen-2021-reflections-bitter-lesson",
+  "spans": [
+   [
+    "The trouble with the contention is that"
+   ],
+   [
+    "It offers no guidance."
+   ]
+  ],
+  "finding": "Nielsen objects that the word ultimately in Sutton's thesis fixes no time horizon and so offers no guidance about what to do now.",
+  "source_quality": "medium",
+  "as_of_date": "2021"
+ },
+ {
+  "id": "bl-045",
+  "source": "nielsen-2021-reflections-bitter-lesson",
+  "spans": [
+   [
+    "We have a few examples of problems (Eg lattice field theory)",
+    "without that inductive bias."
+   ]
+  ],
+  "finding": "Physicist Kyle Cranmer, quoted by Nielsen, reports problems such as lattice field theory that are near-hopeless with traditional deep learning but work when symmetries are enforced, at far lower data and compute cost.",
+  "source_quality": "medium",
+  "as_of_date": "2021",
+  "limitations": "A social-media remark by a named domain expert, relayed by a third party; no measurement is given for the parenthetical exponentially."
+ },
+ {
+  "id": "bl-046",
+  "source": "nielsen-2021-reflections-bitter-lesson",
+  "spans": [
+   [
+    "The rapid progress of ML applied to LQCD"
+   ],
+   [
+    "mol. dyn., protein folding and computer graphics is the result of the combining domain knowledge",
+    "is weak or hard to express mathematically."
+   ]
+  ],
+  "finding": "DeepMind researcher Danilo Rezende, quoted by Nielsen, states that progress in lattice QCD, molecular dynamics and protein folding came from combining domain knowledge such as symmetries with machine learning, and that the bitter lesson applies mainly where domain knowledge is weak.",
+  "source_quality": "medium",
+  "as_of_date": "2021",
+  "limitations": "A social-media remark relayed by a third party; the speaker is named and identifiable but the claim is an opinion, not a measurement."
+ },
+ {
+  "id": "bl-047",
+  "source": "wikipedia-stockfish",
+  "spans": [
+   [
+    "Stockfish historically used only a classical hand-crafted function",
+    "occasionally relied on the hand-crafted evaluation."
+   ],
+   [
+    "In July 2023, Stockfish removed the hand-crafted evaluation and transitioned to a fully neural-network-based approach."
+   ]
+  ],
+  "finding": "Wikipedia states that the Stockfish chess engine used a hand-crafted evaluation function until 2020, ran a hybrid with a neural network from 2020, and removed the hand-crafted evaluation entirely in July 2023.",
+  "source_quality": "low",
+  "as_of_date": "2023-07",
+  "limitations": "Tertiary; no identifiable attester."
+ },
+ {
+  "id": "bl-048",
+  "source": "wikipedia-stockfish",
+  "spans": [
+   [
+    "Stockfish uses a tree-search algorithm based on alpha",
+    "with several hand-designed heuristics."
+   ]
+  ],
+  "finding": "Wikipedia states that Stockfish, after removing its hand-crafted evaluation, still searches with alpha-beta and several hand-designed heuristics.",
+  "source_quality": "low",
+  "as_of_date": "2026",
+  "limitations": "Tertiary; the article's present tense is read against the date the page was retrieved."
+ },
+ {
+  "id": "bl-049",
+  "source": "silver-2017-alphazero-arxiv",
+  "spans": [
+   [
+    "The strongest programs are based on a combination of sophisticated search techniques",
+    "refined by human experts over several decades."
+   ]
+  ],
+  "finding": "The AlphaZero authors state that the strongest chess programs combine sophisticated search, domain-specific adaptations and handcrafted evaluation functions refined by human experts over decades.",
+  "source_quality": "high",
+  "as_of_date": "2017-12"
+ },
+ {
+  "id": "bl-050",
+  "source": "silver-2017-alphazero-arxiv",
+  "spans": [
+   [
+    "Starting from random play, and given no domain knowledge except the game rules",
+    "defeated a world-champion program in each case."
+   ]
+  ],
+  "finding": "The AlphaZero authors report superhuman play in chess, shogi and Go within 24 hours from random play with no domain knowledge beyond the rules, defeating a world-champion program in each.",
+  "source_quality": "high",
+  "as_of_date": "2017-12"
+ },
+ {
+  "id": "bl-051",
+  "source": "silver-2016-alphago-nature",
+  "spans": [
+   [
+    "These deep neural networks are trained by a novel combination",
+    "from games of self-play."
+   ]
+  ],
+  "finding": "The AlphaGo authors report that its networks were trained by a combination of supervised learning from human expert games and reinforcement learning from self-play.",
+  "source_quality": "high",
+  "as_of_date": "2016-01"
+ },
+ {
+  "id": "bl-052",
+  "source": "silver-2016-alphago-nature",
+  "spans": [
+   [
+    "our program AlphaGo achieved a 99.8% winning rate",
+    "in the full-sized game of Go"
+   ]
+  ],
+  "finding": "The AlphaGo authors report a 99.8% win rate against other Go programs and a five-nil defeat of the human European champion, the first such result in full-sized Go.",
+  "source_quality": "high",
+  "as_of_date": "2016-01"
+ },
+ {
+  "id": "bl-053",
+  "source": "silver-2016-alphago-nature",
+  "spans": [
+   [
+    "a feat previously thought to be at least a decade away."
+   ]
+  ],
+  "finding": "The AlphaGo authors record that beating a human professional at full-sized Go had been thought at least a decade away, which is the surprise Sutton's twenty-year lag describes.",
+  "source_quality": "high",
+  "as_of_date": "2016-01"
+ },
+ {
+  "id": "bl-054",
+  "source": "wikipedia-alphago",
+  "spans": [
+   [
+    "AlphaGo was initially trained to mimic human play",
+    "a database of around 30 million moves."
+   ]
+  ],
+  "finding": "Wikipedia states that AlphaGo was initially trained to mimic human play by matching expert moves from a database of about 30 million recorded moves.",
+  "source_quality": "low",
+  "as_of_date": "2016",
+  "limitations": "Tertiary; the underlying fact is stated in the AlphaGo paper, which this corpus holds only as its abstract."
+ },
+ {
+  "id": "bl-055",
+  "source": "wikipedia-alphago",
+  "spans": [
+   [
+    "A limited amount of game-specific feature detection pre-processing",
+    "before it is sent to the neural networks."
+   ]
+  ],
+  "finding": "Wikipedia states that AlphaGo applied a limited amount of Go-specific feature-detection pre-processing to its input before the neural networks saw it.",
+  "source_quality": "low",
+  "as_of_date": "2016",
+  "limitations": "Tertiary; directly relevant to whether Go-specific human knowledge was in fact discarded, and not corroborated here against the paper's methods section."
+ },
+ {
+  "id": "bl-056",
+  "source": "silver-2017-alphago-zero",
+  "spans": [
+   [
+    "we introduce an algorithm based solely on reinforcement learning",
+    "domain knowledge beyond game rules."
+   ]
+  ],
+  "finding": "The AlphaGo Zero authors report an algorithm based solely on reinforcement learning, with no human data, guidance or domain knowledge beyond the rules of Go.",
+  "source_quality": "high",
+  "as_of_date": "2017-10"
+ },
+ {
+  "id": "bl-057",
+  "source": "silver-2017-alphago-zero",
+  "spans": [
+   [
+    "Starting tabula rasa, our new program AlphaGo Zero achieved superhuman performance",
+    "champion-defeating AlphaGo."
+   ]
+  ],
+  "finding": "The AlphaGo Zero authors report that starting from scratch it reached superhuman performance and beat the previously published champion-defeating AlphaGo one hundred games to nil.",
+  "source_quality": "high",
+  "as_of_date": "2017-10"
+ },
+ {
+  "id": "bl-058",
+  "source": "silver-2017-alphago-zero",
+  "spans": [
+   [
+    "These neural networks were trained by supervised learning from human expert moves"
+   ]
+  ],
+  "finding": "The AlphaGo Zero authors state that the earlier AlphaGo, the program that first beat a world champion at Go, was trained in part by supervised learning from human expert moves.",
+  "source_quality": "high",
+  "as_of_date": "2016"
+ },
+ {
+  "id": "bl-059",
+  "source": "silver-2017-alphago-zero",
+  "spans": [
+   [
+    "expert data is often expensive, unreliable, or simply unavailable",
+    "a ceiling on the performance of systems trained in this manner"
+   ]
+  ],
+  "finding": "The AlphaGo Zero authors argue that human expert data is expensive, unreliable or unavailable, and can cap the performance of systems trained on it.",
+  "source_quality": "high",
+  "as_of_date": "2017-10"
+ },
+ {
+  "id": "bl-060",
+  "source": "wikipedia-speech-recognition",
+  "spans": [
+   [
+    "1971 – DARPA funded a five-year speech recognition research project",
+    "a minimum vocabulary size of 1,000 words."
+   ]
+  ],
+  "finding": "Wikipedia states that DARPA funded a five-year Speech Understanding Research project from 1971 seeking a minimum vocabulary of 1,000 words.",
+  "source_quality": "low",
+  "as_of_date": "1971",
+  "limitations": "Tertiary; the primary record of the programme's goals is the 1971 Newell study-group report, which this corpus reaches only through the Harpy paper."
+ },
+ {
+  "id": "bl-061",
+  "source": "wikipedia-speech-recognition",
+  "spans": [
+   [
+    "BBN, IBM, Carnegie Mellon (CMU), and Stanford Research Institute participated."
+   ]
+  ],
+  "finding": "Wikipedia names BBN, IBM, Carnegie Mellon and Stanford Research Institute as participants in the DARPA Speech Understanding Research project.",
+  "source_quality": "low",
+  "as_of_date": "1971",
+  "limitations": "Tertiary; no identifiable attester."
+ },
+ {
+  "id": "bl-062",
+  "source": "wikipedia-speech-recognition",
+  "spans": [
+   [
+    "A decade later, at CMU, Raj Reddy",
+    "for speech recognition."
+   ]
+  ],
+  "finding": "Wikipedia dates the use of hidden Markov models for speech recognition at CMU by James and Janet Baker to roughly a decade after Baum's late-1960s work on Markov chains, that is, the late 1970s.",
+  "source_quality": "low",
+  "as_of_date": "1970",
+  "limitations": "Tertiary, and the dating is expressed as a decade later rather than as a year; it bears directly on whether HMM systems were the statistical side of a 1970s competition."
+ },
+ {
+  "id": "bl-063",
+  "source": "wikipedia-speech-recognition",
+  "spans": [
+   [
+    "HMMs enabled researchers to combine sources of knowledge",
+    "in a unified probabilistic model."
+   ]
+  ],
+  "finding": "Wikipedia states that hidden Markov models let researchers combine knowledge sources such as acoustics, language and syntax in one probabilistic model.",
+  "source_quality": "low",
+  "as_of_date": "1980",
+  "limitations": "Tertiary; relevant because it describes the statistical method as a framework for combining human knowledge rather than for discarding it."
+ },
+ {
+  "id": "bl-064",
+  "source": "wikipedia-speech-recognition",
+  "spans": [
+   [
+    "statistical approach placed less emphasis on emulating human brain processes in favor of statistical modelling."
+   ],
+   [
+    "This was controversial among linguists since HMMs are too simplistic"
+   ]
+  ],
+  "finding": "Wikipedia states that Jelinek's statistical approach de-emphasised emulating human brain processes and was controversial among linguists.",
+  "source_quality": "low",
+  "as_of_date": "1985",
+  "limitations": "Tertiary; no identifiable attester."
+ },
+ {
+  "id": "bl-065",
+  "source": "wikipedia-speech-recognition",
+  "spans": [
+   [
+    "the HMM proved to be a highly useful way for modelling speech",
+    "the dominant speech recognition algorithm in the 1980s."
+   ]
+  ],
+  "finding": "Wikipedia states that hidden Markov models replaced dynamic time warping as the dominant speech recognition algorithm in the 1980s, a decade after the DARPA competition.",
+  "source_quality": "low",
+  "as_of_date": "1980",
+  "limitations": "Tertiary; no identifiable attester."
+ },
+ {
+  "id": "bl-066",
+  "source": "lowerre-1980-harpy",
+  "spans": [
+   [
+    "Harpy is one of the systems developed as part of the five year ARPA speech understanding research effort."
+   ],
+   [
+    "proposed a set of specific performance goals in 1971"
+   ]
+  ],
+  "finding": "Harpy's authors record that it was built inside the five-year ARPA speech understanding effort against performance goals set by a 1971 study group chaired by Allen Newell.",
+  "source_quality": "high",
+  "as_of_date": "1976",
+  "limitations": "The extracted text reads the chair's name as Alien Newell, an optical-character artifact of the scanned page for Allen Newell."
+ },
+ {
+  "id": "bl-067",
+  "source": "lowerre-1980-harpy",
+  "spans": [
+   [
+    "Harpy not only met all the specifications but exceeded several of the stated objectives"
+   ],
+   [
+    "an order of magnitude faster with only about half the error rate"
+   ]
+  ],
+  "finding": "Harpy's authors report that Harpy met every specification of the ARPA speech programme and beat several, running an order of magnitude faster at about half the error rate.",
+  "source_quality": "high",
+  "as_of_date": "1976"
+ },
+ {
+  "id": "bl-068",
+  "source": "lowerre-1980-harpy",
+  "spans": [
+   [
+    "The juncture rules were all empirically derived"
+   ]
+  ],
+  "finding": "Harpy's authors record that its juncture rules, governing how sounds join across word boundaries, were all empirically derived by hand rather than learned.",
+  "source_quality": "high",
+  "as_of_date": "1976"
+ },
+ {
+  "id": "bl-069",
+  "source": "lowerre-1980-harpy",
+  "spans": [
+   [
+    "The integrated network representation of knowledge is based on the Dragon system",
+    "at Carnegie-Mellon University."
+   ]
+  ],
+  "finding": "Harpy's authors credit the Dragon system of James Baker for the integrated network representation of knowledge that Harpy used.",
+  "source_quality": "high",
+  "as_of_date": "1976"
+ },
+ {
+  "id": "bl-070",
+  "source": "lowerre-1980-harpy",
+  "spans": [
+   [
+    "The segmentation and labeling are extensions of techniques used in Hearsay II"
+   ]
+  ],
+  "finding": "Harpy's authors record that its segmentation and labelling were extensions of techniques from the Hearsay systems, that is, from the knowledge-source tradition of the same programme.",
+  "source_quality": "high",
+  "as_of_date": "1976"
+ },
+ {
+  "id": "bl-071",
+  "source": "erman-1980-hearsay-ii",
+  "spans": [
+   [
+    "The vocabulary contains 1011 words"
+   ]
+  ],
+  "finding": "The Hearsay-II authors report a vocabulary of 1,011 words, meeting the ARPA programme's thousand-word target.",
+  "source_quality": "high",
+  "as_of_date": "1976"
+ },
+ {
+  "id": "bl-072",
+  "source": "erman-1980-hearsay-ii",
+  "spans": [
+   [
+    "the information contained in the greater number of nodes imbeds semantic and pragmatic constraint directly within the grammatical structure"
+   ]
+  ],
+  "finding": "The Hearsay-II authors state that their grammar embedded semantic and pragmatic constraint directly in its grammatical structure, an explicit case of hand-built human knowledge inside a DARPA speech entrant.",
+  "source_quality": "high",
+  "as_of_date": "1976"
+ },
+ {
+  "id": "bl-073",
+  "source": "wikiquote-jelinek",
+  "spans": [
+   [
+    "Every time I fire a linguist, the performance of our speech recognition system goes up."
+   ]
+  ],
+  "finding": "Wikiquote records Fred Jelinek, who led IBM's statistical speech group, as the source of the remark that firing a linguist raises the recognizer's performance.",
+  "source_quality": "low",
+  "as_of_date": "1988",
+  "limitations": "A user-edited quotation site; the same entry says the wording and dating are unclear, so this atom evidences the currency of the anecdote and not that the words were said."
+ },
+ {
+  "id": "bl-074",
+  "source": "wikiquote-jelinek",
+  "spans": [
+   [
+    "context is unknown and its specific wording and dating are unclear."
+   ]
+  ],
+  "finding": "Wikiquote states that the context of Jelinek's remark is unknown and its wording and dating unclear, which is the caveat any use of the anecdote carries.",
+  "source_quality": "low",
+  "as_of_date": "2026",
+  "limitations": "A user-edited quotation site; the finding is about the state of the record, which is what the page is competent to report."
+ },
+ {
+  "id": "bl-075",
+  "source": "hinton-2012-dnn-speech",
+  "spans": [
+   [
+    "Using a DNN reduced the word error rate (WER) from the 27.4% of the baseline GMM-HMM"
+   ]
+  ],
+  "finding": "Hinton and co-authors report that replacing the Gaussian-mixture acoustic model with a deep neural network cut Switchboard word error rate from 27.4% to 18.5%, a 33% relative reduction.",
+  "source_quality": "high",
+  "as_of_date": "2012"
+ },
+ {
+  "id": "bl-076",
+  "source": "hinton-2012-dnn-speech",
+  "spans": [
+   [
+    "The DNN-HMM system trained on 309 h performs as well as combining several speakeradaptive"
+   ]
+  ],
+  "finding": "Hinton and co-authors report that the deep-network system trained on 309 hours matched an ensemble of speaker-adaptive multipass systems trained on nearly seven times as much acoustic data.",
+  "source_quality": "high",
+  "as_of_date": "2012"
+ },
+ {
+  "id": "bl-077",
+  "source": "hinton-2012-dnn-speech",
+  "spans": [
+   [
+    "feature-engineering techniques such as HLDA and VTLN, commonly used in GMMHMMs, are more helpful for shallow neural nets than for DBN-DNNs"
+   ]
+  ],
+  "finding": "Hinton and co-authors report that hand-built feature-engineering techniques help shallow networks more than deep ones, which learn appropriate features in their lower layers.",
+  "source_quality": "high",
+  "as_of_date": "2012"
+ },
+ {
+  "id": "bl-078",
+  "source": "hinton-2012-dnn-speech",
+  "spans": [
+   [
+    "A seven-hidden-layer DBN-DNN with 2,048 units in each layer",
+    "replaced the GMM in the acoustic model."
+   ],
+   [
+    "The trigram language model, used for both systems"
+   ]
+  ],
+  "finding": "Hinton and co-authors record that the deep network replaced only the acoustic model inside an otherwise hand-designed pipeline that kept tied triphone states, a trigram language model and engineered features.",
+  "source_quality": "high",
+  "as_of_date": "2012"
+ },
+ {
+  "id": "bl-079",
+  "source": "lowe-2004-sift",
+  "spans": [
+   [
+    "This paper presents a method for extracting distinctive invariant features from images",
+    "between different views of an object or scene."
+   ]
+  ],
+  "finding": "Lowe's SIFT paper presents hand-designed invariant image features for matching views of an object or scene, the method Sutton names as an example of the discarded era.",
+  "source_quality": "high",
+  "as_of_date": "2004"
+ },
+ {
+  "id": "bl-080",
+  "source": "lowe-2004-sift",
+  "spans": [
+   [
+    "The recognition proceeds by matching individual features to a database of features",
+    "for consistent pose parameters."
+   ]
+  ],
+  "finding": "Lowe's SIFT recognition pipeline is a hand-designed chain of nearest-neighbour matching, a Hough transform and a least-squares pose solve, with no learned component.",
+  "source_quality": "high",
+  "as_of_date": "2004"
+ },
+ {
+  "id": "bl-081",
+  "source": "wikipedia-sift",
+  "spans": [
+   [
+    "SIFT features can essentially be applied to any task that requires identification of matching locations between images."
+   ],
+   [
+    "3D reconstruction, motion tracking and segmentation, robot localization, image panorama stitching and epipolar calibration."
+   ]
+  ],
+  "finding": "Wikipedia lists 3D reconstruction, motion tracking, robot localization and panorama stitching among the tasks SIFT features are applied to, described in the present tense.",
+  "source_quality": "low",
+  "as_of_date": "2026",
+  "limitations": "Tertiary, and an encyclopedia's applications section does not date its claims; it evidences that the technique is described as current, not how widely it is deployed."
+ },
+ {
+  "id": "bl-082",
+  "source": "glue-2025-classical-vs-learned",
+  "spans": [
+   [
+    "Classical handcrafted methods such as SIFT feature detection and description",
+    "state-of-the-art for mobile mapping cameras."
+   ]
+  ],
+  "finding": "A 2025 photogrammetry paper states that classical handcrafted SIFT-based matching has been state of the art for mobile mapping cameras, six years after Sutton called such methods discarded.",
+  "source_quality": "high",
+  "as_of_date": "2025"
+ },
+ {
+  "id": "bl-083",
+  "source": "glue-2025-classical-vs-learned",
+  "spans": [
+   [
+    "The results indicate that the learnable feature matching methods vastly outperform traditional approaches regarding accuracy and robustness"
+   ]
+  ],
+  "finding": "The same 2025 paper reports that on its challenging custom datasets learned feature matching vastly outperformed the classical approaches on accuracy and robustness.",
+  "source_quality": "high",
+  "as_of_date": "2025"
+ },
+ {
+  "id": "bl-084",
+  "source": "krizhevsky-2012-alexnet",
+  "spans": [
+   [
+    "our model should also have lots of prior knowledge to compensate for all the data we don’t have."
+   ]
+  ],
+  "finding": "The AlexNet authors state that because the object-recognition task cannot be specified even by ImageNet, their model needs lots of prior knowledge to compensate for the missing data.",
+  "source_quality": "high",
+  "as_of_date": "2012"
+ },
+ {
+  "id": "bl-085",
+  "source": "krizhevsky-2012-alexnet",
+  "spans": [
+   [
+    "they also make strong and mostly correct assumptions about the nature of images",
+    "locality of pixel dependencies"
+   ]
+  ],
+  "finding": "The AlexNet authors describe convolutional networks as making strong and mostly correct built-in assumptions about images, namely stationarity of statistics and locality of pixel dependencies.",
+  "source_quality": "high",
+  "as_of_date": "2012"
+ },
+ {
+  "id": "bl-086",
+  "source": "krizhevsky-2012-alexnet",
+  "spans": [
+   [
+    "current GPUs, paired with a highly-optimized implementation of 2D convolution, are powerful enough to facilitate the training of interestingly-large CNNs"
+   ]
+  ],
+  "finding": "The AlexNet authors credit current GPUs and an optimized 2D convolution implementation with making large convolutional networks trainable, an instance of computation unlocking a method.",
+  "source_quality": "high",
+  "as_of_date": "2012"
+ },
+ {
+  "id": "bl-087",
+  "source": "krizhevsky-2012-alexnet",
+  "spans": [
+   [
+    "All of our experiments suggest that our results can be improved simply by waiting for faster GPUs and bigger datasets to become available."
+   ]
+  ],
+  "finding": "The AlexNet authors state that their results could be improved simply by waiting for faster GPUs and bigger datasets, a contemporaneous statement of the scaling expectation Sutton generalises.",
+  "source_quality": "high",
+  "as_of_date": "2012"
+ },
+ {
+  "id": "bl-088",
+  "source": "he-2015-resnet",
+  "spans": [
+   [
+    "We explicitly reformulate the layers as learning residual functions with reference to the layer inputs"
+   ]
+  ],
+  "finding": "The ResNet authors report that their gain came from an explicit architectural reformulation, learning residual functions with reference to layer inputs, rather than from more data or compute alone.",
+  "source_quality": "high",
+  "as_of_date": "2015"
+ },
+ {
+  "id": "bl-089",
+  "source": "he-2015-resnet",
+  "spans": [
+   [
+    "On the ImageNet dataset we evaluate residual nets with a depth of up to 152 layers"
+   ],
+   [
+    "This result won the 1st place on the ILSVRC 2015 classification task."
+   ]
+  ],
+  "finding": "The ResNet authors report 152-layer residual networks of lower complexity than VGG, and a 3.57% ImageNet test error that won the ILSVRC 2015 classification task.",
+  "source_quality": "high",
+  "as_of_date": "2015"
+ },
+ {
+  "id": "bl-090",
+  "source": "dosovitskiy-2020-vit",
+  "spans": [
+   [
+    "We show that this reliance on CNNs is not necessary and a pure transformer applied directly to sequences of image patches can perform very well on image classification tasks."
+   ]
+  ],
+  "finding": "The Vision Transformer authors show that a pure transformer with no convolution performs very well on image classification, so convolution is not what modern vision networks necessarily use.",
+  "source_quality": "high",
+  "as_of_date": "2020"
+ },
+ {
+  "id": "bl-091",
+  "source": "dosovitskiy-2020-vit",
+  "spans": [
+   [
+    "When pre-trained on large amounts of data and transferred to multiple mid-sized or small image recognition benchmarks",
+    "substantially fewer computational resources to train."
+   ]
+  ],
+  "finding": "The Vision Transformer authors report that the convolution-free model matches state-of-the-art convolutional networks when pre-trained on large data, at substantially lower training cost.",
+  "source_quality": "high",
+  "as_of_date": "2020"
+ },
+ {
+  "id": "bl-092",
+  "source": "brooks-2019-better-lesson",
+  "spans": [
+   [
+    "the very essence of CNNs is that the front end of the network is designed by humans to manage translational invariance"
+   ]
+  ],
+  "finding": "Brooks argues that a convolutional network's front end is itself human-designed knowledge, built to manage translational invariance rather than learned.",
+  "source_quality": "high",
+  "as_of_date": "2019-03"
+ },
+ {
+  "id": "bl-093",
+  "source": "brooks-2019-better-lesson",
+  "spans": [
+   [
+    "Saying that in the future we will have viable training sets is shifting the human workload",
+    "directly build a color constancy stage."
+   ]
+  ],
+  "finding": "Brooks argues that building a massive labelled training set is itself building knowledge in, relocating the human work rather than removing it.",
+  "source_quality": "high",
+  "as_of_date": "2019-03"
+ },
+ {
+  "id": "bl-094",
+  "source": "brooks-2019-better-lesson",
+  "spans": [
+   [
+    "In fact, for most machine learning problems today a human is needed to design a specific network architecture for the learning to proceed well."
+   ]
+  ],
+  "finding": "Brooks argues that for most machine learning problems a human still designs the network architecture and the training regime, so the human is not out of the loop.",
+  "source_quality": "high",
+  "as_of_date": "2019-03"
+ },
+ {
+  "id": "bl-095",
+  "source": "brooks-2019-better-lesson",
+  "spans": [
+   [
+    "Law is slowing down, so that some computer architects are reporting the doubling time in amount of computation on a single chip is moving from one year to twenty years."
+   ]
+  ],
+  "finding": "Brooks reports that computer architects put the doubling time of computation on a single chip at twenty years rather than one, contesting the premise Sutton's thesis rests on.",
+  "source_quality": "medium",
+  "as_of_date": "2019-03",
+  "limitations": "Brooks relays an unnamed group of computer architects without a citation; the twenty-year figure is not traceable from this source."
+ },
+ {
+  "id": "bl-096",
+  "source": "brooks-2019-better-lesson",
+  "spans": [
+   [
+    "self driving cars require about 2,500 Watts of power for computation"
+   ],
+   [
+    "a human brain only requires 20 Watts."
+   ]
+  ],
+  "finding": "Brooks contrasts about 2,500 watts of computation in a self-driving car with 20 watts for a human brain, arguing the energy cost makes the scaling approach impractical at the edge.",
+  "source_quality": "medium",
+  "as_of_date": "2019-03",
+  "limitations": "Round figures given without a source or a measurement method."
+ },
+ {
+  "id": "bl-097",
+  "source": "brooks-2019-better-lesson",
+  "spans": [
+   [
+    "the lesson we should learn from the last seventy years of AI research is not at all that we should just use more computation and that always wins"
+   ],
+   [
+    "they have all required substantial amounts of human ingenuity"
+   ]
+  ],
+  "finding": "Brooks states the counter-lesson: that the total cost of a solution must be counted, and that every solution so far has required substantial human ingenuity.",
+  "source_quality": "high",
+  "as_of_date": "2019-03"
+ },
+ {
+  "id": "bl-098",
+  "source": "epoch-2023-gpu-price-performance",
+  "spans": [
+   [
+    "Using a dataset of 470 models of graphics processing units (GPUs) released between 2006 and 2021",
+    "doubles every ~2.5 years."
+   ]
+  ],
+  "finding": "Epoch AI reports, from 470 GPU models released between 2006 and 2021, that floating-point operations per second per dollar doubled about every 2.5 years.",
+  "source_quality": "high",
+  "as_of_date": "2021"
+ },
+ {
+  "id": "bl-099",
+  "source": "epoch-2023-gpu-price-performance",
+  "spans": [
+   [
+    "GPU price-performance improvements have generally been slightly slower than the 2-year doubling time associated with Moore’s law"
+   ],
+   [
+    "considerably faster than was generally found in prior work on trends in GPU price-performance."
+   ]
+  ],
+  "finding": "Epoch AI reports that GPU price-performance improved slightly more slowly than Moore's law's two-year doubling but considerably faster than earlier studies had found.",
+  "source_quality": "high",
+  "as_of_date": "2021"
+ },
+ {
+  "id": "bl-100",
+  "source": "wikipedia-moores-law",
+  "spans": [
+   [
+    "Microprocessor architects report that semiconductor advancement has slowed industry-wide since around 2010, below the pace predicted by Moore's law."
+   ]
+  ],
+  "finding": "Wikipedia states that microprocessor architects report industry-wide semiconductor advancement slowing since around 2010, below the pace Moore's law predicts.",
+  "source_quality": "low",
+  "as_of_date": "2010",
+  "limitations": "Tertiary; the phrase microprocessor architects report names no attester the reader can check."
+ },
+ {
+  "id": "bl-101",
+  "source": "wikipedia-moores-law",
+  "spans": [
+   [
+    "In 2016 the International Technology Roadmap for Semiconductors"
+   ],
+   [
+    "produced its final roadmap. It no longer centered its research and development plan on Moore's law."
+   ]
+  ],
+  "finding": "Wikipedia states that the semiconductor industry's own roadmap body produced its final Moore's-law-centred roadmap in 2016 and stopped organising its plan around the law.",
+  "source_quality": "low",
+  "as_of_date": "2016",
+  "limitations": "Tertiary; the primary document is the 2016 ITRS roadmap, which this corpus has not pulled."
+ },
+ {
+  "id": "bl-102",
+  "source": "wikipedia-moores-law",
+  "spans": [
+   [
+    "Some forecasters, including Gordon Moore"
+   ],
+   [
+    "would end by around 2025."
+   ]
+  ],
+  "finding": "Wikipedia states that forecasters including Gordon Moore himself predicted, between 2012 and 2016, that Moore's law would end by around 2025.",
+  "source_quality": "low",
+  "as_of_date": "2016",
+  "limitations": "Tertiary; a prediction, so what is true of its date is that it was made."
+ },
+ {
+  "id": "bl-103",
+  "source": "thompson-2020-computational-limits",
+  "spans": [
+   [
+    "This article catalogs the extent of this dependency, showing that progress across a wide variety of applications is strongly reliant on increases in computing power."
+   ]
+  ],
+  "finding": "Thompson and co-authors report that progress across a wide variety of deep-learning applications is strongly reliant on increases in computing power, which is Sutton's mechanism measured.",
+  "source_quality": "high",
+  "as_of_date": "2020"
+ },
+ {
+  "id": "bl-104",
+  "source": "thompson-2020-computational-limits",
+  "spans": [
+   [
+    "Extrapolating forward this reliance reveals that progress along current lines is rapidly becoming economically, technically, and environmentally unsustainable."
+   ]
+  ],
+  "finding": "Thompson and co-authors conclude that extrapolating the compute dependency forward makes progress along current lines rapidly unsustainable economically, technically and environmentally.",
+  "source_quality": "high",
+  "as_of_date": "2020"
+ },
+ {
+  "id": "bl-105",
+  "source": "hooker-2020-hardware-lottery",
+  "spans": [
+   [
+    "This essay introduces the term hardware lottery to describe when a research idea wins because it is suited to the available software and hardware and not because the idea is superior to alternative research directions."
+   ]
+  ],
+  "finding": "Hooker introduces the hardware lottery: an idea can win because it suits the available hardware rather than because it is better, an alternative reading of the same seventy years Sutton reads.",
+  "source_quality": "high",
+  "as_of_date": "2020"
+ },
+ {
+  "id": "bl-106",
+  "source": "hooker-2020-hardware-lottery",
+  "spans": [
+   [
+    "Examples from early computer science history illustrate how hardware lotteries can delay research progress by casting successful ideas as failures."
+   ]
+  ],
+  "finding": "Hooker states that hardware lotteries have delayed progress by casting successful ideas as failures, a competing explanation for the pattern Sutton describes as knowledge-based methods losing.",
+  "source_quality": "high",
+  "as_of_date": "2020"
+ },
+ {
+  "id": "bl-107",
+  "source": "jumper-2021-alphafold",
+  "spans": [
+   [
+    "AlphaFold greatly improves the accuracy of structure prediction by incorporating novel neural network architectures and training procedures based on the evolutionary, physical and geometric constraints of protein structures."
+   ]
+  ],
+  "finding": "The AlphaFold 2 authors attribute their accuracy gain to architectures and training procedures built on the evolutionary, physical and geometric constraints of proteins, that is, to domain knowledge deliberately built in.",
+  "source_quality": "high",
+  "as_of_date": "2021"
+ },
+ {
+  "id": "bl-108",
+  "source": "jumper-2021-alphafold",
+  "spans": [
+   [
+    "In this study, we develop the first, to our knowledge, computational approach capable of predicting protein structures to near experimental accuracy in a majority of cases."
+   ]
+  ],
+  "finding": "The AlphaFold 2 authors report the first computational approach predicting protein structures to near experimental accuracy in a majority of cases, assessed blind at CASP14.",
+  "source_quality": "high",
+  "as_of_date": "2020"
+ },
+ {
+  "id": "bl-109",
+  "source": "wikipedia-alphafold",
+  "spans": [
+   [
+    "a final refinement step applies local physical constraints using energy minimization based on the AMBER force field"
+   ]
+  ],
+  "finding": "Wikipedia states that AlphaFold 2 ends with a refinement step applying physical constraints from the AMBER force field, a hand-built physics model retained inside the learned system.",
+  "source_quality": "low",
+  "as_of_date": "2020",
+  "limitations": "Tertiary; the paper itself is held in this corpus only as an excerpt that does not cover the refinement step."
+ },
+ {
+  "id": "bl-110",
+  "source": "bronstein-2021-geometric-deep-learning",
+  "spans": [
+   [
+    "many high-dimensional learning tasks previously thought to be beyond reach",
+    "are in fact feasible with appropriate computational scale."
+   ]
+  ],
+  "finding": "The geometric deep learning authors grant that tasks once thought beyond reach became feasible with appropriate computational scale, conceding Sutton's observation.",
+  "source_quality": "high",
+  "as_of_date": "2021"
+ },
+ {
+  "id": "bl-111",
+  "source": "goyal-2020-inductive-biases",
+  "spans": [
+   [
+    "Deep learning already exploits several key inductive biases, and this work considers a larger list"
+   ]
+  ],
+  "finding": "Goyal and Bengio state that deep learning already exploits several key inductive biases and propose extending the list, a research programme of building more structure in rather than less.",
+  "source_quality": "high",
+  "as_of_date": "2020"
+ },
+ {
+  "id": "bl-112",
+  "source": "marcus-2018-critical-appraisal",
+  "spans": [
+   [
+    "I present ten concerns for deep learning, and suggest that deep learning must be supplemented by other techniques"
+   ]
+  ],
+  "finding": "Marcus argues that deep learning must be supplemented by other techniques to reach general intelligence, a named dissent contemporary with the essay.",
+  "source_quality": "medium",
+  "as_of_date": "2018",
+  "limitations": "A position paper by an interested party in a public dispute; the abstract states a conclusion rather than reporting data."
+ },
+ {
+  "id": "bl-113",
+  "source": "brooks-2019-better-lesson",
+  "spans": [
+   [
+    "at a two day work shop on Deep Learning last week at the National Academy of Science, the latter idea was much more in vogue, something of a backlash against exactly what Sutton is arguing."
+   ]
+  ],
+  "finding": "Brooks reports that at a National Academy of Sciences deep learning workshop in March 2019 the specialized-structure view was much more in vogue, a backlash against Sutton's argument.",
+  "source_quality": "medium",
+  "as_of_date": "2019-03",
+  "limitations": "A first-hand impression of a meeting's mood, unquantified, reported by a participant who disagrees with Sutton."
+ },
+ {
+  "id": "bl-114",
+  "source": "nielsen-2021-reflections-bitter-lesson",
+  "spans": [
+   [
+    "Neither system had hand-engineered features",
+    "the rules of the various games."
+   ]
+  ],
+  "finding": "Nielsen states that AlphaZero and MuZero had no hand-engineered features and started from the rules of the games alone, the clearest instance of Sutton's pattern.",
+  "source_quality": "medium",
+  "as_of_date": "2021"
+ },
+ {
+  "id": "bl-115",
+  "source": "nielsen-2021-reflections-bitter-lesson",
+  "spans": [
+   [
+    "the system would have been trounced by Deep Blue. At the time, a hybrid system was the way to go."
+   ]
+  ],
+  "finding": "Nielsen judges that AlphaZero's method run in 1997 would have been beaten by Deep Blue, so the hybrid was the right choice at the time.",
+  "source_quality": "low",
+  "as_of_date": "2021",
+  "limitations": "Nielsen labels this in the same sentence as a guess unbacked by any actual evidence; it is recorded as an argument in circulation, not as a fact."
+ }
 ]

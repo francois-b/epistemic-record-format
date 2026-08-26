@@ -1,0 +1,48 @@
+type: sources
+sources:
+  pacioli-1494-geijsbeek:
+    citation_text: "Luca Pacioli, Particularis de Computis et Scripturis
+      (Venice, 1494), ch. 36, trans. Geijsbeek 1914"
+    citation:
+      type: book
+      author: [{family: "Pacioli", given: "Luca"}]
+      title: "Particularis de Computis et Scripturis"
+      publisher-place: "Venice"
+      issued: 1494
+      chapter-number: 36
+      translator: [{family: "Geijsbeek", given: "John B."}]
+    received:
+      url: "https://archive.example/ancientdoubleent00geijuoft.pdf"
+      digest: "sha256:afca88a2717fa7051e48acd2f440446b0b7ebe237aa3a83e3a28b994287e83fa"
+      timestamp: "2026-08-23"
+    status: "shipped-as-quotation"
+    normalized: "normalized/pacioli-1494-geijsbeek.md"
+    normalized_digest: "sha256:afca88a2717fa7051e48acd2f440446b0b7ebe237aa3a83e3a28b994287e83fa"
+    extraction: "pymupdf4llm 0.3.4"
+    normalization: "pandoc 3.1.11 --wrap=none"
+    excerpt: {timestamp: "2026-08-23", by: "agent/claude-sonnet-5"}
+  ledger-committee-2026:
+    citation_text: "Audit Committee, Findings on the Ledger Programme
+      (Committee report, 2026), sec. 4"
+    citation:
+      type: report
+      author: [{family: "Committee", given: "Audit"}]
+      title: "Findings on the Ledger Programme"
+      issued: 2026
+    received:
+      url: "https://example.org/committee/findings-2026.html"
+      path: "raw/ledger-committee-2026.html"
+      digest: "sha256:d19d028db38eadfe680dcf74dc7e97f8acee51e2d5a3ca638780477ddb9dbfc2"
+      timestamp: "2026-08-24"
+    status: "shipped"
+    normalized: "normalized/ledger-committee-2026.md"
+    normalized_digest: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    licence: "CC-BY-4.0"
+    licence_name: "Creative Commons Attribution 4.0 International"
+    extraction: "pandoc 3.1.11 -f html -t commonmark"
+    excerpt: {timestamp: "2026-08-24", by: "human:fb"}
+  vendor-briefing-2026:
+    citation_text: "Vendor Ltd, Briefing to Customers (private briefing, 2026)"
+    status: "not-redistributable"
+    reason: "Copyright permits reading and not republication; the quotation
+      route of ERF-69 stays open but no text is held here."

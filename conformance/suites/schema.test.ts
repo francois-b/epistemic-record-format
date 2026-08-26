@@ -7,7 +7,7 @@
  * Invalid fixtures are not asserted to fail here: most of them break a rule
  * the schema cannot see (references, cycles, the quote check). One is: the
  * fixture that originates an undefined field, because rejecting it is the
- * schema's own job (ERF-55).
+ * schema's own job (ERF-73).
  */
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -83,7 +83,7 @@ test("every valid fixture, spirit fixture and example record validates against e
   assert.ok(n > 40, `expected to validate many files, validated ${n}`);
 });
 
-test("the schema itself rejects an originated undefined field (ERF-55)", () => {
+test("the schema itself rejects an originated undefined field (ERF-73)", () => {
   const bad = join(FIXTURES, "invalid", "unknown-field-originated");
   let rejected = 0;
   for (const f of walk(bad)) { const i = instance(f); if (i !== null && !validate(i)) rejected++; }

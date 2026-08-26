@@ -1,4 +1,4 @@
-requirement: ERF-22
+requirement: ERF-73
 record: fx-claim
 field: status
 because: >

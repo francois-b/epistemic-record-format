@@ -181,7 +181,7 @@ impl State {
         }
     }
 
-    fn note_structure(&mut self, aid: usize, tag: &Option<yaml_rust2::scanner::Tag>, mark: Marker) {
+    fn note_structure(&mut self, aid: usize, tag: &Option<yaml_rust2::parser::Tag>, mark: Marker) {
         // ERF-66: no anchor, no explicit tag.
         if aid != 0 {
             self.diags.push(YamlDiag {

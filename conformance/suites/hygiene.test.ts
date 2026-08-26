@@ -71,11 +71,11 @@ test("every standalone example carries only defined fields and legal values", ()
       // created stamp. Its roster is the Source shape plus an id,
       // which standalone store form carries as a field.
       for (const key of Object.keys(doc)) {
-        assert.ok(SOURCE_FIELDS.has(key) || key.startsWith("x_"), `${name}: "${key}" is not a defined source field (ERF-55)`);
+        assert.ok(SOURCE_FIELDS.has(key) || key.startsWith("x_"), `${name}: "${key}" is not a defined source field (ERF-73)`);
       }
       const f = (doc["received"] ?? {}) as Record<string, unknown>;
       for (const key of Object.keys(f)) {
-        assert.ok(RECEIVED_FIELDS.has(key) || key.startsWith("x_"), `${name}: received."${key}" is not a defined field (ERF-55)`);
+        assert.ok(RECEIVED_FIELDS.has(key) || key.startsWith("x_"), `${name}: received."${key}" is not a defined field (ERF-73)`);
       }
       const ct = String(doc["citation_text"] ?? "");
       assert.ok(!/:\/\//.test(ct), `${name}: citation_text carries a URL (ERF-7)`);
@@ -88,7 +88,7 @@ test("every standalone example carries only defined fields and legal values", ()
       // `body` is legal here: a standalone YAML example is the store form,
       // where the body is one more field (ERF-53).
       if (key === "body") continue;
-      assert.ok(known.has(key), `${name}: "${key}" is not a defined ${kind} field (ERF-55)`);
+      assert.ok(known.has(key), `${name}: "${key}" is not a defined ${kind} field (ERF-73)`);
     }
     const audits = (doc["finding_audit"] ?? doc["evidence_audit"] ?? []) as { verdict?: unknown }[];
     for (const a of audits) {

@@ -15,6 +15,7 @@ use crate::yamlload::{self, YamlDiag};
 
 pub struct FileDoc {
     pub rel: String,
+    #[allow(dead_code)]
     pub abs: PathBuf,
     /// The frontmatter, loaded under `ERF-65`'s schema.
     pub front: Value,
@@ -27,6 +28,7 @@ pub struct FileDoc {
     pub raw_type: Option<String>,
     pub rtype: Option<RecordType>,
     pub yaml_diags: Vec<YamlDiag>,
+    #[allow(dead_code)]
     pub non_string_scalars: Vec<(String, &'static str)>,
     /// The model instance: frontmatter with `body` attached where the model
     /// says the file has one.
@@ -49,6 +51,7 @@ impl FileDoc {
 }
 
 pub struct Loaded {
+    #[allow(dead_code)]
     pub root: PathBuf,
     pub docs: Vec<FileDoc>,
     /// Files with no `type`: not part of the corpus (`ERF-54`), reported as
@@ -216,6 +219,7 @@ pub fn load(root: &Path, rep: &mut Report) -> Loaded {
 pub struct Index {
     pub records: BTreeMap<String, Vec<(RecordType, String)>>,
     pub sources: BTreeMap<String, (String, Value)>,
+    #[allow(dead_code)]
     pub decl_ids: Vec<String>,
 }
 

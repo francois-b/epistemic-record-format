@@ -5,7 +5,8 @@
 //! The attribution table below is SPEC section 3.1, "an index from field to the
 //! requirements that constrain it, by record type", read back the other way.
 
-use jsonschema::{Validator, ValidationErrorKind};
+use jsonschema::Validator;
+use jsonschema::error::ValidationErrorKind;
 use serde_json::{Value, json};
 
 use crate::model::RecordType;
@@ -131,11 +132,11 @@ fn req_for(rt: RecordType, segs: &[String], kind: &ValidationErrorKind) -> &'sta
     // A `required` failure names the missing property, which is the field the
     // requirement is about, not the object the error sits on.
     let missing: Option<String> = match kind {
-        ValidationErrorKind::Required { property } => property.as_str().map(|s| s.to_string()),
+        ValidationErrorKind::Required { property } => property.as_str().map(str::to_string),
         _ => None,
     };
     let head: &str = match &missing {
-        Some(m) if segs.is_empty() => m.as_str(),
+        Some(m) if segs.is_empty() => m.as_ref(),
         _ => f(0),
     };
     match rt {

@@ -1,4 +1,4 @@
-requirement: ERF-19
+requirement: ERF-73
 record: fx-claim-001
 field: standings[].timestamp
 because: >

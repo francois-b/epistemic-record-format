@@ -39,7 +39,7 @@ types of section 3 under the invariants of section 6. The specification is
 written to be handed to an implementer (human or LLM) to build from, or
 diffed against an existing system requirement by requirement.
 
-Requirements are numbered (`ERF-7`) and use RFC 2119 keywords: MUST
+Requirements are numbered (the schema (`Source.citation_text`)) and use RFC 2119 keywords: MUST
 (violation means non-conformance), SHOULD (default with legitimate
 exceptions; a departing system should know and say so), MAY (declared
 option; differing here is flavor, not divergence). Passages set as notes
@@ -52,8 +52,8 @@ Conformance is claimed per class, not against the whole document:
 - Record: a single atom, claim, or survey. Binds the data model
   (section 3) and its record type's requirements (section 4).
 - Corpus: a collection of records under one declaration. Binds the
-  invariants (section 6), the declaration (`ERF-59`), the authoritative
-  home (`ERF-62`), and the source list (`ERF-3`, `ERF-4`, `ERF-5`).
+  invariants (section 6), the declaration (the schema (`CorpusDeclaration`)), the authoritative
+  home (`ERF-62`), and the source list (the schema (`SourceList`), `ERF-4`, the status vocabulary (section 5)).
 - Producer: a tool or process that writes records. Binds the serialization
   rules (section 7) and the producer SHOULDs of section 4 (for example
   `ERF-20`). Producers are strict: they write only defined fields,
@@ -74,7 +74,7 @@ Conformance is claimed per class, not against the whole document:
   and does not bound it: a tool that never opens a normalized text or
   parses a narrative binding is not a validator. A validator MUST name the
   requirements it does not check, and a deployment-wide check (`ERF-36`,
-  `ERF-38`) run over a single corpus MUST be named as partial.
+  `ERF-36`) run over a single corpus MUST be named as partial.
 
 Strict producers, tolerant consumers: divergence is caught by validators
 and surfaced, never by consumers refusing to read.
@@ -184,12 +184,28 @@ format's argument, and they are prose because no notation checks them.
 The six kinds of file, discriminated by `type`: `atom`, `claim` and
 `survey` are records; `corpus` is the declaration, `sources` the source
 list, `narrative` a document. Lists are total in the model and MAY be
-omitted on the wire when empty; a reader materializes them (`ERF-55`,
+omitted on the wire when empty; a reader materializes them (`ERF-73`,
 `ERF-56`). A field the schema does not require asserts existence when
 present: a `citation` means structure exists, a `received` means a fetch
 happened, a `last_modified` means an edit happened. `types/erf.ts` is a
 TypeScript rendering of the schema for the reference implementation, held
 to it by a gate, and is not normative.
+
+- **ERF-73** Every document a corpus holds MUST validate against
+  `erf.schema.json`, with its body attached as `body` where the model has
+  one. A document is the declaration, the source list, a record, or a
+  narrative; a held raw or normalized file is an artifact, not a document,
+  and carries no `type`. This is the whole of the format's shape, and the
+  reason each definition takes the shape it does is written on the
+  definition: a source's `citation_text` refuses a URL because a citation
+  names a work and a locator names a copy; a standing's `by` is a person
+  because only a person takes a stance; a claim has no state field because
+  its disposition is computed; a narrative has no evidence, standings or
+  disposition because nothing about it is adjudicated. Until 2026-08-26
+  each of those was a numbered requirement beside the schema that forced
+  it, and four independent readers found the same thing: a rule the
+  schema already enforces is a rule with no content. They retired, listed
+  under change control, and the schema is the requirement.
 
 ### 3.1 Field reference
 
@@ -201,12 +217,12 @@ is bound by the data model alone, with advice in the section named.
 |:--|:--|
 | `id` | `ERF-13` |
 | `type`, `corpus` | `ERF-54` |
-| `finding`, `finding_audit` (each entry's `auditor`, `verdict`, `timestamp`, `protocol`) | `ERF-11`, `ERF-12`; guidance in 4.2 |
+| `finding`, `finding_audit` (each entry's `auditor`, `verdict`, `timestamp`, `protocol`) | `ERF-11`, `ERF-11`; guidance in 4.2 |
 | `quote` | `ERF-6`, `ERF-52` |
 | `source` | `ERF-4` |
 | `source_quality` | `ERF-9`, `ERF-10` |
 | `as_of_date`, `limitations` | `ERF-14` |
-| `created`, `last_modified` | `ERF-47`, `ERF-48`, `ERF-58` |
+| `created`, `last_modified` | `ERF-47`, `ERF-48`, the schema (`ActorStamp`) |
 
 | Claim field | Constrained by |
 |:--|:--|
@@ -218,9 +234,9 @@ is bound by the data model alone, with advice in the section named.
 | `atoms_for`, `atoms_against` | `ERF-23` |
 | `surveys` | `ERF-25` |
 | `edges` | `ERF-43`, `ERF-44` |
-| `standings` | `ERF-19`, `ERF-20`, `ERF-21`, `ERF-39`, `ERF-40` |
+| `standings` | the schema (`StandingEntry`), `ERF-20`, the schema (`HumanActor`), the schema (`StandingEntry`), `ERF-40` |
 | `evidence_audit` | `ERF-24`; guidance in 4.4 |
-| `created`, `last_modified` | `ERF-47`, `ERF-48`, `ERF-58` |
+| `created`, `last_modified` | `ERF-47`, `ERF-48`, the schema (`ActorStamp`) |
 | `short_name`, `families`, `semantic_query` | guidance in 4.3 |
 
 | Survey field | Constrained by |
@@ -234,9 +250,10 @@ is bound by the data model alone, with advice in the section named.
 
 | Source field (not a record) | Constrained by |
 |:--|:--|
-| `citation_text`, `citation` | `ERF-7`, `ERF-8` |
-| `received.url`, `received.path`, `received.digest`, `received.timestamp` | `ERF-2`, `ERF-7`, `ERF-71` |
-| `status`, `normalized`, `normalized_digest`, `reason` | `ERF-1`, `ERF-4`, `ERF-5`, `ERF-71` |
+| `id`, `title`, `spec_version`, `owner`, `classification` (declaration) | schema `CorpusDeclaration`; `ERF-54`, `ERF-60`, `ERF-61` |
+| `citation_text`, `citation` | the schema (`Source.citation_text`), `ERF-8` |
+| `received.url`, `received.path`, `received.digest`, `received.timestamp` | `ERF-2`, the schema (`Source.citation_text`), `ERF-71` |
+| `status`, `normalized`, `normalized_digest`, `reason` | `ERF-1`, `ERF-4`, the status vocabulary (section 5), `ERF-71` |
 | `licence`, `licence_name` | `ERF-68` |
 | `excerpt.by`, `excerpt.timestamp` | `ERF-69` |
 | `extraction`, `normalization` | `ERF-70` |
@@ -289,8 +306,8 @@ the next time it is read or used, and its atoms are minted then; a corpus
 is not retrofitted wholesale, because a file taken long after the reading
 is evidence about today's page rather than about what was read.
 
-- **ERF-1** A source's *normalized text* MUST exist before any check runs
-  against it, and checks MUST run against that text, never the live web. It
+- **ERF-1** Every check MUST run against a source's *normalized text*,
+  never the live web, so a source without one has no verdict. It
   is the output of the corpus's text pipeline: the raw file as received,
   then extraction to CommonMark, then a passage selected from it, then
   normalization. Normalized text is CommonMark (`ERF-67`), which is what
@@ -304,32 +321,19 @@ is evidence about today's page rather than about what was read.
   bytes. A source whose raw file is mutable at its location, a web page
   above all, MUST record `received.timestamp`, the date it arrived, because
   otherwise nothing says which version was read.
-- **ERF-3** A corpus MUST keep a source list, one entry per work, keyed by
-  a source id unique within the corpus. *Shape: `SourceList`, `Source`.*
-  A source's citation, locator and normalized text live on the source and
-  never on the atom. How the list is stored is the store's business
-  (section 8); its interchange form is the binding's (section 7).
-- **ERF-4** Every atom MUST name its source, the named id MUST exist in
-  the source list, and every source MUST either give the path of its
-  normalized text or record that none is held and why. *Shape:
-  `Atom.source`; the conditional on `Source.status`.* Absence is explicit
+- **ERF-4** Every atom MUST name a source that exists in the corpus's
+  source list. Whether the source ships its normalized text or records
+  why none is held is the schema's conditional on `status`; that absence
+  is explicit rather than silent is what makes a source list checkable,
   because a validator can tell a recorded absence from an omission and
   cannot tell an omission from an oversight.
-- **ERF-5** A source recording an absence MUST carry a `status` from the
-  closed set and a `reason`. *Shape: `Source.status`.*
-  `not-redistributable`: copyright permits reading and not republication,
-  and the quotation route of `ERF-69` stays open. `access-restricted`: a
-  term of access forbids extraction, and a short passage does not answer a
-  contract, so that route is closed. `licence-unverified`: rights could not
-  be established, and unverified is not permission. The set grows by
-  demonstrated instance.
 - **ERF-68** A source whose normalized text ships SHOULD name the licence
   that permits it as an SPDX identifier where one exists, with the plain
   name alongside, and a text shipping under no licence as a short
   quotation MUST carry `status: shipped-as-quotation`. *Shape:
   `Source.licence`, `Source.status`.* An identifier matches or it does
   not; prose matches by eye. SPDX names a licence and never the
-  redistribution judgment, which stays `ERF-5`'s. An absent licence
+  redistribution judgment, which stays the status vocabulary (section 5)'s. An absent licence
   otherwise reads as an oversight rather than a different basis.
 - **ERF-69** A source's normalized text MAY be an excerpt of the work
   rather than a whole copy, and MUST then record who selected the passage
@@ -437,12 +441,6 @@ only prose.
   a tool, and MUST NOT regenerate it: an author that retypes, an LLM
   above all, tidies what it retypes, and a tidied quote is the author
   guessing at their own evidence. The check exists to say so.
-- **ERF-7** `citation_text` MUST NOT contain a URL. *Shape:
-  `Source.citation_text`.* A citation identifies a work; a locator
-  retrieves one copy, and that is `received.url`, naming the artifact
-  retrieved rather than a page describing it. A web-native work's own
-  identity MAY appear as `citation.URL`. A file received by hand has no
-  locator and no `received`.
 - **ERF-8** When `citation` is present it is canonical: it MUST carry
   everything the rendered `citation_text` string shows, chapter,
   translator, and edition included, and `citation_text` MUST be rendered
@@ -483,17 +481,15 @@ only prose.
   stable name, is recorded beside it. The `auditor` is a bare model or tool
   identifier (`deepseek-v4-pro`), deliberately not an `Actor`: an audit
   entry names the instrument that rendered a verdict, not a role in the
-  practice, and it is read together with its `protocol`.
-- **ERF-12** A verdict MUST be exactly one of `SUPPORTED`, `PARTIAL` or
-  `UNSUPPORTED`, and a failed, unparseable or abandoned audit MUST NOT be
-  written as one. *Shape: `Verdict`.* An audit that produced nothing did
-  not happen: the atom stays unaudited and the remedy is to run it again,
-  because a tool failure in the field that holds a judgment is a judgment
-  to everything downstream. Disagreeing with a verdict is a standing on the
-  claim, never an edit to the verdict.
-- **ERF-13** An atom's `id` MUST be permanent: a mint-time prefix and a
-  sequence number (`kwg-117`), never renamed and never reused. *Shape:
-  `Id`.*
+  practice, and it is read together with its `protocol`. A failed, unparseable or
+  abandoned audit MUST NOT be written as a verdict: an audit that produced
+  nothing did not happen, the atom stays unaudited and the remedy is to
+  run it again, because a tool failure in the field that holds a judgment
+  is a judgment to everything downstream. Disagreeing with a verdict is a
+  standing on the claim, never an edit to the verdict.
+- **ERF-13** An atom's `id` MUST be permanent: never renamed and never
+  reused. Its shape, a mint-time prefix and a sequence number, is the
+  schema's (`AtomId`).
 - **ERF-14** `as_of_date`, where present, MUST record the date the fact
   is true of, at the precision the source gave and no finer: a year, a
   year and month, or a full date. *Shape: `AsOfDate`.* A figure true of a
@@ -515,7 +511,7 @@ binding document.
 
 The example ships as a proposal: no one has stood behind it, so its
 `standings` ledger is empty and therefore omitted from the file
-(`ERF-55`), and its computed disposition is *proposal*. The spec invents no
+(`ERF-73`), and its computed disposition is *proposal*. The spec invents no
 standing entries in its examples: a stance is a real person's recorded
 judgment, and there is none to show yet.
 
@@ -544,26 +540,17 @@ prose: does the recorded why survive the evidence on record?
 
 - **ERF-15** References MUST be bare ids and MUST NOT encode location.
   A claim moved between corpora keeps its id, and no reference changes.
-- **ERF-17** `corpus` MUST be written on every record and MUST name a
-  declared corpus (`ERF-59`). *Shape: `corpus` on each record.* Changing
-  it is a promotion or transfer that stamps `last_modified` (`ERF-48`) and
-  is explained in working notes; it MUST NOT be written as a standing,
-  because a bookkeeping note in the ledger moves the disposition
-  (`ERF-41`).
+- **ERF-17** A record's `corpus` MUST name the corpus the deployment
+  declares. Changing it is a promotion or transfer that stamps
+  `last_modified` (`ERF-48`) and is explained in working notes; it MUST NOT
+  be written as a standing, because a bookkeeping note in the ledger moves
+  the disposition (`ERF-41`).
 - **ERF-18** `title` MUST state the claim; it is the normative statement.
   The body SHOULD open by restating it, and keeping the restatement
   verbatim is what makes later drift visible to a reader; whether an
   opening in other words still states the same claim is a reading, so no
   rule numbers it. Beyond that restatement the body is the one
   operator-authored text on the record, and carries the working notes.
-- **ERF-19** `standings` is append-only, entries MUST NOT be edited or
-  deleted and a correction is a new entry, and each entry's `timestamp`
-  MUST be a full RFC 3339 instant with time and offset, never a bare date.
-  *Shape: `StandingEntry`.* Precision is required here alone because this
-  is the format's only ordered ledger: a bare date and an instant on the
-  same day cannot be ordered, and a consumer choosing the newest stance
-  would settle a disposition by accident. A bare date stays correct where
-  nothing is ordered.
 - **ERF-20** Producer tools SHOULD stamp each standing entry with the
   evidence sets attached at ruling time, by id
   (`evidence_at_stance: {atoms_for: [ids], atoms_against: [ids]}`). Which
@@ -574,14 +561,6 @@ prose: does the recorded why survive the evidence on record?
   both derivable from existing timestamps. Counts are not an acceptable
   digest either, because swapping one atom for another leaves the count
   unchanged and hides the staleness the field exists to expose.
-- **ERF-21** A standing's `by` MUST be a `human:` actor. *Shape:
-  `StandingEntry.by`.* An LLM proposes; only a person takes a stance, and
-  a stance speaks for one person, five endorsements being five entries.
-- **ERF-22** A claim MUST NOT store a state field: the disposition is
-  computed (`ERF-41`). Minting is not a standing: a claim is born with
-  none, and a claim nobody has taken a stance on is a proposal. The origin
-  story belongs in working notes; origin that carries evidential weight is
-  a source: take it, normalize it, and cite atoms.
 - **ERF-23** Evidence MUST live on the claim, in both directions:
   `atoms_for` and `atoms_against`. Evidence against a claim MUST NOT be
   modeled as a rival claim.
@@ -736,20 +715,22 @@ line, is a matter for whoever writes the narrative.
   narrative claiming support from a record that does not exist is a defect
   in the narrative, and hiding it turns a broken citation into a confident
   sentence. A consumer MUST NOT invent a record to satisfy the reference.
-- **ERF-34** A narrative MUST NOT be modelled as a record: it is a
-  document carrying `type: narrative`, `title`, `corpus` and `created`,
-  whose only structured content is its narrative bindings. *Shape:
-  `Narrative`.* It has no evidence, no standings and no disposition, which
-  is why it is not a record: nothing about it is adjudicated, and a person
-  disputes the claims it binds rather than the prose. `created` takes the
-  stamp everything else takes, because a narrative is prose someone wrote
-  and who wrote it is the fact a reader most wants.
 > *Note (non-normative):* staleness detects that the claim moved, not what
 > moved, so a typo fix in a body flags its narrative bindings. That is the
 > same over-stamping accepted in `ERF-48`, and it errs toward telling a
 > reader to look.
 
 ## 5. Vocabularies
+
+A source's `status` (schema `Source.status`): `shipped`, the normalized
+text ships under a licence that permits it; `shipped-as-quotation`, it
+ships as a short quotation under no licence (`ERF-68`, `ERF-69`);
+`not-redistributable`, copyright permits reading and not republication,
+and the quotation route stays open; `access-restricted`, a term of access
+forbids extraction, and a short passage does not answer a contract, so
+that route is closed; `licence-unverified`, rights could not be
+established, and unverified is not permission. The set grows by
+demonstrated instance.
 
 Closed sets. A value outside them is a validation failure, not a dialect.
 The sets themselves are listed in the data model (section 3); what they
@@ -817,16 +798,6 @@ checks the relations no type can see.
 - **ERF-36** Every record id MUST be unique across every corpus in the
   deployment, regardless of record type: one atom, claim, or survey may
   hold a given id, and no second record of any type may repeat it.
-- **ERF-37** A producer MUST verify that an id is unused in the deployment
-  before writing a record. The means are the substrate's: a directory that
-  cannot hold two files of one name, a unique index, a lookup against a
-  list the deployment keeps. The format states the invariant and declines
-  to specify the mechanism, because the mechanism is exactly what varies
-  between substrates (section 8).
-- **ERF-38** A validator MUST reject a deployment containing duplicate
-  record ids, regardless of record type.
-- **ERF-39** Every standing entry MUST have a `human:` actor and a
-  non-empty `why`. *Shape: `StandingEntry`.*
 - **ERF-40** Standings MUST be append-only; an edit or deletion of an
   existing entry is a violation, verified against the substrate's history.
   The audit lists (`finding_audit`, `evidence_audit`) are append-only in
@@ -838,8 +809,8 @@ checks the relations no type can see.
   being exit and not opposition, and read the rest: none remaining,
   `retired`; all `for`, `active`; all `against`, `rejected`; both,
   `contested`. An entry is admissible when its `stance` is in the
-  vocabulary, its `timestamp` is an instant (`ERF-19`) and its `by` is a
-  `human:` actor (`ERF-21`); any other entry is a producer error, MUST be
+  vocabulary, its `timestamp` is an instant (the schema (`StandingEntry`)) and its `by` is a
+  `human:` actor (the schema (`HumanActor`)); any other entry is a producer error, MUST be
   reported, and is treated as never written, so the person's previous
   admissible entry stays their newest. Where one person's newest entries
   share an instant, the later in the ledger is current and a validator
@@ -899,9 +870,9 @@ checks the relations no type can see.
 > that has since moved, which is the failure that matters.
 
 - **ERF-50** The mechanical quote check (the normalized quote occurs in
-  the source's normalized text) MUST be re-runnable by anyone holding the corpus and its
-  normalized texts; it MUST run as a gate at minting and after any transform that
-  moves atoms between homes.
+  the source's normalized text) MUST be re-runnable by anyone holding the
+  corpus and its normalized texts. When it runs is nobody's business but
+  the producer's; that it can run, at any time, by anyone, is the format's.
 - **ERF-51** Normalization MUST be this sequence, applied identically to
   the quote and to the normalized text, so that two conforming tools reach
   the same verdict on the same pair:
@@ -1029,46 +1000,45 @@ raw or normalized, and are the model's.
 - **ERF-53** A corpus MUST have a canonical interchange form, given by
   a binding (this section's opening). A store MAY hold a corpus any other
   way it likes, body as one more field, many records in one collection
-  document, rows in a database, provided every file the corpus holds
-  round-trips through the model without loss. Loss is any difference,
-  after loading, in anything a file carried: a value the model types, an
-  opaque value the model preserves (`citation`'s CSL fields, extension
-  and unknown fields, `ERF-57`), the order of any list, a narrative's
-  metadata and text, or the bytes of a held raw or normalized file,
-  which is where every quote-check verdict lives. Two forms are equivalent
-  when they load to the same instance so defined, and a store that returns
-  `chapter-number: 36.0` for `36` has lost, whatever its own types say. "Every file" and not "every record": the source list
-  carries the digests, the licence judgments and the normalized-text
-  paths, the whole verifiability chain, and it is not a record. How
-  records are grouped in a store carries no meaning, because each record
-  states its own `type` and `corpus` (`ERF-54`).
-- **ERF-54** Every file a corpus holds MUST self-describe with `type`,
-  no meaning MAY live in a path, exactly one file MUST carry `type:
-  corpus`, and every record MUST also carry `corpus`. *Shape: the `type`
-  discriminator.* A consumer discovers a corpus by reading: it walks what
-  it was given and dispatches on `type`; a file without one is not part of
-  the corpus, and a consumer MUST ignore it and report that it did
+  document, rows in a database, provided everything the corpus holds
+  round-trips without loss: a document through the model, an artifact
+  byte for byte. Loss in a document is any difference, after loading, in
+  anything it carried: a value the model types, an opaque value the model
+  preserves (`citation`'s CSL fields, extension and unknown fields,
+  `ERF-57`), the order of any list, a narrative's metadata and text. Loss
+  in an artifact is any changed byte, because that is where every
+  quote-check verdict lives. Two forms are equivalent when they load to
+  the same documents and the same bytes, and a store that returns
+  `chapter-number: 36.0` for `36` has lost, whatever its own types say.
+  The source list is not a record and is covered all the same: it carries
+  the digests, the licence judgments and the normalized-text paths, the
+  whole verifiability chain. How records are grouped in a store carries no
+  meaning, because each record states its own `type` and `corpus`
+  (`ERF-54`).
+- **ERF-54** Every document a corpus holds MUST self-describe with
+  `type`, no meaning MAY live in a path, exactly one document MUST carry
+  `type: corpus`, and every record MUST also carry `corpus`. A held raw or
+  normalized file is an artifact and carries no `type`; a source names it
+  by path. A consumer discovers a corpus by reading: it walks what it was
+  given and dispatches on `type`; a file without one is an artifact or
+  not part of the corpus, and a consumer MUST report which it took it for
   (`ERF-57`); a validator MUST reject two declarations. This is what keeps
   the format out of a store's business: what travels is a set of
-  self-describing documents, and where they sit carries nothing.
-- **ERF-55** Empty lists MUST be omitted, a field's absence meaning none;
-  an optional mapping present and empty asserts existence and MUST be
-  written; and a producer MUST NOT originate a field the declared
-  `spec_version` does not define, outside the `x_` namespace (`ERF-72`).
-  *Shape: every definition refuses undefined fields.* `evidence_at_stance`
-  is why the mapping clause exists: absent, the ruler stamped nothing;
-  `{}`, the ruler stamped and faced nothing, which `ERF-20` calls
-  unrecoverable. An unknown key is a producer error a validator catches,
-  never a consumer's licence to refuse (`ERF-57`).
+  self-describing documents and the artifacts they name, and where they
+  sit carries nothing.
 - **ERF-56** A reader MUST materialize an omitted list-typed field as an
-  empty list. An omitted list means none, never unknown, so a record that
-  omits one is complete rather than partial. This applies to
-  `finding_audit`: an atom nobody has audited yet carries no audit key and
-  is a complete record with an empty audit list, not a malformed one. The
-  schema does not require a list field, because a file omits one that is
-  empty; a loaded record always carries it, materialized, so a consumer
-  never asks whether a list is present. A file should not spend a line
-  saying nothing.
+  empty list, because presence means what it says: an omitted list means none,
+  never unknown, so a record that omits one is complete rather than
+  partial, and an atom nobody has audited yet carries no audit key and is
+  a complete record with an empty audit list. An optional mapping that is
+  present and empty asserts existence and MUST be preserved:
+  `evidence_at_stance` absent says the ruler stamped nothing, `{}` says the
+  ruler stamped and faced nothing, which `ERF-20` calls unrecoverable, and
+  a producer or store tidying it away destroys it. That a document carries
+  no field the declared `spec_version` does not define, outside the `x_`
+  namespace (`ERF-72`), is the schema's (`ERF-73`); an unknown key is a
+  producer error a validator catches, never a consumer's licence to refuse
+  (`ERF-57`). How an empty list is spelled on the wire is the binding's.
 - **ERF-57** A consumer MUST preserve unknown fields and unknown record
   types as opaque data, MUST report them, and MUST NOT reject a corpus
   solely because it contains them. Strictness belongs to the producer and
@@ -1076,26 +1046,19 @@ raw or normalized, and are the model's.
   recognize breaks forward compatibility for everything downstream of it.
 - **ERF-72** A field named with the prefix `x_` is an extension field: a
   producer MAY originate one anywhere, a validator MUST NOT report it under
-  `ERF-55`, and a consumer treats it as unknown (`ERF-57`). *Shape: the
+  `ERF-73`, and a consumer treats it as unknown (`ERF-57`). *Shape: the
   `^x_` pattern on every definition.* A field lives under the prefix while
   its need is demonstrated and graduates by entering a later version bare,
   after which the prefixed form is a distinct extension field. Rigid by
   default and extensible in one place, because a format tolerant
   everywhere decays into whatever its implementations write.
-- **ERF-58** The event-time key MUST be `timestamp`, everywhere.
-- **ERF-59** A corpus MUST carry exactly one declaration naming `type:
-  corpus`, `id`, `title` and `spec_version`, and MAY name an `owner` and a
-  `classification`. *Shape: `CorpusDeclaration`.* `classification` is an
-  opaque label this version records and does not read; what it means, and
-  which corpora may cite or travel together, is deployment policy. The
-  declaration declares no bars or gates.
 - **ERF-60** A consumer MAY refuse a corpus whose MAJOR `spec_version` it
   does not support, and MUST say so when it does. For an unsupported MINOR
   version it MUST either preserve unrecognized content losslessly or refuse
   with an explicit diagnostic; silently dropping what it does not
   understand is forbidden. A validator therefore reads `spec_version`
   before anything else and sets its strictness by it: under a version it
-  knows, an unknown record type or field is a producer error (`ERF-55`);
+  knows, an unknown record type or field is a producer error (`ERF-73`);
   under a MINOR version newer than it knows, the same content is expected,
   and the validator MUST preserve it, report it as unrecognized, and MUST
   NOT count it as a violation. This is what lets a later minor add a
@@ -1104,12 +1067,12 @@ raw or normalized, and are the model's.
   than refusing it, because the failure is silent: fields shift meaning
   and nothing in the file announces the mismatch. Migrations between
   majors are explicit.
-- **ERF-61** `spec_version` MUST follow Semantic Versioning 2.0.0, where
-  a MAJOR increment means records of the previous major are unreadable or
-  read with changed meaning, and a MINOR increment is an addition an older
-  reader under-interprets but never misreads. *Shape: `SemVer`.* The
-  changed-meaning clause is what `ERF-60`'s refusal exists for: a field
-  that stays parseable while its semantics move announces nothing.
+- **ERF-61** A MAJOR increment of `spec_version` MUST mean that records
+  of the previous major are unreadable or read with changed meaning, and a
+  MINOR increment an addition an older reader under-interprets but never
+  misreads. The changed-meaning clause is what `ERF-60`'s refusal exists
+  for: a field that stays parseable while its semantics move announces
+  nothing. That the version is SemVer is the schema's.
 
 ## 8. Storage
 
@@ -1123,11 +1086,14 @@ raw or normalized, and are the model's.
 
 ## Versioning and change control
 
-- The `spec_version` on a corpus declaration (`ERF-59`) governs the semantics
+- The `spec_version` on a corpus declaration (the schema (`CorpusDeclaration`)) governs the semantics
   of that corpus's records; migrations between versions are explicit, never
   inferred from field absence.
-- Retired ids, never reused: `ERF-16`, `ERF-29`, `ERF-30`, `ERF-45`,
-  `ERF-46`, `ERF-49`, `ERF-64`. A requirement-by-requirement diff can tell
+- Retired ids, never reused: `ERF-3`, `ERF-5`, `ERF-7`, `ERF-12`,
+  `ERF-16`, `ERF-19`, `ERF-21`, `ERF-22`, `ERF-29`, `ERF-30`, `ERF-34`,
+  `ERF-37`, `ERF-38`, `ERF-39`, `ERF-45`, `ERF-46`, `ERF-49`, `ERF-55`,
+  `ERF-58`, `ERF-59`, `ERF-64`. Fourteen of them retired on 2026-08-26 as
+  shape rules the schema already enforced (`ERF-73`). A requirement-by-requirement diff can tell
   a retired id from a lost one only if the list is here.
 - Requirement ids are a flat sequence and carry no meaning beyond identity:
   a number does not say which section a requirement lives in, so moving a
@@ -1157,13 +1123,13 @@ below that threshold.
   which, and a compiled open document leaning on sensitive material is a
   leak at build time; this version gives that rule no vocabulary and no
   check, so a deployment that needs the wall must build it where its other
-  policies live. The `classification` label on the declaration (`ERF-59`)
+  policies live. The `classification` label on the declaration (the schema (`CorpusDeclaration`))
   is the natural anchor for one.
 - Normalized texts travel only where their licences permit. They are, in general, copyrighted third-party works; whether a given
   text ships with a shared or published corpus is a licence and
   deployment question the format records rather than rules on. The source
   list holds the judgment either way: a shipped text names its
-  licence (`ERF-68`), a withheld one records the reason (`ERF-5`). The
+  licence (`ERF-68`), a withheld one records the reason (the status vocabulary (section 5)). The
   honest scope of re-checkability follows: anyone holding the corpus *and
   its normalized texts* can re-run that atom's mechanical check; a recipient of the
   records alone holds citations and locators, not proof.

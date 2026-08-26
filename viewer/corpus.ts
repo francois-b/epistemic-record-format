@@ -152,7 +152,7 @@ const YAML_OPTS = { schema: yaml.JSON_SCHEMA, json: false } as const;
  * fixtures, so a source list carrying a quoted `'on'` key in place of
  * `timestamp` loaded clean in two corpora and was caught by an independent
  * validator. Every file now validates against erf.schema.json as it is
- * read; a schema error is a producer error (ERF-55) reported at the field.
+ * read; a schema error is a producer error (ERF-73) reported at the field.
  */
 const SCHEMA_PATH = join(dirname(fileURLToPath(import.meta.url)), "..", "erf.schema.json");
 const ajv = new Ajv2020({ allErrors: true, strict: true, strictRequired: false });
@@ -167,7 +167,7 @@ function checkSchema(instance: unknown, record: string, findings: ConformanceFin
     if (e.keyword === "oneOf") continue;
     const field = (e.instancePath || "/").replace(/^\//, "").replace(/\//g, ".") || "(record)";
     const extra = e.params && "additionalProperty" in e.params ? ` (${String(e.params.additionalProperty)})` : "";
-    findings.push({ record, field, detail: `${e.message ?? "schema error"}${extra}; the data model is erf.schema.json (ERF-55)` });
+    findings.push({ record, field, detail: `${e.message ?? "schema error"}${extra}; the data model is erf.schema.json (ERF-73)` });
   }
 }
 
@@ -324,9 +324,9 @@ export const KNOWN_FIELDS: Record<string, Set<string>> = {
  *  rule that prohibits it rather than the generic unknown-key rule. */
 const PROHIBITED_KEYS: Record<string, Record<string, string>> = {
   claim: {
-    disposition: "a claim MUST NOT store a state field; the disposition is computed (ERF-22)",
-    state: "a claim MUST NOT store a state field; the disposition is computed (ERF-22)",
-    status: "a claim MUST NOT store a state field; the disposition is computed (ERF-22)",
+    disposition: "a claim MUST NOT store a state field; the disposition is computed (ERF-73)",
+    state: "a claim MUST NOT store a state field; the disposition is computed (ERF-73)",
+    status: "a claim MUST NOT store a state field; the disposition is computed (ERF-73)",
   },
   atom: {
     quote_check: "the mechanical check is recomputable and MUST NOT be stored (ERF-11)",
@@ -352,10 +352,10 @@ function checkKnownFields(
       record: id,
       field: key,
       detail: special
-        ? `${special}; also an unknown key under the declared version (ERF-55). `
+        ? `${special}; also an unknown key under the declared version (ERF-73). `
           + `Preserved as opaque data (ERF-57).`
         : `unknown key: a producer MUST NOT originate a field the declared `
-          + `spec_version does not define (ERF-55). Preserved as opaque data `
+          + `spec_version does not define (ERF-73). Preserved as opaque data `
           + `(ERF-57).`,
     });
   }
@@ -368,7 +368,7 @@ function checkCitationText(data: Record<string, unknown>, id: string, findings: 
     findings.push({
       record: id,
       field: "citation_text",
-      detail: "contains a URL; citation_text MUST NOT (ERF-7). The retrieved "
+      detail: "contains a URL; citation_text MUST NOT (ERF-73). The retrieved "
         + "locator is fetched.url; a web-native work's identity is citation.URL.",
     });
   }
@@ -470,7 +470,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
       findings.push({
         record: "(declaration)",
         field: f,
-        detail: "the manifest MUST declare this field (ERF-59)",
+        detail: "the manifest MUST declare this field (ERF-73)",
       });
     }
   }
@@ -551,7 +551,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
           record: id,
           field: "finding_audit.verdict",
           detail: `${String(v?.verdict)} is not one of ${[...VERDICTS].join(", ")}; `
-            + `a failed audit is not a verdict (ERF-12)`,
+            + `a failed audit is not a verdict (ERF-11)`,
         });
       }
     }
@@ -594,7 +594,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
         findings.push({
           record: id, field: "standings",
           detail: `stance ${JSON.stringify(st?.stance)} is not for, against or withdrawn; `
-            + `reported and left out of the disposition (ERF-41, ERF-55)`,
+            + `reported and left out of the disposition (ERF-41, ERF-73)`,
         });
       }
       const ts = String(st?.timestamp ?? "").trim();
@@ -603,7 +603,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
           record: id,
           field: "standings[].timestamp",
           detail: `${ts || "(absent)"} is a bare date; a standing MUST carry a `
-            + `full RFC 3339 instant with a time and an offset (ERF-19)`,
+            + `full RFC 3339 instant with a time and an offset (ERF-73)`,
         });
       }
     }
@@ -695,7 +695,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
     // `ERF-34`: the three frontmatter fields, typed (B-36).
     for (const k of ["title", "corpus", "created"]) {
       if (data[k] === undefined) {
-        findings.push({ record: slug, field: k, detail: `a narrative MUST carry ${k} in its frontmatter (ERF-34)` });
+        findings.push({ record: slug, field: k, detail: `a narrative MUST carry ${k} in its frontmatter (ERF-73)` });
       }
     }
     const cr = data["created"] as { timestamp?: unknown; by?: unknown } | undefined;
@@ -703,7 +703,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
       findings.push({
         record: slug, field: "created",
         detail: `created is the {timestamp, by} stamp every created thing in this `
-          + `format carries, not a bare date (ERF-34, ERF-19)`,
+          + `format carries, not a bare date (ERF-73)`,
       });
     }
     if (!newerMinor) checkSchema({ ...data, body }, slug, findings);
@@ -864,7 +864,7 @@ export function loadCorpus(dir: string): LoadedCorpus {
       findings.push({
         record: sid,
         field: "reason",
-        detail: `status ${src.status} carries no reason (ERF-5)`,
+        detail: `status ${src.status} carries no reason (ERF-73)`,
       });
     }
   }

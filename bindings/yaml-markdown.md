@@ -27,10 +27,10 @@ record type. An atom's body is empty, so its file is frontmatter alone; the
 shape is still frontmatter plus body, not a bare YAML document. The
 declaration and the source list are YAML documents with no body. A
 narrative is a markdown document with frontmatter whose only structured
-content is its narrative bindings (`ERF-34`). Discovery is by content and
+content is its narrative bindings (schema `Narrative`). Discovery is by content and
 never by path: every file carries `type` (`ERF-54`).
 
-The source list's top level is exactly `type` and `sources` (`ERF-3`):
+The source list's top level is exactly `type` and `sources` (schema `SourceList`):
 
 ```yaml
 type: sources
@@ -86,6 +86,14 @@ any other way provided it round-trips without loss, is `ERF-53` in
   report is a violation.
 
 ## 4. Keys and structure
+
+- **YAMLB-2** An empty list MUST be omitted on the wire, and a reader
+  materializes it (`ERF-56`); an optional mapping that is present and
+  empty MUST be written as `{}`, because presence asserts existence and
+  `evidence_at_stance: {}` is a different fact from its absence. A file
+  should not spend a line saying nothing, and a producer generalizing the
+  list rule to mappings destroys the one fact `ERF-20` calls
+  unrecoverable.
 
 - **ERF-66** A record's frontmatter MUST NOT contain a duplicate key, an
   anchor, an alias, or an explicit tag. YAML permits all four and leaves a

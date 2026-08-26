@@ -92,6 +92,7 @@ impl Report {
         self.push(Kind::Flag, Layer::Model, req, loc, msg);
     }
 
+    #[allow(dead_code)]
     pub fn flag_binding(&mut self, req: &str, loc: &str, msg: impl Into<String>) {
         self.push(Kind::Flag, Layer::Binding, req, loc, msg);
     }

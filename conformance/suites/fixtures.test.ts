@@ -124,7 +124,7 @@ test("an anchor left behind by an edit is flagged, and the corpus still conforms
 });
 
 /**
- * `ERF-55`/`ERF-20`: an empty mapping is not an empty list. A loader that
+ * `ERF-73`/`ERF-20`: an empty mapping is not an empty list. A loader that
  * tidies `{}` away would pass the load-clean check while destroying the
  * distinction, so the assertion is on the two standings, not the corpus.
  */
@@ -171,7 +171,7 @@ test("two standings at one instant: the later in the ledger is current, and it i
  * `ERF-60`: a validator sets its strictness by the declared version. A
  * corpus from a later minor carries a record type and a field this consumer
  * does not know; both are preserved and reported, and neither is a
- * violation. The same field under 0.9.0 is ERF-55's violation, which
+ * violation. The same field under 0.9.0 is ERF-73's violation, which
  * invalid/unknown-field-originated asserts.
  */
 test("content from a newer minor version is preserved and reported, not rejected", () => {

@@ -1,4 +1,4 @@
-requirement: ERF-12
+requirement: ERF-11
 record: fx-001
 field: finding_audit.verdict
 because: >

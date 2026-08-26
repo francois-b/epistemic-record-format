@@ -16,18 +16,8 @@ requirements:
     note: the uncheckable case asserts a check never runs without a capture
   ERF-2:
     untestable-by-design: how a capture is made and dated is a producer practice, not a property of a loaded record
-  ERF-3:
-    tests: [fixtures/valid/minimal, fixtures/invalid/source-entries-at-top-level, schema]
-    note: >
-      the source list lives beside the corpus, never on the atom, and its
-      top level is exactly `type` and `sources` (F-003). The invalid fixture
-      writes the entries as further top-level keys, which is the reading an
-      independent implementation took from the earlier wording, so the two
-      readings cannot both pass.
   ERF-4:
     tests: [fixtures/invalid/atom-absent-from-mapping]
-  ERF-5:
-    tests: [fixtures/invalid/absence-without-reason, schema]
   ERF-72:
     tests: [fixtures/valid/extension-field, schema]
     note: an x_ field on a record loads with zero findings
@@ -40,8 +30,6 @@ requirements:
     uncovered: no fixture asserts an excerpt or converted capture records an immutable locator and a digest
   ERF-6:
     tests: [quote-check]
-  ERF-7:
-    tests: [fixtures/invalid/citation-text-carries-url, hygiene, schema]
   ERF-8:
     untestable-by-design: whether a rendered citation carries everything its structured form holds is a judgment about bibliographic completeness
   ERF-9:
@@ -50,8 +38,6 @@ requirements:
     untestable-by-design: whether a finding's subject is discourse itself is a reading of the finding
   ERF-11:
     tests: [fixtures/invalid/stored-mechanical-result]
-  ERF-12:
-    tests: [fixtures/invalid/parse-error-as-verdict, schema]
   ERF-13:
     tests: [schema]
     note: was untestable-by-design; the shape half is now in erf.schema.json and the gate holds it
@@ -65,18 +51,8 @@ requirements:
     note: the loader requires corpus on every record
   ERF-18:
     untestable-by-design: that a title states the claim is the authoring act itself; the mechanical half was ERF-46, retired 2026-08-24 into this guidance
-  ERF-19:
-    tests: [fixtures/invalid/standing-bare-date, fixtures/invalid/standing-bare-date-block-style, schema]
-    note: >
-      timestamp precision is covered by the fixture; the append-only and
-      non-empty-why halves are covered by ERF-39 and ERF-40
   ERF-20:
     untestable-by-design: a SHOULD on producer behaviour, and the field's absence is legal
-  ERF-21:
-    tests: [disposition, schema]
-    note: covered mechanically by ERF-39; the prohibition on machine stances has no fixture
-  ERF-22:
-    tests: [fixtures/invalid/stored-state-field]
   ERF-23:
     untestable-by-design: modelling counter-evidence as a rival claim is a shape the format asks an author not to build
   ERF-24:
@@ -103,12 +79,6 @@ requirements:
     note: the indeterminate branch, the mixed-precision day, and both plain orders
   ERF-33:
     tests: [output]
-  ERF-34:
-    tests: [fixtures/invalid/narrative-created-is-a-bare-date]
-    note: >
-      the three frontmatter fields, typed in B-36. That a narrative is a
-      document rather than a record remains a modelling rule with no runtime
-      surface; its frontmatter is checkable and now checked.
   ERF-35:
     tests: [fixtures/invalid/prior-survey-dangling, fixtures/valid/evidence-at-stance-outlives-atom, fixtures/invalid/atoms-for-names-a-survey]
     note: >
@@ -119,12 +89,6 @@ requirements:
       conformance holds.
   ERF-36:
     tests: [fixtures/invalid/duplicate-id-across-types]
-  ERF-37:
-    untestable-by-design: a producer obligation whose mechanism the format declines to specify
-  ERF-38:
-    tests: [fixtures/invalid/duplicate-id-across-types]
-  ERF-39:
-    tests: [fixtures/valid/minimal, schema]
   ERF-40:
     untestable-by-design: verified against substrate history, which a loaded corpus does not carry
   ERF-41:
@@ -169,25 +133,11 @@ requirements:
     note: the fixture round-trips through frontmatter plus body
   ERF-54:
     tests: [fixtures/valid/minimal]
-  ERF-55:
-    tests: [fixtures/invalid/unknown-field-originated, hygiene,
-            fixtures/valid/evidence-at-stance-faced-nothing, schema]
-    note: >
-      the omit rule governs lists only (B-51). The valid fixture carries one
-      standing with evidence_at_stance present-and-empty and one with it
-      absent, and asserts the two survive the load differently, because a
-      loader that tidied the empty mapping away would pass a load-clean
-      check while destroying the distinction.
   ERF-56:
     tests: [fixtures/valid/minimal]
     note: the fixture omits empty lists and loads complete
   ERF-57:
     tests: [serialization]
-  ERF-58:
-    tests: [disposition]
-    note: every case uses the timestamp key
-  ERF-59:
-    tests: [fixtures/invalid/manifest-missing-field, schema]
   ERF-60:
     tests: [fixtures/invalid/unsupported-major-version, fixtures/valid/newer-minor-version-extends]
   ERF-61:
@@ -217,3 +167,15 @@ requirements:
     note: >
       the HTML-comment spelling and its recognition; the passage and the
       anchor test stay with ERF-31.
+  ERF-73:
+    tests: [schema, fixtures/invalid/absence-without-reason, fixtures/invalid/citation-text-carries-url,
+            fixtures/invalid/manifest-missing-field, fixtures/invalid/narrative-created-is-a-bare-date,
+            fixtures/invalid/standing-bare-date, fixtures/invalid/standing-bare-date-block-style,
+            fixtures/invalid/stored-state-field, fixtures/invalid/unknown-field-originated]
+    note: >
+      the whole shape: every valid fixture validates against the schema, and
+      each invalid fixture here breaks a definition that used to be its own
+      requirement.
+  YAMLB-2:
+    tests: [fixtures/valid/evidence-at-stance-faced-nothing, hygiene]
+    note: the wire spelling of presence; the semantics are ERF-56's.

@@ -26,7 +26,7 @@ test("ERF-57: an unknown field is reported AND preserved, never dropped", () => 
   assert.ok(atom, "the record still loads");
   assert.equal(atom["confidence"], 0.9, "the unknown field survives as opaque data");
   assert.ok(
-    c.findings.some((f) => f.field === "confidence" && f.detail.includes("ERF-55")),
+    c.findings.some((f) => f.field === "confidence" && f.detail.includes("ERF-73")),
     "and the producer error is reported",
   );
 });

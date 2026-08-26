@@ -24,6 +24,32 @@ record. All three numbers are published rather than hidden: this is a draft
 meant to be implemented against and argued with, and what is known to be
 unresolved, unverified, or untested is part of what it says.
 
+### 2026-08-26 — the schema is the requirement: fourteen shape rules retire
+
+Four cold readers, Opus, Gemini 3.1 Pro, Gemini 3.5 Flash and GPT-5.6 Sol,
+applied one rubric to every requirement. Six were retired by all four
+(`ERF-21`, `22`, `34`, `39`, `58`, `59`) and four by three, every one a
+shape rule with the same deletion test from independent hands: the schema
+already forces it. The operator ruled for the schema. `ERF-73` says every
+document a corpus holds validates against `erf.schema.json`, with its body
+attached where the model has one, and that a held raw or normalized file is
+an artifact and not a document. Fourteen rules retired: `ERF-3`, `5`, `7`,
+`12`, `19`, `21`, `22`, `34`, `37`, `38`, `39`, `55`, `58`, `59`. Each
+reason now sits on the schema definition it explains; the status
+vocabulary's glosses moved to section 5; `ERF-12`'s act clause, a failed
+audit is never a verdict, moved into `ERF-11`; `ERF-55`'s presence
+semantics moved into `ERF-56` and its wire spelling became the binding's
+`YAMLB-2`. Four rules were trimmed to what a schema cannot hold (`ERF-4`,
+`13`, `17`, `61`).
+
+Two readers found what the others did not. `ERF-54` had said every file a
+corpus holds carries `type`, which a held PDF cannot; it is scoped to
+documents. `ERF-53` had every file round-tripping "through the model",
+which a raw file does not; a document round-trips through the model and an
+artifact byte for byte. `ERF-1` and `ERF-50` lose their workflow gates, the
+rules describing a corpus's state whatever order it was built in. Fifty-four
+requirements; every corpus measured, every verdict unchanged.
+
 ### 2026-08-26 — the fold leans on the standards, and the normative surface closes
 
 The operator asked why the format was specifying Unicode and CommonMark in

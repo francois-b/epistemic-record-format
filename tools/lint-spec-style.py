@@ -31,15 +31,15 @@ def markdown_shape(text, name):
     blank lines, no trailing whitespace, one trailing newline."""
     problems = []; lines = text.split("\n"); in_code = False
     for i, l in enumerate(lines, 1):
-        if l != l.rstrip(): problems.append(f"{name}:{i}: [M] trailing whitespace")
+        if l != l.rstrip(): problems.append((i, "M", "trailing whitespace"))
         if l.startswith("```"):
-            if not in_code and i > 1 and lines[i-2].strip() != "" and lines[i-2] != "---": problems.append(f"{name}:{i}: [M] fence not preceded by a blank line")
-            if in_code and i < len(lines) and lines[i].strip() != "": problems.append(f"{name}:{i}: [M] closing fence not followed by a blank line")
+            if not in_code and i > 1 and lines[i-2].strip() != "" and lines[i-2] != "---": problems.append((i, "M", "fence not preceded by a blank line"))
+            if in_code and i < len(lines) and lines[i].strip() != "": problems.append((i, "M", "closing fence not followed by a blank line"))
             in_code = not in_code; continue
         if in_code: continue
-        if re.match(r"^#{1,6} ", l) and i > 1 and lines[i-2].strip() != "" and lines[i-2] != "---": problems.append(f"{name}:{i}: [M] heading not preceded by a blank line")
-        if l == "" and i > 1 and lines[i-2] == "": problems.append(f"{name}:{i}: [M] two consecutive blank lines")
-    if not text.endswith("\n") or text.endswith("\n\n"): problems.append(f"{name}: [M] file must end with exactly one newline")
+        if re.match(r"^#{1,6} ", l) and i > 1 and lines[i-2].strip() != "" and lines[i-2] != "---": problems.append((i, "M", "heading not preceded by a blank line"))
+        if l == "" and i > 1 and lines[i-2] == "": problems.append((i, "M", "two consecutive blank lines"))
+    if not text.endswith("\n") or text.endswith("\n\n"): problems.append((len(lines), "M", "file must end with exactly one newline"))
     return problems
 
 lines = src.read_text().split("\n")

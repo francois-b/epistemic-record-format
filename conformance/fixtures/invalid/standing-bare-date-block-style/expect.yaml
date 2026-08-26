@@ -1,4 +1,4 @@
-requirement: ERF-19
+requirement: ERF-73
 record: erfx-i01-1c
 field: standings[].timestamp
 reason: >

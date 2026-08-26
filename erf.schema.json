@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://erf.example/erf.schema.json",
   "title": "Epistemic Record Format, data model",
-  "description": "The normative data model (SPEC.md section 3): what every file a corpus holds looks like once loaded. Lists total in the model may be omitted on the wire when empty (ERF-55, ERF-56). Rules over more than one record, the quote check, and the obligations on acts are in SPEC.md and cannot be stated here.",
+  "description": "The normative data model (SPEC.md section 3, ERF-73): what every document a corpus holds looks like once loaded, with its body attached where the model has one. Every definition refuses fields the declared version does not define, outside the x_ namespace (ERF-72). Lists total in the model may be omitted on the wire when empty (ERF-56). The reason each definition takes its shape is written on the definition. Rules over more than one record, the quote check, and the obligations on acts are in SPEC.md and cannot be stated here.",
   "oneOf": [
     {
       "$ref": "#/$defs/Atom"
@@ -63,7 +63,7 @@
     "HumanActor": {
       "type": "string",
       "pattern": "^human:[^\\s\"/<>]+$",
-      "description": "A person. The id carries no '/', so it cannot also read as an agent id (section 2)."
+      "description": "A person. The id carries no '/', so it cannot also read as an agent id. A standing's `by` is this and nothing else."
     },
     "AgentActor": {
       "type": "string",
@@ -109,7 +109,7 @@
         "timestamp",
         "by"
       ],
-      "description": "Who did it, and when (ERF-58: the event-time key is always `timestamp`)."
+      "description": "Who did it, and when. The event-time key is `timestamp` everywhere; an earlier `on` was retired because a YAML 1.1 reader resolves it to the boolean true."
     },
     "Verdict": {
       "type": "string",
@@ -118,7 +118,7 @@
         "PARTIAL",
         "UNSUPPORTED"
       ],
-      "description": "Exactly three; a tool failure is never one (ERF-12)."
+      "description": "Exactly three. A failed, unparseable or abandoned audit is never written as one: an audit that produced nothing did not happen (SPEC.md ERF-11)."
     },
     "Stance": {
       "type": "string",
@@ -260,7 +260,7 @@
         "by",
         "why"
       ],
-      "description": "One line of the append-only ledger (ERF-19, ERF-21, ERF-40)."
+      "description": "One line of the append-only ledger (ERF-40). `timestamp` is a full instant with time and offset, never a bare date, because this is the format's only ordered ledger and a bare date and an instant on one day cannot be ordered; `by` is a person, because an LLM proposes and only a person takes a stance, and a stance speaks for one person, five endorsements being five entries; `why` is required, because an entry without a reason is a toggle and not a judgment."
     },
     "SearchAct": {
       "type": "object",
@@ -392,7 +392,7 @@
           "not": {
             "pattern": "://"
           },
-          "description": "Identifies the work; never carries a URL (ERF-7)."
+          "description": "Identifies the work and never carries a URL: a citation names a work, a locator names one copy, and that is `received.url`, the artifact retrieved rather than a page describing it. A web-native work's own identity may appear as `citation.URL`. A file received by hand has no locator and no `received`."
         },
         "citation": {
           "$ref": "#/$defs/CSL"
@@ -409,7 +409,7 @@
             "access-restricted",
             "licence-unverified"
           ],
-          "description": "ERF-5, ERF-68, ERF-69."
+          "description": "shipped: under a permitting licence. shipped-as-quotation: as a short quotation, under no licence. not-redistributable, access-restricted, licence-unverified: an absence, with `reason` required (the conditional below). Glosses in SPEC.md section 5."
         },
         "normalized": {
           "type": "string",
@@ -634,7 +634,7 @@
         "created",
         "body"
       ],
-      "description": "One statement a person could stand behind or dispute (section 4.3)."
+      "description": "One statement a person could stand behind or dispute. It has no state field: its disposition is computed from its standings (ERF-41), a claim is born with no standing and is a proposal until someone takes one, and origin that carries evidential weight is a source to cite, not a status to store."
     },
     "Survey": {
       "type": "object",
@@ -732,7 +732,7 @@
         "title",
         "spec_version"
       ],
-      "description": "ERF-59."
+      "description": "Exactly one per corpus (ERF-54). `classification` is an opaque label this version records and does not read; what it means, and which corpora may cite or travel together, is deployment policy. The declaration declares no bars or gates."
     },
     "SourceList": {
       "type": "object",
@@ -761,7 +761,7 @@
         "type",
         "sources"
       ],
-      "description": "ERF-3: the top level is exactly `type` and `sources`."
+      "description": "A corpus keeps a source list: one entry per work, keyed by a source id unique within the corpus. The top level is exactly `type` and `sources`. A source's citation, locator and normalized text live on the source and never on the atom; how the list is stored is the store's business and its interchange form the binding's."
     },
     "Narrative": {
       "type": "object",
@@ -797,7 +797,7 @@
         "created",
         "body"
       ],
-      "description": "A document, not a record (ERF-34)."
+      "description": "A document, not a record: prose someone wrote, with narrative bindings as its only structured content. It has no evidence, no standings and no disposition, because nothing about it is adjudicated; a person disputes the claims it binds, not the prose. `created` takes the stamp everything else takes because who wrote it is the fact a reader most wants."
     },
     "AtomId": {
       "type": "string",

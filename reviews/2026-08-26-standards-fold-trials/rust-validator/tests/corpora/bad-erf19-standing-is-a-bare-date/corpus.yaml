@@ -1,0 +1,6 @@
+type: corpus
+id: "ledger-governance"
+title: "Ledger governance: how books get checked"
+spec_version: "0.9.0"
+classification: "public"
+owner: "human:fb"
