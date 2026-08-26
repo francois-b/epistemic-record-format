@@ -1,8 +1,8 @@
 ---
 id: B-40
 kind: defect
-status: open
-priority: P2
+status: closed
+priority: closed
 priority_because: "Both reviewers: parse-equality passed on both corpora and the two losses were repairs of non-conforming input; defining the equivalence is a clarification."
 basis: demonstrated
 raised: "trial 6 (SQL), 2026-08-25"
@@ -30,3 +30,12 @@ Two genuine losses were found. An atom carrying body text lost 151 bytes: permit
 ## Proposed resolution
 
 Define the equivalence `ERF-53` means. `ERF-55` plus `ERF-56` is the only place the document says two different files carry the same record, and it covers lists only.
+
+## Resolution
+
+Ruled 2026-08-25 with `F-013`. Loss is any difference, after loading, in a
+value the model types or in a narrative's text; two forms are equivalent
+when they load to the same model instance. Defined against the model, not
+against the YAML binding, so the definition survives the binding being
+replaced. The trial's own measured loss, `chapter-number: 36` returning
+`36.0`, is the example the requirement now carries.

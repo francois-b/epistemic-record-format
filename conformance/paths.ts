@@ -7,4 +7,5 @@ export const CASES = join(ROOT, "cases");
 export const FIXTURES = join(ROOT, "fixtures");
 export const REPO = dirname(ROOT);
 export const SPEC = join(REPO, "SPEC.md");
+export const BINDINGS = join(REPO, "bindings");
 export const VIEWER = join(REPO, "viewer");

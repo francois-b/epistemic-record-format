@@ -25,7 +25,8 @@ verifications:
     Measured by the trial: `chapter-number: 36` returned `36.0` and
     `issued: 1494` returned `1494.0` through a store that claims ERF-53
     conformance, silently breaking the field ERF-8 calls canonical.
-outcome: open
+outcome: promoted
+promoted_to: "ERF-53, ruled directly 2026-08-25"
 ---
 
 # F-013 · `ERF-53`'s losslessness does not cover the source list
@@ -54,3 +55,11 @@ claims `ERF-53` conformance, correctly.
 Widen `ERF-53` from "every record" to every file the corpus holds, which is
 the same widening `ERF-54` already made for `type`. The two rulings would
 then agree about what a corpus consists of.
+
+## Resolution
+
+Ruled 2026-08-25. `ERF-53` now reads "every file the corpus holds", the
+same widening `ERF-54` made for `type`, and says why: the source list is
+the verifiability chain and is not a record. Loss is defined against the
+model instance rather than against YAML bytes, which closes `B-40` with the
+same sentence and means no binding is the definition of equivalence.

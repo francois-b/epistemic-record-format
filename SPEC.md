@@ -1282,46 +1282,45 @@ checks the relations no type can see.
 > of one corpus share a worldview. This is advice rather than a rule:
 > which lens a reader wants is the consumer's business.
 
-## 7. Serialization
+## 7. Serialization and bindings
 
-- **ERF-53** The canonical interchange form MUST be one record per file:
-  YAML frontmatter plus markdown body, for every record type. An atom's
-  body is empty, so its file is frontmatter alone; the shape is still
-  frontmatter plus body, not a bare YAML document. A store MAY hold
-  records any other way it likes, body as one more field, many records in
-  one collection document, rows in a database, provided every record
-  round-trips through the interchange form without loss; how records are
-  grouped in a store carries no meaning, because each record states its
-  own `type` and `corpus` (`ERF-54`).
-- **ERF-65** Frontmatter MUST parse under YAML 1.2 using the **JSON
-  schema**, the narrowest of the three the specification defines. Under it
-  only `null`, the literals `true` and `false`, and JSON's own number
-  grammar resolve to non-string scalars; everything else stays a string.
-  The hazard being excluded is a legacy default: YAML 1.1 defines a
-  timestamp type, and common libraries keep it in their default schema, so
-  an unquoted `timestamp` became a date object and made a claim's computed
-  disposition depend on how a weekday name sorts. A producer SHOULD quote
-  a timestamp regardless, so that a reader on a legacy schema still
-  receives a string. Where the model types
-  a field as a string and its bare spelling would resolve to another type
-  under this schema, a producer MUST quote it: `as_of_date: "2018"`,
-  `hits_reported: "0"`, `spec_version: "0.9.0"`, and a source id or family
-  name such as `"012"` or `"no"`. A bare year is JSON number grammar, so
-  the schema that stops the timestamp hazard does not stop this one, and
-  `spec_version: 1.0` arrives as a number that renders back as `1` with
-  the minor version gone. A validator MUST report a string-typed field that
-  arrived as any other type.
-- **ERF-66** A record's frontmatter MUST NOT contain a duplicate key, an
-  anchor, an alias, or an explicit tag. YAML permits all four and leaves a
-  processor's response to duplicates at its own discretion, so two
-  conforming parsers may legally disagree about the same file. A record is
-  a flat structure and needs none of them; declining them removes the
-  disagreement rather than adjudicating it.
-- **ERF-67** A record body MUST be valid CommonMark, and a file MUST be
-  UTF-8 encoded with LF line endings and no byte-order mark. Markdown
-  without a named dialect is not a format, which is the gap CommonMark was
-  written to close, and an unstated encoding is a verbatim check waiting to
-  fail on a byte nobody chose.
+A corpus is exchanged in a **binding**: a named, versioned document that
+says how the model of section 3 maps to bytes. Conformance is a property
+of a corpus as loaded into the model, and is the same in every binding.
+Every binding MUST round-trip a corpus through the model without changing
+any record, any field, or any verdict (`ERF-53`); a binding that cannot is
+not one. The YAML/Markdown binding, version 1
+([`bindings/yaml-markdown.md`](bindings/yaml-markdown.md), normative), is
+the interchange default: a producer that does not know its recipient's
+binding ships that one. Storage is unconstrained (section 8); interchange
+is not. A corpus held in a SQL store conforms if it loads to a conforming
+model instance, and its export to the default binding is guaranteed to
+give every verdict the store did.
+
+The rules below are the model's own. Presence, extension and versioning
+hold in every binding. Rules that hold only for YAML, markdown and files
+moved to the binding document on 2026-08-25 (`ERF-65`, `ERF-66`, `ERF-67`,
+and the YAML half of `ERF-53`), keeping their ids. Eighteen requirements
+outside it still carry a clause that names a file, YAML, markdown or
+CommonMark: `ERF-1`, `ERF-2`, `ERF-3`, `ERF-7`, `ERF-14`, `ERF-25`,
+`ERF-28`, `ERF-31`, `ERF-34`, `ERF-37`, `ERF-51`, `ERF-52`, `ERF-54`,
+`ERF-59`, `ERF-63`, `ERF-69`, `ERF-70`, `ERF-71`. Each splits into its
+model half and its binding half in the next minor version, which
+renumbers nothing.
+
+- **ERF-53** A corpus MUST have a canonical interchange form, given by
+  a binding (this section's opening). A store MAY hold a corpus any other
+  way it likes, body as one more field, many records in one collection
+  document, rows in a database, provided every file the corpus holds
+  round-trips through the model without loss. Loss is any difference,
+  after loading, in a value the model types or in a narrative's text: two
+  forms are equivalent when they load to the same model instance, and a
+  store that returns `chapter-number: 36.0` for `36` has lost, whatever
+  its own types say. "Every file" and not "every record": the source list
+  carries the digests, the licence judgments and the normalized-text
+  paths, the whole verifiability chain, and it is not a record. How
+  records are grouped in a store carries no meaning, because each record
+  states its own `type` and `corpus` (`ERF-54`).
 - **ERF-54** Every file a corpus holds MUST self-describe, and no meaning
   lives in a path. `type` names what the file holds and is written on all of
   them: `atom`, `claim` and `survey` are the record types, and `corpus`,

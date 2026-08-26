@@ -79,6 +79,15 @@ Re-running them on the current prose is the strongest instrument this
 project has, and it is the **1.0** gate, not the 0.9 gate. 0.9 exists so
 that other people's implementations become that evidence.
 
+## Bindings, added 2026-08-25
+
+Ruled after the post-ruling trials: the model is separate from its wire.
+`SPEC.md` section 7 now says what every binding must satisfy, `ERF-53`
+defines loss against the model instance, and the YAML/Markdown rules moved
+to `bindings/yaml-markdown.md` keeping their ids. Eighteen mixed
+requirements are listed there for splitting in 0.10, when the model becomes
+a JSON Schema and a SQL binding is drafted from the relational trial.
+
 ## Sequence
 
 1. ~~Rule `F-003`.~~ Done.

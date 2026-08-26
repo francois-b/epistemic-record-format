@@ -7,10 +7,10 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import yaml from "js-yaml";
 import { join } from "node:path";
-import { ROOT, SPEC } from "../paths.ts";
+import { BINDINGS, ROOT, SPEC } from "../paths.ts";
 
 export interface CoverageEntry {
   tests?: string[];
@@ -19,9 +19,16 @@ export interface CoverageEntry {
   note?: string;
 }
 
+/**
+ * The normative surface is SPEC.md plus every binding document: a rule that
+ * moved to bindings/ on 2026-08-25 kept its id and is still a requirement.
+ */
 export function specRequirements(): string[] {
-  const text = readFileSync(SPEC, "utf8");
-  return [...text.matchAll(/^- \*\*(ERF-\d+)\*\*/gm)].map((m) => m[1]!);
+  const files = [SPEC, ...(existsSync(BINDINGS)
+    ? readdirSync(BINDINGS).filter((f) => f.endsWith(".md")).sort().map((f) => join(BINDINGS, f))
+    : [])];
+  return files.flatMap((f) =>
+    [...readFileSync(f, "utf8").matchAll(/^- \*\*(ERF-\d+)\*\*/gm)].map((m) => m[1]!));
 }
 
 export function coverage(): Record<string, CoverageEntry> {

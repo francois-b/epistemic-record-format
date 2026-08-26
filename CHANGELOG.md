@@ -24,6 +24,44 @@ record. All three numbers are published rather than hidden: this is a draft
 meant to be implemented against and argued with, and what is known to be
 unresolved, unverified, or untested is part of what it says.
 
+### 2026-08-25 — the model is separated from its wire, and seven blockers close
+
+Two cold implementations (Go, Haskell), a protobuf schema exercise and a
+parser probe ran against the spec after the morning's rulings, and found
+that the central mechanism had a hole. `The cat[...]sat` passed the quote
+check against a text reading "The catapult was heavy. Someone eventually
+sat": split-before-normalize plus trim had left substring containment.
+`ERF-52` now requires every span to occur as whole words, at every edge and
+not only beside an elision, because quoting `cat` out of `catapult` is the
+same fabrication without the marker. Measured before ruling: zero
+regressions across 164 real quotes.
+
+Six more, each verified against the reference before ruling. `ERF-43`'s
+closure could not be implemented as written: `supports` was in the closure
+and not in the cycle prohibition, so two mutually supporting arguments made
+a literal traversal run forever. `ERF-51`'s NFKC folded the ellipsis and
+the long s, which `ERF-52` requires literal; NFC replaces it, measured
+identical across every quote. `ERF-41` asserted a totality it lacked for a
+stance outside the vocabulary. `ERF-31` used "its passage" four times and
+defined it nowhere. The Validator class did not bind section 4, so a tool
+that never opened a normalized text conformed. And `ERF-65` gains the
+producer's quoting obligation, after the operator reframed a supposed
+model defect as an interchange one: the model was never ambiguous about
+`as_of_date` being a string.
+
+**The model is separated from its wire.** Section 7 is "Serialization and
+bindings": conformance is a property of a corpus as loaded into the model,
+every binding MUST round-trip without changing a record, a field or a
+verdict, and the YAML/Markdown binding is the interchange default.
+`ERF-53` defines loss against the model instance and widens from every
+record to every file, because the source list is the verifiability chain
+and is not a record. `ERF-65`, `ERF-66`, `ERF-67` and the YAML half of
+`ERF-53` moved to `bindings/yaml-markdown.md`, ids intact. Eighteen mixed
+requirements are named for splitting in 0.10. YAML was inherited, not
+chosen: `docs/history.md` records no forcing instance behind it, alone
+among the format's decisions, and a sourced survey of its costs ships
+beside the binding.
+
 ### 2026-08-25 — six trials against the prose alone, and the queue they left
 
 Six independent trials ran against `SPEC.md` and nothing else: no reference

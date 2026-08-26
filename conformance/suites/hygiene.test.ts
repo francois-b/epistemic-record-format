@@ -106,13 +106,14 @@ test("every standalone example carries only defined fields and legal values", ()
  * not a check. Shelled out rather than reimplemented, so there is one
  * definition of each.
  */
-for (const [name, script] of [
-  ["the specification's prose style", "lint-spec-style.py"],
-  ["field names across the two normative surfaces", "lint-field-names.py"],
+for (const [name, script, args] of [
+  ["the specification's prose style", "lint-spec-style.py", []],
+  ["the YAML binding's prose style", "lint-spec-style.py", ["bindings/yaml-markdown.md"]],
+  ["field names across the two normative surfaces", "lint-field-names.py", []],
 ] as const) {
   test(`${name} passes its linter`, () => {
     try {
-      execFileSync("python3", [join(REPO, "tools", script)], {
+      execFileSync("python3", [join(REPO, "tools", script), ...args.map((a) => join(REPO, a))], {
         cwd: REPO, encoding: "utf8", stdio: "pipe",
       });
     } catch (e) {
