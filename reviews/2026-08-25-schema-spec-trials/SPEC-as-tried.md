@@ -182,7 +182,7 @@ is bound by the data model alone, with advice in the section named.
 |:--|:--|
 | `id` | `ERF-13` |
 | `type`, `corpus` | `ERF-54` |
-| `finding`, `finding_audit` (each entry's `auditor`, `verdict`, `timestamp`, `protocol`) | `ERF-11`, `ERF-12`; guidance in 4.2 |
+| `finding`, `finding_audit` | `ERF-11`, `ERF-12`; guidance in 4.2 |
 | `quote` | `ERF-6`, `ERF-52` |
 | `source` | `ERF-4` |
 | `source_quality` | `ERF-9`, `ERF-10` |
@@ -232,7 +232,7 @@ deployment's atom and source indexes in both directions: candidates for
 
 ### 3.2 Naming
 
-Field names are `snake_case`
+Field names are `snake_case` in YAML and in the TypeScript interfaces
 alike: serialization fidelity outranks TypeScript idiom, so every example
 stays copy-pasteable between this document and a file. Type aliases are
 PascalCase and self-sufficient out of context (`EpistemicKind`, not
@@ -258,9 +258,33 @@ normalized text stated in one place rather than repeated on each atom and
 free to drift apart. The format never reads a raw file at check time. It
 reads the source's *normalized text*, which is what makes a check
 re-runnable years later and what turns a dead link into weakened provenance
-rather than a broken check. A worked source entry is in the binding
-document (section 7).
+rather than a broken check.
 
+```yaml
+sources:
+  pacioli-1494-geijsbeek:
+    citation_text: "Luca Pacioli, Particularis de Computis et Scripturis
+      (Venice, 1494), ch. 36, trans. Geijsbeek 1914"
+    citation:
+      type: book
+      author: [{family: Pacioli, given: Luca}]
+      title: "Particularis de Computis et Scripturis"
+      publisher-place: Venice
+      issued: 1494
+      chapter-number: 36
+      translator: [{family: Geijsbeek, given: John B.}]
+    received:
+      url: "https://archive.org/download/ancientdoubleent00geijuoft/ancientdoubleent00geijuoft.pdf"
+      path: raw/pacioli-1494-geijsbeek.pdf
+      digest: "sha256:05e58ce3f2589584d7d36446c46e2f74ab14f33ee6d1f0f20ef5e21c2aeaf2aa"
+      timestamp: 2026-08-23
+    status: shipped-as-quotation
+    normalized: normalized/pacioli-1494-geijsbeek.md
+    normalized_digest: "sha256:1b9a0c47d3e8f5a2c6b4e09f7d132a8be5c40f6719d2ab83c5e7104f9a6d2b3e"
+    extraction: "pymupdf4llm 0.3.4"
+    normalization: "pandoc 3.1.11 --wrap=none"
+    excerpt: {timestamp: 2026-08-23, by: "agent/claude-sonnet-5"}
+```
 
 Where a source has no `citation` block, write `citation_text` as "Author,
 Title (venue, year), locator when it matters"; the upgrade path to
@@ -380,10 +404,31 @@ is evidence about today's page rather than about what was read.
 
 ### 4.2 The atom
 
-One piece of evidence: a verbatim quote, a finding, and the trail. A
-worked atom is in the binding document.
+One piece of evidence: a verbatim quote, a finding, and the trail.
 
+```yaml
+---
+id: kwg-117
+type: atom
+corpus: knowledge-work-governance
+finding: "Pacioli's 1494 treatise states the double-entry rule
+  explicitly: every ledger entry is made twice, once as a debit
+  and once as a credit."
+quote: "All entries made in the ledger have to be double entries --
+  that is, if you make one creditor, you must make some one debtor."
+source: pacioli-1494-geijsbeek
+source_quality: high
+created: {timestamp: 2026-07-19, by: "agent/claude-fable-5"}
+finding_audit:
+  - {auditor: deepseek-v4-pro, verdict: SUPPORTED, timestamp: 2026-07-19,
+     protocol: finding-audit-v2}
+  - {auditor: gemini-3.5-flash, verdict: SUPPORTED, timestamp: 2026-07-19,
+     protocol: finding-audit-v2}
+---
+```
 
+The closing `---` ends the record: an atom's body is empty, so its file is
+frontmatter and nothing else (`ERF-53`).
 
 **Writing one well.** The schema checks structure; it cannot check craft.
 A good finding is one sentence a stranger could check: it states what the
@@ -488,9 +533,28 @@ actually stands where is recorded in `standings` (a claim with no stances is
 a proposal, and a claim may be tracked without anyone standing behind it);
 what the evidence says is recorded in `atoms_for` and `atoms_against`.
 Evidence against a claim weakens its position, never its identity: it is the
-same statement, standing in a worse light. A worked claim is in the
-binding document.
+same statement, standing in a worse light.
 
+```yaml
+---
+id: citators-disagree-on-negative-treatment
+type: claim
+corpus: knowledge-work-governance
+title: "The major legal citators disagree substantially on identifying
+  negative treatment, and the leading vendor defense is that no
+  objectively correct interpretation exists"
+epistemic_kind: observation
+created: {timestamp: 2026-08-22, by: "agent/claude-fable-5"}
+families: [prior-art]
+atoms_for: [kwg-014, kwg-015, kwg-016]
+---
+The major legal citators disagree substantially on identifying negative
+treatment, and the leading vendor defense is that no objectively correct
+interpretation exists.
+
+## Working notes
+...
+```
 
 The example ships as a proposal: no one has stood behind it, so its
 `standings` ledger is empty and therefore omitted from the file
@@ -615,9 +679,32 @@ claim decides the use. The asymmetry with atoms is the design: absence and
 coverage are evidenced by surveys; presence is evidenced by atoms. A survey
 cannot disconfirm a gap claim, because what disconfirms it is a found
 source, and a found source is atom-shaped; that is why a claim carries one
-`surveys` list and no against side. A worked survey is in the binding
-document.
+`surveys` list and no against side.
 
+```yaml
+---
+id: granted-flag-uses-2026-08-22
+type: survey
+corpus: knowledge-work-governance
+title: "Current uses of the granted field across the registered corpora"
+conducted: {timestamp: 2026-08-22, by: "agent/claude-fable-5"}
+searches:
+  - tool: "grep -rnE (BSD grep, macOS)"
+    query: "^granted:|^  granted:"
+    scope: "every claim and question file in a private working collection
+      of corpora"
+    hits_reported: "0"
+  - tool: "grep -rn (BSD grep, macOS)"
+    query: "granted (word-level, --include=*.md)"
+    scope: "the same claim and question files"
+    hits_reported: "4 lines in 3 files; none a field use"
+notable_results:
+  - what: "A doc-class granted dimension in a corpus's own documentation"
+    note: "A render-layer field of one document class, described in that
+      corpus's own documentation; the word's nearest live relative, not a
+      record field."
+---
+```
 
 **Writing one well.** How often a fruitful survey is re-run is a question
 for whoever runs the practice, not for the format. Describe the search in
@@ -1003,9 +1090,9 @@ model instance, and its export to the default binding is guaranteed to
 give every verdict the store did.
 
 The rules below are the model's own. Presence, extension and versioning
-hold in every binding. Rules that hold only for the default binding's
-files live in its document: `ERF-65`, `ERF-66`, `ERF-67` and the file half
-of `ERF-53` moved there on 2026-08-25 keeping their ids, and the
+hold in every binding. Rules that hold only for YAML, markdown and files
+live in the binding document: `ERF-65`, `ERF-66`, `ERF-67` and the YAML
+half of `ERF-53` moved there on 2026-08-25 keeping their ids, and the
 narrative binding's spelling as an HTML comment is the binding's own
 `YAMLB-1`. Requirements that speak of a *file* mean a held byte sequence,
 raw or normalized, and are the model's.
@@ -1018,7 +1105,7 @@ raw or normalized, and are the model's.
   after loading, in anything a file carried: a value the model types, an
   opaque value the model preserves (`citation`'s CSL fields, extension
   and unknown fields, `ERF-57`), the order of any list, a narrative's
-  metadata and text, or the bytes of a held raw or normalized file,
+  frontmatter and text, or the bytes of a held raw or normalized file,
   which is where every quote-check verdict lives. Two forms are equivalent
   when they load to the same instance so defined, and a store that returns
   `chapter-number: 36.0` for `36` has lost, whatever its own types say. "Every file" and not "every record": the source list
@@ -1155,6 +1242,7 @@ below that threshold.
 - Open Knowledge Format v0.2: github.com/GoogleCloudPlatform/knowledge-catalog, `okf/SPEC.md`
 - Citation Style Language (CSL) and CSL-JSON: citationstyles.org
 - RFC 3339, *Date and Time on the Internet: Timestamps*
+- YAML 1.2: yaml.org/spec/1.2.2
 - RFC 2119 and RFC 8174 (BCP 14), requirement key words
 - CommonMark 0.31.2: spec.commonmark.org
 - Semantic Versioning 2.0.0: semver.org
