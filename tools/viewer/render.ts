@@ -20,6 +20,8 @@ export const CSS = `
 :root { --ink:#1a1a1a; --muted:#5a5550; --mutedlt:#a5a09a; --rule:#d8d3cc;
   --rulelt:#eae6e0; --accent:#1a3a6e; --highlight:#fcf6ec; --codebg:#fefcf8;
   --paper:#ffffff; --warn:#8a4b1e; --good:#1f5c3d;
+  --warnbg:#fdf7f2; --okbg:#f4f9f6; --brokenrule:#c0392b; --brokenbg:#fdf0ee; --brokenink:#7d2b21; --markbg:#fff2b8;
+  color-scheme: light;
   --serif:Literata, Georgia, 'Iowan Old Style', serif;
   --sans:Inter, -apple-system, 'Helvetica Neue', sans-serif;
   --mono:'DejaVu Sans Mono', Menlo, ui-monospace, monospace;
@@ -28,6 +30,19 @@ export const CSS = `
      the 12px footer would compute narrower than the 16.5px main and sit
      visibly inset. */
   --base:16.5px; --measure:calc(39 * var(--base)); --gutter:calc(1.4 * var(--base)); }
+/* Dark: an explicit data-theme wins in both directions; with none set, the system preference decides. */
+:root[data-theme="dark"] { --ink:#e6e2dc; --muted:#a9a49d; --mutedlt:#6e6963; --rule:#3b3834;
+  --rulelt:#2a2825; --accent:#93b4e6; --highlight:#2b2822; --codebg:#22201e;
+  --paper:#161514; --warn:#e3a672; --good:#86cba0;
+  --warnbg:#2b2219; --okbg:#1b261f; --brokenrule:#e06b5f; --brokenbg:#2c1c19; --brokenink:#f0a79c; --markbg:#5a4a12;
+  color-scheme: dark; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --ink:#e6e2dc; --muted:#a9a49d; --mutedlt:#6e6963; --rule:#3b3834;
+    --rulelt:#2a2825; --accent:#93b4e6; --highlight:#2b2822; --codebg:#22201e;
+    --paper:#161514; --warn:#e3a672; --good:#86cba0;
+    --warnbg:#2b2219; --okbg:#1b261f; --brokenrule:#e06b5f; --brokenbg:#2c1c19; --brokenink:#f0a79c; --markbg:#5a4a12;
+    color-scheme: dark; }
+}
 * { box-sizing:border-box; }
 body { margin:0; background:var(--paper); color:var(--ink); font-size:var(--base);
   font-family:var(--serif); line-height:1.5; -webkit-font-smoothing:antialiased; }
@@ -85,9 +100,9 @@ li.claim a.head:hover { color:var(--accent); }
   padding:.7em 1em; margin:.2em 0 1.6em; font-size:.9em; }
 .because b { font-family:var(--sans); font-size:.85em; text-transform:uppercase;
   letter-spacing:.05em; color:var(--muted); display:block; margin-bottom:.3em; }
-.warnbox { border-left:2px solid var(--warn); background:#fdf7f2; padding:.7em 1em;
+.warnbox { border-left:2px solid var(--warn); background:var(--warnbg); padding:.7em 1em;
   margin:1.2em 0; font-size:.9em; color:var(--warn); }
-.okbox { border-left:2px solid var(--good); background:#f4f9f6; padding:.7em 1em;
+.okbox { border-left:2px solid var(--good); background:var(--okbg); padding:.7em 1em;
   margin:1.2em 0; font-size:.9em; color:var(--good); }
 blockquote.q { margin:.6em 0 1.2em; padding:.7em 1em; background:var(--codebg);
   border-left:2px solid var(--accent); font-size:.95em; }
@@ -110,9 +125,9 @@ ul.plain li { padding:.4em 0; border-bottom:1px solid var(--rulelt); }
 .bindnote { font-family:var(--sans); font-size:.72em; color:var(--muted);
   display:block; margin:.2em 0 1.1em; }
 .bind-broken { font-family:var(--mono); font-size:.72em; display:block;
-  margin:.2em 0 1.1em; padding:.4em .6em; border-left:3px solid #c0392b;
-  background:#fdf0ee; color:#7d2b21; }
-mark { background:#fff2b8; padding:0 .1em; }
+  margin:.2em 0 1.1em; padding:.4em .6em; border-left:3px solid var(--brokenrule);
+  background:var(--brokenbg); color:var(--brokenink); }
+mark { background:var(--markbg); color:var(--ink); padding:0 .1em; }
 pre.capture { white-space:pre-wrap; font-family:var(--mono);
   font-size:.78em; line-height:1.6; background:var(--codebg); padding:1em;
   border:1px solid var(--rulelt); overflow-x:auto; }
