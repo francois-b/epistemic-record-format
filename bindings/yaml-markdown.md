@@ -140,7 +140,7 @@ ws       ::= any Unicode White_Space character, line breaks included
   unterminated, extends to the end of its own line so the bindings after
   it stay visible, and is reported (`ERF-31`).
 
-## 7. Worked examples
+## 6. Worked examples
 
 The records `SPEC.md` describes, as this binding writes them.
 
@@ -245,7 +245,7 @@ notable_results:
 ---
 ```
 
-## 8. What this binding costs (non-normative)
+## 7. What this binding costs (non-normative)
 
 YAML was inherited from the working practice the format was extracted from,
 not chosen; `docs/history.md` records that no forcing instance stands

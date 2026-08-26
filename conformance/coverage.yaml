@@ -27,7 +27,8 @@ requirements:
     tests: [fixtures/invalid/pdf-without-extraction]
     note: the tool-naming half; determinism itself is a property of the tool and untestable here
   ERF-71:
-    uncovered: no fixture asserts an excerpt or converted capture records an immutable locator and a digest
+    tests: [fixtures/invalid/digest-mismatch]
+    note: the digest-match half; whether a capture records a locator at all is a SHOULD
   ERF-6:
     tests: [quote-check]
   ERF-8:

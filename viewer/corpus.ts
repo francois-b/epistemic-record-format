@@ -8,6 +8,7 @@
  * quietly drift from the specification it is supposed to demonstrate.
  */
 import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join, basename, relative, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import yaml from "js-yaml";
@@ -744,8 +745,8 @@ export function loadCorpus(dir: string): LoadedCorpus {
     }
   }
   // `ERF-43`: the closure MUST terminate in non-argument leaves. The root is
-  // not its own leaf (B-30), so a premise-less argument is `ERF-49`'s flag
-  // rather than a violation here.
+  // not its own leaf (B-30), so a premise-less argument is section 2's
+  // unbacked reading rather than a violation here.
   for (const [id, cl] of claims) {
     if (cl.epistemic_kind !== "argument") continue;
     const reach = new Set<string>();
@@ -848,6 +849,27 @@ export function loadCorpus(dir: string): LoadedCorpus {
       }
     }
     for (const [k, v] of Object.entries(doc?.sources ?? {})) sources.set(k, v);
+  }
+
+  // `ERF-71`: a recorded digest is a statement about bytes the validator can
+  // read. The cold Rust trial (2026-08-26, A-10) noted nothing made a false
+  // digest a violation; now the requirement says so and this checks it.
+  for (const [sid, src] of sources) {
+    const pairs: [string, unknown, unknown][] = [
+      ["received.digest", src?.received?.path, src?.received?.digest],
+      ["normalized_digest", src?.normalized, (src as { normalized_digest?: unknown })?.normalized_digest],
+    ];
+    for (const [field, rel, digest] of pairs) {
+      if (!rel || typeof digest !== "string") continue;
+      const recorded = /^sha256:([0-9a-f]{64})$/i.exec(digest)?.[1]?.toLowerCase();
+      const file = join(dir, String(rel));
+      if (!recorded || !existsSync(file)) continue;
+      const actual = createHash("sha256").update(readFileSync(file)).digest("hex");
+      if (actual !== recorded) findings.push({
+        record: sid, field,
+        detail: `records sha256:${recorded.slice(0, 12)}… but the held file hashes to sha256:${actual.slice(0, 12)}…; a recorded digest MUST match the held artifact (ERF-71)`,
+      });
+    }
   }
 
   for (const [sid, src] of sources) {

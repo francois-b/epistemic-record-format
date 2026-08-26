@@ -396,7 +396,10 @@ is evidence about today's page rather than about what was read.
   digest together close the step the format cannot otherwise check: a
   reader who retrieves the artifact at `received.url` confirms from the
   digest that it is the one the author held, and re-runs the conversion
-  under `ERF-70` to confirm the excerpt occurs in it. A digest is worth
+  under `ERF-70` to confirm the excerpt occurs in it. Where the corpus
+  holds the artifact, a recorded `received.digest` MUST match it, and a
+  recorded `normalized_digest` MUST match the normalized text; a digest
+  is a statement about bytes the validator can read. A digest is worth
   recording only where the location serves stable bytes; a page that
   differs on every fetch cannot be pinned, and its source simply carries
   no digest, which itself tells a reader what kind of source it was.
@@ -830,7 +833,10 @@ checks the relations no type can see.
   claims (`ERF-24`), MUST terminate in non-argument leaves. The closure is
   what the edges reach and excludes the argument itself, so a premise-less
   argument has an empty closure and satisfies this vacuously; it is
-  unbacked (section 2), which a consumer may show. Self-edges MUST NOT exist in any
+  unbacked (section 2), which a consumer may show. Vacuity holds for the
+  root alone: an argument reached inside another argument's closure that
+  has no premises of its own is an argument leaf, and the root violates.
+  Self-edges MUST NOT exist in any
   relation. The premise relation over all claims MUST admit no cycles, `X
   assumes Y` and `Y supports X` both making `Y` a premise of `X`, whether
   or not any closure reaches the cycle; a premise id that resolves to
@@ -887,7 +893,9 @@ checks the relations no type can see.
      Unicode property `Default_Ignorable_Code_Point`: the soft hyphen, the
      zero-width space, the joiners, the byte-order mark.
   3. Collapse each run of Unicode `White_Space` to a single space, and
-     trim.
+     trim. U+2029 is exempt: it carries `White_Space`, and a run that
+     touches a paragraph separator collapses to the separator alone, so
+     the boundaries step 1 drew survive this step.
 
   Case MUST NOT be folded: case is part of a verbatim quote, and folding
   it lets a mis-cased quote pass a check whose whole job is fidelity.
@@ -939,7 +947,10 @@ checks the relations no type can see.
   words, so `Revenue fell 12` does not occur in `Revenue fell 12.5
   percent`. The elision marker is not a boundary: the test reads the
   normalized text on either side of the span, whatever sat beside it in
-  the quote. No span crosses a paragraph separator (`ERF-51`) unless the
+  the quote. Each span is taken at its earliest whole-word occurrence
+  after the previous span's end; the earliest leaves the most text for the
+  spans that follow, so a quote that can occur does under this rule. No
+  span crosses a paragraph separator (`ERF-51`) unless the
   quote holds the same break. A quote whose spans are all empty MUST fail
   rather than trivially pass. The text
   between two spans is unbounded by design: an elision marker is the

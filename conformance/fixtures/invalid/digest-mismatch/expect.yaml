@@ -1,0 +1,9 @@
+requirement: ERF-71
+record: fx-src
+field: normalized_digest
+because: >
+  The source records a normalized_digest of all zeros and the held
+  normalized text hashes to something else. A digest is a statement about
+  bytes the validator can read, so a mismatch is a violation. Raised by the
+  cold Rust trial of 2026-08-26 (ambiguity A-10), which noted nothing made a
+  false digest a violation.

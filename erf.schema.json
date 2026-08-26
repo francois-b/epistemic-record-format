@@ -36,8 +36,8 @@
     },
     "Instant": {
       "type": "string",
-      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d+)?)?(Z|[+-]\\d{2}:\\d{2})$",
-      "description": "An RFC 3339 instant with a time and an offset (ERF-19)."
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "An RFC 3339 instant: date, time with seconds, and offset. Seconds are mandatory because RFC 3339 makes them so and because two stances on one instant are ordered by the ledger (ERF-41)."
     },
     "DateOrInstant": {
       "anyOf": [
@@ -209,14 +209,14 @@
           "items": {
             "$ref": "#/$defs/AtomId"
           },
-          "description": "Evidence for, as the ruler faced it. Total in the model; omitted on the wire when empty (ERF-55, ERF-56)."
+          "description": "Evidence for, as the ruler faced it. Total in the model; omitted on the wire when empty (ERF-56)."
         },
         "atoms_against": {
           "type": "array",
           "items": {
             "$ref": "#/$defs/AtomId"
           },
-          "description": "Evidence against, as the ruler faced it. Total in the model; omitted on the wire when empty (ERF-55, ERF-56)."
+          "description": "Evidence against, as the ruler faced it. Total in the model; omitted on the wire when empty (ERF-56)."
         }
       },
       "additionalProperties": false,
@@ -225,7 +225,7 @@
           "description": "Extension field (ERF-72)."
         }
       },
-      "description": "What the ruler faced at ruling time (ERF-20). Present and empty means stamped and faced nothing; absent means never stamped (ERF-55)."
+      "description": "What the ruler faced at ruling time (ERF-20). Present and empty means stamped and faced nothing; absent means never stamped (ERF-56)."
     },
     "StandingEntry": {
       "type": "object",
@@ -242,7 +242,7 @@
         "why": {
           "type": "string",
           "minLength": 1,
-          "description": "Required; an entry without a reason is a toggle (ERF-39)."
+          "description": "Required; an entry without a reason is a toggle. Once ERF-39; the schema is the requirement (ERF-73)."
         },
         "evidence_at_stance": {
           "$ref": "#/$defs/EvidenceAtStance"
@@ -336,7 +336,7 @@
           "items": {
             "$ref": "#/$defs/AtomId"
           },
-          "description": "Atoms minted from this result. Total in the model; omitted on the wire when empty (ERF-55, ERF-56)."
+          "description": "Atoms minted from this result. Total in the model; omitted on the wire when empty (ERF-56)."
         }
       },
       "additionalProperties": false,
@@ -355,7 +355,7 @@
       "properties": {
         "url": {
           "type": "string",
-          "description": "Where it came from, when from the web; the artifact retrieved, not a landing page (ERF-7)."
+          "description": "Where it came from, when from the web; the artifact retrieved, not a landing page. Once ERF-7; the schema is the requirement (ERF-73)."
         },
         "path": {
           "type": "string",
@@ -384,7 +384,7 @@
           "description": "Extension field (ERF-72)."
         }
       },
-      "description": "One work in the source list (ERF-3 to ERF-8, ERF-68 to ERF-71).",
+      "description": "One work in the source list (ERF-2, ERF-4, ERF-6, ERF-8, ERF-68 to ERF-71).",
       "properties": {
         "citation_text": {
           "type": "string",
@@ -422,7 +422,7 @@
         "reason": {
           "type": "string",
           "minLength": 1,
-          "description": "Why no normalized text is held (ERF-5)."
+          "description": "Why no normalized text is held (section 5, status vocabulary)."
         },
         "licence": {
           "type": "string",
@@ -469,7 +469,7 @@
         "required": [
           "reason"
         ],
-        "description": "A source recording an absence says why (ERF-5)."
+        "description": "A source recording an absence says why (section 5, status vocabulary)."
       }
     },
     "Atom": {

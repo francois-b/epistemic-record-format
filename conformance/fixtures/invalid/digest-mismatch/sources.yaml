@@ -1,0 +1,7 @@
+type: sources
+sources:
+  fx-src:
+    citation_text: "Fixture source, 2026"
+    status: "shipped"
+    normalized: "normalized/source.txt"
+    normalized_digest: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
