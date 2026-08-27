@@ -1,7 +1,7 @@
 ---
 title: "erf-mcp: design"
 status: non-normative
-last_updated: 2026-08-26
+last_updated: 2026-08-27
 ---
 
 # erf-mcp: the Epistemic Record Format as a local MCP server
@@ -64,13 +64,14 @@ wrote. Every refusal names the requirement. Nothing writes a raw file.
 | `erf_corpus_use(id)` | makes one corpus the target of following calls | unknown id |
 | `erf_corpus_init(folder, id, title, owner)` | creates a corpus under a root: `corpus.yaml` + empty `sources.yaml`; makes it active | folder outside the roots; a declaration already there; owner not `human:` |
 | `erf_corpus_check()` | loads, validates, reports violations, flags, unbacked claims, uncited sources, counts by disposition | never |
-| `erf_source_add(id, citation_text, url? \| path?, licence?, licence_name?)` | captures: raw bytes held and digested (`ERF-71`); extracted and normalized by named tools (`ERF-70`); entry written to `sources.yaml` with `status` derived from the licence; logs the act | id in use; url given while fetching is off; neither url nor path; path outside the corpus |
-| `erf_search_log(for, tool, query, hits_reported, scope?)` | appends one act to the research log, tagged with what it was looking for | empty query; no `for` |
-| `erf_atom_mint(source, quote, finding, source_quality, as_of_date?, limitations?)` | assigns the next id (`ERF-37`); runs the quote check (`ERF-50/51/52`) against the held normalized text; writes the atom | source not registered; source has no held text; quote not found (returns the nearest passage); `as_of_date` finer than a date |
+| `erf_source_add(id, citation_text, url? \| path?, licence?, find?, window?, found_by?)` | captures: raw bytes held and digested (`ERF-71`); extracted and normalized by named tools (`ERF-70`); entry written to `sources.yaml` with `status` derived from the licence; logs the act. With `found_by` it logs the search that led to the page first; it returns the windows around `find` (or the opening of the text), so a quote is chosen without a second call | id in use; url given while fetching is off; neither url nor path; path outside the corpus; a `found_by` with no `for` |
+| `erf_search_log(for, tool, query, hits_reported, scope?)` | appends one act to the research log, tagged with what it was looking for; for a search that led to a page, `erf_source_add(found_by)` does the same thing in the call that captures it | empty query; no `for` |
+| `erf_atom_mint(source, quote, finding, source_quality, as_of_date?, limitations?)` or `erf_atom_mint(atoms: [...])` | assigns the next id (`ERF-37`); runs the quote check (`ERF-50/51/52`) against the held normalized text; writes the atom. With `atoms`, every atom for a source in one call: each checked and written in turn, ids consecutive, one refusal reported beside the others rather than ending the call | source not registered; source has no held text; quote not found (returns the nearest passage); `as_of_date` finer than a date; neither one atom nor a list |
 | `erf_claim_mint(id, title, epistemic_kind, atoms_for?, atoms_against?, surveys?, edges?, families?, notes?)` | writes the claim; body opens with the title verbatim (`ERF-18`) | id in use; any referenced id unresolved; a self-edge (`ERF-43`) |
 | `erf_claim_update(id, title?, atoms_for?, atoms_against?, surveys?, edges?, families?, notes?)` | rewrites the named fields, stamps `last_modified` | unresolved ids; an attempt to touch `standings` or `evidence_audit` |
 | `erf_claim_stand(id, stance, why)` | appends a standing under the corpus owner with a full RFC 3339 instant (`ERF-19`, `ERF-40`); returns the computed disposition | empty `why`; no `owner` on the declaration |
 | `erf_survey_record(id, title, notable_results?, coverage_bounds, from_log?: date + for, searches?: [...])` | writes the survey; `searches` come from the research log for the given day **and question** (`for`), or from the argument | no acts at all (`ERF-26`); `hits_reported` missing; `from_log` without `for`; no act logged for `for` |
+| `erf_flag_take(id, by?)` | takes an open flag for one worker, so a queue can be shared; a take goes stale after 30 minutes and nothing ever clears it | the flag is resolved; someone else took it inside the last 30 minutes |
 | `erf_flag(narrative, anchor, note?, research?)` / `erf_flags(narrative?, all?)` / `erf_flag_resolve(id)` | a passage marked to back later, in `flags.jsonl` (a working file, not a record); listed with its passage text and what it asked for; resolved by the binding that covers its anchor. `research` is `mint` (propose claims, stop for the ruling), `back` (gather the evidence after it, then bind) or `opposite` (and state the case against before anyone stands); absent on older flags and read as `mint`. The pattern: `docs/patterns/narrative-backing-loop.md` | anchor not in the narrative, or not unique; already flagged; an unknown `research` |
 | `erf_narrative_bind(narrative, anchor, claims, replace?: true)` | inserts the `YAMLB-1` marker after the passage ending with `anchor`, `bound-at` today; with `replace`, rewrites the marker already on that passage | anchor not found or found twice; a claim id unresolved |
 | `erf_narrative_check(narrative?)` | unresolved ids, stale bindings, broken anchors, malformed candidates (`ERF-31/32/33`) | never |
@@ -105,10 +106,13 @@ one into context without a tool call.
 > This corpus records research so it can be checked later. Discover with any
 > search you like, but read every page you might cite through
 > `erf_source_add`: it holds the bytes, digests them and registers the
-> source, and nothing can be cited that was not captured this way. Log each
-> search with `erf_search_log` at the moment you run it, not afterwards.
+> source, and nothing can be cited that was not captured this way. Give it
+> `found_by` for the search that led to the page and `find` for the phrase you
+> mean to quote; it returns the passage, so quote from that rather than reading
+> again. `erf_search_log` is for a search that found nothing worth capturing.
 > Mint atoms only with verbatim quotes; the server checks each one against
-> the held text and refuses paraphrase. Claims are typed by what would settle
+> the held text and refuses paraphrase, and every atom for one source goes in
+> one call. Claims are typed by what would settle
 > them. Propose; the user rules; never write a record the user has not
 > confirmed. A flag's `research` says what the user asked for: `mint`
 > proposes claims and stops for the ruling, `back` gathers the evidence
@@ -257,3 +261,60 @@ for embedded HTML, which no configuration turns off. The resource is served
 over stdio and cached by the host against its content-hashed URI, so it is paid
 once a session; if it ever needs to shrink, the markdown language is where to
 look.
+
+### Call economy, and two workers at once (2026-08-27)
+
+The first real backing run in Claude Desktop spent forty tool calls after the
+ruling and hit the host's per-turn limit before the claims were minted: 14
+captures, 13 reads of what had just been captured, 7 search logs, 5 atoms one
+at a time. None of the gates was wrong. The shape of the calls was.
+
+**A capture returns the passage, and takes the search that found it.** Reading
+a page you have just held is a second call for something the server already had
+in memory, so `erf_source_add` now takes `find` and returns the same windows
+`erf_source_read` would, folded as the quote check reads them; without `find` it
+returns the opening of the held text. It also takes `found_by`, the search act
+that led to the page, and logs it before the capture, which is the order the
+survey gate assumes anyway. `erf_search_log` stays for the searches that find
+nothing worth capturing, and `erf_source_read` for re-reading a source captured
+earlier. Three calls become one.
+
+**Atoms come in a batch.** `erf_atom_mint` takes `atoms`, every atom for a
+source in one call. Each is checked and written in turn, so ids run
+consecutively and one paraphrase does not stop the four quotes that were
+verbatim: the refusal is reported beside the others, with its nearest passage,
+and the caller fixes that one. The single shape is unchanged, because a single
+atom is still what a follow-up looks like.
+
+**A flag is taken before it is worked.** Two workers on one corpus (another
+chat, another session, an agent in a queue) can otherwise decompose the same
+passage twice. `erf_flag_take` marks a flag for one worker at this instant; a
+second take is refused and names who has it. A take goes stale after thirty
+minutes, so a worker that stopped does not lock a flag for good, and the
+re-take says whose take expired. Nothing clears a take: once the flag is
+resolved it says who did the work. The editor draws a taken flag differently
+from a free one, and the status line names the holder.
+
+**Bindings are merged, never overwritten.** An open editor with unsaved typing
+used to meet a binding written from elsewhere as a banner offering reload or
+overwrite, and overwrite dropped the marker that had just landed. A binding
+marker is the only thing another worker ever writes into a narrative, so the
+two texts do not need a general merge: `mergeMarkers` in `tools/editor/` takes
+every marker of the file on disk that this text lacks and places it on the
+passage its anchor names, rewriting an older marker for the same anchor rather
+than adding a second, and touching nothing else. A marker this text has and the
+file lacks is left alone, because the person may have deleted it on purpose. An
+anchor whose words were rewritten here cannot be placed, and that is the one
+case the banner is still for, along with a change on disk that is not a binding
+at all. The merged text is then written with `force`, since it now holds both.
+
+**Saves go one at a time.** A second write carrying the digest the first is
+about to invalidate would be refused, and the person would be told their own
+typing had changed the file underneath them. The app keeps one write in flight
+and remembers a save asked for meanwhile, saving again when the first returns
+if the document moved on. A flag on words just typed saves them first, since
+the server checks the anchor against the file on disk.
+
+**The poll is out of the trace.** `erf_narrative_status` succeeds a few times a
+minute while the editor is open, which drowned the per-server log. It is traced
+only when it refuses, so the log reads as the session's actions.

@@ -49,8 +49,15 @@ function refused(e: unknown) {
   const msg = e instanceof Refusal ? `REFUSED: ${e.message}` : `ERROR: ${e instanceof Error ? e.message : String(e)}`;
   return { content: [{ type: "text" as const, text: msg }], isError: true };
 }
-/** One stderr line per call, which the MCP host keeps in its per-server log: the session's audit trail. */
+/**
+ * One stderr line per call, which the MCP host keeps in its per-server log:
+ * the session's audit trail. The narrative poll is left out of it while it
+ * succeeds: it is the open editor's heartbeat, a few times a minute, and the
+ * log is worth more if it reads as what the LLM did. A poll that refuses is
+ * traced, since that is the editor losing the file.
+ */
 function trace(tool: string, corpus: string | null, started: number, outcome: string): void {
+  if (tool === "erf_narrative_status" && outcome.startsWith("ok:")) return;
   console.error(`erf-mcp ${new Date().toISOString()} ${tool}${corpus ? ` [${corpus}]` : ""} ${outcome} ${Date.now() - started}ms`);
 }
 function outcomeOf(r: { isError?: boolean; content: { type: string; text?: string }[] }): string {
@@ -59,7 +66,7 @@ function outcomeOf(r: { isError?: boolean; content: { type: string; text?: strin
 }
 
 export function buildServer(ws: Workspace): McpServer {
-  const server = new McpServer({ name: "erf-mcp", version: "0.3.0", title: "Epistemic Record Format", websiteUrl: "https://github.com/francois-b/epistemic-record-format", icons: [{ src: ICON, mimeType: "image/svg+xml", sizes: ["any"] }] }, { instructions: INSTRUCTIONS });
+  const server = new McpServer({ name: "erf-mcp", version: "0.4.0", title: "Epistemic Record Format", websiteUrl: "https://github.com/francois-b/epistemic-record-format", icons: [{ src: ICON, mimeType: "image/svg+xml", sizes: ["any"] }] }, { instructions: INSTRUCTIONS });
   const corpusArg = z.string().optional().describe("corpus id; defaults to the active corpus");
   // Hosts sometimes send a list as one string ("a, b" or a JSON array in quotes); accept both, so a
   // shape slip never bounces a call before the server can say anything useful.

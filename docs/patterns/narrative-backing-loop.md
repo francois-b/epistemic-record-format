@@ -40,7 +40,7 @@ The loop below is written bottom-up. Top-down uses the same steps from step 3 on
 
 4. **Mint and bind.** Accepted claims are written, and the passage is bound to them with an instant-stamped marker. The flag is resolved by the binding. *Tooling: `erf_claim_mint`, `erf_narrative_bind`; `erf_narrative_check` reports the binding as current.*
 
-5. **Back.** For each observation, the LLM searches (each act logged with what it was for), captures the pages it reads (bytes held, digested, registered), picks verbatim quotes from the held text, and mints atoms; a paraphrase is refused. For a gap claim it records a survey compiled from the logged acts. *Tooling: `erf_search_log`, `erf_source_add`, `erf_source_read`, `erf_atom_mint`, `erf_survey_record`.*
+5. **Back.** For each observation, the LLM searches (each act logged with what it was for), captures the pages it reads (bytes held, digested, registered), picks verbatim quotes from the held text, and mints atoms; a paraphrase is refused. For a gap claim it records a survey compiled from the logged acts. *Tooling: `erf_source_add`, which takes the search that led to the page (`found_by`, logged before the capture) and returns the passage around the phrase given as `find`, so the quote is chosen without reading the page again; `erf_atom_mint`, which takes every atom for that source in one call and reports each outcome in order; `erf_search_log` for a search that found nothing worth capturing; `erf_source_read` to re-read a source captured earlier; `erf_survey_record`.*
 
 6. **Search for the opposite.** Before anyone stands on an observation, the LLM states the strongest case against it and where that evidence would be found; the person decides what to chase. Evidence against goes in `atoms_against`; a claim that survives only narrowed gets the narrower title. *Tooling: the `search-for-the-opposite` prompt.*
 
@@ -54,7 +54,8 @@ Then the next flag. A section of an essay is one sitting; a whole essay is a wee
 
 ## Conventions this pattern adds
 
-- **A flag** is `{ts, narrative, anchor, note?, research?, by, status}` in `flags.jsonl` at the corpus root, append-only, resolved by the binding that covers its anchor. `research` is what the flag asked for (propose, back, or back and oppose) and defaults to proposing. It is producer machinery, like the research log; the format does not see it.
+- **A flag** is `{ts, narrative, anchor, note?, research?, by, status, taken_by?, taken_ts?}` in `flags.jsonl` at the corpus root, append-only, resolved by the binding that covers its anchor. `research` is what the flag asked for (propose, back, or back and oppose) and defaults to proposing. It is producer machinery, like the research log; the format does not see it.
+- **A flag is taken before it is worked**, so several workers can share one queue: another chat, another session, an agent working through the backlog. A take names the worker and the instant, holds for half an hour and then goes stale, and is never cleared, so a resolved flag says who did it. A worker skips what someone else holds.
 - **Anchors are exact words from the passage**, unique in the narrative, chosen at flag time and kept through to the binding.
 - **The narrative's own source is never backing.** A corpus may hold the shipped version of the narrative as a source, pinned by digest, so a reader can tell the living text from the sent one; an atom quoting it records what the document says and never appears in a claim's `atoms_for`.
 - **Log before capture, capture before quote, quote before claim backing.** The order the gates assume.

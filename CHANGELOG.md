@@ -9,6 +9,21 @@ everything else.
 
 ## Unreleased
 
+Tooling, 2026-08-27: no requirement changed. erf-mcp 0.4.0 cuts what a backing
+run costs in tool calls, and lets two workers hold one corpus at once.
+`erf_source_add` takes `found_by`, the search act that led to the page, and
+logs it before the capture; it takes `find` and returns the windows around that
+phrase in the held text, so a quote is chosen without a second call.
+`erf_atom_mint` takes `atoms`, every atom for one source in one call: each is
+checked in turn, ids run consecutively, and one refusal is reported beside the
+others rather than ending the call. A flag can be taken (`erf_flag_take`, with
+`taken_by` and `taken_ts` on the flag), so several workers can share one queue;
+a take goes stale after thirty minutes and is never cleared, so a resolved flag
+says who did the work. The app's editor merges a binding that lands from
+elsewhere instead of offering to overwrite it, keeps one write in flight at a
+time, and saves before it flags. The narrative poll is no longer traced while
+it succeeds.
+
 Tooling, 2026-08-27: no requirement changed. erf-mcp 0.3.0 gains three
 narrative tools, `erf_narrative_read`, `erf_narrative_write` and
 `erf_narrative_status`: the file as it is on disk with a digest of its bytes as

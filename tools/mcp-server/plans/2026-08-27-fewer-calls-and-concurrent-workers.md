@@ -82,3 +82,120 @@ Today (`app/main.ts` `pollOnce`): when the digest changes under a dirty editor t
 ## Out of scope
 
 The `.mcpb` bundle, the plugin and its skill and sub-agent, the tree page, typography, Bookeh.
+
+## Hand-off checklist
+
+Everything above is built, tested and committed. What follows needs Claude
+Desktop, two chats and a person. None of it has been run from this session, and
+none of it is claimed to work.
+
+**0. A corpus outside this repository.** The server commits its own writes, so
+a corpus inside `epistemic-record-format/` would commit into it.
+
+```
+cp -R examples/corpora/minimal ~/erf-corpora/workers-trial
+cd ~/erf-corpora/workers-trial && git init -q && git add -A && git commit -qm "trial corpus"
+```
+
+The Desktop connector's `args` must name a root that covers that folder.
+
+**1. Restart Desktop and check the handshake.** Quit Claude Desktop from the
+menu bar (closing the window is not enough) and reopen it. Ask a new chat
+"which erf tools do you have".
+*Expected:* `erf_flag_take` is in the list beside the others, and
+`erf_source_add` and `erf_atom_mint` describe themselves as returning the
+passage and taking several atoms. If not, the host is on the cached resource or
+the connector points at another checkout.
+
+**2. The call count on a real flag.** Flag a passage with `back`, rule on the
+claims, and let the LLM back one observation. Watch the per-server log
+(`~/Library/Logs/Claude/mcp-server-*.log`).
+*Expected:* one `erf_source_add` per page, carrying `found_by` and `find`, with
+no `erf_source_read` following it; one `erf_atom_mint` per source rather than
+one per quote; no `erf_narrative_status` lines at all while the poll is
+succeeding. A run that took forty calls should now take roughly fifteen.
+Count them: that number is the whole point of this plan, and it is the one
+thing no test here can measure.
+
+**3. A binding that lands while you are typing.** Open the narrative fullscreen
+in chat A. Type a sentence into a paragraph and do not wait for the autosave
+(under two seconds). In chat B, in the same corpus, say "bind the passage
+starting '<a few words of a different paragraph>' to <a claim id>".
+*Expected:* within about three seconds the editor's header reads `merged 1
+binding from elsewhere`, the sentence typed in chat A is still there, and the
+new marker appears as a collapsed diamond at the end of the other paragraph.
+No banner. `git -C ~/erf-corpora/workers-trial log --oneline -3` shows chat B's
+bind and then chat A's edit, in that order, and the file holds both.
+
+**4. The case merging cannot settle.** Do it again, but this time first delete
+the words chat B's binding anchors on, and leave that edit unsaved.
+*Expected:* the banner appears, naming the anchor that could not be placed, with
+Reload and Overwrite still doing exactly those two things.
+
+**5. Two workers on one flag.** In chat A: "take flag #1". In chat B: "take
+flag #1".
+*Expected:* chat B is refused and told `flag #1 was taken by <agent> just now`,
+with the note that a take goes stale after 30 minutes. In the editor, flag #1's
+underline is solid rather than dashed, and the header, while researching, reads
+`researching #1 (taken by <agent>)`. Both connectors need distinct `--agent`
+values for this to be legible; with one connector serving both chats they share
+an agent id and the second take will be allowed as a refresh.
+
+**6. Saves in order.** Type continuously for ten seconds without pausing, then
+stop.
+*Expected:* the header never shows a "changed on disk" banner from your own
+typing, and `git log` shows one commit per save rather than a refused write.
+
+**7. Write down what Desktop actually did.** Anything this plan did not expect
+goes in `tools/mcp-server/DESIGN.md` under "Findings from building it": a host
+that batches two tool calls per turn, a `found_by` the LLM fills in from memory
+rather than from the search it just ran, an `atoms` list the host flattens into
+a string, the merge firing on a change that was not a binding.
+
+## Deviations
+
+Everything in the plan was built. Four places where what was built differs from
+what was written, each with the reason:
+
+1. **A merged marker goes on its own line, and a rebind rewrites in place.**
+   WP4 says to insert the marker "on its own line (` \n<!-- … -->` following the
+   serialization's spelling; look at how `erf_narrative_bind` writes it and
+   match it exactly)". Those two cannot both hold: `erf_narrative_bind` writes
+   the marker two spaces after the last word of the passage, on the same line.
+   The marker text itself is taken verbatim from the file on disk, so its
+   spelling is byte-identical to what the other worker wrote; the placement
+   follows "on its own line", which also keeps the diff of a merge to one added
+   line. Separately, when the passage in this text already carries a marker for
+   the same anchor, that marker is rewritten rather than a second one added:
+   the plan's rule as written (leave every marker of mine alone) would put two
+   bindings for one anchor on one passage, which `erf_narrative_bind` itself
+   refuses to create without `replace`. Nothing the person typed is touched
+   either way.
+
+2. **The banner also appears when nothing merged.** WP4 says the banner shows
+   "only when `conflicts` is non-empty". But a digest that changed with no
+   marker to merge and nothing to conflict means the change on disk was not a
+   binding at all: a person editing the file in another editor, most likely.
+   Force-saving over that would be exactly the overwrite this work package
+   exists to remove, so that case raises the banner too, saying the change was
+   not a binding. Conflicts and non-bindings are the two things the two buttons
+   are for; a merge that placed something and conflicted with nothing never
+   raises it.
+
+3. **`mergeChanges` beside `mergeMarkers`.** The plan specifies
+   `mergeMarkers(mine, theirs) -> {text, inserted, conflicts}`, which exists and
+   is what the tests exercise. Applying it in the editor by replacing the whole
+   document would be one undoable edit, as asked, but would throw away the
+   cursor and the selection of the person typing. `mergeChanges` returns the
+   same merge as ranges, `mergeFrom` dispatches those as one transaction, and
+   `mergeMarkers` is written in terms of it, so the two can never disagree.
+
+4. **`pendingSave` remembers whether the deferred save was a `force`.** WP5
+   describes a plain flag. A flag alone would silently downgrade the one save
+   that must not be downgraded: the Overwrite button, or the write that follows
+   a merge. The pending state carries the `force` with it.
+
+One thing outside the plan: `erf_source_add` now returns the opening of the
+held text when `find` matched nothing, rather than only saying there was no
+match as `erf_source_read` does. The point of the change is that a quote can be
+chosen without a second call, and a bare "no match" guarantees that second call.
