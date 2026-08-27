@@ -18,5 +18,9 @@
   },
   "erf": {
     "spec_version": "0.9.0"
+  },
+  "dependencies": {
+    "@types/commonmark": "^0.27.10",
+    "commonmark": "^0.31.2"
   }
 }
