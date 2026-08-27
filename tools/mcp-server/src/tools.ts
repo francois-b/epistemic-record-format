@@ -14,12 +14,12 @@ import {
 import { captureUrl, capturePath } from "./capture.ts";
 import { renderSite } from "../../viewer/erf-view.ts";
 import { renderIndex, renderSources, renderHealth, renderNarrative, renderClaim, renderAtom, renderCapture, renderSurvey, setSiteLinks } from "../../viewer/render.ts";
-import { splitDocument } from "../../../implementations/yaml-markdown/typescript/validate.ts";
+import { splitDocument } from "@epistemic-record-format/yaml-markdown";
 import {
   quoteCheck, normalizeForCheck, disposition, unbacked, stoodOn, danglingRefs, brokenAnchors,
   bindingStaleness, findWholeWords, claimsUsingAtom,
-} from "../../../implementations/yaml-markdown/typescript/compute.ts";
-import type { Atom, Claim } from "../../../implementations/yaml-markdown/typescript/validate.ts";
+} from "@epistemic-record-format/yaml-markdown";
+import type { Atom, Claim } from "@epistemic-record-format/yaml-markdown";
 import type { Source } from "../../../schema/erf.generated.ts";
 
 export interface Result { text: string; wrote?: string[] }

@@ -12,7 +12,13 @@
       "node"
     ],
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": false
+    "exactOptionalPropertyTypes": false,
+    "baseUrl": ".",
+    "paths": {
+      "@epistemic-record-format/yaml-markdown": [
+        "../implementations/yaml-markdown/typescript/index.ts"
+      ]
+    }
   },
   "include": [
     "*.ts",

@@ -10,7 +10,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSy
 import { execFileSync } from "node:child_process";
 import { basename, join, relative, resolve } from "node:path";
 import yaml from "js-yaml";
-import { loadCorpus, splitDocument, type LoadedCorpus } from "../../../implementations/yaml-markdown/typescript/validate.ts";
+import { loadCorpus, splitDocument, type LoadedCorpus } from "@epistemic-record-format/yaml-markdown";
 import type { CorpusDeclaration, Source } from "../../../schema/erf.generated.ts";
 
 export class Refusal extends Error {
@@ -71,7 +71,7 @@ export function readSourceList(c: Corpus): Record<string, Source> {
 export function load(c: Corpus): LoadedCorpus { return loadCorpus(c.dir); }
 
 // ---------- serialization: the implementation's writer ----------
-import { frontmatter, recordText } from "../../../implementations/yaml-markdown/typescript/write.ts";
+import { frontmatter, recordText } from "@epistemic-record-format/yaml-markdown";
 export { frontmatter, recordText };
 
 export function writeRecord(c: Corpus, type: "atom" | "claim" | "survey", id: string, fm: Record<string, unknown>, body: string | null): string {

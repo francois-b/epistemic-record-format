@@ -24,13 +24,13 @@ spec:
     - { kind: regex, file: SPEC.md, pattern: '^Specification, v(\d+\.\d+)', equals: spec-major-minor }
 
 artifacts:
-  - id: validator-yaml-markdown-typescript
-    name: "@epistemic-record-format/validator-yaml-markdown"
+  - id: yaml-markdown-typescript
+    name: "@epistemic-record-format/yaml-markdown"
     path: implementations/yaml-markdown/typescript
     language: typescript
     serialization: yaml-markdown
     registry: npm
-    tag_family: validator-yaml-markdown-typescript-v
+    tag_family: yaml-markdown-typescript-v
     policy: tracks-spec
     version: { kind: package.json }
     spec_version: { kind: package.json, key: erf.spec_version }

@@ -11,8 +11,8 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import yaml from "js-yaml";
 import type { StandingEntry } from "../../schema/erf.generated.ts";
-import type { Claim } from "../../implementations/yaml-markdown/typescript/validate.ts";
-import { disposition } from "../../implementations/yaml-markdown/typescript/compute.ts";
+import type { Claim } from "@epistemic-record-format/yaml-markdown";
+import { disposition } from "@epistemic-record-format/yaml-markdown";
 import { CASES } from "../paths.ts";
 
 interface DispositionCase {

@@ -82,7 +82,7 @@ you record is yours.
 ## Publishing the reference validator
 
 `implementations/yaml-markdown/typescript/` is the npm package
-`@epistemic-record-format/validator-yaml-markdown`. Its version tracks the specification's:
+`@epistemic-record-format/yaml-markdown`. Its version tracks the specification's:
 the package's major.minor equals the spec's (validator `0.9.x` implements
 spec `0.9`), and the patch digit is the implementation's own, for fixes
 that change no requirement. A spec release therefore forces a validator
@@ -98,20 +98,20 @@ one on PyPI) is one more entry there. To publish:
 ```
 cd implementations/yaml-markdown/typescript
 npm version patch            # minor and major follow the spec, never lead it
-git push origin main "validator-yaml-markdown-typescript-v$(node -p "require('./package.json').version")"
+git push origin main "yaml-markdown-typescript-v$(node -p "require('./package.json').version")"
 ```
 
-The tag is the release, and its family names the artifact (serialization and language), since the repository will hold several validators; the registry name carries the serialization only, because the registry already says the language. `.github/workflows/publish-validator-yaml-markdown-typescript.yml` runs on it:
+The tag is the release, and its family names the artifact (serialization and language), since the repository will hold several validators; the registry name carries the serialization only, because the registry already says the language. `.github/workflows/publish-yaml-markdown-typescript.yml` runs on it:
 the tag must equal the package version, every artifact must be versioned
 against the spec, the conformance suite must pass, then npm publishes from
 the workflow through trusted publishing (OIDC, no stored token) with a
 provenance attestation naming the commit and the workflow. Setting the
 trusted publisher on npmjs.com (package settings, repository
-`francois-b/epistemic-record-format`, workflow `publish-validator-yaml-markdown-typescript.yml`) is
+`francois-b/epistemic-record-format`, workflow `publish-yaml-markdown-typescript.yml`) is
 a one-time step. Publishing by hand (`npm publish --access public` from a
 logged-in machine) still works and produces no attestation; prefer the tag.
 
 `prepack` rebuilds `dist/`, so a stale build cannot be published. The
-schema ships inside the package (`@epistemic-record-format/validator-yaml-markdown/schema`) and also at its
+schema ships inside the package (`@epistemic-record-format/yaml-markdown/schema`) and also at its
 `$id` URL on the site; the two are the same bytes by construction.
 

@@ -8,9 +8,21 @@
     "noEmit": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": false
+    "exactOptionalPropertyTypes": false,
+    "baseUrl": ".",
+    "paths": {
+      "@epistemic-record-format/yaml-markdown": [
+        "../../implementations/yaml-markdown/typescript/index.ts"
+      ]
+    }
   },
-  "include": ["*.ts", "../../implementations/yaml-markdown/typescript/*.ts", "../../schema/*.ts"]
+  "include": [
+    "*.ts",
+    "../../implementations/yaml-markdown/typescript/*.ts",
+    "../../schema/*.ts"
+  ]
 }

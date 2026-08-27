@@ -6,7 +6,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { join } from "node:path";
-import { loadCorpus } from "../../implementations/yaml-markdown/typescript/validate.ts";
+import { loadCorpus } from "@epistemic-record-format/yaml-markdown";
 import { FIXTURES } from "../paths.ts";
 
 test("ERF-65: an unquoted date-shaped timestamp loads as a string, not a date", () => {

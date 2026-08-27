@@ -9,8 +9,8 @@ import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync, mkdirSync, cpSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { frontmatter, recordText, yamlDocument } from "../../implementations/yaml-markdown/typescript/write.ts";
-import { loadCorpus, splitDocument } from "../../implementations/yaml-markdown/typescript/validate.ts";
+import { frontmatter, recordText, yamlDocument } from "@epistemic-record-format/yaml-markdown";
+import { loadCorpus, splitDocument } from "@epistemic-record-format/yaml-markdown";
 import { FIXTURES } from "../paths.ts";
 
 test("write: the wire rules hold on the bytes", () => {

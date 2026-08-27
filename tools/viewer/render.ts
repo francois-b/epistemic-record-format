@@ -7,14 +7,14 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Atom, Claim, LoadedCorpus, Narrative, Source, Survey } from "../../implementations/yaml-markdown/typescript/validate.ts";
-import { bindingCandidates, bindingRe, shipsWithCorpus } from "../../implementations/yaml-markdown/typescript/validate.ts";
+import type { Atom, Claim, LoadedCorpus, Narrative, Source, Survey } from "@epistemic-record-format/yaml-markdown";
+import { bindingCandidates, bindingRe, shipsWithCorpus } from "@epistemic-record-format/yaml-markdown";
 import {
   backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,
   brokenAnchors, evidenceRefsFlagged, retiredPremises, standingTies, undatedRetrievals,
   disposition, normalizeForCheck, quoteCheck, resolvable, staleAudits,
   staleEvidenceAudit, stoodOn, unbacked,
-} from "../../implementations/yaml-markdown/typescript/compute.ts";
+} from "@epistemic-record-format/yaml-markdown";
 
 export const CSS = `
 :root { --ink:#1a1a1a; --muted:#5a5550; --mutedlt:#a5a09a; --rule:#d8d3cc;

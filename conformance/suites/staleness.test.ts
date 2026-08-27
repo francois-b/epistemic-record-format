@@ -8,8 +8,8 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { staleAgainst, staleAudits, staleEvidenceAudit, bindingStaleness } from "../../implementations/yaml-markdown/typescript/compute.ts";
-import type { Atom } from "../../implementations/yaml-markdown/typescript/validate.ts";
+import { staleAgainst, staleAudits, staleEvidenceAudit, bindingStaleness } from "@epistemic-record-format/yaml-markdown";
+import type { Atom } from "@epistemic-record-format/yaml-markdown";
 
 const atom = (created: string, modified?: string, audit?: string): Atom => ({
   id: "fx-001", type: "atom", corpus: "fx", finding: "f", quote: "q",

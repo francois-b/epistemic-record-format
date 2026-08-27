@@ -4,6 +4,6 @@ Maintained implementations of the format, one folder per serialization and one p
 
 | Serialization | Language | Folder | Status |
 |:--|:--|:--|:--|
-| YAML/Markdown (`serialization/yaml-markdown.md`) | TypeScript | [`yaml-markdown/typescript/`](yaml-markdown/typescript/) | the reference; the conformance suite tests it; npm `@epistemic-record-format/validator-yaml-markdown` |
+| YAML/Markdown (`serialization/yaml-markdown.md`) | TypeScript | [`yaml-markdown/typescript/`](yaml-markdown/typescript/) | the reference; the conformance suite tests it; npm `@epistemic-record-format/yaml-markdown` |
 
 Cold-built validators, written from the specification alone to test the document rather than to be used, are not here; they are in `reviews/` and listed in `IMPLEMENTATIONS.md`.

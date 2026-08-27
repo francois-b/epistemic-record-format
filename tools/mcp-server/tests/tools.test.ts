@@ -13,8 +13,8 @@ import { fileURLToPath } from "node:url";
 import { openCorpus, Refusal, type Corpus } from "../src/corpus.ts";
 import * as T from "../src/tools.ts";
 import { normalizeText } from "../src/capture.ts";
-import { loadCorpus } from "../../../implementations/yaml-markdown/typescript/validate.ts";
-import { danglingRefs, disposition } from "../../../implementations/yaml-markdown/typescript/compute.ts";
+import { loadCorpus } from "@epistemic-record-format/yaml-markdown";
+import { danglingRefs, disposition } from "@epistemic-record-format/yaml-markdown";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 const MINIMAL = join(REPO, "examples", "corpora", "minimal");

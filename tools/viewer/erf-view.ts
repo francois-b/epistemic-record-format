@@ -15,8 +15,8 @@
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { loadCorpus } from "../../implementations/yaml-markdown/typescript/validate.ts";
-import { claimsUsingAtom } from "../../implementations/yaml-markdown/typescript/compute.ts";
+import { loadCorpus } from "@epistemic-record-format/yaml-markdown";
+import { claimsUsingAtom } from "@epistemic-record-format/yaml-markdown";
 import {
   renderAtom, renderCapture, renderClaim, renderHealth, renderIndex,
   renderNarrative, renderSources, renderSurvey, setSiteLinks, stylesheet,

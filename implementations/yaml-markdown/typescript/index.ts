@@ -1,14 +1,14 @@
 /**
- * @epistemic-record-format/validator-yaml-markdown: the reference implementation of the Epistemic Record
+ * @epistemic-record-format/yaml-markdown: the reference implementation of the Epistemic Record
  * Format for the YAML/Markdown serialization, as a library.
  *
- *   import { loadCorpus, disposition, quoteCheck } from "@epistemic-record-format/validator-yaml-markdown";
+ *   import { loadCorpus, disposition, quoteCheck } from "@epistemic-record-format/yaml-markdown";
  *
  * Four modules: read (bytes to documents), validate (`loadCorpus`: documents
  * to a checked model), compute (the readings the specification defines, from
  * the model alone), write (model to bytes, the one serializer). The command
  * line `erf-check` is built on them. The schema this build was generated
- * against ships with the package (`@epistemic-record-format/validator-yaml-markdown/schema`).
+ * against ships with the package (`@epistemic-record-format/yaml-markdown/schema`).
  */
 export const SPEC_VERSION = "0.9.0";
 
