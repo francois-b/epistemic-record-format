@@ -26,7 +26,7 @@ import { readTrail } from "./trail.ts";
 export interface RenderedSite { corpus: string; pages: number; atoms: number; claims: number; surveys: number; findings: number; outDir: string }
 
 /** Render a corpus to a folder of self-contained pages. The library entry; the CLI below wraps it. */
-export function renderSite(corpusDir: string, outDir: string, links: { label: string; href: string }[] = []): RenderedSite {
+export function renderSite(corpusDir: string, outDir: string, links: { label: string; href: string }[] = [], onPage?: (n: number, total: number) => void): RenderedSite {
   setSiteLinks(links);
   const c = loadCorpus(corpusDir);
   mkdirSync(outDir, { recursive: true });
@@ -44,7 +44,9 @@ export function renderSite(corpusDir: string, outDir: string, links: { label: st
     return existsSync(p) ? readFileSync(p, "utf8") : null;
   };
 
-  const write = (name: string, html: string) => writeFileSync(join(outDir, name), html, "utf8");
+  const total = 3 + c.narratives.length + c.claims.size + c.surveys.size + c.atoms.size * 2;
+  let done = 0;
+  const write = (name: string, html: string) => { writeFileSync(join(outDir, name), html, "utf8"); onPage?.(++done, total); };
   const users = claimsUsingAtom(c);
   const trail = readTrail(corpusDir, (id) => c.sources.get(id)?.citation_text);
 
@@ -60,9 +62,7 @@ export function renderSite(corpusDir: string, outDir: string, links: { label: st
     write(`capture-${a.id}.html`, renderCapture(a, c, text));
   }
 
-  const pages = 3 + c.narratives.length + c.claims.size
-    + c.surveys.size + c.atoms.size * 2;
-  return { corpus: String(c.manifest.id), pages, atoms: c.atoms.size, claims: c.claims.size, surveys: c.surveys.size, findings: c.findings.length, outDir };
+  return { corpus: String(c.manifest.id), pages: total, atoms: c.atoms.size, claims: c.claims.size, surveys: c.surveys.size, findings: c.findings.length, outDir };
 }
 
 function main(argv: string[]): number {

@@ -32,6 +32,18 @@ import type { Source } from "../../../schema/erf.generated.ts";
  */
 export interface Result { text: string; wrote?: string[]; data?: Record<string, unknown> }
 
+/**
+ * PROBE (2026-08-27): what the host shows of a server's progress and logs.
+ * `Progress` is called by the long tools at their steps; `index.ts` turns it
+ * into notifications/progress when the call carried a progressToken and
+ * into nothing otherwise. `onWrote` is called after every write with the
+ * relative paths, and `index.ts` sends them as logging messages. Both can
+ * be removed without touching any tool if the host shows nothing.
+ */
+export type Progress = (progress: number, total: number | undefined, message: string) => void;
+export let onWrote: ((paths: string[]) => void) | null = null;
+export function setOnWrote(fn: ((paths: string[]) => void) | null): void { onWrote = fn; }
+
 const KINDS = ["observation", "argument", "bet", "commitment"] as const;
 const STANCES = ["for", "against", "withdrawn"] as const;
 const RELATIONS = ["supports", "assumes", "decomposes-into", "conflicts-with"] as const;
@@ -40,6 +52,7 @@ const QUALITIES = ["high", "medium", "low"] as const;
 function finish(c: Corpus, text: string, wrote: string[], message: string): Result {
   const sha = commit(c, wrote, message);
   const rel = wrote.map((p) => relative(c.dir, p));
+  try { onWrote?.(rel); } catch { /* a probe never fails a write */ }
   return { text: `${text}\nwrote: ${rel.join(", ")}${sha ? `\ncommitted ${sha}` : ""}`, wrote: rel };
 }
 
@@ -122,8 +135,9 @@ function windowLines(windows: { at: number; text: string }[]): string {
   return windows.map((x, i) => `[${i + 1}] …${x.text}…`).join("\n\n");
 }
 
-export async function sourceAdd(c: Corpus, a: { id: string; citation_text: string; url?: string; path?: string; licence?: string; licence_name?: string; not_redistributable?: boolean; find?: string; window?: number; found_by?: FoundBy }): Promise<Result> {
+export async function sourceAdd(c: Corpus, a: { id: string; citation_text: string; url?: string; path?: string; licence?: string; licence_name?: string; not_redistributable?: boolean; find?: string; window?: number; found_by?: FoundBy }, progress: Progress = () => {}): Promise<Result> {
   readDeclaration(c);
+  progress(0, 4, a.url ? `fetching ${a.url}` : `reading ${a.path}`);
   if (!/^[a-z0-9][a-z0-9-]*$/.test(a.id)) throw new Refusal("source id must be a lowercase slug");
   const sources = readSourceList(c);
   if (sources[a.id]) throw new Refusal(`source ${a.id} is already registered`);
@@ -134,7 +148,7 @@ export async function sourceAdd(c: Corpus, a: { id: string; citation_text: strin
   const found = a.found_by ? logSearchAct(c, a.found_by) : null;
   const how = a.url ? "erf_source_add(url)" : "erf_source_add(path)";
   let cap;
-  try { cap = a.url ? await captureUrl(c, a.id, a.url) : await capturePath(c, a.id, a.path!); }
+  try { cap = a.url ? await captureUrl(c, a.id, a.url) : await capturePath(c, a.id, a.path!); progress(2, 4, "extracted and normalized"); }
   catch (e) {
     // a refused capture is part of the trail: the research log says what was tried and why nothing is held
     if (e instanceof Refusal) appendLog(c, { kind: "fetch", tool: how, url: a.url, path: a.path, source: a.id, refused: e.message });
@@ -155,6 +169,7 @@ export async function sourceAdd(c: Corpus, a: { id: string; citation_text: strin
     normalization: cap.normalization,
   } as Source;
   sources[a.id] = entry;
+  progress(3, 4, "registering");
   writeYamlDocument(sourceListPath(c), { type: "sources", sources });
   appendLog(c, { kind: "fetch", tool: how, url: a.url, path: a.path, source: a.id });
   const wrote = [sourceListPath(c), join(c.dir, cap.rawPath), join(c.dir, cap.normalizedPath)];
@@ -169,6 +184,7 @@ export async function sourceAdd(c: Corpus, a: { id: string; citation_text: strin
     : `${heldText.length} chars held${heldText.length > OPENING ? `; first ${OPENING} shown, use find or erf_source_read to see more` : ""}:\n\n${heldText.slice(0, OPENING)}`;
   const head = `${found ? `${actLine(found)}\n` : ""}source ${a.id} registered: ${cap.bytes} bytes held (${cap.rawDigest.slice(0, 19)}…), normalized ${cap.normalizedPath}${cap.title ? `, title "${cap.title}"` : ""}; status ${status}`;
   const r = finish(c, head, wrote, `register source ${a.id}`);
+  progress(4, 4, `registered ${a.id}`);
   return { ...r, text: `${r.text}\n\n${passage}`, data: { id: a.id, held, chars: heldText.length, windows } };
 }
 
@@ -793,12 +809,14 @@ function flagTrails(c: Corpus, l: LoadedCorpus, slug: string, since?: string): F
 // ---------- rendering ----------
 
 /** The viewer, run into a folder inside the corpus: what a reader opens in a browser. Derived output, never committed. */
-export function renderSiteTool(c: Corpus, a: { out?: string }): Result {
+export function renderSiteTool(c: Corpus, a: { out?: string }, progress: Progress = () => {}): Result {
   readDeclaration(c);
   const rel = (a.out ?? "site").replace(/^\/+/, "");
   if (rel.includes("..")) throw new Refusal("out is a folder inside the corpus");
   const outDir = join(c.dir, rel);
-  const r = renderSite(c.dir, outDir);
+  // PROBE: a step every ten pages, then done
+  const r = renderSite(c.dir, outDir, [], (n, total) => { if (n % 10 === 0 || n === total) progress(n, total, `${n} of ${total} pages`); });
+  progress(r.pages, r.pages, `rendered ${r.pages} pages`);
   // derived output: keep it out of the corpus's history
   const gi = join(c.dir, ".gitignore");
   if (existsSync(join(c.dir, ".git"))) {

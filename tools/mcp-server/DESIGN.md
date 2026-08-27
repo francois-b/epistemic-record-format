@@ -218,6 +218,30 @@ held. The site renderer and the app share the reading, so the trail is the
 same at every distance, and a corpus with no log renders without the
 section.
 
+## Probes: progress, logs, a task list (2026-08-27, removable)
+
+Three cheap probes into what Claude Desktop and Cowork surface from a
+server, each marked `PROBE` in the code and each removable without touching
+a tool:
+
+1. **Progress.** A call that carries a `progressToken` gets
+   `notifications/progress` at the tool's steps: `erf_source_add` at
+   fetching or reading, extracted, registering, registered (0 to 4 of 4);
+   `erf_render_site` every ten pages and at the end. Without a token nothing
+   is sent. `on()` in `index.ts` turns the SDK's `extra` into a `Progress`
+   function the two tools call.
+2. **Logs.** Every write (`finish()` in `tools.ts`) sends a logging message
+   at `info` naming the relative paths written, through a hook `index.ts`
+   sets; the server declares the logging capability for it.
+3. **A task list.** `work-the-flags` and `survey-span` ask the worker to
+   keep a task list of the steps and check each off, to see whether
+   Cowork's Progress panel follows.
+
+`scripts/smoke-notifications.ts` spawns the server over stdio on a copy of
+the minimal corpus and prints every notification as it arrives; the first
+two probes were verified there on 2026-08-27. What the hosts show of them
+is the open question.
+
 ## Identity
 
 - Records the server creates carry `created.by` = the `--agent` option

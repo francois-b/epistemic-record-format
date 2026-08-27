@@ -9,6 +9,8 @@ everything else.
 
 ## Unreleased
 
+Probe, 2026-08-27, removable: what a host shows of a server besides results. `erf_source_add` and `erf_render_site` send `notifications/progress` at their steps when the call carries a progress token (nothing otherwise); every write sends a logging message naming the paths written (the logging capability is declared for it); `work-the-flags` and `survey-span` ask the worker to keep a task list and check the steps off. Verified on the wire with `scripts/smoke-notifications.ts`; whether Claude Desktop or Cowork shows any of it is the question, and the three are marked PROBE in the code so they can go if the answer is nothing.
+
 Tooling and pattern, 2026-08-27: a survey runs as recall, then verify. Before any search the LLM writes the sources it expects to exist for the span, marked as unverified recollection, then seeks each by name and logs its fate; the survey lists them as targets. In the server instructions, the survey branch of `work-the-flags`, a new `survey-span` prompt, and step 5 of the backing loop. Found when a survey's topic queries returned retrospectives while the canonical sources went unsought.
 
 Tooling, 2026-08-27: `erf_survey_record` compiles from the log for one question or a list of them (a survey lost the search logged under its second question), and takes `targets`, the sources sought by name with what became of each (held, unreachable with why, not found, not searched), written into the body under "Sources sought" and counted in the coverage text, so absent from the literature can be told from absent from this pass. The format has no field for it; filed as `B-71`.
