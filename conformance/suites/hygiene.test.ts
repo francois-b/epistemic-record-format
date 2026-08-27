@@ -111,6 +111,7 @@ for (const [name, script, args] of [
   ["the YAML/Markdown serialization's prose style", "lint/lint-spec-style.py", ["serialization/yaml-markdown.md"]],
   ["field names across the two normative surfaces", "lint/lint-field-names.py", []],
   ["schema/erf.generated.ts against schema/erf.schema.json", "generate/generate-types.py", []],
+  ["the validator's version against the specification's", "lint/lint-validator-version.py", []],
 ] as const) {
   test(`${name} passes its linter`, () => {
     try {

@@ -81,15 +81,20 @@ you record is yours.
 
 ## Publishing the reference validator
 
-`validator/yaml-markdown/typescript/` is the npm package `@epistemic-record-format/validator`.
-Its version is the implementation's own and moves independently of the
-specification; `erf.spec_version` in its `package.json` and the exported
-`SPEC_VERSION` say which spec version a build implements. To publish:
+`validator/yaml-markdown/typescript/` is the npm package
+`@epistemic-record-format/validator`. Its version tracks the specification's:
+the package's major.minor equals the spec's (validator `0.9.x` implements
+spec `0.9`), and the patch digit is the implementation's own, for fixes
+that change no requirement. A spec release therefore forces a validator
+release at the same major.minor. `erf.spec_version` in `package.json` and
+the exported `SPEC_VERSION` state the spec version exactly.
+`tools/lint/lint-validator-version.py` enforces all of this from the
+pre-commit hook and the conformance suite. To publish:
 
 ```
 cd validator/yaml-markdown/typescript
 npm run build && npm test --prefix ../../../conformance   # the suite is the gate
-npm version patch|minor|major
+npm version patch            # minor and major follow the spec, never lead it
 npm publish --access public                               # needs npm login and the epistemic-record-format org
 ```
 

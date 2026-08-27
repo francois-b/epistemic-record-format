@@ -21,7 +21,7 @@ waits on implementations other than the author's.
 
 | Name | Language | Spec version | Conformance classes | Link |
 |---|---|---|---|---|
-| `@epistemic-record-format/validator` (`erf-check`), the reference | TypeScript | 0.9.0 | corpus, consumer; the conformance suite runs against it | [`validator/yaml-markdown/typescript/`](validator/yaml-markdown/typescript/), npm `@epistemic-record-format/validator` |
+| `@epistemic-record-format/validator` 0.9.x (`erf-check`), the reference | TypeScript | 0.9.0 | corpus, consumer; the conformance suite runs against it | [`validator/yaml-markdown/typescript/`](validator/yaml-markdown/typescript/), npm `@epistemic-record-format/validator` |
 
 **To add yours**, open a pull request adding a row: the name, the language,
 the specification version you built against, which conformance classes you
