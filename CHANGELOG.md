@@ -9,6 +9,8 @@ everything else.
 
 ## Unreleased
 
+Tooling, 2026-08-27: the server instructions say what a report on a flag contains (proposals with atoms and what would settle them, coverage in two lines with sources sought and not reached, what could not be held) and what it leaves out (corpus state, tool results, digests, the worker's own steps). Found when a survey pass opened with a paragraph on digests.
+
 Known host behaviour, 2026-08-27: leaving fullscreen in Claude Desktop, the app's view jumps while the host animates it back into its inline slot. Holding the content still and showing the editor inline too were both tried and changed nothing; it is the host's animation of the iframe, and the outline inline stands.
 
 Tooling and pattern, 2026-08-27: no requirement changed. A flag can ask for a
