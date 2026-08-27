@@ -46,7 +46,9 @@ body.mode-fullscreen #main { flex: 1; overflow: auto; padding-bottom: calc(1rem 
 
 /* the research trail: one flag's work as it lands, folded under the head bar (fullscreen only; inline the card is an answer) */
 #trail { padding: .3rem .9rem .5rem; font-family: var(--sans); font-size: .78rem; background: var(--codebg); border-bottom: 1px solid var(--rulelt); max-height: 40vh; overflow: auto; }
-#trail[hidden], body.mode-inline #trail { display: none; }
+#trail[hidden] { display: none; }
+/* inline the trail is the card's summary line, folded; it unfolds on demand and the host grows the card */
+body.mode-inline #trail { max-height: none; }
 #trail.folded #trail-body { display: none; }
 #trail.folded { padding-bottom: .3rem; }
 #trail-head { display: flex; align-items: baseline; gap: .6rem; margin-bottom: .2rem; }

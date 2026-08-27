@@ -9,6 +9,8 @@ everything else.
 
 ## Unreleased
 
+Tooling, 2026-08-27: the research trail shows inline as well as fullscreen, folded to its summary line there, so a pass can be watched from the conversation view where the host draws no chat sheet over the app.
+
 Tooling and pattern, 2026-08-27: the ruling has a surface. A worker's proposals for a flag are producer machinery in `proposals.jsonl` (the id the claim would take, title, kind, the atoms for and against, what would settle it, the remark), put with `erf_propose`, which renders them as a card in the conversation with every quote, citation, page and remark in view. On the card the person accepts, narrows (the title edited in place) or drops each proposal, one `erf_proposal_rule` each, and a claim is written by that ruling and by nothing else; "bind and finish" (`erf_proposal_finish`) binds the passage to the minted claims and resolves the flag. The prompts and the server instructions say so: after the research, propose and stop; never mint a claim for a flag. Found when a survey pass reported six claims as a chat table of ids and had minted them before anyone ruled.
 
 Tooling and pattern, 2026-08-27: a flag keeps its span. The editor cut the anchor to the first twelve words of the selection, so a flag placed on a paragraph reached the server, the underline and the LLM as its first line. `erf_flag` now takes the whole selection as `span` (folded; it must contain the anchor and occur in the narrative), `erf_flags` and the narrative status name it as the scope, the underline and the flag card cover it, and the anchor stays the few words that locate the flag. Found when François flagged the "new iteration of Agile" bullet and only its first line lit up.

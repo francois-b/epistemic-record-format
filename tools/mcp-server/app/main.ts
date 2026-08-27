@@ -400,7 +400,8 @@ function paintTrail(next: FlagTrail[]): void {
   const acts = trails.some((t) => t.searches.length || t.captures.length);
   statusEl.classList.toggle("trailable", trails.length > 0);
   if (!trails.length) { trailOpen = false; trailEl.hidden = true; return; }
-  if (acts && !hadActs && !trailOpen) { trailOpen = true; trailEl.hidden = false; }
+  // the panel opens itself on the first act; inline it opens folded to its summary line, so the card stays an answer
+  if (acts && !hadActs && !trailOpen) { trailOpen = true; trailEl.hidden = false; setFolded(mode !== "fullscreen"); }
   if (!trailOpen) return;
   trailTitle.textContent = `the research trail · ${trailSummary(trails)}`;
   trailBody.replaceChildren(...trails.flatMap((t) => {
