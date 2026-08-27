@@ -394,6 +394,101 @@ test("a flag's span is its scope: the whole selection, folded, containing the an
   clean(c);
 });
 
+test("proposals: put for an open flag with minted atoms, read back with the evidence resolved, ruled one by one, finished by the binding", async () => {
+  const c = fresh();
+  const n = loadCorpus(c.dir).narratives[0]!;
+  const para = n.body.split("\n\n").find((p) => !/<!--/.test(p) && p.trim().length > 60)!;
+  const ws = para.trim().split(/\s+/); let anchor = "";
+  for (let i = 0; i + 5 <= ws.length; i++) { const cand = ws.slice(i, i + 5).join(" "); if (n.body.indexOf(cand) === n.body.lastIndexOf(cand)) { anchor = cand; break; } }
+  T.flag(c, { narrative: n.slug, anchor, research: "survey" });
+  // an atom from a held PDF, so the card can name a page
+  cpSync(join(dirname(fileURLToPath(import.meta.url)), "fixtures", "two-pages.pdf"), join(c.dir, "paper.pdf"));
+  await T.sourceAdd(c, { id: "paper-2026", citation_text: "A two-page paper, 2026", path: "paper.pdf" });
+  const m = T.atomMint(c, { source: "paper-2026", quote: "the audit agreed with the ledger", finding: "The audit agreed.", source_quality: "medium" });
+  const pdfAtom = /atom (\S+) minted/.exec(m.text)![1]!;
+  const props = [
+    { id: "wave-dates", title: "The wave dates to the 1990s.", epistemic_kind: "observation", atoms_for: ["ex-001", "ex-002"], settles: "period sources", note: "solid" },
+    { id: "upkeep-cause", title: "Upkeep defeated adoption.", epistemic_kind: "observation", atoms_for: [pdfAtom], atoms_against: ["ex-003"], note: "the witnesses are groupware" },
+    { id: "third-attempt", title: "This is the third attempt.", epistemic_kind: "argument" },
+  ];
+  // validation: the flag, the atoms, the ids, the kinds
+  await refuses(() => T.propose(c, { flag: 9, proposals: props }), /no flag #9/);
+  await refuses(() => T.propose(c, { flag: 1, proposals: [{ ...props[0]!, atoms_for: ["no-such-atom"] }] }), /atom no-such-atom, which does not exist/);
+  await refuses(() => T.propose(c, { flag: 1, proposals: [{ ...props[0]!, id: "Bad Id" }] }), /lowercase slug/);
+  await refuses(() => T.propose(c, { flag: 1, proposals: [{ ...props[0]!, id: "discipline-needs-primitives" }] }), /already used by a record/);
+  await refuses(() => T.propose(c, { flag: 1, proposals: [{ ...props[0]!, epistemic_kind: "hunch" }] }), /epistemic_kind is one of/);
+  await refuses(() => T.propose(c, { flag: 1, proposals: [props[0]!, props[0]!] }), /given twice/);
+  await refuses(() => T.propose(c, { flag: 1, proposals: props, survey: "no-such-survey" }), /survey no-such-survey does not exist/);
+  // stored, nothing minted, the view resolves the evidence
+  const r = T.propose(c, { flag: 1, proposals: props, summary: "The dating holds; the cause does not yet." });
+  assert.match(r.text, /3 proposal\(s\) for flag #1 are on the card/);
+  assert.ok(existsSync(join(c.dir, "proposals.jsonl")), "proposals live in proposals.jsonl at the corpus root");
+  assert.equal(loadCorpus(c.dir).claims.has("wave-dates"), false, "a proposal is not a claim");
+  const v = r.data as unknown as T.ProposalSetView;
+  assert.equal(v.kind, "proposals"); assert.equal(v.flag, 1); assert.equal(v.status, "open"); assert.equal(v.all_ruled, false);
+  assert.equal(v.narrative_title, n.title); assert.equal(v.anchor, anchor);
+  const up = v.proposals.find((p) => p.id === "upkeep-cause")!;
+  assert.equal(up.atoms.length, 2);
+  const forAtom = up.atoms.find((a) => a.side === "for")!;
+  assert.equal(forAtom.quote, "the audit agreed with the ledger"); assert.equal(forAtom.page, 2, "an atom from a held PDF names its page"); assert.equal(forAtom.citation, "A two-page paper, 2026");
+  const against = up.atoms.find((a) => a.side === "against")!;
+  assert.equal(against.id, "ex-003"); assert.ok(against.citation && against.url, "an atom from a fetched page carries its citation and URL");
+  // read back: the latest set for the flag, and the latest open set without one
+  assert.equal((T.proposals(c, { flag: 1 }).data as unknown as T.ProposalSetView).proposals.length, 3);
+  assert.equal((T.proposals(c, {}).data as unknown as T.ProposalSetView).flag, 1);
+  assert.match(T.proposals(c, { flag: 7 }).text, /no proposals for flag #7/);
+  // rulings: accept mints as proposed; narrow needs a new title and mints it; drop mints nothing; none is re-made
+  await refuses(() => T.proposalFinish(c, { flag: 1 }), /3 proposal\(s\) without a ruling/);
+  await refuses(() => T.proposalRule(c, { flag: 1, id: "nope", ruling: "accepted" }), /no proposal nope/);
+  await refuses(() => T.proposalRule(c, { flag: 1, id: "wave-dates", ruling: "sideways" }), /ruling is one of/);
+  await refuses(() => T.proposalRule(c, { flag: 1, id: "upkeep-cause", ruling: "narrowed" }), /a narrowing changes the title/);
+  const a1 = T.proposalRule(c, { flag: 1, id: "wave-dates", ruling: "accepted" });
+  assert.match(a1.text, /accepted wave-dates: claim wave-dates minted/);
+  const cl = loadCorpus(c.dir).claims.get("wave-dates")!;
+  assert.deepEqual(cl.atoms_for, ["ex-001", "ex-002"]);
+  await refuses(() => T.proposalRule(c, { flag: 1, id: "wave-dates", ruling: "dropped" }), /already ruled \(accepted\)/);
+  const a2 = T.proposalRule(c, { flag: 1, id: "upkeep-cause", ruling: "narrowed", title: "Upkeep was one cause among several." });
+  const narrowed = loadCorpus(c.dir).claims.get("upkeep-cause")!;
+  assert.equal(narrowed.title, "Upkeep was one cause among several.");
+  assert.deepEqual(narrowed.atoms_against, ["ex-003"]);
+  assert.match(readFileSync(join(c.dir, "claims", "upkeep-cause.md"), "utf8"), /proposed as: Upkeep defeated adoption\./);
+  assert.equal((a2.data as unknown as T.ProposalSetView).counts.narrowed, 1);
+  const a3 = T.proposalRule(c, { flag: 1, id: "third-attempt", ruling: "dropped" });
+  assert.equal(loadCorpus(c.dir).claims.has("third-attempt"), false);
+  assert.equal((a3.data as unknown as T.ProposalSetView).all_ruled, true);
+  // finish: the passage is bound to the minted claims, the flag resolved, the set closed and not re-ruled
+  const fin = T.proposalFinish(c, { flag: 1 });
+  assert.match(fin.text, /^Flag #1 ruled: accepted wave-dates; narrowed upkeep-cause; dropped third-attempt; bound\./);
+  assert.match(fin.text, /resolved flag #1/);
+  const fv = fin.data as unknown as T.ProposalSetView;
+  assert.equal(fv.status, "ruled"); assert.deepEqual(fv.bound, ["wave-dates", "upkeep-cause"]);
+  assert.match(T.flags(c, { all: true }).text, /#1 \[done\][\s\S]*bound to wave-dates, upkeep-cause/);
+  await refuses(() => T.proposalRule(c, { flag: 1, id: "third-attempt", ruling: "accepted" }), /no open proposals; its set was ruled/);
+  await refuses(() => T.proposalFinish(c, { flag: 1 }), /no open proposals/);
+  await refuses(() => T.propose(c, { flag: 1, proposals: props }), /already resolved/);
+  clean(c);
+});
+
+test("proposals: a set dropped whole resolves the flag without a binding, and a new set supersedes an open one", async () => {
+  const c = fresh();
+  const n = loadCorpus(c.dir).narratives[0]!;
+  const paras = n.body.split("\n\n").filter((p) => !/<!--/.test(p) && p.trim().length > 60);
+  const anchorIn = (para: string): string => { const ws = para.trim().split(/\s+/); for (let i = 0; i + 5 <= ws.length; i++) { const cand = ws.slice(i, i + 5).join(" "); if (n.body.indexOf(cand) === n.body.lastIndexOf(cand)) return cand; } return ""; };
+  const anchor = anchorIn(paras[0]!);
+  T.flag(c, { narrative: n.slug, anchor });
+  T.propose(c, { flag: 1, proposals: [{ id: "first-try", title: "A first try.", epistemic_kind: "argument" }] });
+  const again = T.propose(c, { flag: 1, proposals: [{ id: "second-try", title: "A second try.", epistemic_kind: "argument" }] });
+  assert.equal((again.data as unknown as T.ProposalSetView).proposals[0]!.id, "second-try");
+  assert.equal(T.proposals(c, { flag: 1 }).text.includes("second-try"), true, "the latest set is the one read back");
+  await refuses(() => T.proposalRule(c, { flag: 1, id: "first-try", ruling: "accepted" }), /no proposal first-try/);
+  T.proposalRule(c, { flag: 1, id: "second-try", ruling: "dropped" });
+  const fin = T.proposalFinish(c, { flag: 1 });
+  assert.match(fin.text, /nothing to bind, flag resolved/);
+  assert.match(T.flags(c, { all: true }).text, /#1 \[done\]/);
+  assert.equal(loadCorpus(c.dir).narratives[0]!.bindings.length, n.bindings.length, "no binding was written");
+  clean(c);
+});
+
 test("flags can be taken: one worker at a time, a stale take is re-takable, resolution keeps the mark", () => {
   const c = fresh();
   const n = loadCorpus(c.dir).narratives[0]!;

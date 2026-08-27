@@ -73,6 +73,10 @@ wrote. Every refusal names the requirement. Nothing writes a raw file.
 | `erf_survey_record(id, title, notable_results?, coverage_bounds, from_log?: date + for, searches?: [...], targets?: [...])` | writes the survey; `searches` come from the research log for the given day **and question** (`for`: one, or a list when the acts were logged under more than one), or from the argument; `targets` are the sources sought by name with what became of each (held, unreachable, not-found, not-searched), written into the body under "Sources sought" and counted in the coverage text (the format has no field: `B-71`) | no acts at all (`ERF-26`); `hits_reported` missing; `from_log` without `for`; no act logged for any `for`; a held target with no registered source |
 | `erf_flag_take(id, by?)` | takes an open flag for one worker, so a queue can be shared; a take goes stale after 30 minutes and nothing ever clears it | the flag is resolved; someone else took it inside the last 30 minutes |
 | `erf_flag(narrative, anchor, note?, research?)` / `erf_flags(narrative?, all?)` / `erf_flag_resolve(id)` | a passage marked to back later, in `flags.jsonl` (a working file, not a record); listed with its passage text and what it asked for; resolved by the binding that covers its anchor. `research` is `mint` (propose claims, stop for the ruling), `back` (gather the evidence after it, then bind) or `opposite` (and state the case against before anyone stands); absent on older flags and read as `mint`. The pattern: `docs/patterns/narrative-backing-loop.md` | anchor not in the narrative, or not unique; already flagged; an unknown `research` |
+| `erf_propose(flag, proposals: [{id, title, epistemic_kind, atoms_for?, atoms_against?, settles?, note?}], survey?, summary?)` | writes the set to `proposals.jsonl` (superseding an open set for the same flag) and returns it with every atom resolved (quote, finding, citation, URL, page, quality, as-of), carried by the app as the ruling card; writes no claim | flag not open; an atom or survey that does not exist; an id that is not a slug, is taken, or is given twice; an unknown kind |
+| `erf_proposals(flag?)` | the latest set for a flag (open or ruled), or the latest open set, as the card | never |
+| `erf_proposal_rule(flag, id, ruling, title?, atoms_for?, atoms_against?)` | the person's ruling on one proposal: `accepted` mints the claim as proposed, `narrowed` mints it with the narrower title (the proposal's title kept in the notes), `dropped` records the drop; the set comes back for the card | no open set; no such proposal; already ruled; a narrowing with the same title; an accept with a changed one |
+| `erf_proposal_finish(flag)` | every proposal ruled: binds the passage to the claims the rulings minted (joining an earlier binding on the same passage rather than replacing it), which resolves the flag, or resolves the flag when all were dropped; closes the set | a proposal without a ruling; no open set |
 | `erf_narrative_bind(narrative, anchor, claims, replace?: true)` | inserts the `YAMLB-1` marker after the passage ending with `anchor`, `bound-at` today; with `replace`, rewrites the marker already on that passage | anchor not found or found twice; a claim id unresolved |
 | `erf_narrative_check(narrative?)` | unresolved ids, stale bindings, broken anchors, malformed candidates (`ERF-31/32/33`) | never |
 | `erf_narrative_read(narrative)` | the file as it is on disk (frontmatter included), a 12-character sha256 digest of its bytes as its version id, and every binding and flag with its status and line | no such narrative |
@@ -87,10 +91,60 @@ Not in v0: `erf_search` (closed loop),
 finding and evidence audits, excerpts (`ERF-69`), OCR for scanned PDFs, the
 `.mcpb` bundle. Each has a slot; none is needed to run the loop once.
 
+## The ruling card (2026-08-27)
+
+The one step of the loop that is the person's had no surface: after a
+survey pass the LLM reported its proposals as a chat table (claim id, atom
+ids, a remark) and, since nothing stopped it, minted the claims as records
+before any ruling. Evidence appeared as ids; nothing could be opened or
+acted on. So proposals became producer machinery and the ruling became a
+card.
+
+A **proposal set** is one worker's proposals for one flag, in
+`proposals.jsonl` at the corpus root beside `flags.jsonl`: the id the claim
+would take, its title and kind, the atoms for and against it (minted
+already: evidence may exist before a ruling, a claim may not), what would
+settle it, and the worker's remark. `erf_propose` validates the set (the
+flag open, every atom present, every id a free slug) and returns it with
+every atom resolved; the tool carries the app, so the host renders the card
+in the conversation where the LLM's message would otherwise have been. One
+open set per flag: a new set supersedes the open one.
+
+The card shows each proposal with its title in an editable field, its atoms
+as quotes with the citation as a link (the source page when there is one,
+the capture page in the app otherwise, the page number for a held PDF), the
+settling line and the remark, and three visible actions: **accept** (mints
+the claim as proposed), **narrow** (enabled once the title was edited; mints
+it as edited, the proposed title kept in the working notes), **drop**
+(records the drop; no claim). Each is one call to `erf_proposal_rule`, and
+the card re-renders from what comes back, never from its own state. When
+every proposal is ruled, **bind and finish** calls `erf_proposal_finish`:
+the passage is bound to the minted claims (an earlier binding on the same
+passage is joined, not replaced), the flag resolves, the set closes; a set
+dropped whole resolves the flag without a binding. After each ruling the
+card puts one line into the LLM's context (`updateModelContext`); after
+the finish it sends one line into the conversation (`sendMessage`), so the
+loop continues in the same chat.
+
+The app calls tools with `app.callServerTool({ name, arguments })`, the
+MCP Apps host proxy: the host makes the call on the app's behalf and
+returns the result, so the same server-side gates apply as to a call from
+the LLM. The pure state of a set (counts, the all-ruled gate, the claims
+bound, the finish line) is `src/proposals.ts`, shared by the server and the
+app and tested without either.
+
+What this changes in the prompts: after the research the worker calls
+`erf_propose` and stops; it never mints a claim for a flag and never binds;
+`erf_claim_mint` and `erf_narrative_bind` remain for a claim or a binding
+the person asks for in as many words, and `erf_proposal_rule` carries a
+ruling the person gives in chat instead of on the card. Not built: a
+proposals page in the viewer (the card is the only rendering).
+
 ## Prompts (judgment scaffolds, read-only)
 
 - `decompose-passage`: list every checkable assertion in a passage, typed by
-  kind, with what would settle each and the anchor words.
+  kind, with what would settle each and the anchor words; put them with
+  `erf_propose` and stop.
 - `survey-span`: recall, then verify. The sources expected from memory
   first, marked as recollection; then each sought by name and its fate
   logged; then the survey with its targets; then the claims it supports.

@@ -11,8 +11,9 @@ import {
   Refusal, type Corpus, readDeclaration, readSourceList, load, writeRecord, writeYamlDocument,
   readRecordFile, recordFiles, nextAtomId, idInUse, today, now, appendLog, readLog,
   declarationPath, sourceListPath, commit, frontmatter, readFlags, writeFlags, flagsPath, type Flag, type LogEntry,
-  RESEARCH, type Research, TAKE_MINUTES,
+  RESEARCH, type Research, TAKE_MINUTES, readProposalSets, writeProposalSets, proposalsPath,
 } from "./corpus.ts";
+import { RULINGS, counts as proposalCounts, allRuled, acceptedClaims, finishLine, type Proposal, type ProposalSet, type ProposalSetView, type ProposalView, type ResolvedAtom, type Ruling } from "./proposals.ts";
 import { captureUrl, capturePath, pageOfQuote } from "./capture.ts";
 import { readTrail, trailBetween, type Trail } from "../../viewer/trail.ts";
 import { renderSite } from "../../viewer/erf-view.ts";
@@ -549,6 +550,183 @@ function resolveFlagsCoveredBy(c: Corpus, slug: string, passage: string, claims:
   return hit;
 }
 
+// ---------- proposals: the ruling surface ----------
+// A worker proposes; the person rules on the card; a claim is written only by
+// the ruling. The set lives in proposals.jsonl beside flags.jsonl: producer
+// machinery the format never sees. One open set per flag: a new set for a
+// flag with an open one supersedes it.
+
+/** The page an atom was quoted from, when it was minted from a held PDF (the body carries it; the format has no locator field, B-70). */
+function atomPage(c: Corpus, id: string): number | undefined {
+  const p = recordFiles(c, "atom").get(id);
+  if (!p) return undefined;
+  const m = /Page (\d+) of the held PDF/.exec(readRecordFile(p).body);
+  return m ? Number(m[1]) : undefined;
+}
+
+/** An atom as the card shows it: quote, finding, and where it came from, resolved against the corpus. */
+function resolveAtom(c: Corpus, l: LoadedCorpus, id: string, side: "for" | "against"): ResolvedAtom {
+  const a = l.atoms.get(id);
+  if (!a) return { id, side, quote: "", finding: "(no such atom in this corpus)", source: "", missing: true };
+  const s = l.sources.get(a.source);
+  const x = a as unknown as Record<string, unknown>;
+  const page = atomPage(c, id);
+  return {
+    id, side, quote: a.quote, finding: a.finding, source: a.source,
+    ...(s?.citation_text ? { citation: s.citation_text } : {}),
+    ...(s?.received?.url ? { url: s.received.url } : {}),
+    ...(page ? { page } : {}),
+    ...(typeof x["source_quality"] === "string" ? { quality: x["source_quality"] as string } : {}),
+    ...(typeof x["as_of_date"] === "string" ? { as_of: x["as_of_date"] as string } : {}),
+    ...(typeof x["limitations"] === "string" ? { limitations: x["limitations"] as string } : {}),
+  };
+}
+
+/** The set as the card reads it. */
+function proposalSetView(c: Corpus, set: ProposalSet): ProposalSetView {
+  const decl = readDeclaration(c);
+  const l = load(c);
+  const n = l.narratives.find((x) => x.slug === set.narrative);
+  const proposals: ProposalView[] = set.proposals.map((p) => ({
+    ...p,
+    atoms: [...(p.atoms_for ?? []).map((id) => resolveAtom(c, l, id, "for")), ...(p.atoms_against ?? []).map((id) => resolveAtom(c, l, id, "against"))],
+    ...(set.rulings[p.id] ? { ruled: set.rulings[p.id] } : {}),
+  }));
+  return {
+    kind: "proposals", corpus: String(decl.id), flag: set.flag, ts: set.ts, by: set.by, narrative: set.narrative, narrative_title: n?.title ?? set.narrative,
+    anchor: set.anchor, ...(set.span ? { span: set.span } : {}), research: set.research, ...(set.survey ? { survey: set.survey } : {}), ...(set.summary ? { summary: set.summary } : {}),
+    proposals, counts: proposalCounts(set), all_ruled: allRuled(set), status: set.status, ...(set.bound ? { bound: set.bound } : {}),
+  };
+}
+
+function openSetFor(c: Corpus, flag: number): { sets: ProposalSet[]; set: ProposalSet } {
+  const sets = readProposalSets(c);
+  const set = [...sets].reverse().find((x) => x.flag === flag && x.status === "open");
+  if (!set) {
+    const any = sets.some((x) => x.flag === flag);
+    throw new Refusal(any ? `flag #${flag} has no open proposals; its set was ${sets.filter((x) => x.flag === flag).at(-1)!.status}` : `no proposals for flag #${flag}; the worker puts them with erf_propose`);
+  }
+  return { sets, set };
+}
+
+function summaryLine(v: ProposalSetView): string {
+  const rows = v.proposals.map((p) => `  ${p.id} · ${p.epistemic_kind} · ${p.atoms.filter((a) => a.side === "for").length} for / ${p.atoms.filter((a) => a.side === "against").length} against${p.ruled ? ` · ${p.ruled.ruling}${p.ruled.claim ? ` as ${p.ruled.claim}` : ""}` : ""}`);
+  return rows.join("\n");
+}
+
+export function propose(c: Corpus, a: { flag: number; proposals: Proposal[]; survey?: string; summary?: string }): Result {
+  readDeclaration(c);
+  const f = readFlags(c).find((x) => x.id === a.flag);
+  if (!f) throw new Refusal(`no flag #${a.flag}`);
+  if (f.status !== "open") throw new Refusal(`flag #${a.flag} is already resolved; there is nothing to propose for it`);
+  if (!a.proposals?.length) throw new Refusal("give at least one proposal");
+  if (a.survey && !recordFiles(c, "survey").has(a.survey)) throw new Refusal(`survey ${a.survey} does not exist (ERF-35)`);
+  const atoms = recordFiles(c, "atom");
+  const seen = new Set<string>();
+  for (const p of a.proposals) {
+    if (!/^[a-z0-9][a-z0-9-]*$/.test(p.id)) throw new Refusal(`proposal id ${JSON.stringify(p.id)} must be a lowercase slug: it is the id the claim would take`);
+    if (seen.has(p.id)) throw new Refusal(`proposal id ${p.id} is given twice`);
+    seen.add(p.id);
+    if (idInUse(c, p.id)) throw new Refusal(`id ${p.id} is already used by a record (ERF-36); propose another slug`);
+    if (!p.title?.trim()) throw new Refusal(`proposal ${p.id} needs a title that states the claim`);
+    if (!(KINDS as readonly string[]).includes(p.epistemic_kind)) throw new Refusal(`proposal ${p.id}: epistemic_kind is one of ${KINDS.join(", ")}`);
+    for (const id of [...(p.atoms_for ?? []), ...(p.atoms_against ?? [])]) if (!atoms.has(id)) throw new Refusal(`proposal ${p.id} cites atom ${id}, which does not exist (ERF-35); mint the evidence before proposing`);
+  }
+  const sets = readProposalSets(c);
+  for (const x of sets) if (x.flag === a.flag && x.status === "open") x.status = "superseded";
+  const set: ProposalSet = {
+    flag: a.flag, ts: now(), by: c.options.agent, narrative: f.narrative, anchor: f.anchor, ...(f.span ? { span: f.span } : {}), research: f.research ?? "mint",
+    ...(a.survey ? { survey: a.survey } : {}), ...(a.summary ? { summary: a.summary } : {}),
+    proposals: a.proposals.map((p) => ({ id: p.id, title: p.title.trim(), epistemic_kind: p.epistemic_kind, ...(p.atoms_for?.length ? { atoms_for: p.atoms_for } : {}), ...(p.atoms_against?.length ? { atoms_against: p.atoms_against } : {}), ...(p.settles ? { settles: p.settles } : {}), ...(p.note ? { note: p.note } : {}) })),
+    rulings: {}, status: "open",
+  };
+  sets.push(set); writeProposalSets(c, sets);
+  const v = proposalSetView(c, set);
+  const r = finish(c, `${set.proposals.length} proposal(s) for flag #${a.flag} are on the card, waiting for the ruling; no claim is written until the user accepts or narrows one there. Say so in one line and stop.\n${summaryLine(v)}`, [proposalsPath(c)], `propose ${set.proposals.length} claim(s) for flag #${a.flag}`);
+  return { ...r, data: v as unknown as Record<string, unknown> };
+}
+
+export function proposals(c: Corpus, a: { flag?: number }): Result {
+  readDeclaration(c);
+  const sets = readProposalSets(c);
+  const open = sets.filter((x) => x.status === "open");
+  const set = a.flag !== undefined ? [...sets].reverse().find((x) => x.flag === a.flag) : open.at(-1);
+  if (!set) return { text: a.flag !== undefined ? `no proposals for flag #${a.flag}` : "no open proposals" };
+  const v = proposalSetView(c, set);
+  const others = open.filter((x) => x !== set).map((x) => `#${x.flag} (${x.proposals.length})`);
+  return { text: `proposals for flag #${set.flag} · ${set.status} · ${v.counts.ruled}/${v.counts.total} ruled${others.length ? ` · other open sets: ${others.join(", ")}` : ""}\n${summaryLine(v)}`, data: v as unknown as Record<string, unknown> };
+}
+
+/** One ruling: accept or narrow mints the claim with the atoms as ruled; drop records the drop. */
+export function proposalRule(c: Corpus, a: { flag: number; id: string; ruling: string; title?: string; atoms_for?: string[]; atoms_against?: string[] }): Result {
+  readDeclaration(c);
+  if (!(RULINGS as readonly string[]).includes(a.ruling)) throw new Refusal(`ruling is one of ${RULINGS.join(", ")}`);
+  const { sets, set } = openSetFor(c, a.flag);
+  const p = set.proposals.find((x) => x.id === a.id);
+  if (!p) throw new Refusal(`flag #${a.flag} has no proposal ${a.id}; it has ${set.proposals.map((x) => x.id).join(", ")}`);
+  if (set.rulings[p.id]) throw new Refusal(`proposal ${p.id} is already ruled (${set.rulings[p.id]!.ruling}); a ruling is not re-made`);
+  const ruling = a.ruling as Ruling;
+  const wrote: string[] = [proposalsPath(c)];
+  let text: string;
+  if (ruling === "dropped") {
+    set.rulings[p.id] = { ruling, ts: now() };
+    text = `dropped ${p.id}`;
+  } else {
+    const title = (a.title ?? p.title).trim();
+    if (!title) throw new Refusal("a narrowing needs the narrower title");
+    if (ruling === "narrowed" && title === p.title) throw new Refusal("a narrowing changes the title; to take it as proposed, accept it");
+    if (ruling === "accepted" && a.title !== undefined && title !== p.title) throw new Refusal("accepting keeps the title as proposed; to change it, narrow");
+    const notes = [p.settles ? `What would settle it: ${p.settles}` : "", p.note ? `Proposed with the note: ${p.note}` : "", `Proposed by ${set.by} for flag #${set.flag} and ${ruling} by the corpus owner on the card${ruling === "narrowed" ? ` (proposed as: ${p.title})` : ""}.`].filter(Boolean).join("\n\n");
+    const minted = claimMint(c, { id: p.id, title, epistemic_kind: p.epistemic_kind, atoms_for: a.atoms_for ?? p.atoms_for, atoms_against: a.atoms_against ?? p.atoms_against, ...(set.survey ? { surveys: [set.survey] } : {}), notes });
+    wrote.push(...(minted.wrote ?? []).map((x) => join(c.dir, x)));
+    set.rulings[p.id] = { ruling, ts: now(), claim: p.id, ...(ruling === "narrowed" ? { title } : {}) };
+    text = `${ruling} ${p.id}: ${minted.text.split("\n")[0]}`;
+  }
+  writeProposalSets(c, sets);
+  const v = proposalSetView(c, set);
+  const r = finish(c, `${text} · ${v.counts.ruled}/${v.counts.total} ruled${v.all_ruled ? " · every proposal ruled; bind and finish" : ""}`, wrote, `rule ${p.id} for flag #${a.flag}: ${ruling}`);
+  return { ...r, data: v as unknown as Record<string, unknown> };
+}
+
+/** Every proposal ruled: bind the passage to the claims the rulings minted (which resolves the flag), or resolve the flag when all were dropped. */
+export function proposalFinish(c: Corpus, a: { flag: number }): Result {
+  readDeclaration(c);
+  const { sets, set } = openSetFor(c, a.flag);
+  if (!allRuled(set)) {
+    const left = set.proposals.filter((p) => !set.rulings[p.id]).map((p) => p.id);
+    throw new Refusal(`flag #${a.flag} still has ${left.length} proposal(s) without a ruling: ${left.join(", ")}`);
+  }
+  const claims = acceptedClaims(set);
+  const wrote: string[] = [proposalsPath(c)];
+  let text: string;
+  if (claims.length) {
+    let bound: Result;
+    try { bound = narrativeBind(c, { narrative: set.narrative, anchor: set.anchor, claims }); }
+    catch (e) {
+      if (!(e instanceof Refusal) || !/already ends with a binding/.test(e.message)) throw e;
+      // the passage was bound before (an earlier flag on it): the new claims join the binding rather than replace it
+      const l = load(c); const n = l.narratives.find((x) => x.slug === set.narrative);
+      const { prose } = proseOf(c, set.narrative);
+      const [at] = anchorOccurrences(prose, set.anchor, 1);
+      const here = at === undefined ? "" : passageAround(prose, at);
+      const prior = n?.bindings.find((b) => { const [i] = anchorOccurrences(prose, b.anchor, 1); return i !== undefined && passageAround(prose, i) === here; });
+      const all = [...new Set([...(prior?.claims ?? []), ...claims])];
+      bound = narrativeBind(c, { narrative: set.narrative, anchor: set.anchor, claims: all, replace: true });
+    }
+    wrote.push(...(bound.wrote ?? []).map((x) => join(c.dir, x)));
+    text = bound.text.split("\n")[0]!;
+  } else {
+    const f = readFlags(c).find((x) => x.id === a.flag);
+    if (f && f.status === "open") { const r = flagResolve(c, { id: a.flag }); wrote.push(...(r.wrote ?? []).map((x) => join(c.dir, x))); }
+    text = `every proposal dropped; flag #${a.flag} resolved without a binding`;
+  }
+  set.status = "ruled"; set.done_ts = now(); set.bound = claims;
+  writeProposalSets(c, sets);
+  const v = proposalSetView(c, set);
+  const r = finish(c, `${finishLine(set, claims.length > 0)}\n${text}`, [...new Set(wrote)], `finish flag #${a.flag}: ${claims.length} claim(s) bound`);
+  return { ...r, data: v as unknown as Record<string, unknown> };
+}
+
 // ---------- narratives ----------
 
 function narrativeFile(c: Corpus, name: string): { path: string; slug: string } {
@@ -936,3 +1114,4 @@ export function recordList(c: Corpus, a: { type?: string }): Result {
 }
 
 export type { Claim };
+export type { Proposal, ProposalSetView } from "./proposals.ts";

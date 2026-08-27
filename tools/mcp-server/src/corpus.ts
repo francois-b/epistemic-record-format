@@ -214,6 +214,19 @@ export function writeFlags(c: Corpus, flags: Flag[]): void {
   writeFileSync(flagsPath(c), flags.map((f) => JSON.stringify(f)).join("\n") + (flags.length ? "\n" : ""), "utf8");
 }
 
+// ---------- proposals: what a worker put to the person, and the rulings ----------
+
+import type { ProposalSet } from "./proposals.ts";
+export function proposalsPath(c: Corpus): string { return join(c.dir, "proposals.jsonl"); }
+export function readProposalSets(c: Corpus): ProposalSet[] {
+  const p = proposalsPath(c);
+  if (!existsSync(p)) return [];
+  return readFileSync(p, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l) as ProposalSet);
+}
+export function writeProposalSets(c: Corpus, sets: ProposalSet[]): void {
+  writeFileSync(proposalsPath(c), sets.map((x) => JSON.stringify(x)).join("\n") + (sets.length ? "\n" : ""), "utf8");
+}
+
 // ---------- git ----------
 
 export function commit(c: Corpus, paths: string[], message: string): string | null {
