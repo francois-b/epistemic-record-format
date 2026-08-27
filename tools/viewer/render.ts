@@ -252,6 +252,13 @@ function narrativeMarkdown(text: string): string {
     .replace(/@@FN@@([^@]+)@@/g, (_m, id: string) => { const n = order.indexOf(id) + 1; return `<sup class="fn"><a href="#fn-${esc(id)}" id="fnref-${esc(id)}">${n}</a></sup>`; })
     .replace(/@@MARK@@(\d+)@@([\s\S]*?)@@ENDMARK@@/g, (_m, i: string, inner: string) => { const mk = marks[Number(i)]!; return `<mark class="annot ${esc(mk.cls)}"${mk.comment ? ` title="${esc(mk.comment)}"` : ""}>${inner}</mark>${mk.comment ? `<span class="annot-note">${esc(mk.cls)}: ${esc(mk.comment)}</span>` : ""}`; })
     .replace(/@@ANNOT@@(\d+)@@/g, (_m, i: string) => `<span class="annot-note">${esc(notes[Number(i)] ?? "")}</span>`);
+  // a note is a block; inside a paragraph it would split the sentence around the mark, so
+  // every note moves to the end of the paragraph it was written in
+  html = html.replace(/<p>([\s\S]*?)<\/p>/g, (_m, inner: string) => {
+    const moved: string[] = [];
+    const rest = inner.replace(/<span class="annot-note">[\s\S]*?<\/span>/g, (n) => { moved.push(n); return ""; }).replace(/\s+([.,;:!?])/g, "$1");
+    return `<p>${rest}</p>${moved.join("")}`;
+  });
   if (footnotes.length) {
     const items = order.concat(footnotes.map((f) => f.id).filter((id) => !order.includes(id)));
     html += `\n<section class="footnotes"><ol>${items.map((id) => { const f = footnotes.find((x) => x.id === id); return `<li id="fn-${esc(id)}">${f ? renderer.render(parser.parse(f.body)).replace(/^<p>|<\/p>\s*$/g, "") : "(no definition)"} <a href="#fnref-${esc(id)}" class="fnback">↩</a></li>`; }).join("")}</ol></section>`;
