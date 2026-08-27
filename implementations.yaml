@@ -13,6 +13,7 @@
 # version:        where the version is read from. kind: package.json |
 #                 pyproject | cargo | regex (file + a pattern with one group).
 # spec_version:   where the artifact declares the spec version it implements.
+# tag_family:     the prefix of the git tags that release it; the suffix is the version
 # also:           other places that must equal the version (or the spec
 #                 version, with `equals: spec`), so a number stated twice
 #                 cannot drift.
@@ -24,11 +25,12 @@ spec:
 
 artifacts:
   - id: validator-yaml-markdown-typescript
-    name: "@epistemic-record-format/validator"
+    name: "@epistemic-record-format/validator-yaml-markdown"
     path: validator/yaml-markdown/typescript
     language: typescript
     serialization: yaml-markdown
     registry: npm
+    tag_family: validator-yaml-markdown-typescript-v
     policy: tracks-spec
     version: { kind: package.json }
     spec_version: { kind: package.json, key: erf.spec_version }

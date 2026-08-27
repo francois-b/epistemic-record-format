@@ -59,7 +59,7 @@ npm run check -- examples/corpora/minimal    # the reference validator
 npm run view -- examples/corpora/minimal -o /tmp/erf-site   # render a corpus to static HTML
 ```
 
-- **`@epistemic-record-format/validator`** ([`validator/yaml-markdown/typescript/`](validator/yaml-markdown/typescript/)) is the reference validator, as a library and as the `erf-check` command. It loads a corpus, validates every document against the schema, runs the quote check, and computes every reading the specification defines. Exit 1 on any violation.
+- **`@epistemic-record-format/validator-yaml-markdown`** ([`validator/yaml-markdown/typescript/`](validator/yaml-markdown/typescript/)) is the reference validator, as a library and as the `erf-check` command. It loads a corpus, validates every document against the schema, runs the quote check, and computes every reading the specification defines. Exit 1 on any violation.
 - **`erf-view`** ([`tools/viewer/`](tools/viewer/)) renders a corpus as a self-contained static site: every claim with its evidence and standings, every atom with its quote check, the narrative with its bound passages, and a health page.
 - **`erf-mcp`** ([`tools/mcp-server/`](tools/mcp-server/)) is the format as a local MCP server for Claude Desktop and Claude Code. The LLM captures sources, mints atoms and claims, records surveys, and binds prose through tools that enforce the rules: a paraphrased quote is refused, an unheld source cannot be cited, a standing needs a reason. The server is the only writer; the user rules on every proposal.
 

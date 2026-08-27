@@ -1,18 +1,18 @@
-# Publish @epistemic-record-format/validator to npm with provenance.
+# Publish @epistemic-record-format/validator-yaml-markdown to npm with provenance.
 #
-# Trigger: a tag validator-vX.Y.Z pushed to the repository. The tag must equal
+# Trigger: a tag validator-yaml-markdown-typescript-vX.Y.Z pushed to the repository. The tag must equal
 # the package version, the version must track the spec (tools/lint/lint-versions.py),
 # and the conformance suite must pass; then npm publishes from this workflow
 # through trusted publishing (OIDC, no stored token) and attaches a provenance
 # attestation naming this commit and this workflow.
 #
 # One-time setup on npmjs.com, package settings > Trusted publishers:
-#   repository francois-b/epistemic-record-format, workflow publish-validator.yml.
-name: publish validator
+#   repository francois-b/epistemic-record-format, workflow publish-validator-yaml-markdown-typescript.yml.
+name: publish validator-yaml-markdown-typescript
 
 on:
   push:
-    tags: ["validator-v*"]
+    tags: ["validator-yaml-markdown-typescript-v*"]
 
 permissions:
   contents: read
@@ -37,9 +37,9 @@ jobs:
 
       - name: the tag names the package version
         run: |
-          tag="${GITHUB_REF_NAME#validator-v}"
+          tag="${GITHUB_REF_NAME#validator-yaml-markdown-typescript-v}"
           ver="$(node -p "require('./package.json').version")"
-          test "$tag" = "$ver" || { echo "tag validator-v$tag but package.json says $ver"; exit 1; }
+          test "$tag" = "$ver" || { echo "tag validator-yaml-markdown-typescript-v$tag but package.json says $ver"; exit 1; }
 
       - name: every artifact is versioned against the specification
         run: pip3 install --quiet pyyaml && python3 ../../../tools/lint/lint-versions.py

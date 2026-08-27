@@ -24,7 +24,7 @@ The machine-readable list, with each artifact's versioning policy, is
 
 | Name | Language | Spec version | Conformance classes | Link |
 |---|---|---|---|---|
-| `@epistemic-record-format/validator` 0.9.x (`erf-check`), the reference | TypeScript | 0.9.0 | corpus, consumer; the conformance suite runs against it | [`validator/yaml-markdown/typescript/`](validator/yaml-markdown/typescript/), npm `@epistemic-record-format/validator` |
+| `@epistemic-record-format/validator-yaml-markdown` 0.9.x (`erf-check`), the reference | TypeScript | 0.9.0 | corpus, consumer; the conformance suite runs against it | [`validator/yaml-markdown/typescript/`](validator/yaml-markdown/typescript/), npm `@epistemic-record-format/validator-yaml-markdown` |
 
 **To add yours**, open a pull request adding a row: the name, the language,
 the specification version you built against, which conformance classes you

@@ -1,5 +1,5 @@
 {
-  "name": "@epistemic-record-format/validator",
+  "name": "@epistemic-record-format/validator-yaml-markdown",
   "version": "0.9.0",
   "description": "Reference validator for the Epistemic Record Format (YAML/Markdown serialization): loads a corpus against the schema and computes every derived reading from the specification text.",
   "type": "module",
