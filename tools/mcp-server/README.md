@@ -7,7 +7,7 @@ cd tools/mcp-server && npm install
 npx tsx src/index.ts <root-dir> [<root-dir> ...] [--agent agent/<name>] [--fetch] [--no-commit]
 ```
 
-A root may be a corpus folder or a folder holding several; corpora are found by their `corpus.yaml`. From the repository root, `npm run mcp -- <root-dir>` is the same command. Fetching URLs is off unless `--fetch` is given; without it, `erf_source_add` takes only a file already inside the corpus folder. If the folder is a git repository the server commits its own writes as you.
+A root may be a corpus folder or a folder holding several; corpora are found by their `corpus.yaml`. From the repository root, `npm run mcp -- <root-dir>` is the same command. When a host launches the server from another directory, pass `--tsconfig <path to tools/mcp-server/tsconfig.json>` before the script: the server imports the implementation by package name, resolved through that file. Fetching URLs is off unless `--fetch` is given; without it, `erf_source_add` takes only a file already inside the corpus folder. If the folder is a git repository the server commits its own writes as you.
 
 ## Claude Desktop
 
@@ -16,7 +16,8 @@ Add to `claude_desktop_config.json` (Settings > Developer > Edit Config), then r
 ```json
 "erf": {
   "command": "/absolute/path/to/epistemic-record-format/tools/mcp-server/node_modules/.bin/tsx",
-  "args": ["/absolute/path/to/epistemic-record-format/tools/mcp-server/src/index.ts",
+  "args": ["--tsconfig", "/absolute/path/to/epistemic-record-format/tools/mcp-server/tsconfig.json",
+           "/absolute/path/to/epistemic-record-format/tools/mcp-server/src/index.ts",
            "/absolute/path/to/your/corpora", "--agent", "agent/claude-desktop", "--fetch"]
 }
 ```
@@ -24,7 +25,7 @@ Add to `claude_desktop_config.json` (Settings > Developer > Edit Config), then r
 ## Claude Code
 
 ```
-claude mcp add erf -- /absolute/path/to/tools/mcp-server/node_modules/.bin/tsx /absolute/path/to/tools/mcp-server/src/index.ts /absolute/path/to/your/corpora --agent agent/claude-code --fetch
+claude mcp add erf -- /absolute/path/to/tools/mcp-server/node_modules/.bin/tsx --tsconfig /absolute/path/to/tools/mcp-server/tsconfig.json /absolute/path/to/tools/mcp-server/src/index.ts /absolute/path/to/your/corpora --agent agent/claude-code --fetch
 ```
 
 ## The app
