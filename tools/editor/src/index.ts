@@ -21,6 +21,7 @@ import { syntaxHighlighting, HighlightStyle, ensureSyntaxTree, syntaxTree } from
 import { tags } from "@lezer/highlight";
 import { computeMarks, anchorFrom, softBreakRanges, frontmatterRange, unwrapChanges, looksHardWrapped, mergeChanges, type Marks, type Range } from "./marks.ts";
 import { hitBinding, popoverAfterClick, step, mapPopover, claimCard, sourceHref, type Popover } from "./popover.ts";
+import { livePreview, classFor, type Span } from "./emphasis.ts";
 
 export type { Marks, FlagMark, BindingMark, ClaimInfo, AtomInfo } from "./marks.ts";
 export { anchorFrom, mergeMarkers } from "./marks.ts";
@@ -97,15 +98,20 @@ class SpaceWidget extends WidgetType {
   override toDOM(): HTMLElement { const s = document.createElement("span"); s.className = "erf-soft"; s.textContent = " "; return s; }
 }
 
-/** Paragraphs and hard breaks, from the markdown syntax tree; the arithmetic is in marks.ts. */
-function blocks(state: EditorState): { paragraphs: Range[]; hardBreaks: Range[] } {
+/** Paragraphs, hard breaks and emphasis, from the markdown syntax tree; the arithmetic is in marks.ts and emphasis.ts. */
+function blocks(state: EditorState): { paragraphs: Range[]; hardBreaks: Range[]; spans: Span[] } {
   const tree = ensureSyntaxTree(state, state.doc.length, 200) ?? syntaxTree(state);
-  const paragraphs: Range[] = [], hardBreaks: Range[] = [];
+  const paragraphs: Range[] = [], hardBreaks: Range[] = [], spans: Span[] = [];
   tree.iterate({ enter(n) {
     if (n.name === "Paragraph") paragraphs.push({ from: n.from, to: n.to });
     else if (n.name === "HardBreak") hardBreaks.push({ from: n.from, to: n.to });
+    else if (classFor(n.name)) {
+      const markName = n.name.startsWith("ATX") ? "HeaderMark" : "EmphasisMark";
+      const marks = n.node.getChildren(markName).map((m) => ({ from: m.from, to: m.to }));
+      spans.push({ name: n.name, from: n.from, to: n.to, marks });
+    }
   } });
-  return { paragraphs, hardBreaks };
+  return { paragraphs, hardBreaks, spans };
 }
 
 /** Everything the marks say, as decorations, recomputed from the document each time it or they move. */
@@ -114,10 +120,15 @@ function build(state: EditorState): DecorationSet {
   const c = computeMarks(doc, state.field(marksField));
   const out: { from: number; to: number; value: Decoration }[] = [];
   // wrapping newlines read as one space, so a hand-wrapped paragraph flows with the measure
-  const { paragraphs, hardBreaks } = blocks(state);
+  const { paragraphs, hardBreaks, spans } = blocks(state);
   for (const r of softBreakRanges(doc, paragraphs, hardBreaks)) out.push({ from: r.from, to: r.to, value: Decoration.replace({ widget: new SpaceWidget() }) });
   // the frontmatter belongs to the record, not the prose: shown, dimmed, never reflowed
   const fm = frontmatterRange(doc);
+  // emphasis and headings read as they render, their marks hidden until the cursor is in the span
+  const cursors = state.selection.ranges.map((r) => ({ from: r.from, to: r.to }));
+  const live = livePreview(spans.filter((sp) => !fm || sp.from >= fm.to), cursors, doc);
+  for (const r of live.styled) if (r.to > r.from) out.push({ from: r.from, to: r.to, value: Decoration.mark({ class: r.cls }) });
+  for (const r of live.hidden) out.push({ from: r.from, to: r.to, value: Decoration.replace({}) });
   if (fm) for (let pos = fm.from; pos < fm.to; ) { const line = state.doc.lineAt(pos); out.push({ from: line.from, to: line.from, value: Decoration.line({ class: "erf-frontmatter" }) }); pos = line.to + 1; }
   for (const b of c.bound) {
     if (b.to <= b.from) continue;
@@ -272,6 +283,9 @@ function theme(): Extension {
     ".cm-selectionLayer .cm-selectionBackground, &.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground": { backgroundColor: "color-mix(in srgb, var(--accent, #1a3a6e) 30%, transparent)" },
     ".cm-content ::selection": { backgroundColor: "transparent" },
     ".erf-frontmatter": { opacity: "0.55" },
+    ".erf-strong": { fontWeight: "700" },
+    ".erf-em": { fontStyle: "italic" },
+    ".erf-heading": { fontWeight: "600" },
     ".erf-soft": { whiteSpace: "pre-wrap" },
     ".erf-flag-open": { borderBottom: "2px dashed var(--warn, #8a4b1e)" },
     // taken: someone else is on it, so the line is solid rather than waiting

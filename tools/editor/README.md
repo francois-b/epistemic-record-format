@@ -39,7 +39,9 @@ The editor works on the markdown source, so binding markers (HTML comments),
 footnotes and frontmatter round-trip byte for byte by construction: nothing is
 parsed into a document model and serialized back. Decorations make it readable.
 There is no typography here on purpose: a monospace face, a comfortable measure,
-and whatever structural highlighting the markdown parser gives for free.
+and whatever structural highlighting the markdown parser gives for free. Bold,
+italic and headings read as they render, their marks hidden; the marks come
+back for the span the cursor is in, so what is being edited is never a guess.
 
 ## Layout
 
@@ -48,6 +50,8 @@ and whatever structural highlighting the markdown parser gives for free.
   it, which class a binding status takes.
 - `src/popover.ts` : the binding card's state. What a click opens or closes,
   which claim is showing, where a source link goes. Pure, tested.
+- `src/emphasis.ts` : live preview. Which `*` and `#` marks hide and which
+  spans style, given where the cursor is. Pure, tested.
 - `src/index.ts` : the view. CodeMirror wiring and nothing else, kept thin
   because it is the part that is not unit-tested.
 - `test/marks.test.ts` : `node --test tools/editor/test/marks.test.ts`, or
