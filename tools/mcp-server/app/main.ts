@@ -93,14 +93,23 @@ function escapeHtml(s: string): string {
 
 // ---- modes -----------------------------------------------------------------
 
-function applyMode(m: typeof mode): void {
+let modeTimer: number | undefined;
+function applyMode(m: typeof mode, settled = false): void {
   const changed = m !== mode;
   const leavingFullscreen = changed && mode === "fullscreen" && m !== "fullscreen";
+  window.clearTimeout(modeTimer);
+  // Leaving fullscreen, the host animates the view back into its inline slot. Swapping the editor for the
+  // outline at that moment changes the content height mid-flight and the card jumps; so the content is
+  // left as it is until the animation has settled, and only then laid out inline (a try, 2026-08-27).
+  if (leavingFullscreen && !settled) {
+    if (ed?.isDirty()) void saveNow(ed.getText()); // an editor left with unsaved work saves before the view goes away
+    modeTimer = window.setTimeout(() => applyMode(m, true), 400);
+    return;
+  }
   mode = m;
   document.body.classList.toggle("mode-fullscreen", m === "fullscreen");
   document.body.classList.toggle("mode-inline", m !== "fullscreen");
   toggleBtn.textContent = m === "fullscreen" ? "inline" : "open";
-  // an editor left with unsaved work saves before the view goes away
   if (leavingFullscreen && ed?.isDirty()) void saveNow(ed.getText());
   if (changed && current) render();
 }
