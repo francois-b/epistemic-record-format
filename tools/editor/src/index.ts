@@ -20,10 +20,12 @@ import { markdown } from "@codemirror/lang-markdown";
 import { syntaxHighlighting, HighlightStyle, ensureSyntaxTree, syntaxTree } from "@codemirror/language";
 import { tags } from "@lezer/highlight";
 import { computeMarks, anchorFrom, softBreakRanges, frontmatterRange, unwrapChanges, looksHardWrapped, mergeChanges, type Marks, type Range } from "./marks.ts";
-import { hitBinding, popoverAfterClick, step, mapPopover, claimCard, sourceHref, type Popover } from "./popover.ts";
+import { hitAt, popoverAfterClick, step, mapPopover, claimCard, flagCard, sourceHref, type Popover, type FlagPopover } from "./popover.ts";
+import type { FlagTrail } from "./trail.ts";
 import { livePreview, classFor, type Span } from "./emphasis.ts";
 
 export type { Marks, FlagMark, BindingMark, ClaimInfo, AtomInfo } from "./marks.ts";
+export type { FlagTrail } from "./trail.ts";
 export { anchorFrom, mergeMarkers, isWorked } from "./marks.ts";
 
 /** What a selection offers the host: the words, the anchor to flag on, and where to put a popover. */
@@ -36,6 +38,8 @@ export interface EditorHandle {
   getText(): string;
   /** Recompute the decorations. Returns the anchors that no longer occur in the text. */
   setMarks(m: Marks): { missing: string[] };
+  /** The research trails the host last received, so a flag's card can show the work behind it. */
+  setTrails(trails: FlagTrail[]): void;
   onSelectionChange(cb: (sel: Selected | null) => void): void;
   /** Cmd/Ctrl-S, and once the document has been quiet for `autosaveMs`. */
   onSave(cb: (text: string) => void): void;
@@ -59,7 +63,17 @@ export interface EditorHandle {
 }
 
 const setMarksEffect = StateEffect.define<Marks>();
+const setTrailsEffect = StateEffect.define<FlagTrail[]>();
 const external = Annotation.define<boolean>();
+
+/** The trails as the host last passed them; read by the flag card, never by the decorations. */
+const trailsField = StateField.define<FlagTrail[]>({
+  create: () => [],
+  update(v, tr) {
+    for (const e of tr.effects) if (e.is(setTrailsEffect)) return e.value;
+    return v;
+  },
+});
 
 const marksField = StateField.define<Marks>({
   create: () => ({ flags: [], bindings: [] }),
@@ -155,13 +169,15 @@ const decorations = StateField.define<DecorationSet>({
   provide: (f) => EditorView.decorations.from(f),
 });
 
-// ---- the binding popover ---------------------------------------------------
+// ---- the popover: a binding card or a flag card -----------------------------
 // A click on a bound passage (or its marker) opens a card listing what the
 // passage rests on, one claim at a time, with its atoms and where each came
-// from. It opens on a click and not on hover because it has buttons and links
-// in it, and a hover card cannot be reached by the pointer. A second click on
-// the passage, a click elsewhere, Escape, or typing closes it. The state is
-// in `popover.ts`; this is the DOM.
+// from. A click on a flagged span opens the flag's card: what was asked,
+// where it stands, and the research behind it so far. It opens on a click and
+// not on hover because it has buttons and links in it, and a hover card cannot
+// be reached by the pointer. A second click on the same span, a click
+// elsewhere, Escape, or typing closes it. The state is in `popover.ts`; this
+// is the DOM.
 
 const popoverEffect = StateEffect.define<Popover | null>();
 
@@ -192,7 +208,8 @@ function createPopover(view: EditorView): TooltipView {
   dom.appendChild(body);
   const paint = (p: Popover | null): void => { if (p) renderPopover(body, p, view); };
   paint(view.state.field(popoverField));
-  return { dom, update(u: ViewUpdate) { if (u.state.field(popoverField) !== u.startState.field(popoverField)) paint(u.state.field(popoverField)); } };
+  // the trails arriving repaints an open flag card, so the work shows as it lands
+  return { dom, update(u: ViewUpdate) { if (u.state.field(popoverField) !== u.startState.field(popoverField) || u.state.field(trailsField) !== u.startState.field(trailsField)) paint(u.state.field(popoverField)); } };
 }
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls: string, text?: string): HTMLElementTagNameMap[K] {
@@ -203,6 +220,7 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls: string, text?: s
 }
 
 function renderPopover(dom: HTMLElement, p: Popover, view: EditorView): void {
+  if (p.kind === "flag") { renderFlagCard(dom, p, view); return; }
   const card = claimCard(p);
   dom.replaceChildren();
   const head = el("div", "erf-pop-head");
@@ -211,7 +229,7 @@ function renderPopover(dom: HTMLElement, p: Popover, view: EditorView): void {
     const nav = el("span", "erf-pop-nav");
     const prev = el("button", "erf-pop-arrow", "‹"); prev.title = "previous claim"; prev.type = "button";
     const next = el("button", "erf-pop-arrow", "›"); next.title = "next claim"; next.type = "button";
-    const go = (d: 1 | -1) => (e: Event) => { e.preventDefault(); const cur = view.state.field(popoverField); if (cur) view.dispatch({ effects: popoverEffect.of(step(cur, d)) }); };
+    const go = (d: 1 | -1) => (e: Event) => { e.preventDefault(); const cur = view.state.field(popoverField); if (cur?.kind === "binding") view.dispatch({ effects: popoverEffect.of(step(cur, d)) }); };
     // the arrows step without taking focus, so the cursor stays where it was and Escape still reaches the editor
     for (const b of [prev, next]) b.addEventListener("mousedown", (e) => e.preventDefault());
     prev.addEventListener("click", go(-1)); next.addEventListener("click", go(1));
@@ -240,8 +258,36 @@ function renderPopover(dom: HTMLElement, p: Popover, view: EditorView): void {
   dom.appendChild(list);
 }
 
-/** The bound passage under a pointer event, whether on the prose or on a collapsed marker. */
-function bindingAt(view: EditorView, e: MouseEvent) {
+/** The flag card: what was asked, where the flag stands, and the trail behind it. */
+function renderFlagCard(dom: HTMLElement, p: FlagPopover, view: EditorView): void {
+  const card = flagCard(p, view.state.field(trailsField));
+  dom.replaceChildren();
+  const head = el("div", "erf-pop-head");
+  head.appendChild(el("span", "erf-pop-status", `flag #${card.id} · ${card.research}`));
+  dom.appendChild(head);
+  dom.appendChild(el("div", "erf-pop-title", card.status));
+  if (card.note) dom.appendChild(el("div", "erf-pop-note", card.note));
+  if (card.claims.length) {
+    const links = el("div", "erf-pop-meta");
+    card.claims.forEach((id, i) => {
+      if (i) links.appendChild(document.createTextNode(", "));
+      const a = el("a", "erf-pop-claim", id) as HTMLAnchorElement; a.href = `claim-${encodeURIComponent(id)}.html`; a.title = "open the claim";
+      links.appendChild(a);
+    });
+    dom.appendChild(links);
+  }
+  const list = el("ul", "erf-pop-trail");
+  for (const l of card.lines) {
+    const li = el("li", `line ${l.kind}`);
+    if (l.href) { const a = el("a", "", l.text) as HTMLAnchorElement; a.href = l.href; if (/^https?:/.test(l.href)) { a.target = "_blank"; a.rel = "noopener"; } li.appendChild(a); }
+    else li.textContent = l.text;
+    list.appendChild(li);
+  }
+  dom.appendChild(list);
+}
+
+/** What is under a pointer event: a flagged span, a bound passage, or a collapsed marker; a flag wins over a binding on the same span. */
+function hitUnder(view: EditorView, e: MouseEvent) {
   const c = computeMarks(view.state.doc.toString(), view.state.field(marksField));
   const widget = (e.target as HTMLElement).closest?.(".erf-marker") as HTMLElement | null;
   if (widget) {
@@ -249,14 +295,14 @@ function bindingAt(view: EditorView, e: MouseEvent) {
     return c.bound.find((b) => b.binding.claims.join(" ") === ids) ?? null;
   }
   const pos = view.posAtCoords({ x: e.clientX, y: e.clientY });
-  return pos === null ? null : hitBinding(c, pos);
+  return pos === null ? null : hitAt(c, pos);
 }
 
 const popoverHandlers = EditorView.domEventHandlers({
   click(e, view) {
     // a click that ends a drag is a selection, not a request for the card
     if (!view.state.selection.main.empty) return false;
-    const next = popoverAfterClick(view.state.field(popoverField), bindingAt(view, e));
+    const next = popoverAfterClick(view.state.field(popoverField), hitUnder(view, e));
     if (next !== view.state.field(popoverField)) view.dispatch({ effects: popoverEffect.of(next) });
     return false;
   },
@@ -338,6 +384,16 @@ function theme(): Extension {
     },
     ".erf-pop-against .erf-pop-side": { color: "var(--warn, #8a4b1e)" },
     ".erf-pop-source": { color: "var(--accent, #1a3a6e)", fontStyle: "italic" },
+    // the flag card: the trail's lines in the colours the panel uses
+    ".erf-pop-note": { fontStyle: "italic", color: "var(--muted, #5a5550)", margin: ".1rem 0 .3rem" },
+    ".erf-pop-claim": { color: "var(--accent, #1a3a6e)" },
+    ".erf-pop-trail": { listStyle: "none", margin: ".3rem 0 0", padding: ".3rem 0 0", borderTop: "1px solid var(--rulelt, #ebe7e1)", maxHeight: "14rem", overflow: "auto", fontFamily: "var(--mono, ui-monospace, Menlo, monospace)", fontSize: "11px", whiteSpace: "pre-wrap" },
+    ".erf-pop-trail .line": { margin: ".05rem 0" },
+    ".erf-pop-trail .capture": { color: "var(--good, #1f5c3d)" },
+    ".erf-pop-trail .refused": { color: "var(--warn, #8a4b1e)" },
+    ".erf-pop-trail .atom, .erf-pop-trail .claim": { color: "var(--accent, #1a3a6e)" },
+    ".erf-pop-trail .empty": { color: "var(--muted, #5a5550)", fontStyle: "italic" },
+    ".erf-pop-trail a": { color: "inherit" },
   });
 }
 
@@ -394,6 +450,7 @@ export function createEditor(parent: HTMLElement, text: string, opts?: { autosav
         markdown(),
         syntaxHighlighting(highlight),
         marksField,
+        trailsField,
         decorations,
         popoverField,
         popoverHandlers,
@@ -420,6 +477,9 @@ export function createEditor(parent: HTMLElement, text: string, opts?: { autosav
     setMarks(m: Marks): { missing: string[] } {
       view.dispatch({ effects: setMarksEffect.of(m), annotations: external.of(true) });
       return { missing: computeMarks(view.state.doc.toString(), m).missing };
+    },
+    setTrails(trails: FlagTrail[]): void {
+      view.dispatch({ effects: setTrailsEffect.of(trails), annotations: external.of(true) });
     },
     onSelectionChange(cb): void { onSelection = cb; },
     onSave(cb): void { onSaveCb = cb; },

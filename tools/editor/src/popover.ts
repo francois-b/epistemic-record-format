@@ -9,10 +9,29 @@
  * time, stepped through with arrows, the way the evidence cards in the DAA
  * claims-tree web bundle cycle through their atoms.
  */
-import type { BindingMark, BoundRange, Computed } from "./marks.ts";
+import type { BindingMark, BoundRange, Computed, FlagMark, FlagRange } from "./marks.ts";
+import { trailLines, type FlagTrail, type TrailLine } from "./trail.ts";
 
-/** An open popover: the passage it sits on, the binding it shows, and which claim is up. */
-export interface Popover { from: number; to: number; binding: BindingMark; index: number }
+/**
+ * An open popover: on a bound passage, the binding it shows and which claim
+ * is up; on a flagged span, the flag. A span can be both; the flag wins the
+ * click, because the flag is the newer question about it.
+ */
+export type Popover =
+  | { kind: "binding"; from: number; to: number; binding: BindingMark; index: number }
+  | { kind: "flag"; from: number; to: number; flag: FlagMark };
+export type BindingPopover = Extract<Popover, { kind: "binding" }>;
+export type FlagPopover = Extract<Popover, { kind: "flag" }>;
+
+/** The flagged span under a position, or null on prose nobody flagged. */
+export function hitFlag(c: Computed, pos: number): FlagRange | null {
+  return c.flags.find((f) => pos >= f.from && pos <= f.to) ?? null;
+}
+
+/** What a click at a position lands on: a flag before a binding, since a span can carry both. */
+export function hitAt(c: Computed, pos: number): FlagRange | BoundRange | null {
+  return hitFlag(c, pos) ?? hitBinding(c, pos);
+}
 
 /**
  * The bound passage under a position: the passage itself, or the marker that
@@ -28,18 +47,22 @@ export function hitBinding(c: Computed, pos: number): BoundRange | null {
 }
 
 /**
- * What a click does: on a bound passage it opens the popover there (a second
- * click on the same passage closes it); anywhere else it closes whatever is
- * open. The first claim shows when a passage opens.
+ * What a click does: on a bound passage or a flagged span it opens the card
+ * there (a second click on the same one closes it); anywhere else it closes
+ * whatever is open. The first claim shows when a passage opens.
  */
-export function popoverAfterClick(open: Popover | null, hit: BoundRange | null): Popover | null {
+export function popoverAfterClick(open: Popover | null, hit: BoundRange | FlagRange | null): Popover | null {
   if (!hit) return null;
-  if (open && open.from === hit.from && open.to === hit.to) return null;
-  return { from: hit.from, to: hit.to, binding: hit.binding, index: 0 };
+  const next: Popover = "flag" in hit
+    ? { kind: "flag", from: hit.from, to: hit.to, flag: hit.flag }
+    : { kind: "binding", from: hit.from, to: hit.to, binding: hit.binding, index: 0 };
+  if (open && open.kind === next.kind && open.from === next.from && open.to === next.to) return null;
+  return next;
 }
 
-/** The next or previous claim, wrapping at either end. */
+/** The next or previous claim, wrapping at either end. A flag card has nothing to step through. */
 export function step(p: Popover, d: 1 | -1): Popover {
+  if (p.kind !== "binding") return p;
   const n = p.binding.claims.length;
   if (n === 0) return p;
   return { ...p, index: (p.index + d + n) % n };
@@ -73,6 +96,7 @@ export interface ClaimCard {
 }
 
 export function claimCard(p: Popover): ClaimCard | null {
+  if (p.kind !== "binding") return null;
   const id = p.binding.claims[p.index];
   if (id === undefined) return null;
   const info = p.binding.claimInfo?.[id];
@@ -90,4 +114,38 @@ export function claimCard(p: Popover): ClaimCard | null {
 /** Where a source link goes: the page the source was captured from, else the atom's own page in the viewer. */
 export function sourceHref(a: AtomLine): string {
   return a.url ?? `atom-${encodeURIComponent(a.id)}.html`;
+}
+
+/** The flag card: what was asked, where it stands, and the research behind it so far. */
+export interface FlagCard {
+  id: number;
+  research: string;
+  note?: string;
+  /** One line: open and not being worked, taken by whom (fresh or stale), or done and bound to what. */
+  status: string;
+  /** The claims a resolved flag was bound to. */
+  claims: string[];
+  /** The trail's lines, or one line saying why there are none. */
+  lines: TrailLine[];
+}
+
+/**
+ * The flag as its card reads it. The take's freshness is the server's word
+ * (`take_stale`), never recomputed here; the trail is the one the app last
+ * received for this flag, if any.
+ */
+export function flagCard(p: FlagPopover, trails: FlagTrail[] = []): FlagCard {
+  const f = p.flag;
+  const claims = f.claims ?? [];
+  const status = f.status === "done"
+    ? `done · bound to ${claims.length ? claims.join(", ") : "nothing"}`
+    : f.taken_by
+      ? (f.take_stale ? `taken by ${f.taken_by} · the take went stale` : `taken by ${f.taken_by} · working now`)
+      : "open · not being worked";
+  const trail = trails.find((t) => t.flag === f.id);
+  const research = f.research ?? "mint";
+  const lines: TrailLine[] = trail
+    ? trailLines(trail)
+    : [{ kind: "empty", text: research === "mint" ? "proposals are made in the chat; nothing is logged for a mint flag" : "no research logged yet" }];
+  return { id: f.id, research, ...(f.note ? { note: f.note } : {}), status, claims, lines };
 }

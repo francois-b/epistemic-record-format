@@ -387,6 +387,7 @@ statusEl.addEventListener("click", () => { if (!trails.length) return; trailOpen
 function paintTrail(next: FlagTrail[]): void {
   const hadActs = trails.some((t) => t.searches.length || t.captures.length);
   trails = next;
+  ed?.setTrails(next);   // a flag's card in the editor shows the same trail
   const acts = trails.some((t) => t.searches.length || t.captures.length);
   statusEl.classList.toggle("trailable", trails.length > 0);
   if (!trails.length) { trailOpen = false; trailEl.hidden = true; return; }

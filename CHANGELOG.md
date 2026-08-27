@@ -9,6 +9,8 @@ everything else.
 
 ## Unreleased
 
+Tooling, 2026-08-27: a flagged span has a card. A click on it opens the flag: what was asked (the verb and the note), where it stands (open and not being worked; taken by whom, fresh or stale, the server's word; done and bound to which claims, linked), and the research behind it so far, the same lines the trail panel shows, repainting as work lands. The popover's state is a union of the binding card and the flag card; on a span that is both, the flag wins the click. The editor gains `setTrails`; the app passes the trails it already receives. Found when a click on the underlined span did nothing.
+
 Tooling, 2026-08-27: the status line is the same on re-entering the editor as on first opening it. Leaving fullscreen stopped the watch and cleared the line, and re-entering took a path that re-read the marks without saying what the flags said; now every way in hands the flags to the same scheduler.
 
 Tooling, 2026-08-27: the status line reads the flag's real state. A take that has aged past `TAKE_MINUTES` is reported by the server as `take_stale` on each flag (`erf_narrative_status`, `erf_narrative_read`), the one place the thirty-minute rule lives; the editor draws such a flag as open, not taken, and the app's status line says "researching #N (taken by X)" only for a fresh take, watching every three seconds, and "#N flagged · survey · not being worked" (a stale take named) otherwise, watching every half minute. A flag placed from the editor is watched fast for a quarter of an hour regardless. Found when a day-old take read as research in progress after a restart.
