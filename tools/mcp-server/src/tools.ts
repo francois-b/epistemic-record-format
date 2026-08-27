@@ -13,7 +13,7 @@ import {
   declarationPath, sourceListPath, commit, frontmatter, readFlags, writeFlags, flagsPath, type Flag, type LogEntry,
   RESEARCH, type Research, TAKE_MINUTES,
 } from "./corpus.ts";
-import { captureUrl, capturePath } from "./capture.ts";
+import { captureUrl, capturePath, pageOfQuote } from "./capture.ts";
 import { renderSite } from "../../viewer/erf-view.ts";
 import { renderIndex, renderSources, renderHealth, renderNarrative, renderClaim, renderAtom, renderCapture, renderSurvey, setSiteLinks } from "../../viewer/render.ts";
 import { splitDocument } from "@epistemic-record-format/yaml-markdown";
@@ -131,7 +131,7 @@ export async function sourceAdd(c: Corpus, a: { id: string; citation_text: strin
   // the act that led here goes in the log before the page is held, which is the order
   // the survey gate assumes: log, then capture, then quote.
   const found = a.found_by ? logSearchAct(c, a.found_by) : null;
-  const cap = a.url ? await captureUrl(c, a.id, a.url) : capturePath(c, a.id, a.path!);
+  const cap = a.url ? await captureUrl(c, a.id, a.url) : await capturePath(c, a.id, a.path!);
   const status = a.not_redistributable ? "not-redistributable" : a.licence ? "shipped" : "licence-unverified";
   const entry: Source = {
     citation_text: a.citation_text,
@@ -204,7 +204,7 @@ function nearestPassage(hay: string, quote: string): string {
 export interface AtomSpec { source: string; quote: string; finding: string; source_quality: string; as_of_date?: string; limitations?: string }
 
 /** What one atom came to: an id, or a reason and (for a failed quote check) the passage nearest to it. */
-type Minted = { ok: true; id: string; path: string; source: string } | { ok: false; reason: string; nearest?: string };
+type Minted = { ok: true; id: string; path: string; source: string; page: number | null } | { ok: false; reason: string; nearest?: string };
 
 /**
  * Write one atom, or say why not. Never throws: the caller decides whether a
@@ -226,7 +226,11 @@ function mintOneAtom(c: Corpus, decl: ReturnType<typeof readDeclaration>, source
   const q = quoteCheck(atom, text);
   if (q.state !== "pass") return { ok: false, reason: `quote not found in the normalized text of ${a.source} (ERF-50): ${q.detail}`, nearest: nearestPassage(text, a.quote) };
   const fm = { id, type: "atom", corpus: decl.id, finding: a.finding, quote: a.quote, source: a.source, source_quality: a.source_quality, as_of_date: a.as_of_date, limitations: a.limitations, created: { timestamp: today(), by: c.options.agent } };
-  return { ok: true, id, path: writeRecord(c, "atom", id, fm, null), source: a.source };
+  // a held PDF carries page markers; the page the quote starts on goes in the body, since the format has no
+  // locator field on an atom (a spec question, filed as B-70) and the body is free prose the validator keeps
+  const page = pageOfQuote(text, a.quote);
+  const body = page ? `Page ${page} of the held PDF, read from the page markers in its normalized text.` : null;
+  return { ok: true, id, path: writeRecord(c, "atom", id, fm, body), source: a.source, page };
 }
 
 /** Where a source can be read as it was received, for the line under a mint. */
@@ -249,7 +253,7 @@ export function atomMint(c: Corpus, a: Partial<AtomSpec> & { atoms?: AtomSpec[] 
     const r = mintOneAtom(c, decl, sources, a as AtomSpec);
     if (!r.ok) throw new Refusal(r.reason + (r.nearest ? `\nnearest passage: "${r.nearest}"` : ""));
     const src = sources[r.source];
-    return finish(c, `atom ${r.id} minted; quote check: present\ncites ${r.source}: ${src?.citation_text ?? "(unregistered)"}${whereFrom(src)}\nsee the quote in the held text: erf_view page=capture:${r.id}`, [r.path], `mint atom ${r.id}`);
+    return finish(c, `atom ${r.id} minted; quote check: present${r.page ? ` · page ${r.page}` : ""}\ncites ${r.source}: ${src?.citation_text ?? "(unregistered)"}${whereFrom(src)}\nsee the quote in the held text: erf_view page=capture:${r.id}`, [r.path], `mint atom ${r.id}`);
   }
 
   if (!a.atoms.length) throw new Refusal("atoms is an empty list; give at least one atom");
@@ -260,7 +264,7 @@ export function atomMint(c: Corpus, a: Partial<AtomSpec> & { atoms?: AtomSpec[] 
     const r = mintOneAtom(c, decl, sources, spec);
     if (r.ok) {
       minted.push(r.id); paths.push(r.path); cited.add(r.source);
-      lines.push(`[${i + 1}] ok ${r.id} (${r.source}): ${spec.finding}`);
+      lines.push(`[${i + 1}] ok ${r.id} (${r.source}${r.page ? `, page ${r.page}` : ""}): ${spec.finding}`);
     } else {
       refused.push({ index: i + 1, reason: r.reason, ...(r.nearest ? { nearest: r.nearest } : {}) });
       lines.push(`[${i + 1}] refused: ${r.reason}${r.nearest ? `\n    nearest passage: "${r.nearest}"` : ""}`);

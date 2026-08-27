@@ -1,8 +1,9 @@
 /**
  * Capture: a source's raw bytes, its extracted text, its normalized text,
  * and the digests and tool names a reader needs to re-run the pipeline
- * (ERF-70, ERF-71). HTML is extracted with Readability over a DOM; markdown
- * and plain text are taken as they are. The normalizer is this module's own,
+ * (ERF-70, ERF-71). HTML is extracted with Readability over a DOM; a PDF's
+ * text layer is read page by page with unpdf and joined with page markers;
+ * markdown and plain text are taken as they are. The normalizer is this module's own,
  * named and versioned, and deterministic by construction.
  */
 import { createHash } from "node:crypto";
@@ -10,10 +11,53 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, extname, join, relative, resolve } from "node:path";
 import { Readability } from "@mozilla/readability";
 import { parseHTML } from "linkedom";
+import { extractText } from "unpdf";
+import { normalizeForCheck, findWholeWords } from "@epistemic-record-format/yaml-markdown";
 import { Refusal, type Corpus } from "./corpus.ts";
 
 export const NORMALIZER = "erf-normalize-ts 0.1.0";
 export const EXTRACTOR = "@mozilla/readability 0.6.0 over linkedom 0.18.13, article textContent";
+export const PDF_EXTRACTOR = "unpdf 1.8.1 (pdfjs serverless build), text per page, page markers";
+
+/**
+ * A page marker: one line between the pages of a PDF's extracted text. An HTML
+ * comment, because the quote check folds CommonMark to plain text and an HTML
+ * block contributes nothing (ERF-51 step 1), so the marker can never match a
+ * word of a quote, and a page break separates blocks the way a blank line does.
+ */
+export const PAGE_MARKER_RE = /^<!-- erf:page (\d+) -->$/m;
+export const pageMarker = (n: number): string => `<!-- erf:page ${n} -->`;
+export const hasPageMarkers = (normalized: string): boolean => PAGE_MARKER_RE.test(normalized);
+
+/** The pages of a PDF, one string each, joined with markers. Refused when no page has a text layer. */
+export async function extractPdf(bytes: Buffer, what: string): Promise<{ text: string; pages: number }> {
+  let pages: string[];
+  try {
+    const r = await extractText(new Uint8Array(bytes), { mergePages: false });
+    pages = Array.isArray(r.text) ? r.text : [String(r.text)];
+  } catch (e) { throw new Refusal(`${what}: the PDF could not be read (${String(e).slice(0, 120)})`); }
+  if (!pages.some((t) => t.trim())) throw new Refusal(`${what}: the PDF has no text layer (a scanned image, or text drawn as outlines); OCR is not done, so no quote could ever check against it`);
+  const text = pages.map((t, i) => `${pageMarker(i + 1)}\n\n${t.trim()}`).join("\n\n") + "\n";
+  return { text, pages: pages.length };
+}
+
+/**
+ * The page a quote starts on, read from the markers in a held text: the first
+ * page whose folded text holds the quote's first segment as whole words, or
+ * null when the text carries no markers or the segment is not found.
+ */
+export function pageOfQuote(normalized: string, quote: string): number | null {
+  if (!hasPageMarkers(normalized)) return null;
+  const first = quote.split("[...]")[0]!.trim();
+  if (!first) return null;
+  const q = normalizeForCheck(first);
+  const parts = normalized.split(/^<!-- erf:page (\d+) -->$/m);
+  // parts: [before, "1", page1, "2", page2, ...]
+  for (let i = 1; i + 1 < parts.length; i += 2) {
+    if (findWholeWords(normalizeForCheck(parts[i + 1]!), q, 0) >= 0) return Number(parts[i]);
+  }
+  return null;
+}
 
 export function sha256(bytes: Buffer | string): string {
   return "sha256:" + createHash("sha256").update(bytes).digest("hex");
@@ -68,30 +112,37 @@ export async function captureUrl(c: Corpus, id: string, url: string): Promise<Ca
   if (!res.ok) throw new Refusal(`fetch of ${url} returned ${res.status}`);
   const bytes = Buffer.from(await res.arrayBuffer());
   const ctype = res.headers.get("content-type") ?? "";
-  const isHtml = /html/i.test(ctype) || /^\s*<!doctype html|^\s*<html/i.test(bytes.subarray(0, 512).toString("utf8"));
-  const ext = isHtml ? ".html" : /markdown/i.test(ctype) ? ".md" : /text\/plain/i.test(ctype) ? ".txt" : null;
-  if (!ext) throw new Refusal(`${url} is ${ctype || "an unknown type"}; v0 captures HTML, markdown and plain text only (a PDF would be held as binary and no quote could ever check against it). For a paper, capture its HTML edition or an abstract page`);
-  return finish(c, id, ext, bytes, isHtml, url);
+  const head = bytes.subarray(0, 512).toString("latin1");
+  const isPdf = /pdf/i.test(ctype) || head.startsWith("%PDF-");
+  const isHtml = !isPdf && (/html/i.test(ctype) || /^\s*<!doctype html|^\s*<html/i.test(head));
+  const ext = isPdf ? ".pdf" : isHtml ? ".html" : /markdown/i.test(ctype) ? ".md" : /text\/plain/i.test(ctype) ? ".txt" : null;
+  if (!ext) throw new Refusal(`${url} is ${ctype || "an unknown type"}; the capturer takes HTML, markdown, plain text and PDF. For a paper, capture its PDF or its HTML edition`);
+  return finish(c, id, ext, bytes, isPdf ? "pdf" : isHtml ? "html" : "text", url);
 }
 
-export function capturePath(c: Corpus, id: string, path: string): Captured {
+export async function capturePath(c: Corpus, id: string, path: string): Promise<Captured> {
   const abs = resolve(c.dir, path);
   if (!abs.startsWith(c.dir)) throw new Refusal(`${path} is outside the corpus folder; copy the file into it first`);
   if (!existsSync(abs)) throw new Refusal(`${path} does not exist`);
   const bytes = readFileSync(abs);
   const ext = extname(abs).toLowerCase();
-  const isHtml = ext === ".html" || ext === ".htm";
-  if (!isHtml && ![".md", ".txt", ".markdown"].includes(ext)) throw new Refusal(`${basename(abs)}: v0 captures HTML, markdown and plain text only`);
-  return finish(c, id, isHtml ? ".html" : ext, bytes, isHtml, undefined, abs);
+  const isPdf = ext === ".pdf" || bytes.subarray(0, 5).toString("latin1") === "%PDF-";
+  const isHtml = !isPdf && (ext === ".html" || ext === ".htm");
+  if (!isPdf && !isHtml && ![".md", ".txt", ".markdown"].includes(ext)) throw new Refusal(`${basename(abs)}: the capturer takes HTML, markdown, plain text and PDF`);
+  return finish(c, id, isPdf ? ".pdf" : isHtml ? ".html" : ext, bytes, isPdf ? "pdf" : isHtml ? "html" : "text", undefined, abs);
 }
 
-function finish(c: Corpus, id: string, ext: string, bytes: Buffer, isHtml: boolean, url?: string, existingRaw?: string): Captured {
+type Kind = "html" | "pdf" | "text";
+
+async function finish(c: Corpus, id: string, ext: string, bytes: Buffer, kind: Kind, url?: string, existingRaw?: string): Promise<Captured> {
+  // extract before anything is written, so a PDF with no text layer leaves nothing behind
+  const extracted = kind === "html" ? extractHtml(bytes.toString("utf8"), url)
+    : kind === "pdf" ? { title: null, text: (await extractPdf(bytes, url ?? basename(existingRaw ?? id))).text }
+    : { title: null, text: bytes.toString("utf8") };
   const paths = heldPaths(c, id, ext);
   let rawAbs = paths.raw;
   if (existingRaw && existingRaw.startsWith(c.heldDir("raw"))) rawAbs = existingRaw; // already held: don't duplicate
   else writeFileSync(rawAbs, bytes);
-  const asText = bytes.toString("utf8");
-  const extracted = isHtml ? extractHtml(asText, url) : { title: null, text: asText };
   const normalized = normalizeText(extracted.text);
   writeFileSync(paths.normalized, normalized, "utf8");
   return {
@@ -99,7 +150,7 @@ function finish(c: Corpus, id: string, ext: string, bytes: Buffer, isHtml: boole
     rawDigest: sha256(bytes),
     normalizedPath: relative(c.dir, paths.normalized),
     normalizedDigest: sha256(normalized),
-    extraction: isHtml ? EXTRACTOR : null,
+    extraction: kind === "html" ? EXTRACTOR : kind === "pdf" ? PDF_EXTRACTOR : null,
     normalization: NORMALIZER,
     title: extracted.title,
     bytes: bytes.length,

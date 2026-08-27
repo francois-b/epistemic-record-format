@@ -72,6 +72,36 @@ test("source_add from a path holds raw and normalized text, and the atom quote c
   await refuses(() => T.atomMint(c, { source: "memo-2026", quote: "x", finding: "y", source_quality: "high", as_of_date: "2026-08-26T10:00:00Z" }), /ERF-14/);
 });
 
+test("source_add holds a PDF page by page: markers between pages, the quote check passes, the atom names its page", async () => {
+  const c = fresh();
+  cpSync(join(dirname(fileURLToPath(import.meta.url)), "fixtures", "two-pages.pdf"), join(c.dir, "paper.pdf"));
+  const r = await T.sourceAdd(c, { id: "paper-2026", citation_text: "A two-page paper, 2026", path: "paper.pdf" });
+  assert.match(r.text, /status licence-unverified/);
+  assert.ok(existsSync(join(c.dir, "raw", "paper-2026.pdf")), "the PDF bytes are held as received");
+  const norm = readFileSync(join(c.dir, "normalized", "paper-2026.md"), "utf8");
+  assert.match(norm, /^<!-- erf:page 1 -->$/m);
+  assert.match(norm, /^<!-- erf:page 2 -->$/m);
+  assert.match(norm, /seventeen units/);
+  assert.match(readSourceList(c)["paper-2026"]!.extraction ?? "", /unpdf .* page markers/);
+  // a quote from the second page: checked against the held text, and the page reported and written in the body
+  const m = T.atomMint(c, { source: "paper-2026", quote: "the audit agreed with the ledger", finding: "The audit agreed.", source_quality: "medium" });
+  assert.match(m.text, /quote check: present · page 2/);
+  const atomPath = join(c.dir, "atoms", `${/atom (\S+) minted/.exec(m.text)![1]}.md`);
+  assert.match(readFileSync(atomPath, "utf8"), /Page 2 of the held PDF/);
+  // the marker is an HTML block: invisible to the quote check, so it never matches a word of a quote
+  await refuses(() => Promise.resolve(T.atomMint(c, { source: "paper-2026", quote: "erf:page 2", finding: "x", source_quality: "low" })), /quote not found/);
+  clean(c);
+});
+
+test("source_add refuses a PDF with no text layer, and holds nothing for it", async () => {
+  const c = fresh();
+  cpSync(join(dirname(fileURLToPath(import.meta.url)), "fixtures", "no-text.pdf"), join(c.dir, "scan.pdf"));
+  await refuses(() => T.sourceAdd(c, { id: "scan-2026", citation_text: "A scanned page, 2026", path: "scan.pdf" }), /no text layer.*OCR is not done/);
+  assert.ok(!existsSync(join(c.dir, "raw", "scan-2026.pdf")), "nothing held");
+  assert.equal(readSourceList(c)["scan-2026"], undefined);
+  clean(c);
+});
+
 test("source_add returns the passage, and logs the search that found the page", async () => {
   const c = fresh();
   writeFileSync(join(c.dir, "note.md"), "Preamble sentence.\n\nThe citators disagree with each other on negative treatment.\n\nA closing line.\n");

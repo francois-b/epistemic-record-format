@@ -120,6 +120,7 @@ Raised but not yet checked by anyone other than whoever raised them. **Not ready
 | [`B-67`](B-67-fourteen-act-musts-do-not-name-the-party-they-bind.md) | **closed** | Fourteen act MUSTs do not name the party they bind | `reported` | `unverified` |
 | [`B-68`](B-68-erf-60-prescribes-a-parser-order-and-erf-62-a-topology.md) | **P3** | `ERF-60` prescribes a parser order, and `ERF-62` a topology | `reported` | `unverified` |
 | [`B-69`](B-69-definitions-stated-two-or-three-times-and-a-lifecycle-nobody-is-bound-by.md) | **P3** | Definitions stated two or three times, and a lifecycle nobody is bound by | `reported` | `unverified` |
+| [`B-70`](B-70-a-locator-on-an-atom-the-page-a-quote-starts-on.md) | **trigger-driven** | A locator on an atom: the page a quote starts on | `anticipated` | `unverified` |
 
 ## Defects awaiting a ruling
 
@@ -151,5 +152,5 @@ Verified accurate. The format does not do these yet; each names the event that w
 
 ---
 
-56 entries, 76 verifications: 37 accurate, 2 duplicate, 1 inaccurate, 8 stale, 28 unverified.
+57 entries, 77 verifications: 37 accurate, 2 duplicate, 1 inaccurate, 8 stale, 29 unverified.
 Regenerate with `python3 tools/generate/generate-backlog-index.py`.

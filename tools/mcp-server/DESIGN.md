@@ -64,9 +64,9 @@ wrote. Every refusal names the requirement. Nothing writes a raw file.
 | `erf_corpus_use(id)` | makes one corpus the target of following calls | unknown id |
 | `erf_corpus_init(folder, id, title, owner)` | creates a corpus under a root: `corpus.yaml` + empty `sources.yaml`; makes it active | folder outside the roots; a declaration already there; owner not `human:` |
 | `erf_corpus_check()` | loads, validates, reports violations, flags, unbacked claims, uncited sources, counts by disposition | never |
-| `erf_source_add(id, citation_text, url? \| path?, licence?, find?, window?, found_by?)` | captures: raw bytes held and digested (`ERF-71`); extracted and normalized by named tools (`ERF-70`); entry written to `sources.yaml` with `status` derived from the licence; logs the act. With `found_by` it logs the search that led to the page first; it returns the windows around `find` (or the opening of the text), so a quote is chosen without a second call | id in use; url given while fetching is off; neither url nor path; path outside the corpus; a `found_by` with no `for` |
+| `erf_source_add(id, citation_text, url? \| path?, licence?, find?, window?, found_by?)` | captures: raw bytes held and digested (`ERF-71`); extracted and normalized by named tools (`ERF-70`); entry written to `sources.yaml` with `status` derived from the licence; logs the act. With `found_by` it logs the search that led to the page first; it returns the windows around `find` (or the opening of the text), so a quote is chosen without a second call. HTML, markdown, plain text and PDF; a PDF is held page by page with a marker between pages | id in use; url given while fetching is off; neither url nor path; path outside the corpus; a `found_by` with no `for`; a PDF with no text layer (OCR is not done) |
 | `erf_search_log(for, tool, query, hits_reported, scope?)` | appends one act to the research log, tagged with what it was looking for; for a search that led to a page, `erf_source_add(found_by)` does the same thing in the call that captures it | empty query; no `for` |
-| `erf_atom_mint(source, quote, finding, source_quality, as_of_date?, limitations?)` or `erf_atom_mint(atoms: [...])` | assigns the next id (`ERF-37`); runs the quote check (`ERF-50/51/52`) against the held normalized text; writes the atom. With `atoms`, every atom for a source in one call: each checked and written in turn, ids consecutive, one refusal reported beside the others rather than ending the call | source not registered; source has no held text; quote not found (returns the nearest passage); `as_of_date` finer than a date; neither one atom nor a list |
+| `erf_atom_mint(source, quote, finding, source_quality, as_of_date?, limitations?)` or `erf_atom_mint(atoms: [...])` | assigns the next id (`ERF-37`); runs the quote check (`ERF-50/51/52`) against the held normalized text; writes the atom; for a source held with page markers, reports the page the quote starts on and writes it into the atom's body (the format has no locator field: `B-70`). With `atoms`, every atom for a source in one call: each checked and written in turn, ids consecutive, one refusal reported beside the others rather than ending the call | source not registered; source has no held text; quote not found (returns the nearest passage); `as_of_date` finer than a date; neither one atom nor a list |
 | `erf_claim_mint(id, title, epistemic_kind, atoms_for?, atoms_against?, surveys?, edges?, families?, notes?)` | writes the claim; body opens with the title verbatim (`ERF-18`) | id in use; any referenced id unresolved; a self-edge (`ERF-43`) |
 | `erf_claim_update(id, title?, atoms_for?, atoms_against?, surveys?, edges?, families?, notes?)` | rewrites the named fields, stamps `last_modified` | unresolved ids; an attempt to touch `standings` or `evidence_audit` |
 | `erf_claim_stand(id, stance, why)` | appends a standing under the corpus owner with a full RFC 3339 instant (`ERF-19`, `ERF-40`); returns the computed disposition | empty `why`; no `owner` on the declaration |
@@ -84,7 +84,7 @@ wrote. Every refusal names the requirement. Nothing writes a raw file.
 | `erf_record_read(id)` / `erf_record_list(type?)` | returns a record (or a source) / lists ids and titles | unknown id |
 
 Not in v0: `erf_search` (closed loop),
-finding and evidence audits, excerpts (`ERF-69`), PDF extraction, the
+finding and evidence audits, excerpts (`ERF-69`), OCR for scanned PDFs, the
 `.mcpb` bundle. Each has a slot; none is needed to run the loop once.
 
 ## Prompts (judgment scaffolds, read-only)
@@ -129,11 +129,41 @@ made them, so a reader can re-run the pipeline (`ERF-70`):
    and a timestamp.
 2. Extracted: for HTML, the article text via Readability over a DOM
    (`@mozilla/readability` + `linkedom`, versions recorded in
-   `extraction`); for `.md`/`.txt`, the file itself, no extraction step.
+   `extraction`); for a PDF, the text layer page by page (`unpdf`, below);
+   for `.md`/`.txt`, the file itself, no extraction step.
 3. Normalized: `erf-normalize-ts 0.1.0`, deterministic: NFC; CRLF and CR to
    LF; tabs to one space; runs of spaces to one; trailing spaces removed;
    three or more blank lines to two; final newline. Recorded in
    `normalization`. This is the text the quote check folds (`ERF-51`).
+
+### PDF (2026-08-27)
+
+A PDF is detected by its content type or the `%PDF-` magic, from a URL or a
+file inside the corpus, and its bytes are held as received (`raw/<id>.pdf`).
+The text layer is read page by page with **unpdf** (1.8.1), chosen over
+`pdfjs-dist` directly because it wraps pdf.js's serverless build with no
+native module, no canvas and no DOM shim, installs as one pure-JS package on
+any machine that runs the server, and returns the pages as an array. The
+pages are joined with a **page marker** line between them:
+
+```
+<!-- erf:page 3 -->
+```
+
+An HTML comment on its own line, because the quote check folds CommonMark to
+plain text and an HTML block contributes nothing (`ERF-51` step 1): the
+marker can never match a word of a quote, and a page break separates blocks
+exactly as a blank line does, so a quote cannot be spliced across two pages
+any more than across two paragraphs. `extraction` names the library, its
+version and "page markers", so a reader can re-run the step. A PDF with no
+text layer (a scanned image, or text drawn as outlines) is refused before
+anything is written: OCR is not done. At mint, an atom from a source held
+with markers reports the page its quote starts on (the first page whose
+folded text holds the quote's first segment as whole words) and writes one
+line into the atom's body; the format has no locator field, and the
+question is filed as `B-70`. The two open PDFs the capturer refused on
+2026-08-27 (a 1998 vendor white paper on gdrc.org, a Warwick conference
+paper) are the cases this is for.
 
 `status` from the licence argument: an SPDX id that permits redistribution
 gives `shipped`; none given gives `licence-unverified` (the text is held for

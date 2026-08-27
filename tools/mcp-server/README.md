@@ -46,7 +46,7 @@ Rebuild the bundle after changing `app/`, `../editor/`, or the viewer's styleshe
 
 ## What it refuses
 
-A quote not in the held text (the nearest passage comes back), a source not captured, a reference to a record that does not exist, a standing without a why, an edit to a standing, a URL when fetching is off, a survey with no search acts, a raw file write of any kind. Each refusal names the requirement.
+A quote not in the held text (the nearest passage comes back), a PDF with no text layer (OCR is not done), a source not captured, a reference to a record that does not exist, a standing without a why, an edit to a standing, a URL when fetching is off, a survey with no search acts, a raw file write of any kind. Each refusal names the requirement.
 
 ## Tests
 

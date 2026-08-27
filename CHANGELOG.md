@@ -9,6 +9,8 @@ everything else.
 
 ## Unreleased
 
+Tooling, 2026-08-27: the capturer holds PDFs. `erf_source_add` takes a PDF by URL or from a file inside the corpus, holds the bytes as received, reads the text layer page by page (unpdf) and joins the pages with a marker line between them; a PDF with no text layer is refused, since OCR is not done. An atom minted from such a source reports the page its quote starts on and writes it into its body; the format has no locator field, filed as `B-70`. Found when the two best sources of a survey were open PDFs the capturer refused.
+
 Tooling, 2026-08-27, from the first Cowork session: the active corpus is kept on disk per set of roots (`~/.erf/active.json`), so a host that starts one server per turn or per worker keeps the choice; Cowork lost it between two calls. `erf_view` no longer declares an output schema: the SDK emits draft-07 for it and the bundled Claude Code client validates 2020-12, so every call was refused before it reached the server.
 
 Tooling, 2026-08-27: the server instructions say what a report on a flag contains (proposals with atoms and what would settle them, coverage in two lines with sources sought and not reached, what could not be held) and what it leaves out (corpus state, tool results, digests, the worker's own steps). Found when a survey pass opened with a paragraph on digests.
