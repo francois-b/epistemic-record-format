@@ -91,6 +91,9 @@ finding and evidence audits, excerpts (`ERF-69`), OCR for scanned PDFs, the
 
 - `decompose-passage`: list every checkable assertion in a passage, typed by
   kind, with what would settle each and the anchor words.
+- `survey-span`: recall, then verify. The sources expected from memory
+  first, marked as recollection; then each sought by name and its fate
+  logged; then the survey with its targets; then the claims it supports.
 - `search-for-the-opposite`: the strongest case against a claim and where
   its evidence would be found.
 - `meaning-check`: reading only these quotes, would you accept this claim?

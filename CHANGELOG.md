@@ -9,6 +9,8 @@ everything else.
 
 ## Unreleased
 
+Tooling and pattern, 2026-08-27: a survey runs as recall, then verify. Before any search the LLM writes the sources it expects to exist for the span, marked as unverified recollection, then seeks each by name and logs its fate; the survey lists them as targets. In the server instructions, the survey branch of `work-the-flags`, a new `survey-span` prompt, and step 5 of the backing loop. Found when a survey's topic queries returned retrospectives while the canonical sources went unsought.
+
 Tooling, 2026-08-27: `erf_survey_record` compiles from the log for one question or a list of them (a survey lost the search logged under its second question), and takes `targets`, the sources sought by name with what became of each (held, unreachable with why, not found, not searched), written into the body under "Sources sought" and counted in the coverage text, so absent from the literature can be told from absent from this pass. The format has no field for it; filed as `B-71`.
 
 Tooling, 2026-08-27: the research trail. The log's chain (a search, the capture it led to, the atoms from that source, the claims citing them) is read once (`tools/viewer/trail.ts`) and shown in three places: the editor's status line opens into the trail behind each flag being worked, as it lands, from `erf_narrative_status` (which takes `since`); survey pages and claim pages carry "How this was found". A refused capture is logged with its reason, so the trail says what was tried. `erf_view`'s description and the server instructions say that a narrative page is the editor, after a Cowork session answered that no editor exists.
