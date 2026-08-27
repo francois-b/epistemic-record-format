@@ -195,6 +195,8 @@ made them, so a reader can re-run the pipeline (`ERF-70`):
 
 ### PDF (2026-08-27)
 
+The text layer is reflowed before it is held (same day, after the first real capture showed "be- ginning" in a quote): a line ending in a hyphen joins the next when the next starts with a lowercase letter, the hyphen dropped; consecutive lines join into one paragraph, a blank line staying a break; the page markers stand. Limitation: a real hyphen before a lowercase continuation ("well-\nknown") is lost too, since nothing in the text layer tells the two apart; a compound continuing with a capital keeps its hyphen. Held texts captured before the change are not rewritten (their digests stand).
+
 A PDF is detected by its content type or the `%PDF-` magic, from a URL or a
 file inside the corpus, and its bytes are held as received (`raw/<id>.pdf`).
 The text layer is read page by page with **unpdf** (1.8.1), chosen over

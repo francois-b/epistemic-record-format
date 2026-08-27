@@ -9,6 +9,8 @@ everything else.
 
 ## Unreleased
 
+Tooling, 2026-08-27: a PDF's text layer is reflowed before it is held: words broken at the margin are joined ("be-" "ginning" reads "beginning" when the continuation is lowercase), typeset lines join into paragraphs, page markers stand. New captures only; held texts keep their digests. Found when the first PDF quote on a card read "the be- ginning of the knowledge management timeline".
+
 Tooling, 2026-08-27: the research trail shows inline as well as fullscreen, folded to its summary line there, so a pass can be watched from the conversation view where the host draws no chat sheet over the app.
 
 Tooling and pattern, 2026-08-27: the ruling has a surface. A worker's proposals for a flag are producer machinery in `proposals.jsonl` (the id the claim would take, title, kind, the atoms for and against, what would settle it, the remark), put with `erf_propose`, which renders them as a card in the conversation with every quote, citation, page and remark in view. On the card the person accepts, narrows (the title edited in place) or drops each proposal, one `erf_proposal_rule` each, and a claim is written by that ruling and by nothing else; "bind and finish" (`erf_proposal_finish`) binds the passage to the minted claims and resolves the flag. The prompts and the server instructions say so: after the research, propose and stop; never mint a claim for a flag. Found when a survey pass reported six claims as a chat table of ids and had minted them before anyone ruled.

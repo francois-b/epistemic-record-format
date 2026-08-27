@@ -17,7 +17,7 @@ import { Refusal, type Corpus } from "./corpus.ts";
 
 export const NORMALIZER = "erf-normalize-ts 0.1.0";
 export const EXTRACTOR = "@mozilla/readability 0.6.0 over linkedom 0.18.13, article textContent";
-export const PDF_EXTRACTOR = "unpdf 1.8.1 (pdfjs serverless build), text per page, page markers";
+export const PDF_EXTRACTOR = "unpdf 1.8.1 (pdfjs serverless build), text per page, reflowed, de-hyphenated, page markers";
 
 /**
  * A page marker: one line between the pages of a PDF's extracted text. An HTML
@@ -29,7 +29,34 @@ export const PAGE_MARKER_RE = /^<!-- erf:page (\d+) -->$/m;
 export const pageMarker = (n: number): string => `<!-- erf:page ${n} -->`;
 export const hasPageMarkers = (normalized: string): boolean => PAGE_MARKER_RE.test(normalized);
 
-/** The pages of a PDF, one string each, joined with markers. Refused when no page has a text layer. */
+/**
+ * A page's text layer as prose. pdf.js gives the text one typeset line at a
+ * time, so a paragraph arrives as many short lines and a word broken at the
+ * margin arrives as "be-" and "ginning". Two joins put it back: a line ending
+ * in a hyphen joins the next when the next starts with a lowercase letter, the
+ * hyphen dropped (a real hyphen before a lowercase continuation is lost too;
+ * a compound continuing with a capital, "Self-" "Conscious", keeps it); then
+ * consecutive non-empty lines join into one paragraph with single spaces, a
+ * blank line staying a paragraph break. Applied to new captures only: a held
+ * normalized text is never rewritten, its digest stands.
+ */
+export function reflowPdfPage(page: string): string {
+  const lines = page.replace(/\r\n?/g, "\n").split("\n").map((l) => l.replace(/\s+$/, ""));
+  const paras: string[] = [];
+  let cur = "";
+  for (const raw of lines) {
+    const l = raw.trim();
+    if (!l) { if (cur) { paras.push(cur); cur = ""; } continue; }
+    if (!cur) { cur = l; continue; }
+    if (/[A-Za-z]-$/.test(cur) && /^[a-z]/.test(l)) cur = cur.slice(0, -1) + l;   // a word broken at the margin
+    else if (/[A-Za-z]-$/.test(cur) && /^[A-Z]/.test(l)) cur = cur + l;             // a compound broken at its hyphen keeps it
+    else cur = `${cur} ${l}`;
+  }
+  if (cur) paras.push(cur);
+  return paras.join("\n\n");
+}
+
+/** The pages of a PDF, one string each, reflowed and joined with markers. Refused when no page has a text layer. */
 export async function extractPdf(bytes: Buffer, what: string): Promise<{ text: string; pages: number }> {
   let pages: string[];
   try {
@@ -37,7 +64,7 @@ export async function extractPdf(bytes: Buffer, what: string): Promise<{ text: s
     pages = Array.isArray(r.text) ? r.text : [String(r.text)];
   } catch (e) { throw new Refusal(`${what}: the PDF could not be read (${String(e).slice(0, 120)})`); }
   if (!pages.some((t) => t.trim())) throw new Refusal(`${what}: the PDF has no text layer (a scanned image, or text drawn as outlines); OCR is not done, so no quote could ever check against it`);
-  const text = pages.map((t, i) => `${pageMarker(i + 1)}\n\n${t.trim()}`).join("\n\n") + "\n";
+  const text = pages.map((t, i) => `${pageMarker(i + 1)}\n\n${reflowPdfPage(t)}`).join("\n\n") + "\n";
   return { text, pages: pages.length };
 }
 

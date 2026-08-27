@@ -12,7 +12,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { openCorpus, readLog, readSourceList, readFlags, writeFlags, Refusal, type Corpus } from "../src/corpus.ts";
 import * as T from "../src/tools.ts";
-import { normalizeText } from "../src/capture.ts";
+import { normalizeText, reflowPdfPage } from "../src/capture.ts";
 import { loadCorpus } from "@epistemic-record-format/yaml-markdown";
 import { danglingRefs, disposition } from "@epistemic-record-format/yaml-markdown";
 
@@ -91,6 +91,13 @@ test("source_add holds a PDF page by page: markers between pages, the quote chec
   // the marker is an HTML block: invisible to the quote check, so it never matches a word of a quote
   await refuses(() => Promise.resolve(T.atomMint(c, { source: "paper-2026", quote: "erf:page 2", finding: "x", source_quality: "low" })), /quote not found/);
   clean(c);
+});
+
+test("a PDF page reflows: margin hyphens join before a lowercase continuation, lines join into paragraphs, a compound keeps its hyphen", () => {
+  const page = "Perhaps a good milestone to mark the be-\nginning of the timeline is a conference that sev-\neral colleagues and I organized.\n\nA Self-\nConscious movement followed.\nIt grew.\n";
+  const out = reflowPdfPage(page);
+  assert.equal(out, "Perhaps a good milestone to mark the beginning of the timeline is a conference that several colleagues and I organized.\n\nA Self-Conscious movement followed. It grew.");
+  assert.equal(reflowPdfPage("one\n\n\n\ntwo"), "one\n\ntwo", "runs of blank lines are one paragraph break");
 });
 
 test("source_add refuses a PDF with no text layer, and holds nothing for it", async () => {
