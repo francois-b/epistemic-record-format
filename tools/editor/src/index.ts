@@ -194,6 +194,8 @@ function theme(): Extension {
     ".erf-frontmatter": { opacity: "0.55" },
     ".erf-soft": { whiteSpace: "pre-wrap" },
     ".erf-flag-open": { borderBottom: "2px dashed var(--warn, #8a4b1e)" },
+    // taken: someone else is on it, so the line is solid rather than waiting
+    ".erf-flag-taken": { borderBottom: "2px solid var(--accent, #1a3a6e)" },
     ".erf-flag-done": { borderBottom: "1px dotted var(--mutedlt, #a5a09a)" },
     // translucent, so the selection layer beneath the content stays visible inside a bound passage
     ".erf-bound": { backgroundColor: "color-mix(in srgb, var(--good, #1f5c3d) 9%, transparent)", boxShadow: "inset 0 -1px 0 var(--good, #1f5c3d)" },

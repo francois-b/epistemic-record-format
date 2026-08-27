@@ -11,7 +11,7 @@ import {
   Refusal, type Corpus, readDeclaration, readSourceList, load, writeRecord, writeYamlDocument,
   readRecordFile, recordFiles, nextAtomId, idInUse, today, now, appendLog, readLog,
   declarationPath, sourceListPath, commit, frontmatter, readFlags, writeFlags, flagsPath, type Flag, type LogEntry,
-  RESEARCH, type Research,
+  RESEARCH, type Research, TAKE_MINUTES,
 } from "./corpus.ts";
 import { captureUrl, capturePath } from "./capture.ts";
 import { renderSite } from "../../viewer/erf-view.ts";
@@ -405,6 +405,50 @@ export function flag(c: Corpus, a: { narrative: string; anchor: string; note?: s
   return { ...r, data: { id: f.id, narrative: slug, anchor, research, ...(a.note ? { note: a.note } : {}) } };
 }
 
+/** Whole minutes since an instant, or null when it cannot be read as one. */
+function minutesSince(ts: string | undefined): number | null {
+  if (!ts) return null;
+  const t = Date.parse(ts);
+  return Number.isNaN(t) ? null : Math.floor((Date.now() - t) / 60000);
+}
+
+/** How long ago, in the words a queue reads best. */
+function ago(ts: string | undefined): string {
+  const m = minutesSince(ts);
+  return m === null ? "at an unknown time" : m < 1 ? "just now" : `${m} min ago`;
+}
+
+/** Who holds a flag, for a line the next worker reads. Empty when nobody does. */
+function takenNote(f: Flag): string {
+  return f.taken_by ? ` · taken by ${f.taken_by}, ${ago(f.taken_ts)}` : "";
+}
+
+/**
+ * Take a flag, so several workers can share one queue: another chat, another
+ * session, another agent. A take holds for half an hour and then goes stale,
+ * because a worker that stopped must not lock a flag forever; taking a flag
+ * you already hold refreshes it. Nothing clears a take: after the flag is
+ * resolved it says who did the work.
+ */
+export function flagTake(c: Corpus, a: { id: number; by?: string }): Result {
+  readDeclaration(c);
+  const all = readFlags(c);
+  const f = all.find((x) => x.id === a.id);
+  if (!f) throw new Refusal(`no flag #${a.id}`);
+  if (f.status === "done") throw new Refusal(`flag #${a.id} is already resolved${f.taken_by ? ` (worked by ${f.taken_by})` : ""}; there is nothing to take`);
+  const by = (a.by ?? c.options.agent).trim() || c.options.agent;
+  const held = minutesSince(f.taken_ts);
+  if (f.taken_by && f.taken_by !== by && held !== null && held < TAKE_MINUTES) {
+    throw new Refusal(`flag #${a.id} was taken by ${f.taken_by} ${ago(f.taken_ts)}; leave it to them and work another flag. A take goes stale after ${TAKE_MINUTES} minutes and can then be taken again.`);
+  }
+  const expired = f.taken_by && f.taken_by !== by ? f.taken_by : null;
+  f.taken_by = by; f.taken_ts = now();
+  writeFlags(c, all);
+  const text = `flag #${a.id} taken by ${by}${expired ? `; ${expired}'s take had gone stale (older than ${TAKE_MINUTES} minutes)` : ""} · ${f.narrative} at "${f.anchor}" · research ${f.research ?? "mint"}${f.note ? ` · ${f.note}` : ""}`;
+  const r = finish(c, text, [flagsPath(c)], `take flag #${a.id}`);
+  return { ...r, data: { id: f.id, taken_by: by, taken_ts: f.taken_ts, ...(expired ? { expired_take_by: expired } : {}) } };
+}
+
 export function flags(c: Corpus, a: { narrative?: string; all?: boolean }): Result {
   readDeclaration(c);
   let list = readFlags(c).filter((f) => a.all || f.status === "open");
@@ -415,7 +459,7 @@ export function flags(c: Corpus, a: { narrative?: string; all?: boolean }): Resu
     if (!cache.has(f.narrative)) cache.set(f.narrative, proseOf(c, f.narrative).prose);
     const prose = cache.get(f.narrative)!; const at = prose.indexOf(f.anchor);
     const passage = at >= 0 ? passageAround(prose, at) : "(anchor no longer occurs; the prose moved)";
-    return `#${f.id} [${f.status}] ${f.narrative} · research ${f.research ?? "mint"} · anchor "${f.anchor}"${f.note ? ` · ${f.note}` : ""}${f.claims?.length ? ` · bound to ${f.claims.join(", ")}` : ""}\n  ${passage}`;
+    return `#${f.id} [${f.status}] ${f.narrative} · research ${f.research ?? "mint"} · anchor "${f.anchor}"${f.note ? ` · ${f.note}` : ""}${takenNote(f)}${f.claims?.length ? ` · bound to ${f.claims.join(", ")}` : ""}\n  ${passage}`;
   });
   return { text: `${list.length} flag(s):\n` + lines.join("\n") };
 }
@@ -503,7 +547,7 @@ export interface BindingItem {
   claimInfo?: Record<string, { title: string; kind: string; disposition: string; evidence: number }>;
 }
 
-export interface FlagItem { id: number; anchor: string; note?: string; research: Research; status: "open" | "done"; claims?: string[]; line: number | null }
+export interface FlagItem { id: number; anchor: string; note?: string; research: Research; status: "open" | "done"; claims?: string[]; line: number | null; taken_by?: string; taken_ts?: string }
 
 /**
  * Where an anchor occurs in a text, at most `limit` times. Runs of whitespace
@@ -563,6 +607,7 @@ function flagItems(c: Corpus, slug: string, fileText: string | null): FlagItem[]
     id: f.id, anchor: f.anchor, ...(f.note ? { note: f.note } : {}),
     research: (f.research ?? "mint") as Research, status: f.status,
     ...(f.claims?.length ? { claims: f.claims } : {}),
+    ...(f.taken_by ? { taken_by: f.taken_by, ...(f.taken_ts ? { taken_ts: f.taken_ts } : {}) } : {}),
     line: fileText ? lineOf(fileText, f.anchor) : null,
   }));
 }

@@ -375,6 +375,9 @@ const FAST_MS = 3000, SLOW_MS = 30000, FAST_FOR_MS = 15 * 60 * 1000;
 let watching = new Map<number, string>();
 
 const researching = (flags: FlagMark[]): FlagMark[] => flags.filter((f) => f.status === "open" && f.research && f.research !== "mint");
+/** The queue is shared, so the line says who is on a flag when someone has taken it. */
+const researchingLine = (open: FlagMark[]): string =>
+  `researching ${open.map((f) => `#${f.id}${f.taken_by ? ` (taken by ${f.taken_by})` : ""}`).join(", ")}`;
 
 function startPolling(): void {
   if (!pollSince) pollSince = Date.now();
@@ -389,7 +392,7 @@ function stopPolling(): void {
 function schedulePolling(flags: FlagMark[]): void {
   const open = researching(flags);
   for (const f of open) if (!watching.has(f.id)) watching.set(f.id, f.research ?? "back");
-  if (open.length) { setStatus(`researching ${open.map((f) => `#${f.id}`).join(", ")}`, "working"); startPolling(); }
+  if (open.length) { setStatus(researchingLine(open), "working"); startPolling(); }
   else if (!pollTimer) stopPolling();
 }
 
@@ -421,7 +424,7 @@ async function pollOnce(): Promise<void> {
 
   const open = researching(data.flags);
   if (!open.length) { stopPolling(); return; }
-  setStatus(`researching ${open.map((f) => `#${f.id}`).join(", ")}`, "working");
+  setStatus(researchingLine(open), "working");
   again();
 }
 function again(): void {

@@ -6,7 +6,7 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { anchorFrom, boundClass, claimLines, computeMarks, locate, markerRanges, maskMarkers, paragraphRange } from "../src/marks.ts";
+import { anchorFrom, boundClass, claimLines, computeMarks, flagClass, locate, markerRanges, maskMarkers, paragraphRange } from "../src/marks.ts";
 
 const DOC = `---
 title: "Why nothing checks"
@@ -79,6 +79,18 @@ test("flags underline their own words, open and done differently", () => {
   assert.deepEqual(c.flags.map((f) => f.cls), ["erf-flag-open", "erf-flag-done"]);
   assert.equal(DOC.slice(c.flags[0]!.from, c.flags[0]!.to), "A lawyer's memo is read once");
   assert.deepEqual(c.missing, ["a sentence that was cut in the last edit"], "an anchor the prose moved under is skipped and reported");
+});
+
+test("a flag another worker has taken draws as taken, and a resolved one still draws as done", () => {
+  const c = computeMarks(DOC, {
+    flags: [
+      { id: 1, anchor: "A lawyer's memo is read once", status: "open", research: "back", taken_by: "agent/second", taken_ts: "2026-08-27T09:00:00Z" },
+      { id: 2, anchor: "A third paragraph, unmarked", status: "done", claims: ["x"], taken_by: "agent/second" },
+    ],
+    bindings: [],
+  });
+  assert.deepEqual(c.flags.map((f) => f.cls), ["erf-flag-taken", "erf-flag-done"]);
+  assert.equal(flagClass({ id: 3, anchor: "x", status: "open" }), "erf-flag-open", "nobody on it: the ordinary open underline");
 });
 
 test("status becomes a class: current bound, stale and indeterminate not confirmed, broken and missing-claim broken", () => {

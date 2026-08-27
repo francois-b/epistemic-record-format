@@ -329,6 +329,42 @@ test("flags: mark a passage, list it with its text, binding the passage resolves
   clean(c);
 });
 
+test("flags can be taken: one worker at a time, a stale take is re-takable, resolution keeps the mark", () => {
+  const c = fresh();
+  const n = loadCorpus(c.dir).narratives[0]!;
+  const para = n.body.split("\n\n").find((p) => !/<!--/.test(p) && p.trim().length > 60)!;
+  const ws = para.trim().split(/\s+/); let anchor = "";
+  for (let i = 0; i + 5 <= ws.length; i++) { const cand = ws.slice(i, i + 5).join(" "); if (n.body.indexOf(cand) === n.body.lastIndexOf(cand)) { anchor = cand; break; } }
+  T.flag(c, { narrative: n.slug, anchor, research: "back" });
+
+  assert.throws(() => T.flagTake(c, { id: 99 }), /no flag #99/);
+  const t = T.flagTake(c, { id: 1, by: "agent/first" });
+  assert.match(t.text, /flag #1 taken by agent\/first/);
+  assert.equal((t.data as { taken_by: string }).taken_by, "agent/first");
+  assert.match(T.flags(c, {}).text, /taken by agent\/first, just now/);
+  assert.equal((T.narrativeStatus(c, { narrative: n.slug }).data as { flags: T.FlagItem[] }).flags[0]!.taken_by, "agent/first");
+  assert.equal((T.narrativeRead(c, { narrative: n.slug }).data as { flags: T.FlagItem[] })["flags"][0]!.taken_by, "agent/first");
+
+  // a second worker is told who has it; the holder may refresh their own take
+  assert.throws(() => T.flagTake(c, { id: 1, by: "agent/second" }), /taken by agent\/first[\s\S]*goes stale after 30 minutes/);
+  assert.match(T.flagTake(c, { id: 1, by: "agent/first" }).text, /taken by agent\/first/);
+
+  // a take older than half an hour is stale, and the result says whose it was
+  const stale = readFileSync(join(c.dir, "flags.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l) as Record<string, unknown>);
+  stale[0]!["taken_ts"] = new Date(Date.now() - 45 * 60 * 1000).toISOString();
+  writeFileSync(join(c.dir, "flags.jsonl"), stale.map((f) => JSON.stringify(f)).join("\n") + "\n");
+  const retake = T.flagTake(c, { id: 1, by: "agent/second" });
+  assert.match(retake.text, /taken by agent\/second; agent\/first's take had gone stale/);
+  assert.equal((retake.data as { expired_take_by?: string }).expired_take_by, "agent/first");
+
+  // resolving clears nothing: the take is the provenance of who did the work
+  T.claimMint(c, { id: "taken-claim", title: "A claim from a taken flag", epistemic_kind: "commitment" });
+  T.narrativeBind(c, { narrative: n.slug, anchor, claims: ["taken-claim"] });
+  assert.match(T.flags(c, { all: true }).text, /#1 \[done\][\s\S]*taken by agent\/second/);
+  assert.throws(() => T.flagTake(c, { id: 1 }), /already resolved \(worked by agent\/second\)/);
+  clean(c);
+});
+
 test("narrative read/write/status: the digest gates the write, and the check comes back with it", () => {
   const c = fresh();
   const n = loadCorpus(c.dir).narratives[0]!;

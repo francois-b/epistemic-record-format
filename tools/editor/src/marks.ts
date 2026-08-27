@@ -19,6 +19,9 @@ export interface FlagMark {
   status: "open" | "done";
   claims?: string[];
   note?: string;
+  /** Who is working this flag, when someone has taken it, and since when. */
+  taken_by?: string;
+  taken_ts?: string;
 }
 
 /** What a bound claim is, for the reader hovering the passage. */
@@ -37,7 +40,7 @@ export interface BindingMark {
 export interface Marks { flags: FlagMark[]; bindings: BindingMark[] }
 
 export interface Range { from: number; to: number }
-export interface FlagRange extends Range { cls: "erf-flag-open" | "erf-flag-done"; flag: FlagMark }
+export interface FlagRange extends Range { cls: "erf-flag-open" | "erf-flag-taken" | "erf-flag-done"; flag: FlagMark }
 export interface BoundRange extends Range { cls: string; binding: BindingMark }
 export interface MarkerRange extends Range { claims: string[] }
 
@@ -101,6 +104,16 @@ export function paragraphRange(doc: string, at: number): Range {
   return { from: Math.min(from, at), to: Math.max(to, at) };
 }
 
+/**
+ * How a flagged passage draws: open and free, open and taken by a worker, or
+ * done. A taken flag reads differently because the queue is shared: someone is
+ * already on it.
+ */
+export function flagClass(f: FlagMark): "erf-flag-open" | "erf-flag-taken" | "erf-flag-done" {
+  if (f.status === "done") return "erf-flag-done";
+  return f.taken_by ? "erf-flag-taken" : "erf-flag-open";
+}
+
 /** current is bound; broken and missing-claim are broken; stale and indeterminate both mean the backing is not confirmed. */
 export function boundClass(status: string): string {
   if (status === "current") return "erf-bound";
@@ -117,7 +130,7 @@ export function computeMarks(doc: string, marks: Marks): Computed {
   for (const f of marks.flags ?? []) {
     const r = locate(doc, f.anchor);
     if (!r) { missing.push(f.anchor); continue; }
-    flags.push({ ...r, cls: f.status === "done" ? "erf-flag-done" : "erf-flag-open", flag: f });
+    flags.push({ ...r, cls: flagClass(f), flag: f });
   }
 
   const bound: BoundRange[] = [];

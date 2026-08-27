@@ -185,8 +185,20 @@ export function readLog(c: Corpus): LogEntry[] {
 export type Research = "mint" | "back" | "opposite";
 export const RESEARCH = ["mint", "back", "opposite"] as const;
 
-/** A note to self, not a record: this passage of this narrative should be backed. Resolved by the binding that covers its anchor. */
-export interface Flag { id: number; ts: string; narrative: string; anchor: string; note?: string; research?: Research; by: string; status: "open" | "done"; done_ts?: string; claims?: string[] }
+/**
+ * A note to self, not a record: this passage of this narrative should be
+ * backed. Resolved by the binding that covers its anchor.
+ *
+ * `taken_by` and `taken_ts` are how several workers share one queue: a worker
+ * takes a flag before working it, and the others skip what someone else holds.
+ * A take goes stale after half an hour, so a worker that stopped does not lock
+ * a flag forever. Nothing clears them; once the flag is resolved they say who
+ * did the work.
+ */
+export interface Flag { id: number; ts: string; narrative: string; anchor: string; note?: string; research?: Research; by: string; status: "open" | "done"; done_ts?: string; claims?: string[]; taken_by?: string; taken_ts?: string }
+
+/** How long a take holds a flag against another worker. */
+export const TAKE_MINUTES = 30;
 
 export function flagsPath(c: Corpus): string { return join(c.dir, "flags.jsonl"); }
 export function readFlags(c: Corpus): Flag[] {
