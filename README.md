@@ -83,7 +83,7 @@ The specification is normative. Everything else explains, demonstrates, or check
 | [`schema/`](schema/) | The shapes: `erf.schema.json`, the normative data model (JSON Schema 2020-12). `erf.generated.ts` is generated from it and never edited. |
 | [`serialization/`](serialization/) | How records are written to files: YAML frontmatter, a markdown body, the narrative binding marker. |
 | [`docs/purpose.md`](docs/purpose.md) | What the format does and refuses to do. |
-| [`docs/`](docs/) | Why a rule is the way it is (`design-history.md`), what was declined (`non-goals.md`), what is open (`backlog/`), where the ideas come from (`influences.md`), the objections (`objections.md`). |
+| [`docs/`](docs/) | Why a rule is the way it is (`design-history.md`), what was declined (`non-goals.md`), what is open (`backlog/`), where the ideas come from (`influences.md`), the objections (`objections.md`), how people work with it (`patterns/`). |
 | [`examples/`](examples/) | One record per type in [`records/`](examples/records/), and complete corpora in [`corpora/`](examples/corpora/). |
 | [`conformance/`](conformance/) | Cases, fixtures, and a map from every requirement to what defends it. The case tables are normative for the quote check. |
 | [`implementations/`](implementations/) | Maintained implementations of the format, one folder per serialization and language: each reads, validates, computes, and writes. |
