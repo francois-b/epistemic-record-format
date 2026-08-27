@@ -17,8 +17,9 @@ interface Page { page: string; title: string; html: string; corpus?: string }
 // its page and the host's scrollbar is the only one.
 const app = new App({ name: "ERF", version: "0.1.0" }, undefined, { autoResize: true });
 const main = document.getElementById("main")!;
-const crumbs = [document.getElementById("crumb")!, document.getElementById("crumb-inline")!];
-const statuses = [document.getElementById("status")!, document.getElementById("status-inline")!];
+const crumbs = [document.getElementById("crumb-inline")!];
+const statuses = [document.getElementById("status-inline")!];
+const toggleBtn = document.getElementById("mode-toggle") as HTMLButtonElement;
 const status = { set textContent(v: string) { for (const s of statuses) s.textContent = v; } };
 let current: Page | null = null;
 let mode: "inline" | "fullscreen" | "pip" = "inline";
@@ -28,6 +29,7 @@ function applyMode(m: typeof mode): void {
   mode = m;
   document.body.classList.toggle("mode-fullscreen", m === "fullscreen");
   document.body.classList.toggle("mode-inline", m !== "fullscreen");
+  toggleBtn.textContent = m === "fullscreen" ? "inline" : "open";
   if (changed && current) render();
 }
 applyMode("inline");
@@ -163,8 +165,7 @@ const toggle = async () => {
   try { const r = await app.requestDisplayMode({ mode: want }); const got = (r as { mode?: typeof mode }).mode; if (got) applyMode(got); }
   catch (e) { status.textContent = `display mode: ${String(e)}`; }
 };
-document.getElementById("mode-inline")!.addEventListener("click", () => void toggle());
-document.getElementById("mode-fs")!.addEventListener("click", () => void toggle());
+toggleBtn.addEventListener("click", () => void toggle());
 
 await app.connect();
 const ctx = app.getHostContext() as { theme?: string; displayMode?: typeof mode } | undefined;
