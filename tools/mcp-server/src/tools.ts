@@ -342,7 +342,17 @@ export function viewPage(c: Corpus & { id?: string }, a: { page?: string }): Vie
     return s?.normalized && existsSync(join(c.dir, s.normalized)) ? readFileSync(join(c.dir, s.normalized), "utf8") : null;
   };
   setSiteLinks([]);
-  const page = (a.page ?? "index").trim();
+  let page = (a.page ?? "index").trim();
+  // a path inside the corpus (what Finder and Isomorphic show) names the record it holds
+  if (/\.md$/i.test(page) || page.includes("/")) {
+    const rel = page.replace(/^\.\//, "");
+    const abs = join(c.dir, rel);
+    const byPath = [...recordFiles(c, "claim"), ...recordFiles(c, "atom"), ...recordFiles(c, "survey"), ...recordFiles(c, "narrative")].find(([, p]) => p === abs || p.endsWith("/" + rel));
+    if (!byPath) throw new Refusal(`no record at ${rel}; give a path inside the corpus such as wiki/narrative/opening.md, or a page like claim:<id>`);
+    const { fm } = readRecordFile(byPath[1]);
+    const type = String(fm["type"]); const id = type === "narrative" ? byPath[1].split("/").pop()!.replace(/\.md$/, "") : String(fm["id"]);
+    page = `${type}:${id}`;
+  }
   const [kind, id] = page.includes(":") ? [page.slice(0, page.indexOf(":")), page.slice(page.indexOf(":") + 1)] : [page, ""];
   let full: string, title: string;
   switch (kind) {

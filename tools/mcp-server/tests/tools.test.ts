@@ -219,6 +219,9 @@ test("view: the viewer's pages, body only, addressed by kind and id", () => {
   assert.match(cl.html, /atom-/); assert.doesNotMatch(cl.html, /<html/);
   assert.match(T.viewPage(c, { page: "narrative" }).html, /<main>/);
   assert.match(T.viewPage(c, { page: "health" }).html, /<main>/);
+  const cpath = [...loadCorpus(c.dir).claims.keys()][0]!;
+  assert.equal(T.viewPage(c, { page: `claims/${cpath}.md` }).page, `claim:${cpath}`, "a path names the record it holds");
+  assert.throws(() => T.viewPage(c, { page: "claims/missing.md" }), /no record at/);
   assert.throws(() => T.viewPage(c, { page: "claim:nope" }), /no claim nope/);
   assert.throws(() => T.viewPage(c, { page: "bogus" }), /unknown page/);
 });
