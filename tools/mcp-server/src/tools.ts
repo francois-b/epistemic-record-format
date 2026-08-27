@@ -14,6 +14,7 @@ import {
   RESEARCH, type Research, TAKE_MINUTES,
 } from "./corpus.ts";
 import { captureUrl, capturePath, pageOfQuote } from "./capture.ts";
+import { readTrail, trailBetween, type Trail } from "../../viewer/trail.ts";
 import { renderSite } from "../../viewer/erf-view.ts";
 import { renderIndex, renderSources, renderHealth, renderNarrative, renderClaim, renderAtom, renderCapture, renderSurvey, setSiteLinks } from "../../viewer/render.ts";
 import { splitDocument } from "@epistemic-record-format/yaml-markdown";
@@ -131,7 +132,14 @@ export async function sourceAdd(c: Corpus, a: { id: string; citation_text: strin
   // the act that led here goes in the log before the page is held, which is the order
   // the survey gate assumes: log, then capture, then quote.
   const found = a.found_by ? logSearchAct(c, a.found_by) : null;
-  const cap = a.url ? await captureUrl(c, a.id, a.url) : await capturePath(c, a.id, a.path!);
+  const how = a.url ? "erf_source_add(url)" : "erf_source_add(path)";
+  let cap;
+  try { cap = a.url ? await captureUrl(c, a.id, a.url) : await capturePath(c, a.id, a.path!); }
+  catch (e) {
+    // a refused capture is part of the trail: the research log says what was tried and why nothing is held
+    if (e instanceof Refusal) appendLog(c, { kind: "fetch", tool: how, url: a.url, path: a.path, source: a.id, refused: e.message });
+    throw e;
+  }
   const status = a.not_redistributable ? "not-redistributable" : a.licence ? "shipped" : "licence-unverified";
   const entry: Source = {
     citation_text: a.citation_text,
@@ -148,7 +156,7 @@ export async function sourceAdd(c: Corpus, a: { id: string; citation_text: strin
   } as Source;
   sources[a.id] = entry;
   writeYamlDocument(sourceListPath(c), { type: "sources", sources });
-  appendLog(c, { kind: "fetch", tool: a.url ? "erf_source_add(url)" : "erf_source_add(path)", url: a.url, path: a.path, source: a.id });
+  appendLog(c, { kind: "fetch", tool: how, url: a.url, path: a.path, source: a.id });
   const wrote = [sourceListPath(c), join(c.dir, cap.rawPath), join(c.dir, cap.normalizedPath)];
   // the held text comes back with the capture, so a quote can be chosen without reading the source again
   const normAbs = join(c.dir, cap.normalizedPath);
@@ -718,17 +726,44 @@ export function narrativeWrite(c: Corpus, a: { narrative: string; text: string; 
  * the text. Read-only, local, no git and no LLM, so it can be called every few
  * seconds while a request is in flight.
  */
-export function narrativeStatus(c: Corpus, a: { narrative: string }): Result {
+export function narrativeStatus(c: Corpus, a: { narrative: string; since?: string }): Result {
   readDeclaration(c);
   const { slug, text, l, n } = narrativeOf(c, a.narrative);
   const bindings = bindingItems(l, n, text);
   const flags = flagItems(c, slug, text);
   const digest = digestOf(text);
   const open = flags.filter((f) => f.status === "open");
+  const trail = flagTrails(c, l, slug, a.since);
+  const acts = trail.reduce((s, t) => s + t.searches.length + t.captures.length, 0);
   return {
-    text: `${slug} · digest ${digest} · ${bindings.length} binding(s) · ${open.length} open flag(s)${open.length ? ` (${open.map((f) => `#${f.id} ${f.research}`).join(", ")})` : ""}`,
-    data: { digest, flags, bindings },
+    text: `${slug} · digest ${digest} · ${bindings.length} binding(s) · ${open.length} open flag(s)${open.length ? ` (${open.map((f) => `#${f.id} ${f.research}`).join(", ")})` : ""}${acts ? ` · ${acts} act(s) in the trail` : ""}`,
+    data: { digest, flags, bindings, trail },
   };
+}
+
+/** One flag's research as the editor shows it: the log's acts inside the flag's window, and what they produced. */
+export interface FlagTrail { flag: number; research: Research; since: string; until?: string; taken_by?: string; searches: Trail["searches"]; captures: Trail["captures"]; atoms: { id: string; source: string }[]; claims: { id: string; title: string }[] }
+
+/** How long a resolved flag keeps showing its trail. */
+const TRAIL_AFTER_DONE_MS = 2 * 60 * 60 * 1000;
+
+/**
+ * The trail behind each flag of a narrative that asked for research: open
+ * ones, and ones resolved in the last two hours so the work that closed them
+ * is still readable. The window runs from the take (else the flag) to the
+ * resolution; `since` narrows it further, so a poll can ask for what is new.
+ */
+function flagTrails(c: Corpus, l: LoadedCorpus, slug: string, since?: string): FlagTrail[] {
+  const wanted = readFlags(c).filter((f) => f.narrative === slug && (f.research ?? "mint") !== "mint"
+    && (f.status === "open" || (f.done_ts && Date.now() - Date.parse(f.done_ts) < TRAIL_AFTER_DONE_MS)));
+  if (!wanted.length) return [];
+  const sources = readSourceList(c);
+  const trail = readTrail(c.dir, (id) => sources[id]?.citation_text);
+  return wanted.map((f) => {
+    const from = f.taken_ts ?? f.ts;
+    const w = trailBetween(trail, l, since && since > from ? since : from, f.done_ts);
+    return { flag: f.id, research: (f.research ?? "mint") as Research, since: from, ...(f.done_ts ? { until: f.done_ts } : {}), ...(f.taken_by ? { taken_by: f.taken_by } : {}), ...w };
+  });
 }
 
 // ---------- rendering ----------
@@ -761,6 +796,7 @@ export function viewPage(c: Corpus & { id?: string }, a: { page?: string }): Vie
     const s = src[l.atoms.get(atomId)?.source ?? ""];
     return s?.normalized && existsSync(join(c.dir, s.normalized)) ? readFileSync(join(c.dir, s.normalized), "utf8") : null;
   };
+  const trail = readTrail(c.dir, (id) => src[id]?.citation_text);
   setSiteLinks([]);
   let page = (a.page ?? "index").trim();
   // a path inside the corpus (what Finder and Isomorphic show) names the record it holds
@@ -779,10 +815,10 @@ export function viewPage(c: Corpus & { id?: string }, a: { page?: string }): Vie
     case "index": full = renderIndex(l); title = String(decl.title); break;
     case "sources": full = renderSources(l); title = "sources"; break;
     case "health": full = renderHealth(l, captureText); title = "health"; break;
-    case "claim": { const cl = l.claims.get(id); if (!cl) throw new Refusal(`no claim ${id}`); full = renderClaim(cl, l); title = cl.title; break; }
+    case "claim": { const cl = l.claims.get(id); if (!cl) throw new Refusal(`no claim ${id}`); full = renderClaim(cl, l, trail); title = cl.title; break; }
     case "atom": { const at = l.atoms.get(id); if (!at) throw new Refusal(`no atom ${id}`); full = renderAtom(at, l, claimsUsingAtom(l).get(id) ?? [], captureText(id)); title = `atom ${id}`; break; }
     case "capture": { const at = l.atoms.get(id); if (!at) throw new Refusal(`no atom ${id}`); full = renderCapture(at, l, captureText(id)); title = `capture for ${id}`; break; }
-    case "survey": { const sv = l.surveys.get(id); if (!sv) throw new Refusal(`no survey ${id}`); full = renderSurvey(sv, l); title = sv.title; break; }
+    case "survey": { const sv = l.surveys.get(id); if (!sv) throw new Refusal(`no survey ${id}`); full = renderSurvey(sv, l, trail); title = sv.title; break; }
     case "narrative": { const n = l.narratives.find((x) => x.slug === id) ?? (id ? undefined : l.narratives[0]); if (!n) throw new Refusal(`no narrative ${id}`); full = renderNarrative(n, l); title = n.title; id = n.slug; break; }
     default: throw new Refusal(`unknown page ${page}; use index, sources, health, claim:<id>, atom:<id>, capture:<id>, survey:<id>, narrative:<slug>`);
   }

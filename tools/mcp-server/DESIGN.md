@@ -77,9 +77,9 @@ wrote. Every refusal names the requirement. Nothing writes a raw file.
 | `erf_narrative_check(narrative?)` | unresolved ids, stale bindings, broken anchors, malformed candidates (`ERF-31/32/33`) | never |
 | `erf_narrative_read(narrative)` | the file as it is on disk (frontmatter included), a 12-character sha256 digest of its bytes as its version id, and every binding and flag with its status and line | no such narrative |
 | `erf_narrative_write(narrative, text, expected_digest?, force?)` | replaces the file with the text as sent, never parsing or reformatting it; runs the narrative check; commits | `expected_digest` no longer matches the file (the current one comes back); an empty text |
-| `erf_narrative_status(narrative)` | the digest, the flags and the bindings, without the text: the polling call, read-only and local | no such narrative |
+| `erf_narrative_status(narrative, since?)` | the digest, the flags and the bindings, without the text, and the research trail behind each flag that asked for research (below): the polling call, read-only and local | no such narrative |
 | `erf_render_site(out?)` | runs the reference viewer into `site/` (or `out`) inside the corpus; gitignores it | `out` outside the corpus |
-| `erf_view(page?)` | the viewer's page (index, sources, health, claim:, atom:, capture:, survey:, narrative:) as `structuredContent`, carried by the app | unknown page or id |
+| `erf_view(page?)` | the viewer's page (index, sources, health, claim:, atom:, capture:, survey:, narrative:) as `structuredContent`, carried by the app; a narrative page is the editor, and "open the editor" means this tool on that narrative | unknown page or id |
 | `erf_source_read(id, find?)` | the source entry and its held normalized text, whole when short, else windows around `find` under the fold | unknown source |
 | `erf_record_read(id)` / `erf_record_list(type?)` | returns a record (or a source) / lists ids and titles | unknown id |
 
@@ -179,6 +179,39 @@ so a day's searches for one claim can never become backing for another
 (found on the first Desktop session, by the model refusing exactly that). Written by `erf_search_log` and by every capture. It is a
 working file of the producer, not a record: the format says nothing about
 it, which is the right boundary. `erf_survey_record(from_log)` reads it.
+
+## The research trail (2026-08-27)
+
+The log already held the whole chain: a search logged with what it was for,
+the capture that followed it, the atoms minted from the source, the claims
+citing them. It surfaced nowhere but a survey's own search list, and a
+person asking "what did the LLM actually do for this flag" ran a script
+over the file. `tools/viewer/trail.ts` reads the chain once, and three
+places show it:
+
+- **The editor**, while a flag is being worked. `erf_narrative_status`
+  carries, for each flag that asked for research (open, or resolved within
+  two hours), the acts in its window: from the take (else the flag) to the
+  resolution, narrowed by `since` when the poll asks only for what is new.
+  The status line ("researching #1") is the handle; it opens a panel folded
+  under the head bar, fullscreen only (the design guide bans floating panels
+  there), listing each search with the captures it led to, held or refused,
+  then the atoms and the claims. The panel opens itself the first time an
+  act lands and folds on request. Its lines are computed in
+  `tools/editor/src/trail.ts`, pure and tested.
+- **The survey page**: "How this was found", each of the survey's own acts
+  with what it led to. The survey's `searches` are matched to the log on
+  instrument and query, and on the act's timestamp when the survey kept it.
+- **The claim page**: each atom the claim cites, the capture that held its
+  source, and the search that led there.
+
+A capture is attributed to the most recent search logged before it, which
+is the order the gates assume and the only link the log carries. A refused
+capture (a PDF with no text layer, a fetch that failed) is now logged too,
+with its reason, so the trail says what was tried and not only what was
+held. The site renderer and the app share the reading, so the trail is the
+same at every distance, and a corpus with no log renders without the
+section.
 
 ## Identity
 

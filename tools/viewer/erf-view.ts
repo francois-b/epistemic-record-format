@@ -21,6 +21,7 @@ import {
   renderAtom, renderCapture, renderClaim, renderHealth, renderIndex,
   renderNarrative, renderSources, renderSurvey, setSiteLinks, stylesheet,
 } from "./render.ts";
+import { readTrail } from "./trail.ts";
 
 export interface RenderedSite { corpus: string; pages: number; atoms: number; claims: number; surveys: number; findings: number; outDir: string }
 
@@ -45,13 +46,14 @@ export function renderSite(corpusDir: string, outDir: string, links: { label: st
 
   const write = (name: string, html: string) => writeFileSync(join(outDir, name), html, "utf8");
   const users = claimsUsingAtom(c);
+  const trail = readTrail(corpusDir, (id) => c.sources.get(id)?.citation_text);
 
   write("index.html", renderIndex(c));
   write("sources.html", renderSources(c));
   write("health.html", renderHealth(c, captureText));
   for (const n of c.narratives) write(`narrative-${n.slug}.html`, renderNarrative(n, c));
-  for (const cl of c.claims.values()) write(`claim-${cl.id}.html`, renderClaim(cl, c));
-  for (const s of c.surveys.values()) write(`survey-${s.id}.html`, renderSurvey(s, c));
+  for (const cl of c.claims.values()) write(`claim-${cl.id}.html`, renderClaim(cl, c, trail));
+  for (const s of c.surveys.values()) write(`survey-${s.id}.html`, renderSurvey(s, c, trail));
   for (const a of c.atoms.values()) {
     const text = captureText(a.id);
     write(`atom-${a.id}.html`, renderAtom(a, c, users.get(a.id) ?? [], text));

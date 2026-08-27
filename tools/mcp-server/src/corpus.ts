@@ -157,6 +157,8 @@ export interface LogEntry {
   url?: string;
   path?: string;
   source?: string;
+  /** Why a capture held nothing (a PDF with no text layer, a fetch that failed); absent on a capture that held. */
+  refused?: string;
 }
 
 export function logPath(c: Corpus): string { return join(c.dir, "research-log.jsonl"); }

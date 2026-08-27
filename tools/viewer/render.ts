@@ -10,6 +10,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Atom, Claim, LoadedCorpus, Narrative, Source, Survey } from "@epistemic-record-format/yaml-markdown";
 import { bindingCandidates, bindingRe, shipsWithCorpus } from "@epistemic-record-format/yaml-markdown";
+import { claimTrail, surveyTrail, type LedTo, type Trail } from "./trail.ts";
 import {
   backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,
   brokenAnchors, evidenceRefsFlagged, retiredPremises, standingTies, undatedRetrievals,
@@ -393,7 +394,35 @@ export function renderNarrative(n: Narrative, c: LoadedCorpus): string {
 }
 
 // ---------------------------------------------------------------- claim
-export function renderClaim(cl: Claim, c: LoadedCorpus): string {
+/**
+ * "How this was found": the research log's reading of what led to what. The
+ * log is producer machinery, so a corpus rendered without one shows nothing
+ * here and the page is complete without it.
+ */
+function howFound(led: LedTo[]): string {
+  if (!led.length) return "";
+  const cap = (x: LedTo["captures"][number]) => x.held
+    ? `<li>held <span class="id">${esc(x.source)}</span>${x.citation ? ` · ${esc(x.citation)}` : ""}${x.url ? ` · <a href="${esc(x.url)}">page</a>` : ""}</li>`
+    : `<li><span style="color:var(--warn)">refused</span> <span class="id">${esc(x.source)}</span>: ${esc(x.refused ?? "")}${x.url ? ` · <a href="${esc(x.url)}">page</a>` : ""}</li>`;
+  return `
+<h3>How this was found</h3>
+<ul class="plain">${led.map((l) => `<li><b>${esc(l.search.tool)}</b>: ${esc(l.search.query)}<br><span class="id">${esc(l.search.ts)}${l.search.for ? ` · for ${esc(l.search.for)}` : ""}</span> · ${esc(l.search.hits)}${
+  l.captures.length ? `<ul class="plain">${l.captures.map(cap).join("")}</ul>` : `<br><span class="id">led to no capture</span>`}${
+  l.atoms.length ? `<br>atoms: ${l.atoms.map((a) => `<a href="atom-${esc(a.id)}.html"><span class="id">${esc(a.id)}</span></a>`).join(" ")}` : ""}${
+  l.claims.length ? `<br>claims: ${l.claims.map((k) => `<a href="claim-${esc(k.id)}.html">${esc(k.title)}</a>`).join("; ")}` : ""}</li>`).join("")}</ul>`;
+}
+
+function howFoundForClaim(cl: Claim, c: LoadedCorpus, trail: Trail): string {
+  const origins = claimTrail(trail, c, cl).filter((o) => o.capture);
+  if (!origins.length) return "";
+  return `
+<h3>How this was found</h3>
+<ul class="plain">${origins.map((o) => `<li><a href="atom-${esc(o.atom)}.html"><span class="id">${esc(o.atom)}</span></a> (${o.side}) from <span class="id">${esc(o.source)}</span>${
+  o.capture?.citation ? ` · ${esc(o.capture.citation)}` : ""}${
+  o.search ? `<br><span class="id">found by</span> ${esc(o.search.tool)}: ${esc(o.search.query)} <span class="id">${esc(o.search.ts)}</span>` : `<br><span class="id">captured with no search logged before it</span>`}</li>`).join("")}</ul>`;
+}
+
+export function renderClaim(cl: Claim, c: LoadedCorpus, trail?: Trail): string {
   const d = disposition(cl);
   const b = backing(cl, c);
   const atomRow = (id: string) => {
@@ -443,7 +472,7 @@ ${(() => {
     : "";
 })()}
 ${staleEvidenceAudit(cl, c) ? `<div class="warnbox">A backing verdict on this claim predates its last change (<span class="id">ERF-47</span>).</div>` : ""}
-
+${trail ? howFoundForClaim(cl, c, trail) : ""}
 <h3>Standings</h3>
 ${cl.standings.length === 0
   ? `<p class="sub">The ledger is empty. Nobody has stood behind this claim or withdrawn from it, which is why it computes to a proposal.</p>`
@@ -677,7 +706,7 @@ ${captureText !== null
 }
 
 // --------------------------------------------------------------- survey
-export function renderSurvey(s: Survey, c: LoadedCorpus): string {
+export function renderSurvey(s: Survey, c: LoadedCorpus, trail?: Trail): string {
   const body = `
 <h1>${esc(s.title)}</h1>
 <p class="sub"><span class="id">${esc(s.id)}</span> &middot; survey &middot; conducted ${esc(s.conducted.timestamp)} by <span class="id">${esc(s.conducted.by)}</span></p>
@@ -693,7 +722,7 @@ ${s.notable_results.length === 0
   : `<ul class="plain">${s.notable_results.map((n) =>
       `<li><b>${esc(n.what)}</b><br>${esc(n.note)}${
         (n.atoms ?? []).length ? `<br>${(n.atoms ?? []).map((a) => `<a href="atom-${esc(a)}.html"><span class="id">${esc(a)}</span></a>`).join(" ")}` : ""}</li>`).join("")}</ul>`}
-
+${trail ? howFound(surveyTrail(trail, c, s)) : ""}
 <h2>The record</h2>
 ${md(s.body)}`;
   return page(s.title, body, c.manifest.title);

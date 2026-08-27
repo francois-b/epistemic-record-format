@@ -22,11 +22,12 @@
  */
 import { App } from "@modelcontextprotocol/ext-apps";
 import { createEditor, type EditorHandle, type FlagMark, type BindingMark } from "../../editor/src/index.ts";
+import { trailLines, trailSummary, type FlagTrail } from "../../editor/src/trail.ts";
 
 interface Page { page: string; title: string; html: string; corpus?: string; flags?: { id: number; anchor: string; note?: string }[] }
 interface NarrativeRead { narrative: string; path: string; title: string; text: string; digest: string; bindings: BindingMark[]; flags: FlagMark[] }
 interface NarrativeWritten { written: string; digest: string; check: string; bindings: BindingMark[]; flags: FlagMark[] }
-interface NarrativeStatus { digest: string; bindings: BindingMark[]; flags: FlagMark[] }
+interface NarrativeStatus { digest: string; bindings: BindingMark[]; flags: FlagMark[]; trail?: FlagTrail[] }
 interface FlagWritten { id: number; narrative: string; anchor: string; research: string; note?: string }
 
 type Research = "mint" | "survey" | "back" | "opposite";
@@ -352,7 +353,47 @@ async function refreshMarks(): Promise<NarrativeStatus | null> {
   const { data } = await call<NarrativeStatus>("erf_narrative_status", { narrative: doc.narrative });
   if (!data) return null;
   reportMissing(ed.setMarks({ flags: data.flags, bindings: data.bindings }));
+  paintTrail(data.trail ?? []);
   return data;
+}
+
+// ---- the research trail: one flag's work as it lands, under the head bar ------
+
+function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls: string, text?: string): HTMLElementTagNameMap[K] {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+const trailEl = document.getElementById("trail") as HTMLElement;
+const trailBody = document.getElementById("trail-body") as HTMLElement;
+const trailTitle = document.getElementById("trail-title") as HTMLElement;
+let trails: FlagTrail[] = [];
+let trailOpen = false;
+document.getElementById("trail-close")!.addEventListener("click", () => { trailOpen = false; trailEl.hidden = true; });
+// the status line is the handle: "researching #1" opens into what #1 has done so far
+statusEl.addEventListener("click", () => { if (!trails.length) return; trailOpen = !trailOpen; trailEl.hidden = !trailOpen; if (trailOpen) paintTrail(trails); });
+
+/** Draw the trails the last status carried; open the panel the first time work appears. */
+function paintTrail(next: FlagTrail[]): void {
+  const hadActs = trails.some((t) => t.searches.length || t.captures.length);
+  trails = next;
+  const acts = trails.some((t) => t.searches.length || t.captures.length);
+  statusEl.classList.toggle("trailable", trails.length > 0);
+  if (!trails.length) { trailOpen = false; trailEl.hidden = true; return; }
+  if (acts && !hadActs && !trailOpen) { trailOpen = true; trailEl.hidden = false; }
+  if (!trailOpen) return;
+  trailTitle.textContent = `the research trail · ${trailSummary(trails)}`;
+  trailBody.replaceChildren(...trails.flatMap((t) => {
+    const h = el("h4", "", `#${t.flag} · ${t.research}${t.taken_by ? ` · ${t.taken_by}` : ""}${t.until ? " · resolved" : ""}`);
+    return [h, ...trailLines(t).map((l) => {
+      const d = el("div", `line ${l.kind}`);
+      if (l.href && /^https?:/.test(l.href)) { const a = el("a", "", l.text); a.href = l.href; a.target = "_blank"; a.rel = "noopener"; d.appendChild(a); }
+      else if (l.href) { const a = el("a", "", l.text); a.href = l.href; d.appendChild(a); }
+      else d.textContent = l.text;
+      return d;
+    })];
+  }));
 }
 
 // ---- the selection: flag it, and say what to do about it -------------------
@@ -519,6 +560,7 @@ async function pollOnce(): Promise<void> {
   } else {
     reportMissing(ed.setMarks({ flags: data.flags, bindings: data.bindings }));
   }
+  paintTrail(data.trail ?? []);
 
   const open = researching(data.flags);
   if (!open.length) { stopPolling(); return; }

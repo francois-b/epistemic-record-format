@@ -43,6 +43,22 @@ body.mode-fullscreen #main { flex: 1; overflow: auto; }
 #banner span { margin-right: auto; }
 #banner button { border: 1px solid var(--warn); background: transparent; color: var(--warn); border-radius: 4px; padding: .05rem .5rem; cursor: pointer; font: inherit; }
 
+/* the research trail: one flag's work as it lands, folded under the head bar (fullscreen only; inline the card is an answer) */
+#trail { padding: .3rem .9rem .5rem; font-family: var(--sans); font-size: .78rem; background: var(--codebg); border-bottom: 1px solid var(--rulelt); max-height: 40vh; overflow: auto; }
+#trail[hidden], body.mode-inline #trail { display: none; }
+#trail-head { display: flex; align-items: baseline; gap: .6rem; margin-bottom: .2rem; }
+#trail-head span { margin-right: auto; color: var(--muted); }
+#trail-head button { border: 1px solid var(--rule); background: transparent; color: var(--ink); border-radius: 4px; padding: .05rem .5rem; cursor: pointer; font: inherit; }
+#trail h4 { margin: .4rem 0 .15rem; font-size: .78rem; font-weight: 600; }
+#trail .line { white-space: pre-wrap; margin: .05rem 0; }
+#trail .line.search { color: var(--ink); }
+#trail .line.capture { color: var(--good); }
+#trail .line.refused { color: var(--warn); }
+#trail .line.atom, #trail .line.claim { color: var(--accent); }
+#trail .line.empty { color: var(--muted); font-style: italic; }
+#trail a { color: inherit; }
+#head #status-inline.trailable { cursor: pointer; text-decoration: underline dotted; }
+
 /* a hand-wrapped file: one offer to make it CommonMark-style, taken or dismissed, never silent */
 #notice { display: flex; gap: .5rem; align-items: baseline; padding: .35rem .9rem; font-family: var(--sans); font-size: .8rem;
   background: var(--codebg); color: var(--muted); border-bottom: 1px solid var(--rulelt); }
@@ -77,6 +93,7 @@ ul.outline li { padding: .15rem 0; }
 </head>
 <body>
 <div id="head"><span id="crumb-inline"></span><span id="status-inline"></span><button id="refresh" title="Re-read this page from the corpus">↻</button><button id="mode-toggle" title="Fullscreen or back inline">open</button></div>
+<div id="trail" hidden><div id="trail-head"><span id="trail-title">the research trail</span><button id="trail-close" title="Fold the trail away">fold</button></div><div id="trail-body"></div></div>
 <div id="banner" hidden><span id="banner-text"></span><button id="banner-reload">reload</button><button id="banner-force">overwrite</button></div>
 <div id="notice" hidden><span id="notice-text"></span><button id="notice-dismiss">leave it</button><button id="notice-go">Unwrap</button></div>
 <div id="selbar" hidden><button id="flag-this" title="Flag this span, and say what should happen to it">Flag</button><button id="survey-this" title="What is known about this? Research first, then the claims it supports: the request goes into the conversation">Survey</button><button id="back-this" title="Claims first, then the evidence, then bind: the request goes into the conversation">Back</button></div>

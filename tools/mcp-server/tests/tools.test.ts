@@ -430,6 +430,50 @@ test("narrative read/write/status: the digest gates the write, and the check com
   assert.equal((after.data as { bindings: T.BindingItem[] }).bindings.find((b) => b.anchor === bound.anchor)?.status, "stale");
 });
 
+test("the research trail: a refused capture is logged, status carries each flag's window, and the pages say how things were found", async () => {
+  const c = fresh();
+  const n = loadCorpus(c.dir).narratives[0]!;
+  const para = n.body.split("\n\n").find((p) => !/<!--/.test(p) && p.trim().length > 60)!;
+  const ws = para.trim().split(/\s+/); let anchor = "";
+  for (let i = 0; i + 5 <= ws.length; i++) { const cand = ws.slice(i, i + 5).join(" "); if (n.body.indexOf(cand) === n.body.lastIndexOf(cand)) { anchor = cand; break; } }
+  // before the flag: nothing in its window
+  T.flag(c, { narrative: n.slug, anchor, research: "survey" });
+  T.flagTake(c, { id: 1, by: "agent/worker" });
+  // a search, a capture it led to, a capture refused (no text layer), an atom, a claim
+  T.searchLog(c, { tool: "web search", query: "ledger audit 2026", hits_reported: "2 results", for: "ledger-audit" });
+  writeFileSync(join(c.dir, "memo.md"), "The ledger recorded seventeen units, and the audit agreed.\n");
+  await T.sourceAdd(c, { id: "memo-2026", citation_text: "Internal memo, 2026", path: "memo.md" });
+  cpSync(join(dirname(fileURLToPath(import.meta.url)), "fixtures", "no-text.pdf"), join(c.dir, "scan.pdf"));
+  await refuses(() => T.sourceAdd(c, { id: "scan-2026", citation_text: "A scan, 2026", path: "scan.pdf" }), /no text layer/);
+  const refusedEntry = readLog(c).find((e) => e.kind === "fetch" && e.source === "scan-2026");
+  assert.ok(refusedEntry?.refused && /no text layer/.test(refusedEntry.refused), "the refused capture is in the log with its reason");
+  T.atomMint(c, { source: "memo-2026", quote: "the audit agreed", finding: "The audit agreed.", source_quality: "medium" });
+  const atomId = [...loadCorpus(c.dir).atoms.values()].find((a) => a.source === "memo-2026")!.id;
+  T.claimMint(c, { id: "ledger-audit", title: "The ledger was audited", epistemic_kind: "observation", atoms_for: [atomId] });
+  const st = T.narrativeStatus(c, { narrative: n.slug }).data as { trail: T.FlagTrail[] };
+  assert.equal(st.trail.length, 1);
+  const tr = st.trail[0]!;
+  assert.equal(tr.flag, 1); assert.equal(tr.taken_by, "agent/worker");
+  assert.equal(tr.searches.length, 1); assert.equal(tr.searches[0]!.query, "ledger audit 2026");
+  assert.deepEqual(tr.captures.map((x) => [x.source, x.held, x.search]), [["memo-2026", true, 0], ["scan-2026", false, 0]]);
+  assert.deepEqual(tr.atoms, [{ id: atomId, source: "memo-2026" }]);
+  assert.deepEqual(tr.claims.map((k) => k.id), ["ledger-audit"]);
+  // `since` narrows the window to what is new
+  const later = new Date(Date.now() + 60_000).toISOString();
+  assert.equal((T.narrativeStatus(c, { narrative: n.slug, since: later }).data as { trail: T.FlagTrail[] }).trail[0]!.searches.length, 0);
+  // the survey and claim pages say how things were found, from the same trail
+  const day = new Date().toISOString().slice(0, 10);
+  T.surveyRecord(c, { id: `ledger-audit-${day}`, title: "Was the ledger audited?", coverage_bounds: "one memo", from_log: day, for: "ledger-audit" });
+  const sv = T.viewPage(c, { page: `survey:ledger-audit-${day}` }).html;
+  assert.match(sv, /How this was found/); assert.match(sv, /held <span class="id">memo-2026<\/span>/); assert.match(sv, /refused<\/span> <span class="id">scan-2026/);
+  const cl = T.viewPage(c, { page: "claim:ledger-audit" }).html;
+  assert.match(cl, /How this was found/); assert.match(cl, /found by<\/span> web search: ledger audit 2026/);
+  // a resolved flag keeps its trail for a while
+  T.flagResolve(c, { id: 1, claims: ["ledger-audit"] });
+  assert.equal((T.narrativeStatus(c, { narrative: n.slug }).data as { trail: T.FlagTrail[] }).trail[0]!.until !== undefined, true);
+  clean(c);
+});
+
 test("narrative status: a flag carries what it asked for, and a binding resolves it", () => {
   const c = fresh();
   const n = loadCorpus(c.dir).narratives[0]!;
