@@ -379,9 +379,12 @@ const trailBody = document.getElementById("trail-body") as HTMLElement;
 const trailTitle = document.getElementById("trail-title") as HTMLElement;
 let trails: FlagTrail[] = [];
 let trailOpen = false;
-document.getElementById("trail-close")!.addEventListener("click", () => { trailOpen = false; trailEl.hidden = true; });
+// fold keeps the title line and the button, so the panel can be unfolded from where it was folded
+const foldBtn = document.getElementById("trail-close") as HTMLButtonElement;
+function setFolded(folded: boolean): void { trailEl.classList.toggle("folded", folded); foldBtn.textContent = folded ? "unfold" : "fold"; }
+foldBtn.addEventListener("click", () => setFolded(!trailEl.classList.contains("folded")));
 // the status line is the handle: "researching #1" opens into what #1 has done so far
-statusEl.addEventListener("click", () => { if (!trails.length) return; trailOpen = !trailOpen; trailEl.hidden = !trailOpen; if (trailOpen) paintTrail(trails); });
+statusEl.addEventListener("click", () => { if (!trails.length) return; if (!trailOpen) { trailOpen = true; trailEl.hidden = false; setFolded(false); paintTrail(trails); } else setFolded(!trailEl.classList.contains("folded")); });
 
 /** Draw the trails the last status carried; open the panel the first time work appears. */
 function paintTrail(next: FlagTrail[]): void {
@@ -660,9 +663,19 @@ app.ontoolresult = (params) => {
   if (p) show(p);
 };
 
+/** The host's composer overlays the bottom of the view (and can overlay other edges on mobile): the insets it
+ *  reports become CSS variables and nothing else, since the host sends them at high frequency during its own
+ *  animations (claude-ai-mcp#366) and a variable set costs no re-render. */
+type Insets = { top?: number; right?: number; bottom?: number; left?: number };
+function applyInsets(i: Insets | undefined): void {
+  if (!i) return;
+  const st = document.documentElement.style;
+  for (const side of ["top", "right", "bottom", "left"] as const) st.setProperty(`--safe-${side}`, `${Math.max(0, i[side] ?? 0)}px`);
+}
 app.onhostcontextchanged = (ctx) => {
-  const c = ctx as { theme?: string; displayMode?: typeof mode };
+  const c = ctx as { theme?: string; displayMode?: typeof mode; safeAreaInsets?: Insets };
   if (c.theme) document.documentElement.dataset["theme"] = c.theme;
+  applyInsets(c.safeAreaInsets);
   if (c.displayMode) applyMode(c.displayMode);
 };
 
@@ -681,6 +694,7 @@ document.getElementById("refresh")!.addEventListener("click", () => {
 
 applyMode("inline");
 await app.connect();
-const ctx = app.getHostContext() as { theme?: string; displayMode?: typeof mode } | undefined;
+const ctx = app.getHostContext() as { theme?: string; displayMode?: typeof mode; safeAreaInsets?: Insets } | undefined;
 if (ctx?.theme) document.documentElement.dataset["theme"] = ctx.theme;
+applyInsets(ctx?.safeAreaInsets);
 if (ctx?.displayMode) applyMode(ctx.displayMode);

@@ -20,7 +20,7 @@ body.mode-fullscreen #head { position: sticky; top: 0; background: var(--paper);
 #head #status-inline.settled { color: var(--good); }
 #head button { border: 1px solid var(--rule); background: var(--codebg); color: var(--ink); border-radius: 4px; padding: .05rem .45rem; cursor: pointer; font: inherit; }
 #main { padding: 0 .9rem 1rem; }
-body.mode-fullscreen #main { flex: 1; overflow: auto; }
+body.mode-fullscreen #main { flex: 1; overflow: auto; padding-bottom: calc(1rem + var(--safe-bottom, 0px)); }
 #main[hidden] { display: none; }
 #main main { max-width: none; }
 /* a record inline is a card: the title at reading size, one line for what it is, one for how much sits under each heading */
@@ -32,7 +32,8 @@ body.mode-fullscreen #main { flex: 1; overflow: auto; }
 #main main.compact .hint { opacity: .7; }
 
 /* the editor: shown only fullscreen, and it scrolls on its own */
-#editor { flex: 1; min-height: 0; overflow: hidden; }
+/* the host's composer sits over the bottom edge in fullscreen: leave it a band the text never scrolls under */
+#editor { flex: 1; min-height: 0; overflow: hidden; padding-bottom: var(--safe-bottom, 0px); box-sizing: border-box; }
 #editor[hidden] { display: none; }
 #editor .cm-editor { height: 100%; }
 
@@ -46,6 +47,8 @@ body.mode-fullscreen #main { flex: 1; overflow: auto; }
 /* the research trail: one flag's work as it lands, folded under the head bar (fullscreen only; inline the card is an answer) */
 #trail { padding: .3rem .9rem .5rem; font-family: var(--sans); font-size: .78rem; background: var(--codebg); border-bottom: 1px solid var(--rulelt); max-height: 40vh; overflow: auto; }
 #trail[hidden], body.mode-inline #trail { display: none; }
+#trail.folded #trail-body { display: none; }
+#trail.folded { padding-bottom: .3rem; }
 #trail-head { display: flex; align-items: baseline; gap: .6rem; margin-bottom: .2rem; }
 #trail-head span { margin-right: auto; color: var(--muted); }
 #trail-head button { border: 1px solid var(--rule); background: transparent; color: var(--ink); border-radius: 4px; padding: .05rem .5rem; cursor: pointer; font: inherit; }
