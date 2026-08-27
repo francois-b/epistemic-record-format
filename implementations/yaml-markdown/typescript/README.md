@@ -17,8 +17,10 @@ The schema this build implements ships with the package: `import schema from "@e
 
 `erf-check` prints VIOLATION lines (conformance findings), FLAG lines (computed flags), QUOTE lines (the quote check per atom), and exits 1 on any violation. From the repository root, `npm run check -- <corpus-dir>` runs the same code from source.
 
-- `corpus.ts` loads a corpus: every document validated against the schema at load time (`ERF-73`), ids checked, `ERF-56`'s total lists materialized into the in-memory types this package exports.
-- `compute.ts` derives every reading the specification defines (disposition, backing, the quote check and its fold, staleness, references, argument closure), implemented from the specification text and held to the conformance cases.
-- `erf-check.ts` is the command line over both.
+- `read.ts`: bytes to documents. The fence (`YAMLB-3`), frontmatter under YAML 1.2's JSON profile with anchors, aliases, tags and duplicate keys refused (`ERF-65`, `ERF-66`), the walk over a folder, the narrative-binding marker (`YAMLB-1`).
+- `validate.ts`: documents to a checked model. `loadCorpus` validates every document against the schema (`ERF-73`) and the invariants that span records (section 6), and materializes `ERF-56`'s total lists into the in-memory types this package exports.
+- `compute.ts`: the readings the specification defines, from the model alone: disposition, backing, the quote check and its fold, staleness, references, argument closure. Implemented from the specification text and held to the conformance cases.
+- `write.ts`: model to bytes. The one serializer: string scalars quoted, empty lists omitted, present-and-empty mappings as `{}`, the fence. Checked by round trip through `validate.ts`.
+- `erf-check.ts`: the command line, built on the four.
 
 Build: `npm run build` (emits `dist/` with types; `prepack` runs it). The viewer in `tools/viewer/` renders what this package computes and adds nothing to it.

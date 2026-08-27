@@ -5,8 +5,8 @@
  */
 import type { StandingEntry } from "../../../schema/erf.generated.ts";
 import * as commonmark from "commonmark";
-import type { Atom, Claim, ConformanceFinding, LoadedCorpus } from "./corpus.ts";
-import { bindingCandidates, shipsWithCorpus } from "./corpus.ts";
+import type { Atom, Claim, ConformanceFinding, LoadedCorpus } from "./validate.ts";
+import { bindingCandidates, shipsWithCorpus } from "./validate.ts";
 
 export type Disposition =
   | "proposal" | "active" | "contested" | "rejected" | "retired";

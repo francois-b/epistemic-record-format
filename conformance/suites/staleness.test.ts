@@ -9,7 +9,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { staleAgainst, staleAudits, staleEvidenceAudit, bindingStaleness } from "../../implementations/yaml-markdown/typescript/compute.ts";
-import type { Atom } from "../../implementations/yaml-markdown/typescript/corpus.ts";
+import type { Atom } from "../../implementations/yaml-markdown/typescript/validate.ts";
 
 const atom = (created: string, modified?: string, audit?: string): Atom => ({
   id: "fx-001", type: "atom", corpus: "fx", finding: "f", quote: "q",

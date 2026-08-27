@@ -10,7 +10,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSy
 import { execFileSync } from "node:child_process";
 import { basename, join, relative, resolve } from "node:path";
 import yaml from "js-yaml";
-import { loadCorpus, splitDocument, type LoadedCorpus } from "../../../implementations/yaml-markdown/typescript/corpus.ts";
+import { loadCorpus, splitDocument, type LoadedCorpus } from "../../../implementations/yaml-markdown/typescript/validate.ts";
 import type { CorpusDeclaration, Source } from "../../../schema/erf.generated.ts";
 
 export class Refusal extends Error {
@@ -70,42 +70,9 @@ export function readSourceList(c: Corpus): Record<string, Source> {
 
 export function load(c: Corpus): LoadedCorpus { return loadCorpus(c.dir); }
 
-// ---------- serialization (the write path) ----------
-
-/**
- * Frontmatter under YAMLB-2 and ERF-65: keys in the order given, every
- * string scalar quoted, empty lists omitted, `null`/`undefined` omitted,
- * empty mappings kept as `{}` (presence asserts existence).
- */
-export function frontmatter(record: Record<string, unknown>): string {
-  const clean = prune(record) as Record<string, unknown>;
-  return yaml.dump(clean, { quotingType: '"', forceQuotes: true, lineWidth: -1, noRefs: true, sortKeys: false, noCompatMode: true });
-}
-
-function prune(v: unknown): unknown {
-  if (Array.isArray(v)) {
-    const items = v.map(prune).filter((x) => x !== undefined);
-    return items.length ? items : undefined;
-  }
-  if (v && typeof v === "object") {
-    const out: Record<string, unknown> = {};
-    for (const [k, val] of Object.entries(v as Record<string, unknown>)) {
-      if (val === undefined || val === null) continue;
-      const p = prune(val);
-      if (p === undefined && !(val && typeof val === "object" && !Array.isArray(val))) continue;
-      out[k] = p === undefined ? {} : p;
-    }
-    return out;
-  }
-  return v;
-}
-
-/** One record file per YAMLB-3: fence, frontmatter, fence, body. */
-export function recordText(fm: Record<string, unknown>, body: string | null): string {
-  const head = `---\n${frontmatter(fm)}---\n`;
-  if (body === null || body === "") return head;
-  return `${head}\n${body.replace(/\r\n?/g, "\n").replace(/\n+$/, "")}\n`;
-}
+// ---------- serialization: the implementation's writer ----------
+import { frontmatter, recordText } from "../../../implementations/yaml-markdown/typescript/write.ts";
+export { frontmatter, recordText };
 
 export function writeRecord(c: Corpus, type: "atom" | "claim" | "survey", id: string, fm: Record<string, unknown>, body: string | null): string {
   const dir = c.recordDir(type);

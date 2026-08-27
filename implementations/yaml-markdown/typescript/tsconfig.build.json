@@ -9,5 +9,5 @@
     "allowImportingTsExtensions": true,
     "sourceMap": false
   },
-  "include": ["index.ts", "corpus.ts", "compute.ts", "erf-check.ts", "../../../schema/erf.generated.ts"]
+  "include": ["index.ts", "read.ts", "validate.ts", "compute.ts", "write.ts", "erf-check.ts", "../../../schema/erf.generated.ts"]
 }

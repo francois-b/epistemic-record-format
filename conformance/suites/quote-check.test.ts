@@ -9,7 +9,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import type { Atom } from "../../implementations/yaml-markdown/typescript/corpus.ts";
+import type { Atom } from "../../implementations/yaml-markdown/typescript/validate.ts";
 import { quoteCheck } from "../../implementations/yaml-markdown/typescript/compute.ts";
 import { QUOTE_CASES } from "../paths.ts";
 

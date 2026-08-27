@@ -10,7 +10,7 @@
  */
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { loadCorpus } from "./corpus.ts";
+import { loadCorpus } from "./validate.ts";
 import { quoteCheck, brokenAnchors, evidenceRefsFlagged, retiredPremises, standingTies, undatedRetrievals, danglingRefs, unbacked, stoodOn, bindingStaleness, staleAudits, staleEvidenceAudit } from "./compute.ts";
 
 const dir = process.argv[2];

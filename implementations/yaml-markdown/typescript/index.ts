@@ -4,20 +4,23 @@
  *
  *   import { loadCorpus, disposition, quoteCheck } from "@epistemic-record-format/validator-yaml-markdown";
  *
- * `loadCorpus(dir)` reads a corpus folder into the model, validating every
- * document against the schema; the functions in `compute` derive every
- * reading the specification defines, from the records alone. The command
- * line `erf-check` is the same code. The schema this build was generated
+ * Four modules: read (bytes to documents), validate (`loadCorpus`: documents
+ * to a checked model), compute (the readings the specification defines, from
+ * the model alone), write (model to bytes, the one serializer). The command
+ * line `erf-check` is built on them. The schema this build was generated
  * against ships with the package (`@epistemic-record-format/validator-yaml-markdown/schema`).
  */
 export const SPEC_VERSION = "0.9.0";
 
-export {
-  loadCorpus, splitDocument, bindingRe, bindingCandidates, unescapeAnchor, shipsWithCorpus, KNOWN_FIELDS,
-} from "./corpus.ts";
+// read: bytes to documents
+export { splitDocument, splitFrontmatter, walkFiles, fileType, bindingRe, bindingCandidates, unescapeAnchor, YAML_OPTS } from "./read.ts";
+// validate: documents to a checked model
+export { loadCorpus, shipsWithCorpus, KNOWN_FIELDS } from "./validate.ts";
+// write: model to bytes
+export { frontmatter, recordText, yamlDocument } from "./write.ts";
 export type {
   Atom, Claim, Survey, Source, CorpusDeclaration, ConformanceFinding, Narrative, LoadedCorpus, BindingCandidate,
-} from "./corpus.ts";
+} from "./validate.ts";
 
 export {
   admissible, currentStances, standingTies, disposition, resolvable, backing, normalizeForCheck, quoteCheck,

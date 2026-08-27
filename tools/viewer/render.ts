@@ -7,8 +7,8 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Atom, Claim, LoadedCorpus, Narrative, Source, Survey } from "../../implementations/yaml-markdown/typescript/corpus.ts";
-import { bindingCandidates, bindingRe, shipsWithCorpus } from "../../implementations/yaml-markdown/typescript/corpus.ts";
+import type { Atom, Claim, LoadedCorpus, Narrative, Source, Survey } from "../../implementations/yaml-markdown/typescript/validate.ts";
+import { bindingCandidates, bindingRe, shipsWithCorpus } from "../../implementations/yaml-markdown/typescript/validate.ts";
 import {
   backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,
   brokenAnchors, evidenceRefsFlagged, retiredPremises, standingTies, undatedRetrievals,
