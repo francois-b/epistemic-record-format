@@ -120,6 +120,8 @@ export function sourceHref(a: AtomLine): string {
 export interface FlagCard {
   id: number;
   research: string;
+  /** The scope, cut to one line when long. */
+  span?: string;
   note?: string;
   /** One line: open and not being worked, taken by whom (fresh or stale), or done and bound to what. */
   status: string;
@@ -147,5 +149,11 @@ export function flagCard(p: FlagPopover, trails: FlagTrail[] = []): FlagCard {
   const lines: TrailLine[] = trail
     ? trailLines(trail)
     : [{ kind: "empty", text: research === "mint" ? "proposals are made in the chat; nothing is logged for a mint flag" : "no research logged yet" }];
-  return { id: f.id, research, ...(f.note ? { note: f.note } : {}), status, claims, lines };
+  return { id: f.id, research, ...(f.span ? { span: oneLine(f.span) } : {}), ...(f.note ? { note: f.note } : {}), status, claims, lines };
+}
+
+/** A span as the card shows it: whole when short, else its first words and an ellipsis. */
+export function oneLine(text: string, max = 140): string {
+  const t = text.replace(/\s+/g, " ").trim();
+  return t.length <= max ? t : `${t.slice(0, max - 1).replace(/\s+\S*$/, "")}…`;
 }

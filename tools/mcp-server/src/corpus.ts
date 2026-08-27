@@ -198,7 +198,8 @@ export const RESEARCH = ["mint", "survey", "back", "opposite"] as const;
  * a flag forever. Nothing clears them; once the flag is resolved they say who
  * did the work.
  */
-export interface Flag { id: number; ts: string; narrative: string; anchor: string; note?: string; research?: Research; by: string; status: "open" | "done"; done_ts?: string; claims?: string[]; taken_by?: string; taken_ts?: string }
+/** `span` is the whole selection, whitespace folded, when it is longer than the anchor: the scope of the flag. The anchor locates it. */
+export interface Flag { id: number; ts: string; narrative: string; anchor: string; span?: string; note?: string; research?: Research; by: string; status: "open" | "done"; done_ts?: string; claims?: string[]; taken_by?: string; taken_ts?: string }
 
 /** How long a take holds a flag against another worker. */
 export const TAKE_MINUTES = 30;

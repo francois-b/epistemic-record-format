@@ -371,6 +371,29 @@ test("flags: mark a passage, list it with its text, binding the passage resolves
   clean(c);
 });
 
+test("a flag's span is its scope: the whole selection, folded, containing the anchor and present in the prose", () => {
+  const c = fresh();
+  const n = loadCorpus(c.dir).narratives[0]!;
+  const para = n.body.split("\n\n").find((p) => !/<!--/.test(p) && p.trim().length > 60)!;
+  const ws = para.trim().split(/\s+/); let anchor = "";
+  for (let i = 0; i + 5 <= ws.length; i++) { const cand = ws.slice(i, i + 5).join(" "); if (n.body.indexOf(cand) === n.body.lastIndexOf(cand)) { anchor = cand; break; } }
+  const span = para.replace(/\s+/g, " ").trim(); // the paragraph as selected in the editor, hand-wrapping folded
+  assert.throws(() => T.flag(c, { narrative: n.slug, anchor, span: "words that are not the anchor at all" }), /must contain the anchor/);
+  assert.throws(() => T.flag(c, { narrative: n.slug, anchor, span: `${anchor} and then words the prose never says` }), /does not occur/);
+  const r = T.flag(c, { narrative: n.slug, anchor, span, research: "survey" });
+  assert.match(r.text, new RegExp(`scope ${span.split(" ").length} words`));
+  assert.equal(r.data && (r.data as { span?: string }).span, span);
+  const listed = T.flags(c, {}).text;
+  assert.ok(listed.includes(`scope "${span}"`), "the listing names the span as the scope");
+  assert.ok(listed.includes(`«${span}»`), "and marks it inside the passage");
+  const item = (T.narrativeStatus(c, { narrative: n.slug }).data as { flags: T.FlagItem[] }).flags[0]!;
+  assert.equal(item.span, span);
+  assert.equal(item.anchor, anchor, "the anchor still locates it");
+  T.claimMint(c, { id: "span-claim", title: "A claim from a flagged paragraph", epistemic_kind: "commitment" });
+  assert.match(T.narrativeBind(c, { narrative: n.slug, anchor, claims: ["span-claim"] }).text, /resolved flag #1/);
+  clean(c);
+});
+
 test("flags can be taken: one worker at a time, a stale take is re-takable, resolution keeps the mark", () => {
   const c = fresh();
   const n = loadCorpus(c.dir).narratives[0]!;

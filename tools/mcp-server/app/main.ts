@@ -28,7 +28,7 @@ interface Page { page: string; title: string; html: string; corpus?: string; fla
 interface NarrativeRead { narrative: string; path: string; title: string; text: string; digest: string; bindings: BindingMark[]; flags: FlagMark[] }
 interface NarrativeWritten { written: string; digest: string; check: string; bindings: BindingMark[]; flags: FlagMark[] }
 interface NarrativeStatus { digest: string; bindings: BindingMark[]; flags: FlagMark[]; trail?: FlagTrail[] }
-interface FlagWritten { id: number; narrative: string; anchor: string; research: string; note?: string }
+interface FlagWritten { id: number; narrative: string; anchor: string; span?: string; research: string; note?: string }
 
 type Research = "mint" | "survey" | "back" | "opposite";
 
@@ -488,7 +488,9 @@ async function submitFlag(research: Research, note: string): Promise<void> {
   if (ed && !editorEl.hidden && ed.isDirty()) await saveNow(ed.getText());
   setStatus("flagging…", "working");
   try {
-    const { data, text } = await call<FlagWritten>("erf_flag", { narrative: slug, anchor: sel.anchor, research, ...(note ? { note } : {}) });
+    // the anchor locates the flag; the whole selection is its scope (a flag on a paragraph is not a flag on its first twelve words)
+    const span = sel.text.replace(/\s+/g, " ").trim();
+    const { data, text } = await call<FlagWritten>("erf_flag", { narrative: slug, anchor: sel.anchor, ...(span.length > sel.anchor.length ? { span } : {}), research, ...(note ? { note } : {}) });
     if (!data) { setStatus(text.replace(/^\[[^\]]*\]\s*/, "").slice(0, 160)); return; }
     const status = await refreshMarks();
     setStatus("");

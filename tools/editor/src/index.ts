@@ -266,6 +266,7 @@ function renderFlagCard(dom: HTMLElement, p: FlagPopover, view: EditorView): voi
   head.appendChild(el("span", "erf-pop-status", `flag #${card.id} · ${card.research}`));
   dom.appendChild(head);
   dom.appendChild(el("div", "erf-pop-title", card.status));
+  if (card.span) dom.appendChild(el("div", "erf-pop-span", `«${card.span}»`));
   if (card.note) dom.appendChild(el("div", "erf-pop-note", card.note));
   if (card.claims.length) {
     const links = el("div", "erf-pop-meta");
@@ -386,6 +387,7 @@ function theme(): Extension {
     ".erf-pop-source": { color: "var(--accent, #1a3a6e)", fontStyle: "italic" },
     // the flag card: the trail's lines in the colours the panel uses
     ".erf-pop-note": { fontStyle: "italic", color: "var(--muted, #5a5550)", margin: ".1rem 0 .3rem" },
+    ".erf-pop-span": { fontStyle: "italic", opacity: .85, margin: ".15rem 0 .3rem", whiteSpace: "normal" },
     ".erf-pop-claim": { color: "var(--accent, #1a3a6e)" },
     ".erf-pop-trail": { listStyle: "none", margin: ".3rem 0 0", padding: ".3rem 0 0", borderTop: "1px solid var(--rulelt, #ebe7e1)", maxHeight: "14rem", overflow: "auto", fontFamily: "var(--mono, ui-monospace, Menlo, monospace)", fontSize: "11px", whiteSpace: "pre-wrap" },
     ".erf-pop-trail .line": { margin: ".05rem 0" },

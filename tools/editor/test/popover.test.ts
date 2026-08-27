@@ -143,4 +143,7 @@ test("the flag card carries the flag's trail when the host has one, and says why
   assert.match(without.lines[0]!.text, /no research logged yet/);
   const mint = flagCard(at({ ...FLAG_FREE, research: "mint" }));
   assert.match(mint.lines[0]!.text, /made in the chat/);
+  const long = flagCard(at({ ...FLAG_FREE, span: "word ".repeat(60).trim() }));
+  assert.ok(long.span!.endsWith("…") && long.span!.length <= 140, "a long span is cut to one line");
+  assert.equal(flagCard(at({ ...FLAG_FREE, span: "the whole sentence selected" })).span, "the whole sentence selected");
 });

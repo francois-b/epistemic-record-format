@@ -15,6 +15,8 @@
 export interface FlagMark {
   id: number;
   anchor: string;
+  /** The whole selection, whitespace folded, when it was longer than the anchor: the scope the underline covers. */
+  span?: string;
   research?: string;
   status: "open" | "done";
   claims?: string[];
@@ -139,7 +141,8 @@ export function computeMarks(doc: string, marks: Marks): Computed {
 
   const flags: FlagRange[] = [];
   for (const f of marks.flags ?? []) {
-    const r = locate(doc, f.anchor);
+    // the underline covers the span (the scope); the anchor stands in when the span no longer occurs as one run
+    const r = (f.span ? locate(doc, f.span) : null) ?? locate(doc, f.anchor);
     if (!r) { missing.push(f.anchor); continue; }
     flags.push({ ...r, cls: flagClass(f), flag: f });
   }

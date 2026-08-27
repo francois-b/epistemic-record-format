@@ -435,26 +435,32 @@ function passageAround(prose: string, at: number): string {
   return prose.slice(Math.max(0, start), end < 0 ? prose.length : end).replace(/\s+/g, " ").trim();
 }
 
-export function flag(c: Corpus, a: { narrative: string; anchor: string; note?: string; research?: string }): Result {
+export function flag(c: Corpus, a: { narrative: string; anchor: string; span?: string; note?: string; research?: string }): Result {
   readDeclaration(c);
   const anchor = a.anchor.replace(/\s+/g, " ").trim();
   if (anchor.length < 8) throw new Refusal("an anchor is a few exact words of the passage; give at least a phrase");
+  // the span is the scope: the whole selection, folded like an anchor; the anchor is a few of its words that locate it
+  const spanGiven = (a.span ?? "").replace(/\s+/g, " ").trim();
+  const span = spanGiven && spanGiven !== anchor ? spanGiven : undefined;
+  if (span && !span.includes(anchor)) throw new Refusal(`the span must contain the anchor: "${anchor}" is not in the span given`);
   if (a.research !== undefined && !(RESEARCH as readonly string[]).includes(a.research)) throw new Refusal(`research is one of ${RESEARCH.join(", ")}`);
   const research = (a.research ?? "mint") as Research;
   const { slug, prose } = proseOf(c, a.narrative);
   const [first, second] = anchorOccurrences(prose, anchor);
   if (first === undefined) throw new Refusal(`"${anchor}" does not occur in ${slug}; the anchor must be exact words from the passage`);
   if (second !== undefined) throw new Refusal(`"${anchor}" occurs more than once in ${slug}; choose words unique to the passage`);
+  if (span && anchorOccurrences(prose, span, 1).length === 0) throw new Refusal(`the span does not occur in ${slug} as one run of text; a span is the selection itself, whitespace folded`);
   const flags = readFlags(c);
   if (flags.some((f) => f.status === "open" && f.narrative === slug && f.anchor === anchor)) throw new Refusal("that passage is already flagged");
-  const f: Flag = { id: (flags.at(-1)?.id ?? 0) + 1, ts: now(), narrative: slug, anchor, ...(a.note ? { note: a.note } : {}), research, by: c.options.agent, status: "open" };
+  const f: Flag = { id: (flags.at(-1)?.id ?? 0) + 1, ts: now(), narrative: slug, anchor, ...(span ? { span } : {}), ...(a.note ? { note: a.note } : {}), research, by: c.options.agent, status: "open" };
   flags.push(f); writeFlags(c, flags);
   const open = flags.filter((x) => x.status === "open").length;
   const asked = research === "back" ? "; back it: after the ruling, gather the evidence and bind"
     : research === "opposite" ? "; back it and state the strongest case against before standing"
     : "; propose claims and stop for a ruling";
-  const r = finish(c, `flag #${f.id} on ${slug} at "${anchor}"${a.note ? ` (${a.note})` : ""} · research ${research}${asked}; ${open} open flag${open === 1 ? "" : "s"}`, [flagsPath(c)], `flag passage in ${slug}`);
-  return { ...r, data: { id: f.id, narrative: slug, anchor, research, ...(a.note ? { note: a.note } : {}) } };
+  const words = span ? span.split(" ").length : 0;
+  const r = finish(c, `flag #${f.id} on ${slug} at "${anchor}"${span ? ` · scope ${words} words` : ""}${a.note ? ` (${a.note})` : ""} · research ${research}${asked}; ${open} open flag${open === 1 ? "" : "s"}`, [flagsPath(c)], `flag passage in ${slug}`);
+  return { ...r, data: { id: f.id, narrative: slug, anchor, ...(span ? { span } : {}), research, ...(a.note ? { note: a.note } : {}) } };
 }
 
 /** Whole minutes since an instant, or null when it cannot be read as one. */
@@ -515,10 +521,12 @@ export function flags(c: Corpus, a: { narrative?: string; all?: boolean }): Resu
   const lines = list.map((f) => {
     if (!cache.has(f.narrative)) cache.set(f.narrative, proseOf(c, f.narrative).prose);
     const prose = cache.get(f.narrative)!; const at = prose.indexOf(f.anchor);
-    // the anchor is the scope of the flag: what the person selected is what gets decomposed and backed; the passage
-    // around it is context, shown with the scope marked «so» (a flag on one sentence is not a flag on its paragraph)
-    const passage = at >= 0 ? passageAround(prose, at).replace(f.anchor, `«${f.anchor}»`) : "(anchor no longer occurs; the prose moved)";
-    return `#${f.id} [${f.status}] ${f.narrative} · research ${f.research ?? "mint"} · scope "${f.anchor}"${f.note ? ` · ${f.note}` : ""}${takenNote(f)}${f.claims?.length ? ` · bound to ${f.claims.join(", ")}` : ""}\n  passage (context, scope marked «»): ${passage}`;
+    // the scope of the flag is its span (the whole selection) or, without one, its anchor: what the person selected is
+    // what gets decomposed and backed; the passage around it is context, shown with the scope marked «so» (a flag on
+    // one sentence is not a flag on its paragraph, and a flag on a paragraph is not a flag on its first line)
+    const scope = f.span ?? f.anchor;
+    const passage = at >= 0 ? passageAround(prose, at).replace(scope, `«${scope}»`) : "(anchor no longer occurs; the prose moved)";
+    return `#${f.id} [${f.status}] ${f.narrative} · research ${f.research ?? "mint"} · scope "${scope}"${f.note ? ` · ${f.note}` : ""}${takenNote(f)}${f.claims?.length ? ` · bound to ${f.claims.join(", ")}` : ""}\n  passage (context, scope marked «»): ${passage}`;
   });
   return { text: `${list.length} flag(s):\n` + lines.join("\n") };
 }
@@ -611,7 +619,7 @@ export interface BoundAtom { id: string; side: "for" | "against"; finding: strin
 export interface BoundClaimInfo { title: string; kind: string; disposition: string; evidence: number; atoms?: BoundAtom[] }
 
 /** A flag as the editor reads it. `take_stale` is the 30-minute rule (`TAKE_MINUTES`) applied here, once, so no host re-implements it: a stale take is not research in progress. */
-export interface FlagItem { id: number; anchor: string; note?: string; research: Research; status: "open" | "done"; claims?: string[]; line: number | null; taken_by?: string; taken_ts?: string; take_stale?: boolean }
+export interface FlagItem { id: number; anchor: string; span?: string; note?: string; research: Research; status: "open" | "done"; claims?: string[]; line: number | null; taken_by?: string; taken_ts?: string; take_stale?: boolean }
 
 /**
  * Where an anchor occurs in a text, at most `limit` times. Runs of whitespace
@@ -679,7 +687,7 @@ function bindingItems(l: LoadedCorpus, n: Narrative, fileText: string | null): B
 /** Every flag on one narrative, open and done, in the shape the editor decorates from. */
 function flagItems(c: Corpus, slug: string, fileText: string | null): FlagItem[] {
   return readFlags(c).filter((f) => f.narrative === slug).map((f) => ({
-    id: f.id, anchor: f.anchor, ...(f.note ? { note: f.note } : {}),
+    id: f.id, anchor: f.anchor, ...(f.span ? { span: f.span } : {}), ...(f.note ? { note: f.note } : {}),
     research: (f.research ?? "mint") as Research, status: f.status,
     ...(f.claims?.length ? { claims: f.claims } : {}),
     ...(f.taken_by ? { taken_by: f.taken_by, ...(f.taken_ts ? { taken_ts: f.taken_ts } : {}), take_stale: takeStale(f) } : {}),

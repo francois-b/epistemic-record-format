@@ -9,6 +9,8 @@ everything else.
 
 ## Unreleased
 
+Tooling and pattern, 2026-08-27: a flag keeps its span. The editor cut the anchor to the first twelve words of the selection, so a flag placed on a paragraph reached the server, the underline and the LLM as its first line. `erf_flag` now takes the whole selection as `span` (folded; it must contain the anchor and occur in the narrative), `erf_flags` and the narrative status name it as the scope, the underline and the flag card cover it, and the anchor stays the few words that locate the flag. Found when François flagged the "new iteration of Agile" bullet and only its first line lit up.
+
 Tooling, 2026-08-27: the research trail folds to its title line and unfolds from the same button (folding used to hide it, and only the status line, unmarked as a handle, brought it back); the app applies the host's safe-area insets as CSS variables so the essay no longer scrolls under Desktop's composer in fullscreen. The traffic lights and arrows over the fullscreen header, and the composer's off-centre position, are the host's own chrome and outside the app.
 
 Tooling, 2026-08-27: a flagged span has a card. A click on it opens the flag: what was asked (the verb and the note), where it stands (open and not being worked; taken by whom, fresh or stale, the server's word; done and bound to which claims, linked), and the research behind it so far, the same lines the trail panel shows, repainting as work lands. The popover's state is a union of the binding card and the flag card; on a span that is both, the flag wins the click. The editor gains `setTrails`; the app passes the trails it already receives. Found when a click on the underlined span did nothing.

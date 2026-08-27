@@ -47,6 +47,18 @@ test("an anchor written on one line still finds a passage that was hand-wrapped"
   assert.equal(DOC.slice(r.from, r.to).replace(/\s+/g, " "), "negative treatment, which is the part a reader");
 });
 
+test("a flag's span is underlined across a hand-wrapped paragraph; a flag without a span is its anchor", () => {
+  const spanned = computeMarks(DOC, { flags: [{ id: 1, anchor: "negative treatment, which is", span: "negative treatment, which is the part a reader", status: "open" }], bindings: [] });
+  const r = spanned.flags[0]!;
+  assert.ok(DOC.slice(r.from, r.to).includes("\n"), "the underline crosses the wrap");
+  assert.equal(DOC.slice(r.from, r.to).replace(/\s+/g, " "), "negative treatment, which is the part a reader");
+  const plain = computeMarks(DOC, { flags: [{ id: 2, anchor: "negative treatment, which is", status: "open" }], bindings: [] });
+  assert.equal(DOC.slice(plain.flags[0]!.from, plain.flags[0]!.to), "negative treatment, which is");
+  const moved = computeMarks(DOC, { flags: [{ id: 3, anchor: "negative treatment, which is", span: "negative treatment, which is words the prose lost", status: "open" }], bindings: [] });
+  assert.equal(DOC.slice(moved.flags[0]!.from, moved.flags[0]!.to), "negative treatment, which is", "a span the prose no longer holds falls back to the anchor");
+  assert.equal(moved.missing.length, 0);
+});
+
 test("the paragraph around an offset runs blank line to blank line", () => {
   const at = DOC.indexOf("A lawyer's memo");
   const p = paragraphRange(DOC, at);
