@@ -24,8 +24,11 @@ export interface FlagMark {
   taken_ts?: string;
 }
 
-/** What a bound claim is, for the reader hovering the passage. */
-export interface ClaimInfo { title: string; kind: string; disposition: string; evidence: number }
+/** One atom under a bound claim: its side, its finding, and the page it was captured from (absent when the source was a file). */
+export interface AtomInfo { id: string; side: "for" | "against"; finding: string; source: string; citation?: string; url?: string }
+
+/** What a bound claim is, for the popover on the passage. */
+export interface ClaimInfo { title: string; kind: string; disposition: string; evidence: number; atoms?: AtomInfo[] }
 
 /** A binding as the server reports it: a passage and the claims it rests on. */
 export interface BindingMark {

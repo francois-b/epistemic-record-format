@@ -543,9 +543,13 @@ export interface BindingItem {
   status: BindingStatus;
   /** 1-based line of the file where the anchor's words sit, or null when they do not occur verbatim (a hand-wrapped anchor spans a line break). */
   line: number | null;
-  /** What each named claim is, for a reader hovering the passage. Absent ids are simply not listed. */
-  claimInfo?: Record<string, { title: string; kind: string; disposition: string; evidence: number }>;
+  /** What each named claim is, for the popover on the passage. Absent ids are simply not listed. */
+  claimInfo?: Record<string, BoundClaimInfo>;
 }
+
+/** One atom as the editor's popover lists it: its side, its finding, and the page it was captured from. */
+export interface BoundAtom { id: string; side: "for" | "against"; finding: string; source: string; citation?: string; url?: string }
+export interface BoundClaimInfo { title: string; kind: string; disposition: string; evidence: number; atoms?: BoundAtom[] }
 
 export interface FlagItem { id: number; anchor: string; note?: string; research: Research; status: "open" | "done"; claims?: string[]; line: number | null; taken_by?: string; taken_ts?: string }
 
@@ -588,10 +592,21 @@ function bindingItems(l: LoadedCorpus, n: Narrative, fileText: string | null): B
     const missing = b.claims.filter((id) => !l.claims.has(id));
     const isBroken = brokenLines.some((s) => s.startsWith(`${n.slug}: anchor "${b.anchor}" does not occur`));
     const status: BindingStatus = missing.length ? "missing-claim" : isBroken ? "broken" : bindingStaleness(b.boundAt, b.claims, l).state;
-    const claimInfo: Record<string, { title: string; kind: string; disposition: string; evidence: number }> = {};
+    const claimInfo: Record<string, BoundClaimInfo> = {};
+    const atomLine = (id: string, side: "for" | "against"): BoundAtom => {
+      const a = l.atoms.get(id);
+      const s = a ? l.sources.get(a.source) : undefined;
+      return {
+        id, side, finding: a?.finding ?? "(not in this corpus)", source: a?.source ?? "",
+        ...(s?.citation_text ? { citation: s.citation_text } : {}),
+        ...(s?.received?.url ? { url: s.received.url } : {}),
+      };
+    };
     for (const id of b.claims) {
       const cl = l.claims.get(id);
-      if (cl) claimInfo[id] = { title: cl.title, kind: cl.epistemic_kind, disposition: disposition(cl).disposition, evidence: cl.atoms_for.length + cl.atoms_against.length };
+      if (!cl) continue;
+      const atoms = [...cl.atoms_for.map((a) => atomLine(a, "for")), ...cl.atoms_against.map((a) => atomLine(a, "against"))];
+      claimInfo[id] = { title: cl.title, kind: cl.epistemic_kind, disposition: disposition(cl).disposition, evidence: atoms.length, ...(atoms.length ? { atoms } : {}) };
     }
     return {
       anchor: b.anchor, claims: b.claims, bound_at: b.boundAt ?? null, status,

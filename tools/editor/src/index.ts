@@ -14,14 +14,15 @@
  * parsed and re-serialized. `getText()` is always the file.
  */
 import { EditorState, StateField, StateEffect, Annotation, type Extension } from "@codemirror/state";
-import { EditorView, keymap, Decoration, WidgetType, hoverTooltip, drawSelection, highlightSpecialChars, type DecorationSet, type Tooltip } from "@codemirror/view";
+import { EditorView, keymap, Decoration, WidgetType, showTooltip, drawSelection, highlightSpecialChars, type DecorationSet, type Tooltip, type TooltipView, type ViewUpdate } from "@codemirror/view";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { markdown } from "@codemirror/lang-markdown";
 import { syntaxHighlighting, HighlightStyle, ensureSyntaxTree, syntaxTree } from "@codemirror/language";
 import { tags } from "@lezer/highlight";
-import { computeMarks, anchorFrom, claimLines, softBreakRanges, frontmatterRange, unwrapChanges, looksHardWrapped, mergeChanges, type Marks, type BoundRange, type Range } from "./marks.ts";
+import { computeMarks, anchorFrom, softBreakRanges, frontmatterRange, unwrapChanges, looksHardWrapped, mergeChanges, type Marks, type Range } from "./marks.ts";
+import { hitBinding, popoverAfterClick, step, mapPopover, claimCard, sourceHref, type Popover } from "./popover.ts";
 
-export type { Marks, FlagMark, BindingMark, ClaimInfo } from "./marks.ts";
+export type { Marks, FlagMark, BindingMark, ClaimInfo, AtomInfo } from "./marks.ts";
 export { anchorFrom, mergeMarkers } from "./marks.ts";
 
 /** What a selection offers the host: the words, the anchor to flag on, and where to put a popover. */
@@ -143,37 +144,109 @@ const decorations = StateField.define<DecorationSet>({
   provide: (f) => EditorView.decorations.from(f),
 });
 
-/** Hovering a bound passage or its marker lists what it rests on. */
-function bindingTooltip(state: EditorState, pos: number): Tooltip | null {
-  const doc = state.doc.toString();
-  const c = computeMarks(doc, state.field(marksField));
-  const hit: BoundRange | undefined = c.bound.find((b) => pos >= b.from && pos <= b.to)
-    ?? (() => {
-      const m = c.markers.find((x) => pos >= x.from && pos <= x.to);
-      return m ? c.bound.find((b) => b.binding.claims.join(" ") === m.claims.join(" ")) : undefined;
-    })();
-  if (!hit) return null;
-  return {
-    pos: hit.from,
-    end: hit.to,
-    above: true,
-    create: () => {
-      const dom = document.createElement("div");
-      dom.className = "erf-tooltip";
-      const head = document.createElement("div");
-      head.className = "erf-tooltip-head";
-      head.textContent = `bound · ${hit.binding.status}`;
-      dom.appendChild(head);
-      for (const line of claimLines(hit.binding)) {
-        const p = document.createElement("div");
-        p.className = "erf-tooltip-claim";
-        p.textContent = line;
-        dom.appendChild(p);
-      }
-      return { dom };
-    },
-  };
+// ---- the binding popover ---------------------------------------------------
+// A click on a bound passage (or its marker) opens a card listing what the
+// passage rests on, one claim at a time, with its atoms and where each came
+// from. It opens on a click and not on hover because it has buttons and links
+// in it, and a hover card cannot be reached by the pointer. A second click on
+// the passage, a click elsewhere, Escape, or typing closes it. The state is
+// in `popover.ts`; this is the DOM.
+
+const popoverEffect = StateEffect.define<Popover | null>();
+
+const popoverField = StateField.define<Popover | null>({
+  create: () => null,
+  update(v, tr) {
+    for (const e of tr.effects) if (e.is(popoverEffect)) return e.value;
+    if (tr.docChanged) return mapPopover(v, (pos, assoc) => tr.changes.mapPos(pos, assoc));
+    return v;
+  },
+  provide: (f) => showTooltip.from(f, (p) => (p ? popoverTooltip(p) : null)),
+});
+
+function popoverTooltip(p: Popover): Tooltip {
+  return { pos: p.from, end: p.to, above: true, arrow: true, create: createPopover };
 }
+
+/** One tooltip view for the field's lifetime: `create` is stable, so CodeMirror keeps the DOM and calls `update` as the claim steps. */
+function createPopover(view: EditorView): TooltipView {
+  const dom = document.createElement("div");
+  dom.className = "erf-pop";
+  const paint = (p: Popover | null): void => { if (p) renderPopover(dom, p, view); };
+  paint(view.state.field(popoverField));
+  return { dom, update(u: ViewUpdate) { if (u.state.field(popoverField) !== u.startState.field(popoverField)) paint(u.state.field(popoverField)); } };
+}
+
+function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls: string, text?: string): HTMLElementTagNameMap[K] {
+  const e = document.createElement(tag);
+  e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+function renderPopover(dom: HTMLElement, p: Popover, view: EditorView): void {
+  const card = claimCard(p);
+  dom.replaceChildren();
+  const head = el("div", "erf-pop-head");
+  head.appendChild(el("span", "erf-pop-status", `bound · ${p.binding.status}`));
+  if (card && card.of > 1) {
+    const nav = el("span", "erf-pop-nav");
+    const prev = el("button", "erf-pop-arrow", "‹"); prev.title = "previous claim"; prev.type = "button";
+    const next = el("button", "erf-pop-arrow", "›"); next.title = "next claim"; next.type = "button";
+    const go = (d: 1 | -1) => (e: Event) => { e.preventDefault(); const cur = view.state.field(popoverField); if (cur) view.dispatch({ effects: popoverEffect.of(step(cur, d)) }); };
+    prev.addEventListener("click", go(-1)); next.addEventListener("click", go(1));
+    nav.append(prev, el("span", "erf-pop-count", `${card.at}/${card.of}`), next);
+    head.appendChild(nav);
+  }
+  dom.appendChild(head);
+  if (!card) { dom.appendChild(el("div", "erf-pop-title", "bound to nothing")); return; }
+  const title = el("a", "erf-pop-title", card.title) as HTMLAnchorElement;
+  title.href = `claim-${encodeURIComponent(card.id)}.html`;
+  title.title = "open the claim";
+  dom.appendChild(title);
+  dom.appendChild(el("div", "erf-pop-meta", [card.id, card.kind, card.disposition].filter(Boolean).join(" · ")));
+  if (!card.atoms.length) { dom.appendChild(el("div", "erf-pop-none", "no atoms yet")); return; }
+  const list = el("ul", "erf-pop-atoms");
+  for (const a of card.atoms) {
+    const li = el("li", `erf-pop-atom erf-pop-${a.side}`);
+    li.appendChild(el("span", "erf-pop-side", a.side));
+    li.appendChild(el("span", "erf-pop-finding", ` ${a.finding} `));
+    const src = el("a", "erf-pop-source", a.citation ?? a.source ?? a.id) as HTMLAnchorElement;
+    src.href = sourceHref(a);
+    src.title = a.url ? "open the page this was captured from" : "open the atom";
+    li.appendChild(src);
+    list.appendChild(li);
+  }
+  dom.appendChild(list);
+}
+
+/** The bound passage under a pointer event, whether on the prose or on a collapsed marker. */
+function bindingAt(view: EditorView, e: MouseEvent) {
+  const c = computeMarks(view.state.doc.toString(), view.state.field(marksField));
+  const widget = (e.target as HTMLElement).closest?.(".erf-marker") as HTMLElement | null;
+  if (widget) {
+    const ids = widget.getAttribute("data-erf-claims") ?? "";
+    return c.bound.find((b) => b.binding.claims.join(" ") === ids) ?? null;
+  }
+  const pos = view.posAtCoords({ x: e.clientX, y: e.clientY });
+  return pos === null ? null : hitBinding(c, pos);
+}
+
+const popoverHandlers = EditorView.domEventHandlers({
+  click(e, view) {
+    // a click that ends a drag is a selection, not a request for the card
+    if (!view.state.selection.main.empty) return false;
+    const next = popoverAfterClick(view.state.field(popoverField), bindingAt(view, e));
+    if (next !== view.state.field(popoverField)) view.dispatch({ effects: popoverEffect.of(next) });
+    return false;
+  },
+});
+
+const closePopover = (view: EditorView): boolean => {
+  if (!view.state.field(popoverField)) return false;
+  view.dispatch({ effects: popoverEffect.of(null) });
+  return true;
+};
 
 /**
  * Plain and readable, and nothing more: the plan rules typography out. A
@@ -213,14 +286,35 @@ function theme(): Extension {
       borderRadius: "3px", border: "1px solid var(--rule, #d8d3cc)",
       background: "var(--codebg, #fefcf8)", color: "var(--good, #1f5c3d)", fontSize: ".85em",
     },
-    ".erf-tooltip": {
-      maxWidth: "46ch", padding: ".45rem .6rem", borderRadius: "5px",
+    // the popover: a card the pointer can enter, with arrows and links
+    ".cm-tooltip.cm-tooltip-above:has(.erf-pop)": { border: "none", background: "transparent" },
+    ".erf-pop": {
+      width: "46ch", maxWidth: "calc(100vw - 2rem)", padding: ".5rem .7rem .55rem", borderRadius: "6px",
       border: "1px solid var(--rule, #d8d3cc)", background: "var(--paper, #fff)",
-      color: "var(--ink, #1a1a1a)", font: "12px/1.5 var(--sans, system-ui, sans-serif)",
-      boxShadow: "0 2px 12px rgba(0,0,0,.25)",
+      color: "var(--ink, #1a1a1a)", font: "12.5px/1.5 var(--sans, system-ui, sans-serif)",
+      boxShadow: "0 3px 14px rgba(0,0,0,.28)",
     },
-    ".erf-tooltip-head": { color: "var(--muted, #5a5550)", textTransform: "uppercase", letterSpacing: ".06em", fontSize: "10px", marginBottom: ".25rem" },
-    ".erf-tooltip-claim": { marginTop: ".2rem" },
+    ".erf-pop-head": { display: "flex", alignItems: "baseline", gap: ".5rem", marginBottom: ".3rem" },
+    ".erf-pop-status": { color: "var(--muted, #5a5550)", textTransform: "uppercase", letterSpacing: ".06em", fontSize: "10px", marginRight: "auto" },
+    ".erf-pop-nav": { display: "inline-flex", alignItems: "center", gap: ".25rem" },
+    ".erf-pop-count": { color: "var(--muted, #5a5550)", fontVariantNumeric: "tabular-nums", fontSize: "11px" },
+    ".erf-pop-arrow": {
+      border: "1px solid var(--rule, #d8d3cc)", background: "var(--codebg, #fefcf8)", color: "var(--ink, #1a1a1a)",
+      borderRadius: "4px", padding: "0 .45em", cursor: "pointer", font: "inherit", lineHeight: "1.3",
+    },
+    ".erf-pop-arrow:hover": { borderColor: "var(--accent, #1a3a6e)", color: "var(--accent, #1a3a6e)" },
+    ".erf-pop-title": { display: "block", fontWeight: "600", color: "var(--ink, #1a1a1a)", textDecoration: "none" },
+    ".erf-pop-title:hover": { color: "var(--accent, #1a3a6e)" },
+    ".erf-pop-meta": { color: "var(--muted, #5a5550)", fontFamily: "var(--mono, ui-monospace, Menlo, monospace)", fontSize: "11px", margin: ".1rem 0 .35rem" },
+    ".erf-pop-none": { color: "var(--muted, #5a5550)", fontStyle: "italic" },
+    ".erf-pop-atoms": { listStyle: "none", margin: "0", padding: "0", maxHeight: "14rem", overflow: "auto" },
+    ".erf-pop-atom": { padding: ".25rem 0", borderTop: "1px solid var(--rulelt, #ebe7e1)" },
+    ".erf-pop-side": {
+      display: "inline-block", fontSize: "10px", textTransform: "uppercase", letterSpacing: ".05em",
+      padding: "0 .35em", borderRadius: "3px", border: "1px solid var(--rule, #d8d3cc)", color: "var(--good, #1f5c3d)", marginRight: ".3em",
+    },
+    ".erf-pop-against .erf-pop-side": { color: "var(--warn, #8a4b1e)" },
+    ".erf-pop-source": { color: "var(--accent, #1a3a6e)", fontStyle: "italic" },
   });
 }
 
@@ -278,8 +372,9 @@ export function createEditor(parent: HTMLElement, text: string, opts?: { autosav
         syntaxHighlighting(highlight),
         marksField,
         decorations,
-        hoverTooltip((v, pos) => bindingTooltip(v.state, pos), { hideOn: () => false }),
-        keymap.of([{ key: "Mod-s", preventDefault: true, run: save }, ...historyKeymap, ...defaultKeymap]),
+        popoverField,
+        popoverHandlers,
+        keymap.of([{ key: "Mod-s", preventDefault: true, run: save }, { key: "Escape", run: closePopover }, ...historyKeymap, ...defaultKeymap]),
         theme(),
         EditorView.updateListener.of((u) => {
           if (u.docChanged && !u.transactions.some((t) => t.annotation(external))) {

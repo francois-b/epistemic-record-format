@@ -432,6 +432,24 @@ test("narrative status: a flag carries what it asked for, and a binding resolves
   assert.equal((T.narrativeStatus(c, { narrative: n.slug }).data as { flags: T.FlagItem[] }).flags[0]!.research, "mint");
 });
 
+test("a binding carries each claim's atoms with their side, finding and source page, for the editor's popover", () => {
+  const c = fresh();
+  const n = loadCorpus(c.dir).narratives[0]!;
+  const { bindings } = T.narrativeRead(c, { narrative: n.slug }).data as { bindings: T.BindingItem[] };
+  const infos = bindings.flatMap((b) => Object.values(b.claimInfo ?? {}));
+  assert.ok(infos.length > 0, "the minimal narrative binds claims");
+  for (const i of infos) assert.equal(i.evidence, i.atoms?.length ?? 0, "evidence counts the atoms listed");
+  const backed = infos.find((i) => (i.atoms?.length ?? 0) > 0)!;
+  assert.ok(backed, "at least one bound claim is backed");
+  for (const a of backed.atoms!) {
+    assert.ok(a.id && a.finding && a.source, "each atom names itself, its finding and its source");
+    assert.ok(a.side === "for" || a.side === "against");
+    assert.equal(typeof a.citation, "string", "the source's citation travels with the atom");
+  }
+  const unbacked = infos.find((i) => i.evidence === 0)!;
+  assert.ok(!("atoms" in unbacked), "an unbacked claim carries no atoms key");
+});
+
 test("an anchor chosen from a displayed line still finds a hand-wrapped passage", () => {
   const c = fresh();
   const n = loadCorpus(c.dir).narratives[0]!;

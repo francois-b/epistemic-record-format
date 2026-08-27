@@ -3,6 +3,8 @@
 A markdown editor over a narrative's source, with the record drawn on top of
 it: flagged passages underlined, bound passages marked with what they rest on,
 binding markers collapsed to a diamond that expands when the cursor enters it.
+A click on a bound passage opens a card listing its claims one at a time, each
+with its atoms and a link to the page each was captured from.
 
 It is host-agnostic on purpose. It knows how to show text, where a flag and a
 binding sit in it, and when the person selected something or asked to save. It
@@ -43,7 +45,9 @@ and whatever structural highlighting the markdown parser gives for free.
 
 - `src/marks.ts` : the arithmetic. Pure functions over the document as a
   string, no CodeMirror and no DOM. Where an anchor sits, what paragraph holds
-  it, which class a binding status takes, what a tooltip says.
+  it, which class a binding status takes.
+- `src/popover.ts` : the binding card's state. What a click opens or closes,
+  which claim is showing, where a source link goes. Pure, tested.
 - `src/index.ts` : the view. CodeMirror wiring and nothing else, kept thin
   because it is the part that is not unit-tested.
 - `test/marks.test.ts` : `node --test tools/editor/test/marks.test.ts`, or

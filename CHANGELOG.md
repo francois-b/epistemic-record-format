@@ -9,6 +9,15 @@ everything else.
 
 ## Unreleased
 
+Tooling, 2026-08-27: no requirement changed. The app and the editor, after a
+first day of use. A record shown inline in the app is a card (title, what it
+is, counts under each heading; the page is one press of open away). The
+editor's binding card opens on a click rather than on hover, shows the
+passage's claims one at a time with each atom's finding and a link to the page
+it was captured from, and `erf_narrative_read`/`_status` carry those atoms in
+`claimInfo` for it. Bold, italic and headings read as they render in the
+editor, their marks hidden until the cursor is in the span.
+
 Tooling, 2026-08-27: no requirement changed. erf-mcp 0.4.0 cuts what a backing
 run costs in tool calls, and lets two workers hold one corpus at once.
 `erf_source_add` takes `found_by`, the search act that led to the page, and
