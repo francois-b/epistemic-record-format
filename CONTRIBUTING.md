@@ -78,3 +78,22 @@ suites under `conformance/`) is contributed under
 both, each over the part it covers. An implementation is not a derivative work
 of the specification, and neither licence reaches the corpora you build: what
 you record is yours.
+
+## Publishing the reference validator
+
+`validator/yaml-markdown/typescript/` is the npm package `@erf/validator`.
+Its version is the implementation's own and moves independently of the
+specification; `erf.spec_version` in its `package.json` and the exported
+`SPEC_VERSION` say which spec version a build implements. To publish:
+
+```
+cd validator/yaml-markdown/typescript
+npm run build && npm test --prefix ../../../conformance   # the suite is the gate
+npm version patch|minor|major
+npm publish --access public                               # needs npm login and the erf org
+```
+
+`prepack` rebuilds `dist/`, so a stale build cannot be published. The
+schema ships inside the package (`@erf/validator/schema`) and also at its
+`$id` URL on the site; the two are the same bytes by construction.
+

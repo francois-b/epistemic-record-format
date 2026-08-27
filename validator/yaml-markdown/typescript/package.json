@@ -1,13 +1,14 @@
 {
-  "name": "erf-check",
-  "version": "1.0.2",
-  "private": true,
-  "description": "Reference validator for the Epistemic Record Format: loads a corpus against the schema, computes every derived reading from the specification text, reports violations and flags.",
+  "name": "@erf/validator",
+  "version": "0.1.0",
+  "description": "Reference validator for the Epistemic Record Format (YAML/Markdown serialization): loads a corpus against the schema and computes every derived reading from the specification text.",
   "type": "module",
   "bin": {
-    "erf-check": "./erf-check.ts"
+    "erf-check": "./dist/validator/yaml-markdown/typescript/erf-check.js"
   },
   "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && mkdir -p dist/schema && cp ../../../schema/erf.schema.json dist/schema/ && sed -i '' '1s#^\\#!/usr/bin/env -S npx tsx$#\\#!/usr/bin/env node#' dist/validator/yaml-markdown/typescript/erf-check.js && chmod +x dist/validator/yaml-markdown/typescript/erf-check.js",
+    "prepack": "npm run build",
     "check": "tsx erf-check.ts ../../../examples/corpora/minimal",
     "typecheck": "tsc --noEmit"
   },
@@ -22,5 +23,39 @@
     "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0"
-  }
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/francois-b/epistemic-record-format",
+    "directory": "validator/yaml-markdown/typescript"
+  },
+  "homepage": "https://github.com/francois-b/epistemic-record-format",
+  "keywords": [
+    "epistemic-record-format",
+    "erf",
+    "provenance",
+    "claims",
+    "evidence",
+    "validator"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "erf": {
+    "spec_version": "0.9.0",
+    "serialization": "yaml-markdown"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/validator/yaml-markdown/typescript/index.d.ts",
+      "import": "./dist/validator/yaml-markdown/typescript/index.js"
+    },
+    "./schema": "./dist/schema/erf.schema.json",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
 }

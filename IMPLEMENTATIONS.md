@@ -21,7 +21,7 @@ waits on implementations other than the author's.
 
 | Name | Language | Spec version | Conformance classes | Link |
 |---|---|---|---|---|
-| | | | | |
+| `@erf/validator` (`erf-check`), the reference | TypeScript | 0.9.0 | corpus, consumer; the conformance suite runs against it | [`validator/yaml-markdown/typescript/`](validator/yaml-markdown/typescript/), npm `@erf/validator` |
 
 **To add yours**, open a pull request adding a row: the name, the language,
 the specification version you built against, which conformance classes you

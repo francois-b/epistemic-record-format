@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "rootDir": "../../..",
+    "outDir": "dist",
+    "rewriteRelativeImportExtensions": true,
+    "allowImportingTsExtensions": true,
+    "sourceMap": false
+  },
+  "include": ["index.ts", "corpus.ts", "compute.ts", "erf-check.ts", "../../../schema/erf.generated.ts"]
+}

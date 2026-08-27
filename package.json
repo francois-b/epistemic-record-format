@@ -11,7 +11,8 @@
     "test": "npm test --prefix conformance && npm test --prefix tools/mcp-server",
     "site": "./site/build.sh",
     "types": "python3 tools/generate/generate-types.py --write",
-    "mcp": "tools/mcp-server/node_modules/.bin/tsx tools/mcp-server/src/index.ts"
+    "mcp": "tools/mcp-server/node_modules/.bin/tsx tools/mcp-server/src/index.ts",
+    "build:validator": "npm run build --prefix validator/yaml-markdown/typescript"
   },
   "devDependencies": {
     "json-schema-to-typescript": "^15.0.0"
