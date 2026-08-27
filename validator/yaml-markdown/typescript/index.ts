@@ -1,14 +1,14 @@
 /**
- * @erf/validator: the reference implementation of the Epistemic Record
+ * @epistemic-record-format/validator: the reference implementation of the Epistemic Record
  * Format for the YAML/Markdown serialization, as a library.
  *
- *   import { loadCorpus, disposition, quoteCheck } from "@erf/validator";
+ *   import { loadCorpus, disposition, quoteCheck } from "@epistemic-record-format/validator";
  *
  * `loadCorpus(dir)` reads a corpus folder into the model, validating every
  * document against the schema; the functions in `compute` derive every
  * reading the specification defines, from the records alone. The command
  * line `erf-check` is the same code. The schema this build was generated
- * against ships with the package (`@erf/validator/schema`).
+ * against ships with the package (`@epistemic-record-format/validator/schema`).
  */
 export const SPEC_VERSION = "0.9.0";
 
