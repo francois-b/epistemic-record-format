@@ -183,6 +183,8 @@ function popoverTooltip(p: Popover): Tooltip {
 function createPopover(view: EditorView): TooltipView {
   const dom = document.createElement("div");
   dom.className = "erf-pop";
+  // a button in the card takes focus from the editor, so Escape has to be answered here as well
+  dom.addEventListener("keydown", (e) => { if (e.key === "Escape") { e.preventDefault(); closePopover(view); view.focus(); } });
   const paint = (p: Popover | null): void => { if (p) renderPopover(dom, p, view); };
   paint(view.state.field(popoverField));
   return { dom, update(u: ViewUpdate) { if (u.state.field(popoverField) !== u.startState.field(popoverField)) paint(u.state.field(popoverField)); } };
@@ -205,6 +207,8 @@ function renderPopover(dom: HTMLElement, p: Popover, view: EditorView): void {
     const prev = el("button", "erf-pop-arrow", "‹"); prev.title = "previous claim"; prev.type = "button";
     const next = el("button", "erf-pop-arrow", "›"); next.title = "next claim"; next.type = "button";
     const go = (d: 1 | -1) => (e: Event) => { e.preventDefault(); const cur = view.state.field(popoverField); if (cur) view.dispatch({ effects: popoverEffect.of(step(cur, d)) }); };
+    // the arrows step without taking focus, so the cursor stays where it was and Escape still reaches the editor
+    for (const b of [prev, next]) b.addEventListener("mousedown", (e) => e.preventDefault());
     prev.addEventListener("click", go(-1)); next.addEventListener("click", go(1));
     nav.append(prev, el("span", "erf-pop-count", `${card.at}/${card.of}`), next);
     head.appendChild(nav);
