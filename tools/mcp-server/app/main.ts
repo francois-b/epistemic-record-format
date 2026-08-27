@@ -179,6 +179,8 @@ const toggle = async () => {
   catch (e) { status.textContent = `display mode: ${String(e)}`; }
 };
 toggleBtn.addEventListener("click", () => void toggle());
+// the page a chat holds is the server's answer at the time; ↻ asks again
+document.getElementById("refresh")!.addEventListener("click", () => { if (current) void open(current.page); });
 
 await app.connect();
 const ctx = app.getHostContext() as { theme?: string; displayMode?: typeof mode } | undefined;
