@@ -9,6 +9,14 @@ everything else.
 
 ## Unreleased
 
+Tooling and pattern, 2026-08-27: no requirement changed. A flag's anchor is its
+scope. `erf_flags` lists each flag's scope and shows the passage around it as
+context with the scope marked «so»; `decompose-passage` takes the span and
+confines its proposals to it, the rest of the passage waiting under "also in
+this passage, not flagged" for its own flag; `work-the-flags` and the
+narrative backing loop say the same. Found when a flag on one sentence came
+back as four claims over its paragraph.
+
 Tooling, 2026-08-27: no requirement changed. The app and the editor, after a
 first day of use. A record shown inline in the app is a card (title, what it
 is, counts under each heading; the page is one press of open away). The

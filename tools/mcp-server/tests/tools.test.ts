@@ -319,6 +319,7 @@ test("flags: mark a passage, list it with its text, binding the passage resolves
   assert.match(r.text, /flag #1 .* 1 open flag/);
   assert.throws(() => T.flag(c, { narrative: n.slug, anchor }), /already flagged/);
   assert.match(T.flags(c, {}).text, /#1 \[open\][\s\S]*back this/);
+  assert.match(T.flags(c, {}).text, /scope "[^"]+"[\s\S]*passage \(context, scope marked «»\): [^\n]*«[^»]+»/); // the anchor is the scope; the passage is context
   assert.match(T.viewPage(c, { page: `narrative:${n.slug}` }).html, /<mark class="flag"/);
   T.claimMint(c, { id: "flagged-claim", title: "A claim from a flagged passage", epistemic_kind: "commitment" });
   const b = T.narrativeBind(c, { narrative: n.slug, anchor, claims: ["flagged-claim"] });

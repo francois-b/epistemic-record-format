@@ -458,8 +458,10 @@ export function flags(c: Corpus, a: { narrative?: string; all?: boolean }): Resu
   const lines = list.map((f) => {
     if (!cache.has(f.narrative)) cache.set(f.narrative, proseOf(c, f.narrative).prose);
     const prose = cache.get(f.narrative)!; const at = prose.indexOf(f.anchor);
-    const passage = at >= 0 ? passageAround(prose, at) : "(anchor no longer occurs; the prose moved)";
-    return `#${f.id} [${f.status}] ${f.narrative} · research ${f.research ?? "mint"} · anchor "${f.anchor}"${f.note ? ` · ${f.note}` : ""}${takenNote(f)}${f.claims?.length ? ` · bound to ${f.claims.join(", ")}` : ""}\n  ${passage}`;
+    // the anchor is the scope of the flag: what the person selected is what gets decomposed and backed; the passage
+    // around it is context, shown with the scope marked «so» (a flag on one sentence is not a flag on its paragraph)
+    const passage = at >= 0 ? passageAround(prose, at).replace(f.anchor, `«${f.anchor}»`) : "(anchor no longer occurs; the prose moved)";
+    return `#${f.id} [${f.status}] ${f.narrative} · research ${f.research ?? "mint"} · scope "${f.anchor}"${f.note ? ` · ${f.note}` : ""}${takenNote(f)}${f.claims?.length ? ` · bound to ${f.claims.join(", ")}` : ""}\n  passage (context, scope marked «»): ${passage}`;
   });
   return { text: `${list.length} flag(s):\n` + lines.join("\n") };
 }
