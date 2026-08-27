@@ -354,17 +354,32 @@ export function claimStand(c: Corpus, a: { id: string; stance: string; why: stri
 
 // ---------- surveys ----------
 
-export function surveyRecord(c: Corpus, a: { id: string; title: string; coverage_bounds: string; summary?: string; from_log?: string; for?: string; searches?: { tool: string; query: string; hits_reported: string; scope?: string }[]; notable_results?: { what: string; note: string; atoms?: string[] }[]; prior_survey?: string }): Result {
+/** A source the survey went looking for by name, and what became of it. Producer machinery in the body (the format has no field: B-71). */
+export interface Target { name: string; status: "held" | "unreachable" | "not-found" | "not-searched"; note?: string; source?: string }
+const TARGET_STATUS = ["held", "unreachable", "not-found", "not-searched"] as const;
+
+/** The "Sources sought" section of a survey body, and the one-line count for its coverage text. */
+export function targetsSection(targets: Target[]): { section: string; count: string } {
+  const n = (s: Target["status"]) => targets.filter((t) => t.status === s).length;
+  const count = `${targets.length} named: ${n("held")} held, ${n("unreachable")} unreachable, ${n("not-found")} not found, ${n("not-searched")} not searched`;
+  const section = `## Sources sought\n\n${targets.map((t) => `- **${t.name}** · ${t.status}${t.source ? ` (${t.source})` : ""}${t.note ? ` · ${t.note}` : ""}`).join("\n")}`;
+  return { section, count };
+}
+
+export function surveyRecord(c: Corpus, a: { id: string; title: string; coverage_bounds: string; summary?: string; from_log?: string; for?: string | string[]; searches?: { tool: string; query: string; hits_reported: string; scope?: string }[]; notable_results?: { what: string; note: string; atoms?: string[] }[]; prior_survey?: string; targets?: Target[] }): Result {
   const decl = readDeclaration(c);
   if (!/^[a-z0-9][a-z0-9-]*$/.test(a.id)) throw new Refusal("survey id must be a lowercase slug; end it with the conducted date (ERF-28)");
   if (idInUse(c, a.id)) throw new Refusal(`id ${a.id} is already used by a record (ERF-36)`);
   let searches = a.searches ?? [];
+  // `for` is one question or several: a survey's acts may have been logged under a claim id and a topic
+  // (the 2026-08-27 survey on the 1990s missed the search logged under its second question)
+  const fors = (Array.isArray(a.for) ? a.for : a.for ? [a.for] : []).map((x) => x.trim()).filter(Boolean);
   if (a.from_log) {
     const day = readLog(c).filter((e) => e.kind === "search" && e.ts.startsWith(a.from_log!));
     const tags = [...new Set(day.map((e) => e.for ?? "(untagged)"))];
-    if (!a.for) throw new Refusal(`say what this survey is for (\`for\`); the log for ${a.from_log} holds acts for: ${tags.join(", ") || "nothing"}. A survey compiles only the acts that were looking for its own question`);
-    const acts = day.filter((e) => e.for === a.for);
-    if (!acts.length) throw new Refusal(`no search act on ${a.from_log} was logged for ${a.for}; acts that day were for: ${tags.join(", ") || "nothing"}. Run and log the searches, then record the survey (ERF-26)`);
+    if (!fors.length) throw new Refusal(`say what this survey is for (\`for\`, one question or a list); the log for ${a.from_log} holds acts for: ${tags.join(", ") || "nothing"}. A survey compiles only the acts that were looking for its own question`);
+    const acts = day.filter((e) => e.for && fors.includes(e.for));
+    if (!acts.length) throw new Refusal(`no search act on ${a.from_log} was logged for ${fors.join(" or ")}; acts that day were for: ${tags.join(", ") || "nothing"}. Run and log the searches, then record the survey (ERF-26)`);
     searches = [...searches, ...acts.map((e) => ({ tool: e.tool, query: e.query ?? "", hits_reported: e.hits_reported ?? "not recorded", scope: e.scope, timestamp: e.ts }))];
   }
   if (!searches.length) throw new Refusal("a survey records at least one search act; nothing is in the log for that day and none was given (ERF-26)");
@@ -372,10 +387,19 @@ export function surveyRecord(c: Corpus, a: { id: string; title: string; coverage
   const atoms = recordFiles(c, "atom");
   for (const r of a.notable_results ?? []) for (const id of r.atoms ?? []) if (!atoms.has(id)) throw new Refusal(`atom ${id} does not exist (ERF-35)`);
   if (a.prior_survey && !recordFiles(c, "survey").has(a.prior_survey)) throw new Refusal(`prior survey ${a.prior_survey} does not exist`);
+  const targets = a.targets ?? [];
+  const sources = targets.length ? readSourceList(c) : {};
+  for (const t of targets) {
+    if (!t.name?.trim()) throw new Refusal("each target names the source sought");
+    if (!(TARGET_STATUS as readonly string[]).includes(t.status)) throw new Refusal(`a target's status is one of ${TARGET_STATUS.join(", ")}`);
+    if (t.source && !sources[t.source]) throw new Refusal(`target "${t.name}" names source ${t.source}, which is not registered`);
+    if (t.status === "held" && !t.source) throw new Refusal(`target "${t.name}" is held: say which registered source holds it`);
+  }
   const fm = { id: a.id, type: "survey", corpus: decl.id, title: a.title, conducted: { timestamp: today(), by: c.options.agent }, searches, notable_results: a.notable_results, prior_survey: a.prior_survey };
-  const body = `${a.title}${a.summary ? `: ${a.summary.trim()}` : "."}\n\nCoverage bounds: ${a.coverage_bounds.trim()}`;
+  const sought = targets.length ? targetsSection(targets) : null;
+  const body = `${a.title}${a.summary ? `: ${a.summary.trim()}` : "."}\n\nCoverage bounds: ${a.coverage_bounds.trim()}${sought ? ` Sources sought by name, ${sought.count}.\n\n${sought.section}` : ""}`;
   const path = writeRecord(c, "survey", a.id, fm, body);
-  return finish(c, `survey ${a.id} recorded with ${searches.length} act(s)`, [path], `record survey ${a.id}`);
+  return finish(c, `survey ${a.id} recorded with ${searches.length} act(s)${targets.length ? ` and ${targets.length} source(s) sought (${sought!.count})` : ""}`, [path], `record survey ${a.id}`);
 }
 
 // ---------- flags ----------

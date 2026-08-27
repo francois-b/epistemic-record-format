@@ -251,6 +251,17 @@ test("surveys: from the research log, and refused with no acts", () => {
   // a gap claim backed by the survey
   T.claimMint(c, { id: "no-such-tool", title: "No shipped tool runs a continuous claim check", epistemic_kind: "observation", surveys: [`claim-check-tools-${day}`] });
   clean(c);
+  // `for` as a list compiles acts logged under either question; targets go into the body under Sources sought
+  T.searchLog(c, { tool: "web search", query: "enterprise 2.0 wikis", hits_reported: "9 results", for: "km-second-attempt" });
+  assert.throws(() => T.surveyRecord(c, { id: `both-${day}`, title: "T", coverage_bounds: "x", from_log: day, for: ["no-such-tool", "coding-tooling-ahead"], targets: [{ name: "HBR 1999", status: "held" }] }), /which registered source/);
+  const r2 = T.surveyRecord(c, { id: `both-${day}`, title: "Both questions", coverage_bounds: "open web, one day.", from_log: day, for: ["no-such-tool", "km-second-attempt"],
+    targets: [{ name: "Hansen, Nohria and Tierney 1999, HBR", status: "unreachable", note: "not openly hosted; a study-notes copy refused" }, { name: "McAfee 2006, MIT SMR", status: "not-searched" }] });
+  assert.match(r2.text, /2 act\(s\) and 2 source\(s\) sought/);
+  const s2 = loadCorpus(c.dir).surveys.get(`both-${day}`)!;
+  assert.deepEqual(s2.searches.map((x) => x.query).sort(), ["continuous claim check tools", "enterprise 2.0 wikis"]);
+  assert.match(s2.body, /Sources sought by name, 2 named: 0 held, 1 unreachable, 0 not found, 1 not searched\./);
+  assert.match(s2.body, /## Sources sought\n\n- \*\*Hansen, Nohria and Tierney 1999, HBR\*\* · unreachable · not openly hosted/);
+  clean(c);
 });
 
 test("narratives: bind inserts a marker the validator reads; check reports; update makes it stale; replace rewrites", () => {

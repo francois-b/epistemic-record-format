@@ -70,7 +70,7 @@ wrote. Every refusal names the requirement. Nothing writes a raw file.
 | `erf_claim_mint(id, title, epistemic_kind, atoms_for?, atoms_against?, surveys?, edges?, families?, notes?)` | writes the claim; body opens with the title verbatim (`ERF-18`) | id in use; any referenced id unresolved; a self-edge (`ERF-43`) |
 | `erf_claim_update(id, title?, atoms_for?, atoms_against?, surveys?, edges?, families?, notes?)` | rewrites the named fields, stamps `last_modified` | unresolved ids; an attempt to touch `standings` or `evidence_audit` |
 | `erf_claim_stand(id, stance, why)` | appends a standing under the corpus owner with a full RFC 3339 instant (`ERF-19`, `ERF-40`); returns the computed disposition | empty `why`; no `owner` on the declaration |
-| `erf_survey_record(id, title, notable_results?, coverage_bounds, from_log?: date + for, searches?: [...])` | writes the survey; `searches` come from the research log for the given day **and question** (`for`), or from the argument | no acts at all (`ERF-26`); `hits_reported` missing; `from_log` without `for`; no act logged for `for` |
+| `erf_survey_record(id, title, notable_results?, coverage_bounds, from_log?: date + for, searches?: [...], targets?: [...])` | writes the survey; `searches` come from the research log for the given day **and question** (`for`: one, or a list when the acts were logged under more than one), or from the argument; `targets` are the sources sought by name with what became of each (held, unreachable, not-found, not-searched), written into the body under "Sources sought" and counted in the coverage text (the format has no field: `B-71`) | no acts at all (`ERF-26`); `hits_reported` missing; `from_log` without `for`; no act logged for any `for`; a held target with no registered source |
 | `erf_flag_take(id, by?)` | takes an open flag for one worker, so a queue can be shared; a take goes stale after 30 minutes and nothing ever clears it | the flag is resolved; someone else took it inside the last 30 minutes |
 | `erf_flag(narrative, anchor, note?, research?)` / `erf_flags(narrative?, all?)` / `erf_flag_resolve(id)` | a passage marked to back later, in `flags.jsonl` (a working file, not a record); listed with its passage text and what it asked for; resolved by the binding that covers its anchor. `research` is `mint` (propose claims, stop for the ruling), `back` (gather the evidence after it, then bind) or `opposite` (and state the case against before anyone stands); absent on older flags and read as `mint`. The pattern: `docs/patterns/narrative-backing-loop.md` | anchor not in the narrative, or not unique; already flagged; an unknown `research` |
 | `erf_narrative_bind(narrative, anchor, claims, replace?: true)` | inserts the `YAMLB-1` marker after the passage ending with `anchor`, `bound-at` today; with `replace`, rewrites the marker already on that passage | anchor not found or found twice; a claim id unresolved |
@@ -176,7 +176,9 @@ line: `{ts, kind: "search"|"fetch", for?, tool, query?, hits_reported?,
 scope?, url?, source?}`. `for` is what a search was looking for (a claim id
 or a topic); a survey compiles only the acts logged for its own question,
 so a day's searches for one claim can never become backing for another
-(found on the first Desktop session, by the model refusing exactly that). Written by `erf_search_log` and by every capture. It is a
+(found on the first Desktop session, by the model refusing exactly that);
+`for` takes a list when one survey's acts were logged under two questions,
+which is how the 2026-08-27 survey on the 1990s lost one of its three. Written by `erf_search_log` and by every capture. It is a
 working file of the producer, not a record: the format says nothing about
 it, which is the right boundary. `erf_survey_record(from_log)` reads it.
 
