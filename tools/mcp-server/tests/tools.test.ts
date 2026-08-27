@@ -10,7 +10,7 @@ import { cpSync, mkdtempSync, readFileSync, writeFileSync, existsSync } from "no
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { openCorpus, Refusal, type Corpus } from "../src/corpus.ts";
+import { openCorpus, readLog, readSourceList, Refusal, type Corpus } from "../src/corpus.ts";
 import * as T from "../src/tools.ts";
 import { normalizeText } from "../src/capture.ts";
 import { loadCorpus } from "@epistemic-record-format/yaml-markdown";
@@ -70,6 +70,52 @@ test("source_add from a path holds raw and normalized text, and the atom quote c
   // unknown source, unheld source
   await refuses(() => T.atomMint(c, { source: "nope", quote: "x", finding: "y", source_quality: "high" }), /not registered/);
   await refuses(() => T.atomMint(c, { source: "memo-2026", quote: "x", finding: "y", source_quality: "high", as_of_date: "2026-08-26T10:00:00Z" }), /ERF-14/);
+});
+
+test("source_add returns the passage, and logs the search that found the page", async () => {
+  const c = fresh();
+  writeFileSync(join(c.dir, "note.md"), "Preamble sentence.\n\nThe citators disagree with each other on negative treatment.\n\nA closing line.\n");
+
+  // no found_by: nothing is logged but the fetch of the page itself
+  const plain = await T.sourceAdd(c, { id: "note-a", citation_text: "A note, 2026", path: "note.md" });
+  const afterPlain = readLog(c);
+  assert.deepEqual(afterPlain.map((e) => e.kind), ["fetch"], "a capture with no found_by logs no search act");
+  assert.match(plain.text, /chars held[\s\S]*The citators disagree/, "the opening of the held text comes back with the capture");
+  const pd = plain.data as { id: string; held: boolean; chars: number; windows: { at: number; text: string }[] };
+  assert.deepEqual([pd.id, pd.held, pd.windows.length], ["note-a", true, 0]);
+  assert.ok(pd.chars > 0);
+
+  // find: the windows the quote check would fold, so a quote is chosen without a second call
+  const found = await T.sourceAdd(c, {
+    id: "note-b", citation_text: "A note, 2026", path: "note.md",
+    find: "citators disagree with each other",
+    found_by: { tool: "web search", query: "citator negative treatment disagreement", hits_reported: "8 results", for: "citators-disagree" },
+  });
+  const d = found.data as { id: string; held: boolean; chars: number; windows: { at: number; text: string }[] };
+  assert.equal(d.windows.length, 1);
+  assert.match(d.windows[0]!.text, /citators disagree with each other/);
+  assert.match(found.text, /1 match\(es\) for "citators disagree with each other"/);
+  assert.ok(found.text.trimEnd().endsWith("…"), "the result text ends with the passage");
+  assert.match(found.text, /logged search at .* for citators-disagree: web search/);
+
+  const log = readLog(c);
+  const search = log.filter((e) => e.kind === "search");
+  assert.equal(search.length, 1, "found_by logged exactly one act");
+  assert.equal(search[0]!.for, "citators-disagree");
+  const fetches = log.filter((e) => e.kind === "fetch" && e.source === "note-b");
+  assert.equal(fetches.length, 1);
+  assert.ok(log.indexOf(search[0]!) < log.indexOf(fetches[0]!), "the search act is logged before the capture it led to");
+  assert.ok(search[0]!.ts <= fetches[0]!.ts, "and dated before it");
+
+  // an incomplete found_by refuses before anything is captured
+  await refuses(() => T.sourceAdd(c, { id: "note-c", citation_text: "A note, 2026", path: "note.md", found_by: { tool: "web search", query: "x", hits_reported: "1", for: " " } }), /what the search was for/);
+  assert.equal(readSourceList(c)["note-c"], undefined, "the refused capture registered nothing");
+
+  // a phrase that is not in the text says so, and shows the opening anyway
+  const miss = await T.sourceAdd(c, { id: "note-d", citation_text: "A note, 2026", path: "note.md", find: "words that are not there" });
+  assert.match(miss.text, /no match for "words that are not there" under the fold/);
+  assert.equal((miss.data as { windows: unknown[] }).windows.length, 0);
+  clean(c);
 });
 
 test("source_add refuses a URL when fetching is off, a URL in citation_text, and a duplicate id", async () => {

@@ -10,7 +10,7 @@ import { join, relative } from "node:path";
 import {
   Refusal, type Corpus, readDeclaration, readSourceList, load, writeRecord, writeYamlDocument,
   readRecordFile, recordFiles, nextAtomId, idInUse, today, now, appendLog, readLog,
-  declarationPath, sourceListPath, commit, frontmatter, readFlags, writeFlags, flagsPath, type Flag,
+  declarationPath, sourceListPath, commit, frontmatter, readFlags, writeFlags, flagsPath, type Flag, type LogEntry,
   RESEARCH, type Research,
 } from "./corpus.ts";
 import { captureUrl, capturePath } from "./capture.ts";
@@ -89,13 +89,48 @@ export function corpusCheck(c: Corpus): Result {
 
 // ---------- sources ----------
 
-export async function sourceAdd(c: Corpus, a: { id: string; citation_text: string; url?: string; path?: string; licence?: string; licence_name?: string; not_redistributable?: boolean }): Promise<Result> {
+/** The search act that led to a page, logged in the same call that captures it. */
+export interface FoundBy { tool: string; query: string; hits_reported: string; scope?: string; for: string }
+
+/** How much of a held text comes back when no phrase was asked for. */
+const OPENING = 1200;
+
+/**
+ * Windows of a held text around every occurrence of `find`, at most five,
+ * read the way the quote check reads it (`ERF-51`'s fold). `at` is the offset
+ * in the folded text, so a caller can tell two windows apart. Both
+ * `erf_source_read` and the passage `erf_source_add` returns come from here,
+ * so the two can never show a phrase differently.
+ */
+function windowsAround(text: string, find: string, window?: number): { at: number; text: string }[] {
+  const w = Math.min(Math.max(window ?? 600, 100), 4000);
+  const h = normalizeForCheck(text), q = normalizeForCheck(find);
+  const out: { at: number; text: string }[] = [];
+  let from = 0;
+  while (out.length < 5) {
+    const at = findWholeWords(h, q, from);
+    if (at < 0) break;
+    out.push({ at, text: h.slice(Math.max(0, at - w / 2), Math.min(h.length, at + q.length + w / 2)).replace(/\s+/g, " ").trim() });
+    from = at + q.length;
+  }
+  return out;
+}
+
+/** The windows as a reader sees them, numbered and elided at both ends. */
+function windowLines(windows: { at: number; text: string }[]): string {
+  return windows.map((x, i) => `[${i + 1}] …${x.text}…`).join("\n\n");
+}
+
+export async function sourceAdd(c: Corpus, a: { id: string; citation_text: string; url?: string; path?: string; licence?: string; licence_name?: string; not_redistributable?: boolean; find?: string; window?: number; found_by?: FoundBy }): Promise<Result> {
   readDeclaration(c);
   if (!/^[a-z0-9][a-z0-9-]*$/.test(a.id)) throw new Refusal("source id must be a lowercase slug");
   const sources = readSourceList(c);
   if (sources[a.id]) throw new Refusal(`source ${a.id} is already registered`);
   if (!a.url && !a.path) throw new Refusal("give a url (with fetching on) or a path to a file inside the corpus");
   if (/https?:\/\//.test(a.citation_text)) throw new Refusal("citation_text names the work and never carries a URL; the URL goes in received.url (ERF-7)");
+  // the act that led here goes in the log before the page is held, which is the order
+  // the survey gate assumes: log, then capture, then quote.
+  const found = a.found_by ? logSearchAct(c, a.found_by) : null;
   const cap = a.url ? await captureUrl(c, a.id, a.url) : capturePath(c, a.id, a.path!);
   const status = a.not_redistributable ? "not-redistributable" : a.licence ? "shipped" : "licence-unverified";
   const entry: Source = {
@@ -115,15 +150,39 @@ export async function sourceAdd(c: Corpus, a: { id: string; citation_text: strin
   writeYamlDocument(sourceListPath(c), { type: "sources", sources });
   appendLog(c, { kind: "fetch", tool: a.url ? "erf_source_add(url)" : "erf_source_add(path)", url: a.url, path: a.path, source: a.id });
   const wrote = [sourceListPath(c), join(c.dir, cap.rawPath), join(c.dir, cap.normalizedPath)];
-  return finish(c, `source ${a.id} registered: ${cap.bytes} bytes held (${cap.rawDigest.slice(0, 19)}…), normalized ${cap.normalizedPath}${cap.title ? `, title "${cap.title}"` : ""}; status ${status}`, wrote, `register source ${a.id}`);
+  // the held text comes back with the capture, so a quote can be chosen without reading the source again
+  const normAbs = join(c.dir, cap.normalizedPath);
+  const held = existsSync(normAbs);
+  const heldText = held ? readFileSync(normAbs, "utf8") : "";
+  const windows = a.find ? windowsAround(heldText, a.find, a.window) : [];
+  const passage = !held ? "(no held text; quotes from this source cannot be checked)"
+    : a.find && windows.length ? `${windows.length} match(es) for "${a.find}" (text shown folded, as the quote check reads it):\n\n${windowLines(windows)}`
+    : a.find ? `no match for "${a.find}" under the fold; the opening of the held text instead:\n\n${heldText.slice(0, OPENING)}`
+    : `${heldText.length} chars held${heldText.length > OPENING ? `; first ${OPENING} shown, use find or erf_source_read to see more` : ""}:\n\n${heldText.slice(0, OPENING)}`;
+  const head = `${found ? `${actLine(found)}\n` : ""}source ${a.id} registered: ${cap.bytes} bytes held (${cap.rawDigest.slice(0, 19)}…), normalized ${cap.normalizedPath}${cap.title ? `, title "${cap.title}"` : ""}; status ${status}`;
+  const r = finish(c, head, wrote, `register source ${a.id}`);
+  return { ...r, text: `${r.text}\n\n${passage}`, data: { id: a.id, held, chars: heldText.length, windows } };
 }
 
-export function searchLog(c: Corpus, a: { tool: string; query: string; hits_reported: string; scope?: string; for?: string }): Result {
+/**
+ * One search act into the log, checked. `erf_search_log` and the `found_by`
+ * of a capture both come through here, so a search logged beside its page is
+ * logged exactly as a search logged on its own.
+ */
+function logSearchAct(c: Corpus, a: { tool: string; query: string; hits_reported: string; scope?: string; for?: string }): LogEntry {
   if (!a.query.trim()) throw new Refusal("a search act needs its query");
   if (!a.hits_reported.trim()) throw new Refusal("record the hits as the instrument reported them, even if that is \"not recorded\" (ERF-27)");
   if (!a.for?.trim()) throw new Refusal("say what the search was for: a claim id or a short topic. A survey compiles only the acts that were looking for its question; an act with no `for` can back nothing");
-  const e = appendLog(c, { kind: "search", tool: a.tool, query: a.query, hits_reported: a.hits_reported, scope: a.scope, for: a.for.trim() });
-  return { text: `logged search at ${e.ts} for ${a.for.trim()}: ${a.tool} · "${a.query}" · ${a.hits_reported}` };
+  return appendLog(c, { kind: "search", tool: a.tool, query: a.query, hits_reported: a.hits_reported, scope: a.scope, for: a.for.trim() });
+}
+
+/** How one logged act reads back to the caller. */
+function actLine(e: LogEntry): string {
+  return `logged search at ${e.ts} for ${e.for}: ${e.tool} · "${e.query}" · ${e.hits_reported}`;
+}
+
+export function searchLog(c: Corpus, a: { tool: string; query: string; hits_reported: string; scope?: string; for?: string }): Result {
+  return { text: actLine(logSearchAct(c, a)) };
 }
 
 // ---------- atoms ----------
@@ -628,12 +687,9 @@ export function sourceRead(c: Corpus, a: { id: string; find?: string; window?: n
   const head = `source ${a.id} [${src.status}] ${src.citation_text}` + (src.received?.url ? `\nurl: ${src.received.url}` : "") + (src.normalized ? `\nnormalized: ${src.normalized}` : "");
   if (!src.normalized || !existsSync(join(c.dir, src.normalized))) return { text: `${head}\n(no held text; quotes from this source cannot be checked)` };
   const text = readFileSync(join(c.dir, src.normalized), "utf8");
-  const w = Math.min(Math.max(a.window ?? 600, 100), 4000);
   if (a.find) {
-    const h = normalizeForCheck(text), q = normalizeForCheck(a.find);
-    const hits: string[] = []; let from = 0;
-    while (hits.length < 5) { const at = findWholeWords(h, q, from); if (at < 0) break; hits.push(h.slice(Math.max(0, at - w / 2), Math.min(h.length, at + q.length + w / 2)).replace(/\s+/g, " ").trim()); from = at + q.length; }
-    return { text: hits.length ? `${head}\n${hits.length} match(es) for "${a.find}" (text shown folded, as the quote check reads it):\n\n` + hits.map((x, i) => `[${i + 1}] …${x}…`).join("\n\n") : `${head}\nno match for "${a.find}" under the fold` };
+    const hits = windowsAround(text, a.find, a.window);
+    return { text: hits.length ? `${head}\n${hits.length} match(es) for "${a.find}" (text shown folded, as the quote check reads it):\n\n${windowLines(hits)}` : `${head}\nno match for "${a.find}" under the fold` };
   }
   const cap = 6000;
   return { text: `${head}\n${text.length} chars held${text.length > cap ? `; first ${cap} shown, use find to see more` : ""}:\n\n${text.slice(0, cap)}` };
