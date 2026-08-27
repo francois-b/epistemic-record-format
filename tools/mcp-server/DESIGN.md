@@ -180,3 +180,15 @@ calls one tool. Non-UI hosts get the page flattened to text. The viewer's
 stylesheet, fonts inlined, is the app's stylesheet, so the site and the app
 are the same views at two distances. Versioned by content hash in the URI,
 since hosts cache the resource.
+
+### Inline is an answer, fullscreen is the app (2026-08-27)
+
+Inline, the card is the answer to one turn: no app bar, sized to its content
+(the SDK's auto-resize reports the height, so the host's scrollbar is the only
+one), and a link followed inside the card tells the model what the user is
+now looking at (`updateModelContext`), so the conversation and the screen
+never disagree without a turn per click. Fullscreen is the app, chosen on
+purpose: the bar returns and browsing is expected; a control toggles the two
+(`requestDisplayMode`). Nothing in the card writes; "Back this" turns a
+gesture into a proposal in chat.
+

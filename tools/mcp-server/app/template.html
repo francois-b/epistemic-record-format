@@ -7,13 +7,23 @@
 <style>
 /*STYLE*/
 /* the app's own chrome, on top of the viewer's stylesheet */
-html, body { margin: 0; height: 100%; }
-body { display: flex; flex-direction: column; min-height: 320px; }
+/* Inline, the card is the answer: no chrome, sized to its content, the host scrolls.
+   Fullscreen, the card is the app: the bar returns and #main scrolls on its own. */
+html, body { margin: 0; }
+body { display: flex; flex-direction: column; }
+body.mode-fullscreen { height: 100vh; }
 nav.appbar { display: flex; gap: 1rem; align-items: baseline; padding: .5rem .9rem; border-bottom: 1px solid rgba(127,127,127,.35); font-size: .9rem; position: sticky; top: 0; background: inherit; }
+body.mode-inline nav.appbar { display: none; }
 nav.appbar a { cursor: pointer; text-decoration: none; }
 nav.appbar #crumb { margin-left: auto; opacity: .75; font-style: italic; }
 nav.appbar #status { opacity: .6; }
-#main { flex: 1; overflow: auto; padding: 0 .9rem 1rem; }
+#head { display: flex; gap: .6rem; align-items: baseline; padding: .4rem .9rem 0; font-family: var(--sans); font-size: .8rem; opacity: .75; }
+body.mode-fullscreen #head { display: none; }
+#head #crumb-inline { font-style: italic; }
+#head #status-inline { margin-left: auto; }
+#head button, nav.appbar button { border: 1px solid var(--rule); background: var(--codebg); color: var(--ink); border-radius: 4px; padding: .05rem .45rem; cursor: pointer; font: inherit; }
+#main { padding: 0 .9rem 1rem; }
+body.mode-fullscreen #main { flex: 1; overflow: auto; }
 #main main { max-width: none; }
 #selbar { position: fixed; z-index: 10; display: flex; gap: .4rem; padding: .3rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper); box-shadow: 0 2px 10px rgba(0,0,0,.25); font-family: var(--sans); font-size: .85rem; }
 #selbar[hidden] { display: none; }
@@ -22,7 +32,8 @@ nav.appbar #status { opacity: .6; }
 </style>
 </head>
 <body>
-<nav class="appbar"><a href="index.html">corpus</a><a href="narrative-.html">narrative</a><a href="sources.html">sources</a><a href="health.html">health</a><span id="status"></span><span id="crumb"></span></nav>
+<nav class="appbar"><a href="index.html">corpus</a><a href="narrative-.html">narrative</a><a href="sources.html">sources</a><a href="health.html">health</a><span id="status"></span><span id="crumb"></span><button id="mode-fs" title="Back to inline">inline</button></nav>
+<div id="head"><span id="crumb-inline"></span><span id="status-inline"></span><button id="mode-inline" title="Open the corpus as an app, fullscreen">open</button></div>
 <div id="selbar" hidden><button id="back-this" title="Send the selected passage to the conversation, to propose the claims it rests on">Back this</button></div>
 <div id="main"><main><p class="gap">Waiting for a page…</p></main></div>
 <script type="module">

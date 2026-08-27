@@ -13,11 +13,22 @@ import { App } from "@modelcontextprotocol/ext-apps";
 
 interface Page { page: string; title: string; html: string; corpus?: string }
 
-const app = new App({ name: "ERF", version: "0.1.0" });
+// autoResize: the app reports its content height to the host, so inline the card fits
+// its page and the host's scrollbar is the only one.
+const app = new App({ name: "ERF", version: "0.1.0" }, undefined, { autoResize: true });
 const main = document.getElementById("main")!;
-const crumb = document.getElementById("crumb")!;
-const status = document.getElementById("status")!;
+const crumbs = [document.getElementById("crumb")!, document.getElementById("crumb-inline")!];
+const statuses = [document.getElementById("status")!, document.getElementById("status-inline")!];
+const status = { set textContent(v: string) { for (const s of statuses) s.textContent = v; } };
 let current: Page | null = null;
+let mode: "inline" | "fullscreen" | "pip" = "inline";
+
+function applyMode(m: typeof mode): void {
+  mode = m;
+  document.body.classList.toggle("mode-fullscreen", m === "fullscreen");
+  document.body.classList.toggle("mode-inline", m !== "fullscreen");
+}
+applyMode("inline");
 
 /** The viewer's file names map onto erf_view pages one for one. */
 function pageFromHref(href: string): string | null {
@@ -32,9 +43,16 @@ function pageFromHref(href: string): string | null {
 function show(p: Page): void {
   current = p;
   main.innerHTML = p.html;
-  crumb.textContent = p.title;
+  for (const c of crumbs) c.textContent = p.title;
   status.textContent = "";
   main.scrollTop = 0;
+}
+
+/** In-card navigation is never silent: the model is told what the user is now looking at. */
+async function tellModel(p: Page): Promise<void> {
+  try {
+    await app.updateModelContext({ content: [{ type: "text", text: `The user navigated the ERF viewer to ${p.page} ("${p.title}")${p.corpus ? ` in corpus ${p.corpus}` : ""}. Answer questions about it from erf_record_read; do not re-open it unless asked.` }] });
+  } catch { /* a host without model context: the view still changed, the conversation did not learn of it */ }
 }
 
 function fromResult(r: unknown): Page | null {
@@ -55,7 +73,7 @@ async function open(page: string): Promise<void> {
   try {
     const r = await app.callServerTool({ name: "erf_view", arguments: { page, ...(current?.corpus ? { corpus: current.corpus } : {}) } });
     const p = fromResult(r);
-    if (p) show(p); else status.textContent = "no page in the result";
+    if (p) { show(p); void tellModel(p); } else status.textContent = "no page in the result";
   } catch (e) {
     status.textContent = `could not open ${page}: ${String(e)}`;
   }
@@ -113,8 +131,20 @@ app.ontoolresult = (params) => {
 };
 
 app.onhostcontextchanged = (ctx) => {
-  const theme = (ctx as { theme?: string }).theme;
-  if (theme) document.documentElement.dataset["theme"] = theme;
+  const c = ctx as { theme?: string; displayMode?: typeof mode };
+  if (c.theme) document.documentElement.dataset["theme"] = c.theme;
+  if (c.displayMode) applyMode(c.displayMode);
 };
 
+const toggle = async () => {
+  const want = mode === "fullscreen" ? "inline" : "fullscreen";
+  try { const r = await app.requestDisplayMode({ mode: want }); const got = (r as { mode?: typeof mode }).mode; if (got) applyMode(got); }
+  catch (e) { status.textContent = `display mode: ${String(e)}`; }
+};
+document.getElementById("mode-inline")!.addEventListener("click", () => void toggle());
+document.getElementById("mode-fs")!.addEventListener("click", () => void toggle());
+
 await app.connect();
+const ctx = app.getHostContext() as { theme?: string; displayMode?: typeof mode } | undefined;
+if (ctx?.theme) document.documentElement.dataset["theme"] = ctx.theme;
+if (ctx?.displayMode) applyMode(ctx.displayMode);
