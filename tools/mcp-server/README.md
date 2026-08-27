@@ -11,10 +11,10 @@ A root may be a corpus folder or a folder holding several; corpora are found by 
 
 ## Claude Desktop
 
-Add to `claude_desktop_config.json` (Settings > Developer > Edit Config), then restart Desktop:
+Add to `claude_desktop_config.json` (Settings > Developer > Edit Config), then restart Desktop. The key is the name Desktop shows for the connector:
 
 ```json
-"erf": {
+"Epistemic Record Format": {
   "command": "/absolute/path/to/epistemic-record-format/tools/mcp-server/node_modules/.bin/tsx",
   "args": ["--tsconfig", "/absolute/path/to/epistemic-record-format/tools/mcp-server/tsconfig.json",
            "/absolute/path/to/epistemic-record-format/tools/mcp-server/src/index.ts",

@@ -21,6 +21,9 @@ import { openWorkspace, resolveCorpus, useCorpus, newCorpusDir, describe, discov
 import * as T from "./tools.ts";
 import { readFileSync } from "node:fs";
 
+/** The connector's icon where a host shows one: three record lines and a point. */
+const ICON = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTIiIGZpbGw9IiMxYTNhNmUiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNmY2Y2ZWMiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48cGF0aCBkPSJNMTggMjBoMjgiLz48cGF0aCBkPSJNMTggMzJoMjAiLz48cGF0aCBkPSJNMTggNDRoMjgiLz48L2c+PGNpcmNsZSBjeD0iNDYiIGN5PSIzMiIgcj0iNCIgZmlsbD0iI2ZjZjZlYyIvPjwvc3ZnPg==";
+
 const INSTRUCTIONS = `This server holds Epistemic Record Format corpora: research recorded so it can be checked later. One corpus is active at a time (erf_corpus_list, erf_corpus_use); every write names the corpus it went to, so check it. Discover with any search you like, but read every page you might cite through erf_source_add: it holds the bytes, digests them and registers the source, and nothing can be cited that was not captured this way. Log each search with erf_search_log at the moment you run it, not afterwards. Mint atoms only with verbatim quotes; the server checks each one against the held text and refuses paraphrase. Claims are typed by what would settle them: observation (data or research), argument (reasoning over premises), commitment (the author's decision), bet (the world will settle it). An edge goes on the claim that assumes or supports, pointing at the other; write no edge the user did not ask for. Log a search before you capture what it found, and give as_of_date at the source's own precision (the date the source speaks as of, not the day you fetched it). A flag (erf_flag) marks a passage to back later; erf_flags lists them with their passages; binding a passage resolves its flags. Propose; the user rules; never write a record the user has not confirmed. Run erf_corpus_check when asked where things stand. When the user says show me, open, view or look at a record or the corpus, call erf_view (it renders in the conversation); erf_record_read is for reading data you need to reason over.`;
 
 function args(): { roots: string[]; agent: string; fetch: boolean; commit: boolean } {
@@ -52,7 +55,7 @@ function outcomeOf(r: { isError?: boolean; content: { type: string; text?: strin
 }
 
 export function buildServer(ws: Workspace): McpServer {
-  const server = new McpServer({ name: "erf-mcp", version: "0.2.0" }, { instructions: INSTRUCTIONS });
+  const server = new McpServer({ name: "erf-mcp", version: "0.2.0", title: "Epistemic Record Format", websiteUrl: "https://github.com/francois-b/epistemic-record-format", icons: [{ src: ICON, mimeType: "image/svg+xml", sizes: ["any"] }] }, { instructions: INSTRUCTIONS });
   const corpusArg = z.string().optional().describe("corpus id; defaults to the active corpus");
   // Hosts sometimes send a list as one string ("a, b" or a JSON array in quotes); accept both, so a
   // shape slip never bounces a call before the server can say anything useful.
