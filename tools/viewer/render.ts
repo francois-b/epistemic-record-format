@@ -129,8 +129,6 @@ ul.plain li { padding:.4em 0; border-bottom:1px solid var(--rulelt); }
   margin:.2em 0 1.1em; padding:.4em .6em; border-left:3px solid var(--brokenrule);
   background:var(--brokenbg); color:var(--brokenink); }
 mark { background:var(--markbg); color:var(--ink); padding:0 .1em; }
-mark.annot { background:transparent; color:inherit; border-bottom:2px solid var(--warn); padding:0; }
-.annot-note { font-family:var(--sans); font-size:.72em; color:var(--warn); display:block; margin:.2em 0 .6em; }
 sup.fn { font-size:.7em; } sup.fn a { text-decoration:none; }
 .footnotes { margin-top:3em; padding-top:1em; border-top:1px solid var(--rule); font-size:.9em; color:var(--muted); }
 .footnotes ol { padding-left:1.4em; } .fnback { font-size:.8em; margin-left:.3em; }
@@ -221,44 +219,27 @@ function quoteHtml(quote: string): string {
 }
 
 /**
- * A narrative is prose written by a person, in full markdown: CommonMark
- * for the body, plus the three things a working document carries that
- * CommonMark does not define. Footnotes (`[^id]` and `[^id]: text`) render
- * as numbered notes at the end. A `<mark class="…" comment="…">` span (an
- * editor's annotation on a passage) renders as a highlighted passage with
- * its comment shown beside it. An HTML comment that is not a narrative
- * binding (a reviewer's note) renders as a note rather than vanishing.
- * Bindings were replaced by sentinels before this runs.
+ * A narrative is prose written by a person, in full markdown: CommonMark for
+ * the body, plus footnotes (`[^id]` and `[^id]: text`), which CommonMark does
+ * not define and a working document uses. Anything else an editor left in
+ * the text is not the record's business: a `<mark>` from a reviewing tool
+ * renders as its text alone, and an HTML comment that is not a narrative
+ * binding renders as nothing. Bindings were replaced by sentinels before
+ * this runs.
  */
 function narrativeMarkdown(text: string): string {
   const footnotes: { id: string; body: string }[] = [];
-  // definitions: a line `[^id]: …` and its indented continuation lines
   text = text.replace(/^\[\^([^\]\s]+)\]:[ \t]*(.*(?:\n[ \t]+\S.*)*)/gm, (_m, id: string, body: string) => {
     footnotes.push({ id, body: body.replace(/\n[ \t]+/g, " ").trim() }); return "";
   });
   const order: string[] = [];
   text = text.replace(/\[\^([^\]\s]+)\]/g, (_m, id: string) => { if (!order.includes(id)) order.push(id); return `@@FN@@${id}@@`; });
-  const marks: { cls: string; comment: string }[] = [];
-  text = text.replace(/<mark\b([^>]*)>([\s\S]*?)<\/mark>/g, (_m, attrs: string, inner: string) => {
-    const cls = /class="([^"]*)"/.exec(attrs)?.[1] ?? ""; const comment = /comment="([^"]*)"/.exec(attrs)?.[1] ?? "";
-    marks.push({ cls, comment }); return `@@MARK@@${marks.length - 1}@@${inner}@@ENDMARK@@`;
-  });
-  const notes: string[] = [];
-  text = text.replace(/<!--(?!\s*claims:)([\s\S]*?)-->/g, (_m, body: string) => { notes.push(body.trim()); return `@@ANNOT@@${notes.length - 1}@@`; });
+  text = text.replace(/<mark\b[^>]*>([\s\S]*?)<\/mark>/g, "$1");
+  text = text.replace(/[ \t]*<!--(?!\s*claims:)[\s\S]*?-->/g, "");
   const parser = new commonmark.Parser();
   const renderer = new commonmark.HtmlRenderer({ safe: true, softbreak: " " });
   let html = renderer.render(parser.parse(text));
-  html = html
-    .replace(/@@FN@@([^@]+)@@/g, (_m, id: string) => { const n = order.indexOf(id) + 1; return `<sup class="fn"><a href="#fn-${esc(id)}" id="fnref-${esc(id)}">${n}</a></sup>`; })
-    .replace(/@@MARK@@(\d+)@@([\s\S]*?)@@ENDMARK@@/g, (_m, i: string, inner: string) => { const mk = marks[Number(i)]!; return `<mark class="annot ${esc(mk.cls)}"${mk.comment ? ` title="${esc(mk.comment)}"` : ""}>${inner}</mark>${mk.comment ? `<span class="annot-note">${esc(mk.cls)}: ${esc(mk.comment)}</span>` : ""}`; })
-    .replace(/@@ANNOT@@(\d+)@@/g, (_m, i: string) => `<span class="annot-note">${esc(notes[Number(i)] ?? "")}</span>`);
-  // a note is a block; inside a paragraph it would split the sentence around the mark, so
-  // every note moves to the end of the paragraph it was written in
-  html = html.replace(/<p>([\s\S]*?)<\/p>/g, (_m, inner: string) => {
-    const moved: string[] = [];
-    const rest = inner.replace(/<span class="annot-note">[\s\S]*?<\/span>/g, (n) => { moved.push(n); return ""; }).replace(/\s+([.,;:!?])/g, "$1");
-    return `<p>${rest}</p>${moved.join("")}`;
-  });
+  html = html.replace(/@@FN@@([^@]+)@@/g, (_m, id: string) => { const n = order.indexOf(id) + 1; return `<sup class="fn"><a href="#fn-${esc(id)}" id="fnref-${esc(id)}">${n}</a></sup>`; });
   if (footnotes.length) {
     const items = order.concat(footnotes.map((f) => f.id).filter((id) => !order.includes(id)));
     html += `\n<section class="footnotes"><ol>${items.map((id) => { const f = footnotes.find((x) => x.id === id); return `<li id="fn-${esc(id)}">${f ? renderer.render(parser.parse(f.body)).replace(/^<p>|<\/p>\s*$/g, "") : "(no definition)"} <a href="#fnref-${esc(id)}" class="fnback">↩</a></li>`; }).join("")}</ol></section>`;
