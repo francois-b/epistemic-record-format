@@ -227,7 +227,7 @@ async function saveNow(text: string, force = false): Promise<void> {
       narrative: doc.narrative, text, ...(force ? { force: true } : { expected_digest: doc.digest }),
     });
     if (!data) {
-      if (/changed on disk/.test(said)) showBanner("This narrative changed on disk since you opened it.");
+      if (/changed on disk/.test(said)) await reconcile();
       else setStatus(said.replace(/^\[[^\]]*\]\s*/, "").slice(0, 160));
       return;
     }
@@ -247,6 +247,30 @@ async function saveNow(text: string, force = false): Promise<void> {
 }
 
 function showBanner(text: string): void { bannerText.textContent = `${text} Reload to take what is on disk, or overwrite it with what is here.`; banner.hidden = false; }
+
+/**
+ * The file moved on disk under an editor with unsaved work. A binding is the
+ * only thing another worker writes into a narrative, so the two texts are
+ * merged rather than one chosen over the other: their markers come in, this
+ * text keeps everything it has, and the result is written back. The banner is
+ * for what merging cannot settle: an anchor whose words were rewritten here,
+ * or a change that is not a binding at all.
+ */
+async function reconcile(): Promise<void> {
+  if (!doc || !ed) return;
+  const { data } = await call<NarrativeRead>("erf_narrative_read", { narrative: doc.narrative });
+  if (!data) { showBanner("This narrative changed on disk and could not be read back."); return; }
+  const r = ed.mergeFrom(data.text);
+  if (r.conflicts.length) {
+    showBanner(`This narrative changed on disk while you were editing, and ${r.conflicts.length} binding(s) could not be placed here: ${r.conflicts.map((x) => `"${x}"`).join("; ")}.`);
+    return;
+  }
+  if (!r.inserted) { showBanner("This narrative changed on disk while you were editing, and the change was not a binding."); return; }
+  doc.digest = data.digest;   // this text now holds theirs as well as mine
+  hideBanner();
+  await saveNow(ed.getText(), true);
+  notice(`merged ${r.inserted} binding${r.inserted === 1 ? "" : "s"} from elsewhere`, 6);
+}
 function hideBanner(): void { banner.hidden = true; }
 
 document.getElementById("banner-reload")!.addEventListener("click", () => {
@@ -416,7 +440,7 @@ async function pollOnce(): Promise<void> {
   }
 
   if (data.digest !== doc.digest) {
-    if (ed.isDirty()) showBanner("This narrative changed on disk while you were editing.");
+    if (ed.isDirty()) await reconcile();
     else { doc.digest = data.digest; const slug = doc.narrative; doc = null; await mountEditor(slug); return; }
   } else {
     reportMissing(ed.setMarks({ flags: data.flags, bindings: data.bindings }));

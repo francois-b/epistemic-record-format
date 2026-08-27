@@ -124,6 +124,50 @@ test("a document with no marks computes to nothing, and an empty document does n
   assert.deepEqual(computeMarks("", { flags: [], bindings: [] }).markers, []);
 });
 
+test("a binding that landed from elsewhere is merged into what is being typed here", async () => {
+  const { mergeMarkers, markerAnchor } = await import("../src/marks.ts");
+  // theirs: the file on disk, where another worker just bound the first paragraph
+  const theirs = DOC.replace(
+    "A lawyer's memo is read once and filed.",
+    'A lawyer\'s memo is read once and filed.  <!-- claims: no-unit-test "A lawyer\'s memo is read once" bound-at=2026-08-27T10:00:00Z -->',
+  );
+  // mine: the same file with a sentence being typed into the first paragraph, unsaved
+  const mine = DOC.replace("A lawyer's memo is read once and filed.", "A lawyer's memo is read once and filed. Nobody reruns it.");
+
+  const r = mergeMarkers(mine, theirs);
+  assert.equal(r.inserted, 1);
+  assert.deepEqual(r.conflicts, []);
+  assert.match(r.text, /Nobody reruns it\./, "the words being typed here are kept");
+  assert.match(r.text, /claims: no-unit-test/, "and their marker arrives");
+  assert.equal(markerRanges(r.text).length, 2, "the marker already in both texts was not duplicated");
+  const placed = markerRanges(r.text).find((m) => r.text.slice(m.from, m.to).includes("no-unit-test"))!;
+  assert.equal(r.text[placed.from - 1], "\n", "the marker goes on its own line");
+  assert.equal(r.text.slice(placed.to, placed.to + 2), "\n\n", "at the end of the paragraph its anchor sits in");
+  assert.equal(markerAnchor(r.text.slice(placed.from, placed.to)), "A lawyer's memo is read once");
+
+  // merging the same file twice changes nothing
+  assert.equal(mergeMarkers(r.text, theirs).inserted, 0);
+  assert.equal(mergeMarkers(r.text, theirs).text, r.text);
+
+  // an anchor the person rewrote away cannot be placed, and nothing is inserted for it
+  const rewritten = DOC.replace("A lawyer's memo is read once and filed.", "Nobody ever reads the thing twice.");
+  const c = mergeMarkers(rewritten, theirs);
+  assert.equal(c.inserted, 0);
+  assert.deepEqual(c.conflicts, ["A lawyer's memo is read once"]);
+  assert.equal(c.text, rewritten, "a conflict leaves the text exactly as it was");
+
+  // a marker this text has and theirs lacks is left alone: the person may have removed it on purpose
+  const dropped = DOC.replace(/\s*<!-- claims: citators-disagree[^>]*-->/, "");
+  assert.equal(markerRanges(mergeMarkers(DOC, dropped).text).length, 1, "nothing of mine is removed by a merge");
+
+  // a rebind from elsewhere rewrites the marker for that anchor rather than adding a second
+  const rebound = DOC.replace("bound-at=2026-08-27T09:00:00Z", "bound-at=2026-08-27T11:00:00Z");
+  const rb = mergeMarkers(DOC, rebound);
+  assert.equal(rb.inserted, 1);
+  assert.equal(markerRanges(rb.text).length, 1);
+  assert.match(rb.text, /bound-at=2026-08-27T11:00:00Z/);
+});
+
 test("a hand-wrapped paragraph reads as one: its inner newlines are soft, its ending one is not", async () => {
   const { softBreakRanges, frontmatterRange } = await import("../src/marks.ts");
   const doc = `---\ntitle: x\ntype: narrative\n---\n\nFirst line of a paragraph\nsecond line, hand-wrapped\n    third line, indented as a footnote continues.\n\nNext paragraph.  \nafter a hard break.\n<!-- claims: c1 "Next paragraph" -->\n\n<!-- claims: c2 "stands alone" -->\n`;

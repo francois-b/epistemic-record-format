@@ -154,6 +154,76 @@ function trimEnd(doc: string, to: number): number {
   return i;
 }
 
+// ---------- merging what another worker bound ----------
+//
+// A narrative can be written by two workers at once: a person typing in the
+// editor, and an LLM in another chat or another session binding a passage.
+// The only thing that other worker ever writes into the prose is a binding
+// marker, so the two texts do not need a general merge. Every marker of theirs
+// that this text lacks is placed on the passage its anchor names, and nothing
+// of this text is ever removed: a marker the person deleted stays deleted.
+
+/** The anchor a marker quotes, unescaped, or null when the marker carries none. */
+export function markerAnchor(marker: string): string | null {
+  const m = /"((?:[^"\\]|\\.)*)"/.exec(marker);
+  return m ? m[1]!.replace(/\\(["\\])/g, "$1") : null;
+}
+
+/** How a marker is named when it could not be placed: its anchor, else its claim ids. */
+function markerName(marker: string): string {
+  return markerAnchor(marker) ?? (/claims:\s*([^"]*)/.exec(marker)?.[1] ?? marker).trim();
+}
+
+/**
+ * The edits that bring the markers of `theirs` into `mine`, as ranges, so a
+ * host can apply them through its own document and keep the cursor where the
+ * person left it. `mergeMarkers` is this, applied.
+ *
+ * A marker whose exact text is already in `mine` is left alone. A marker for
+ * an anchor `mine` already binds is rewritten in place, which is what a rebind
+ * from elsewhere means; otherwise the marker goes on its own line at the end
+ * of the paragraph its anchor sits in. An anchor that no longer occurs in
+ * `mine` (the person rewrote those words) is a conflict: nothing is inserted
+ * and the caller is told which.
+ */
+export function mergeChanges(mine: string, theirs: string): { changes: { from: number; to: number; insert: string }[]; inserted: number; conflicts: string[] } {
+  const conflicts: string[] = [];
+  const mineMarkers = markerRanges(mine);
+  const groups = new Map<string, { from: number; to: number; lead: string; texts: string[] }>();
+  let inserted = 0;
+  for (const m of markerRanges(theirs)) {
+    const marker = theirs.slice(m.from, m.to);
+    if (mine.includes(marker)) continue;
+    const anchor = markerAnchor(marker);
+    const r = anchor ? locate(mine, anchor) : null;
+    if (!r) { conflicts.push(markerName(marker)); continue; }
+    const p = paragraphRange(mine, r.from);
+    const already = mineMarkers.find((x) => x.from >= p.from && x.to <= p.to && markerAnchor(mine.slice(x.from, x.to)) === anchor);
+    const at = already ? { from: already.from, to: already.to, lead: "" } : { from: trimEnd(mine, p.to), to: p.to, lead: "\n" };
+    const key = `${at.from}:${at.to}`;
+    const g = groups.get(key) ?? { ...at, texts: [] };
+    g.texts.push(marker);
+    groups.set(key, g);
+    inserted++;
+  }
+  const changes = [...groups.values()]
+    .sort((a, b) => b.from - a.from)
+    .map((g) => ({ from: g.from, to: g.to, insert: g.texts.map((t, i) => (i === 0 ? g.lead : "\n") + t).join("") }));
+  return { changes, inserted, conflicts };
+}
+
+/**
+ * `mine` with every binding marker of `theirs` it lacks, placed on the passage
+ * its anchor names. Pure, so it can be tested without a document; the editor
+ * applies the same merge through `mergeChanges`.
+ */
+export function mergeMarkers(mine: string, theirs: string): { text: string; inserted: number; conflicts: string[] } {
+  const { changes, inserted, conflicts } = mergeChanges(mine, theirs);
+  let text = mine;
+  for (const ch of changes) text = text.slice(0, ch.from) + ch.insert + text.slice(ch.to);
+  return { text, inserted, conflicts };
+}
+
 /**
  * The anchor a selection offers: the selected words, whitespace collapsed,
  * cut to at most twelve. The host decides whether it is unique; the server

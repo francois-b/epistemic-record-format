@@ -19,10 +19,10 @@ import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { markdown } from "@codemirror/lang-markdown";
 import { syntaxHighlighting, HighlightStyle, ensureSyntaxTree, syntaxTree } from "@codemirror/language";
 import { tags } from "@lezer/highlight";
-import { computeMarks, anchorFrom, claimLines, softBreakRanges, frontmatterRange, unwrapChanges, looksHardWrapped, type Marks, type BoundRange, type Range } from "./marks.ts";
+import { computeMarks, anchorFrom, claimLines, softBreakRanges, frontmatterRange, unwrapChanges, looksHardWrapped, mergeChanges, type Marks, type BoundRange, type Range } from "./marks.ts";
 
 export type { Marks, FlagMark, BindingMark, ClaimInfo } from "./marks.ts";
-export { anchorFrom } from "./marks.ts";
+export { anchorFrom, mergeMarkers } from "./marks.ts";
 
 /** What a selection offers the host: the words, the anchor to flag on, and where to put a popover. */
 export interface Selected { text: string; anchor: string; rect: DOMRect }
@@ -45,6 +45,13 @@ export interface EditorHandle {
   looksHardWrapped(): boolean;
   /** Make it CommonMark-style, one line per paragraph, as one undoable edit. Returns how many newlines became spaces. */
   unwrap(): number;
+  /**
+   * Take the binding markers of another version of this file that this one
+   * lacks, as one undoable edit that leaves the prose and the cursor alone.
+   * Returns how many were placed, and the anchors of any that could not be:
+   * those words are no longer here.
+   */
+  mergeFrom(theirs: string): { inserted: number; conflicts: string[] };
   focus(): void;
   destroy(): void;
 }
@@ -309,6 +316,12 @@ export function createEditor(parent: HTMLElement, text: string, opts?: { autosav
       const changes = unwrapChanges(view.state.doc.toString(), paragraphs, hardBreaks);
       if (changes.length) view.dispatch({ changes, userEvent: "erf.unwrap" });
       return changes.length;
+    },
+    mergeFrom(theirs: string): { inserted: number; conflicts: string[] } {
+      const { changes, inserted, conflicts } = mergeChanges(view.state.doc.toString(), theirs);
+      // one transaction, so it is one step of undo, and the host saves what is here afterwards
+      if (changes.length) view.dispatch({ changes, userEvent: "erf.merge", annotations: external.of(true) });
+      return { inserted, conflicts };
     },
     focus: () => view.focus(),
     destroy(): void { if (timer) clearTimeout(timer); view.destroy(); },
