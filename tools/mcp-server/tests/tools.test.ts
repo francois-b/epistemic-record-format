@@ -128,6 +128,42 @@ test("source_add refuses a URL when fetching is off, a URL in citation_text, and
   await refuses(() => T.sourceAdd(c, { id: "y", citation_text: "Y", path: "../outside.txt" }), /outside the corpus/);
 });
 
+test("atom_mint takes several: each checked in turn, one refusal does not stop the rest, ids consecutive", async () => {
+  const c = fresh();
+  writeFileSync(join(c.dir, "report.md"), "The recorded total was seventeen units.\n\nThe ledger agreed with the count.\n\nNo exception was raised that quarter.\n");
+  await T.sourceAdd(c, { id: "report", citation_text: "Internal report, 2026", path: "report.md" });
+  const before = loadCorpus(c.dir).atoms.size;
+  const r = T.atomMint(c, {
+    atoms: [
+      { source: "report", quote: "The recorded total was seventeen units", finding: "The report states a total of seventeen units.", source_quality: "high", as_of_date: "2026" },
+      { source: "report", quote: "The ledger was in agreement with the count", finding: "A paraphrase, which the quote check refuses.", source_quality: "high" },
+      { source: "report", quote: "No exception was raised that quarter", finding: "No exception that quarter.", source_quality: "medium" },
+    ],
+  });
+  const d = r.data as { minted: string[]; refused: { index: number; reason: string; nearest?: string }[] };
+  assert.equal(d.minted.length, 2);
+  assert.equal(d.refused.length, 1);
+  assert.equal(d.refused[0]!.index, 2, "the refusal names its place in the list");
+  assert.match(d.refused[0]!.reason, /ERF-50/);
+  assert.match(d.refused[0]!.nearest!, /ledger agreed with the count/, "the nearest passage comes back for the one that failed");
+  assert.match(r.text, /2 of 3 atom\(s\) minted/);
+  assert.match(r.text, /\[1\] ok \S+ \(report\)/);
+  assert.match(r.text, /\[2\] refused:[\s\S]*nearest passage/);
+  assert.match(r.text, /\[3\] ok \S+ \(report\)/);
+
+  // ids run consecutively: nothing interleaved between the two writes
+  const [a1, a2] = d.minted as [string, string];
+  const n = (id: string): number => Number(/-(\d+)$/.exec(id)![1]);
+  assert.equal(n(a2), n(a1) + 1);
+  assert.equal(loadCorpus(c.dir).atoms.size, before + 2, "the refused atom wrote nothing");
+  clean(c);
+
+  // the single shape still refuses the whole call, with the nearest passage in the message
+  await refuses(() => T.atomMint(c, { atoms: [] }), /empty list/);
+  await refuses(() => T.atomMint(c, { source: "report" }), /give one atom/);
+  await refuses(() => T.atomMint(c, { source: "report", quote: "The ledger was in agreement", finding: "x", source_quality: "high" }), /ERF-50[\s\S]*nearest passage/);
+});
+
 test("claims: mint, refusals, update stamps last_modified and flags stale bindings, stand computes disposition", () => {
   const c = fresh();
   const atomId = [...loadCorpus(c.dir).atoms.keys()][0]!;

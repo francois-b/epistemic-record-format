@@ -200,24 +200,78 @@ function nearestPassage(hay: string, quote: string): string {
   return "(no overlapping run of words found)";
 }
 
-export function atomMint(c: Corpus, a: { source: string; quote: string; finding: string; source_quality: string; as_of_date?: string; limitations?: string }): Result {
-  const decl = readDeclaration(c);
-  const sources = readSourceList(c);
+/** One atom as it is asked for: the same fields whether it comes alone or in a list. */
+export interface AtomSpec { source: string; quote: string; finding: string; source_quality: string; as_of_date?: string; limitations?: string }
+
+/** What one atom came to: an id, or a reason and (for a failed quote check) the passage nearest to it. */
+type Minted = { ok: true; id: string; path: string; source: string } | { ok: false; reason: string; nearest?: string };
+
+/**
+ * Write one atom, or say why not. Never throws: the caller decides whether a
+ * refusal ends the call (one atom) or is reported beside the others (a list).
+ * The id is taken immediately before the file is written, so ids inside one
+ * call run consecutively and a call landing between two of them cannot take
+ * one of ours.
+ */
+function mintOneAtom(c: Corpus, decl: ReturnType<typeof readDeclaration>, sources: Record<string, Source>, a: AtomSpec): Minted {
   const src = sources[a.source];
-  if (!src) throw new Refusal(`source ${a.source} is not registered; capture it with erf_source_add first (ERF-35)`);
-  if (!src.normalized || !existsSync(join(c.dir, src.normalized))) throw new Refusal(`source ${a.source} has no held normalized text, so a quote cannot be checked at mint (ERF-50)`);
-  if (!(QUALITIES as readonly string[]).includes(a.source_quality)) throw new Refusal(`source_quality is one of ${QUALITIES.join(", ")}`);
-  if (a.as_of_date && !/^\d{4}(-\d{2}(-\d{2})?)?$/.test(a.as_of_date)) throw new Refusal("as_of_date is a date at the source's own precision: YYYY, YYYY-MM or YYYY-MM-DD (ERF-14)");
-  if (!a.quote.trim() || !a.finding.trim()) throw new Refusal("an atom needs a verbatim quote and a finding");
+  if (!src) return { ok: false, reason: `source ${a.source} is not registered; capture it with erf_source_add first (ERF-35)` };
+  if (!src.normalized || !existsSync(join(c.dir, src.normalized))) return { ok: false, reason: `source ${a.source} has no held normalized text, so a quote cannot be checked at mint (ERF-50)` };
+  if (!(QUALITIES as readonly string[]).includes(a.source_quality)) return { ok: false, reason: `source_quality is one of ${QUALITIES.join(", ")}` };
+  if (a.as_of_date && !/^\d{4}(-\d{2}(-\d{2})?)?$/.test(a.as_of_date)) return { ok: false, reason: "as_of_date is a date at the source's own precision: YYYY, YYYY-MM or YYYY-MM-DD (ERF-14)" };
+  if (!a.quote?.trim() || !a.finding?.trim()) return { ok: false, reason: "an atom needs a verbatim quote and a finding" };
   const text = readFileSync(join(c.dir, src.normalized), "utf8");
   const id = nextAtomId(c, decl);
   const atom: Atom = { id, type: "atom", corpus: String(decl.id), finding: a.finding, quote: a.quote, source: a.source, source_quality: a.source_quality as Atom["source_quality"], created: { timestamp: today(), by: c.options.agent }, finding_audit: [] };
   const q = quoteCheck(atom, text);
-  if (q.state !== "pass") throw new Refusal(`quote not found in the normalized text of ${a.source} (ERF-50): ${q.detail}\nnearest passage: "${nearestPassage(text, a.quote)}"`);
+  if (q.state !== "pass") return { ok: false, reason: `quote not found in the normalized text of ${a.source} (ERF-50): ${q.detail}`, nearest: nearestPassage(text, a.quote) };
   const fm = { id, type: "atom", corpus: decl.id, finding: a.finding, quote: a.quote, source: a.source, source_quality: a.source_quality, as_of_date: a.as_of_date, limitations: a.limitations, created: { timestamp: today(), by: c.options.agent } };
-  const path = writeRecord(c, "atom", id, fm, null);
-  const where = src.received?.url ? `\nsource page: ${src.received.url}` : src.received?.path ? `\nsource file: ${src.received.path}` : "";
-  return finish(c, `atom ${id} minted; quote check: present\ncites ${a.source}: ${src.citation_text}${where}\nsee the quote in the held text: erf_view page=capture:${id}`, [path], `mint atom ${id}`);
+  return { ok: true, id, path: writeRecord(c, "atom", id, fm, null), source: a.source };
+}
+
+/** Where a source can be read as it was received, for the line under a mint. */
+function whereFrom(src: Source | undefined): string {
+  return src?.received?.url ? `\nsource page: ${src.received.url}` : src?.received?.path ? `\nsource file: ${src.received.path}` : "";
+}
+
+/**
+ * Mint one atom, or every atom for a source in one call. The single shape is
+ * unchanged: a refusal ends the call and names the requirement. With `atoms`,
+ * each is checked and written in turn, one refusal does not stop the rest, and
+ * the result lists every outcome in order.
+ */
+export function atomMint(c: Corpus, a: Partial<AtomSpec> & { atoms?: AtomSpec[] }): Result {
+  const decl = readDeclaration(c);
+  const sources = readSourceList(c);
+
+  if (!a.atoms) {
+    if (!a.source || !a.quote || !a.finding || !a.source_quality) throw new Refusal("give one atom (source, quote, finding, source_quality) or a list of them in atoms");
+    const r = mintOneAtom(c, decl, sources, a as AtomSpec);
+    if (!r.ok) throw new Refusal(r.reason + (r.nearest ? `\nnearest passage: "${r.nearest}"` : ""));
+    const src = sources[r.source];
+    return finish(c, `atom ${r.id} minted; quote check: present\ncites ${r.source}: ${src?.citation_text ?? "(unregistered)"}${whereFrom(src)}\nsee the quote in the held text: erf_view page=capture:${r.id}`, [r.path], `mint atom ${r.id}`);
+  }
+
+  if (!a.atoms.length) throw new Refusal("atoms is an empty list; give at least one atom");
+  const lines: string[] = [];
+  const minted: string[] = [], paths: string[] = [], refused: { index: number; reason: string; nearest?: string }[] = [];
+  const cited = new Set<string>();
+  a.atoms.forEach((spec, i) => {
+    const r = mintOneAtom(c, decl, sources, spec);
+    if (r.ok) {
+      minted.push(r.id); paths.push(r.path); cited.add(r.source);
+      lines.push(`[${i + 1}] ok ${r.id} (${r.source}): ${spec.finding}`);
+    } else {
+      refused.push({ index: i + 1, reason: r.reason, ...(r.nearest ? { nearest: r.nearest } : {}) });
+      lines.push(`[${i + 1}] refused: ${r.reason}${r.nearest ? `\n    nearest passage: "${r.nearest}"` : ""}`);
+    }
+  });
+  for (const id of cited) lines.push(`cites ${id}: ${sources[id]?.citation_text ?? "(unregistered)"}${whereFrom(sources[id])}`);
+  if (minted.length) lines.push(`see a quote in the held text: erf_view page=capture:${minted[0]}`);
+  const head = `${minted.length} of ${a.atoms.length} atom(s) minted; quote check: present on each`;
+  const body = `${head}\n${lines.join("\n")}`;
+  const r = paths.length ? finish(c, body, paths, `mint ${minted.length} atom(s): ${minted.join(", ")}`) : { text: body };
+  return { ...r, data: { minted, refused } };
 }
 
 // ---------- claims ----------
