@@ -314,6 +314,22 @@ test("narrative status: a flag carries what it asked for, and a binding resolves
   assert.equal((T.narrativeStatus(c, { narrative: n.slug }).data as { flags: T.FlagItem[] }).flags[0]!.research, "mint");
 });
 
+test("an anchor chosen from a displayed line still finds a hand-wrapped passage", () => {
+  const c = fresh();
+  const n = loadCorpus(c.dir).narratives[0]!;
+  // the minimal narrative is hand-wrapped: these words sit across a line break in the file
+  const wrapped = /coined names for the\nsame set of problems/.test(n.body);
+  assert.ok(wrapped, "the fixture narrative wraps inside this phrase");
+  const r = T.flag(c, { narrative: n.slug, anchor: "coined names for the same set of problems" });
+  assert.match(r.text, /flag #1/);
+  const s = T.narrativeStatus(c, { narrative: n.slug }).data as { flags: T.FlagItem[] };
+  assert.ok(s.flags[0]!.line !== null, "the flag is located on its line even though the anchor spans a wrap");
+  T.claimMint(c, { id: "wrapped-claim", title: "A claim bound across a wrap", epistemic_kind: "commitment" });
+  const b = T.narrativeBind(c, { narrative: n.slug, anchor: "coined names for the same set of problems", claims: ["wrapped-claim"], replace: true });
+  assert.match(b.text, /bound/);
+  clean(c);
+});
+
 test("record_read and record_list", () => {
   const c = fresh();
   assert.match(T.recordList(c, { type: "claim" }).text, /^claim /m);

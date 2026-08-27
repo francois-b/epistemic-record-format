@@ -19,7 +19,7 @@ import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { markdown } from "@codemirror/lang-markdown";
 import { syntaxHighlighting, HighlightStyle, ensureSyntaxTree, syntaxTree } from "@codemirror/language";
 import { tags } from "@lezer/highlight";
-import { computeMarks, anchorFrom, claimLines, softBreakRanges, frontmatterRange, type Marks, type BoundRange, type Range } from "./marks.ts";
+import { computeMarks, anchorFrom, claimLines, softBreakRanges, frontmatterRange, unwrapChanges, looksHardWrapped, type Marks, type BoundRange, type Range } from "./marks.ts";
 
 export type { Marks, FlagMark, BindingMark, ClaimInfo } from "./marks.ts";
 export { anchorFrom } from "./marks.ts";
@@ -41,6 +41,10 @@ export interface EditorHandle {
   isDirty(): boolean;
   /** Take the editor's word for it that what is on screen is now what is on disk. */
   markSaved(): void;
+  /** Whether the file was hand-wrapped: wrapping newlines inside its paragraphs, which CommonMark reads as spaces. */
+  looksHardWrapped(): boolean;
+  /** Make it CommonMark-style, one line per paragraph, as one undoable edit. Returns how many newlines became spaces. */
+  unwrap(): number;
   focus(): void;
   destroy(): void;
 }
@@ -294,6 +298,16 @@ export function createEditor(parent: HTMLElement, text: string, opts?: { autosav
     onSave(cb): void { onSaveCb = cb; },
     isDirty: () => view.state.doc.toString() !== saved,
     markSaved(): void { saved = view.state.doc.toString(); },
+    looksHardWrapped(): boolean {
+      const { paragraphs, hardBreaks } = blocks(view.state);
+      return looksHardWrapped(view.state.doc.toString(), paragraphs, hardBreaks);
+    },
+    unwrap(): number {
+      const { paragraphs, hardBreaks } = blocks(view.state);
+      const changes = unwrapChanges(view.state.doc.toString(), paragraphs, hardBreaks);
+      if (changes.length) view.dispatch({ changes, userEvent: "erf.unwrap" });
+      return changes.length;
+    },
     focus: () => view.focus(),
     destroy(): void { if (timer) clearTimeout(timer); view.destroy(); },
   };

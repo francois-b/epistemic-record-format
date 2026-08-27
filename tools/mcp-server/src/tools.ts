@@ -277,9 +277,9 @@ export function flag(c: Corpus, a: { narrative: string; anchor: string; note?: s
   if (a.research !== undefined && !(RESEARCH as readonly string[]).includes(a.research)) throw new Refusal(`research is one of ${RESEARCH.join(", ")}`);
   const research = (a.research ?? "mint") as Research;
   const { slug, prose } = proseOf(c, a.narrative);
-  const first = prose.indexOf(anchor);
-  if (first < 0) throw new Refusal(`"${anchor}" does not occur in ${slug}; the anchor must be exact words from the passage`);
-  if (prose.indexOf(anchor, first + 1) >= 0) throw new Refusal(`"${anchor}" occurs more than once in ${slug}; choose words unique to the passage`);
+  const [first, second] = anchorOccurrences(prose, anchor);
+  if (first === undefined) throw new Refusal(`"${anchor}" does not occur in ${slug}; the anchor must be exact words from the passage`);
+  if (second !== undefined) throw new Refusal(`"${anchor}" occurs more than once in ${slug}; choose words unique to the passage`);
   const flags = readFlags(c);
   if (flags.some((f) => f.status === "open" && f.narrative === slug && f.anchor === anchor)) throw new Refusal("that passage is already flagged");
   const f: Flag = { id: (flags.at(-1)?.id ?? 0) + 1, ts: now(), narrative: slug, anchor, ...(a.note ? { note: a.note } : {}), research, by: c.options.agent, status: "open" };
@@ -349,9 +349,9 @@ export function narrativeBind(c: Corpus, a: { narrative: string; anchor: string;
   const body = split.body;
   // search the prose only: an existing marker quotes its own anchor, which must not count as a second occurrence
   const prose = body.replace(/<!--\s*claims:[\s\S]*?-->/g, (m) => " ".repeat(m.length));
-  const first = prose.indexOf(a.anchor);
-  if (first < 0) throw new Refusal(`anchor "${a.anchor}" does not occur in the narrative; it must be a few exact words from the passage (ERF-31)`);
-  if (prose.indexOf(a.anchor, first + 1) >= 0) throw new Refusal(`anchor "${a.anchor}" occurs more than once; choose words unique to the passage`);
+  const [first, second] = anchorOccurrences(prose, a.anchor);
+  if (first === undefined) throw new Refusal(`anchor "${a.anchor}" does not occur in the narrative; it must be a few exact words from the passage (ERF-31)`);
+  if (second !== undefined) throw new Refusal(`anchor "${a.anchor}" occurs more than once; choose words unique to the passage`);
   // the passage ends at the next blank line (or the end of the body)
   const blank = body.indexOf("\n\n", first);
   let end = blank < 0 ? body.length : blank;
@@ -392,12 +392,28 @@ export interface BindingItem {
 
 export interface FlagItem { id: number; anchor: string; note?: string; research: Research; status: "open" | "done"; claims?: string[]; line: number | null }
 
+/**
+ * Where an anchor occurs in a text, at most `limit` times. Runs of whitespace
+ * on either side are one (a newline inside a paragraph is a space to
+ * CommonMark and to `ERF-31` under `ERF-52`'s fold), so an anchor chosen
+ * from a displayed line still finds a passage that was hand-wrapped.
+ */
+function anchorOccurrences(hay: string, anchor: string, limit = 2): number[] {
+  const words = anchor.trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return [];
+  const re = new RegExp(words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("\\s+"), "g");
+  const out: number[] = [];
+  let m: RegExpExecArray | null;
+  while (out.length < limit && (m = re.exec(hay))) { out.push(m.index); if (m[0].length === 0) re.lastIndex++; }
+  return out;
+}
+
 /** The 1-based line of `text` where `needle` first occurs outside a binding marker, or null. */
 function lineOf(text: string, needle: string): number | null {
   if (!needle) return null;
   const masked = text.replace(/<!--\s*claims:[\s\S]*?-->/g, (m) => " ".repeat(m.length));
-  const at = masked.indexOf(needle);
-  if (at < 0) return null;
+  const [at] = anchorOccurrences(masked, needle, 1);
+  if (at === undefined) return null;
   return text.slice(0, at).split("\n").length;
 }
 

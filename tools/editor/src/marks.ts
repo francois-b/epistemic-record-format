@@ -180,7 +180,7 @@ export function frontmatterRange(doc: string): Range | null {
  * `paragraphs` and `hardBreaks` come from the markdown syntax tree; this
  * function only does the arithmetic.
  */
-export function softBreakRanges(doc: string, paragraphs: Range[], hardBreaks: Range[] = []): Range[] {
+export function softBreakRanges(doc: string, paragraphs: Range[], hardBreaks: Range[] = [], opts: { markers?: boolean } = {}): Range[] {
   const fm = frontmatterRange(doc);
   const out: Range[] = [];
   const isHard = (at: number): boolean => hardBreaks.some((h) => at >= h.from && at < h.to);
@@ -194,6 +194,7 @@ export function softBreakRanges(doc: string, paragraphs: Range[], hardBreaks: Ra
       out.push({ from: i, to });
     }
   }
+  if (opts.markers === false) return out.sort((a, b) => a.from - b.from);
   for (const m of markerRanges(doc)) {
     let i = m.from;
     while (i > 0 && (doc[i - 1] === " " || doc[i - 1] === "\t")) i--;
@@ -206,4 +207,28 @@ export function softBreakRanges(doc: string, paragraphs: Range[], hardBreaks: Ra
     out.push({ from: nl, to: m.from });
   }
   return out.sort((a, b) => a.from - b.from);
+}
+
+/**
+ * The edit that makes a hand-wrapped narrative CommonMark-style, one line
+ * per paragraph: every wrapping newline inside a paragraph becomes one
+ * space. Hard breaks, the frontmatter, and a marker on its own line are
+ * untouched, so the only bytes that change are the ones the display was
+ * already showing as spaces. Returned as changes, so the host applies them
+ * through the editor and they sit in the undo history.
+ */
+export function unwrapChanges(doc: string, paragraphs: Range[], hardBreaks: Range[] = []): { from: number; to: number; insert: string }[] {
+  return softBreakRanges(doc, paragraphs, hardBreaks, { markers: false }).map((r) => ({ from: r.from, to: r.to, insert: " " }));
+}
+
+/**
+ * Whether a narrative was hand-wrapped: at least three wrapping newlines
+ * inside paragraphs, and every line they end short enough to have been
+ * wrapped by a person or a formatter rather than a single long paragraph
+ * that happens to hold a newline. A CommonMark-style file answers false.
+ */
+export function looksHardWrapped(doc: string, paragraphs: Range[], hardBreaks: Range[] = [], maxColumns = 120): boolean {
+  const soft = softBreakRanges(doc, paragraphs, hardBreaks, { markers: false });
+  if (soft.length < 3) return false;
+  return soft.every((r) => r.from - (doc.lastIndexOf("\n", r.from - 1) + 1) <= maxColumns);
 }

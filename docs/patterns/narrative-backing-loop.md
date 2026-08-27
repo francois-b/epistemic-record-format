@@ -58,6 +58,7 @@ Then the next flag. A section of an essay is one sitting; a whole essay is a wee
 - **Anchors are exact words from the passage**, unique in the narrative, chosen at flag time and kept through to the binding.
 - **The narrative's own source is never backing.** A corpus may hold the shipped version of the narrative as a source, pinned by digest, so a reader can tell the living text from the sent one; an atom quoting it records what the document says and never appears in a claim's `atoms_for`.
 - **Log before capture, capture before quote, quote before claim backing.** The order the gates assume.
+- **Narratives are written CommonMark-style: one line per paragraph, no hand-wrapping.** A newline inside a paragraph is a space to CommonMark and to the anchor check (`ERF-31` under `ERF-52`'s fold), so a hand-wrapped file conforms and reads correctly; it only makes edits and diffs untidy. A tool that meets one offers to unwrap it once, as an edit the person takes or declines; it never rewraps on save, since a save writes only what the person changed.
 
 ## What this pattern does not decide
 

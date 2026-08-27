@@ -165,11 +165,44 @@ async function mountEditor(slug: string): Promise<void> {
     reportMissing(ed.setMarks({ flags: data.flags, bindings: data.bindings }));
     setStatus("");
     ed.focus();
+    offerUnwrap();
     schedulePolling(data.flags);
   } catch (e) {
     setStatus(`could not open the editor: ${String(e)}`);
   }
 }
+
+// ---- a hand-wrapped file ----------------------------------------------------
+// The display already reads a wrapping newline as a space; the file keeps it
+// until the person says otherwise. The offer is made once per file: taken, it
+// is one undoable edit and one ordinary save; declined, it is not made again.
+
+const noticeEl = document.getElementById("notice") as HTMLElement;
+const noticeText = document.getElementById("notice-text") as HTMLElement;
+const declined = new Set<string>();
+const declinedKey = (slug: string): string => `erf.unwrap.declined:${current?.corpus ?? ""}:${slug}`;
+function wasDeclined(slug: string): boolean {
+  if (declined.has(slug)) return true;
+  try { return localStorage.getItem(declinedKey(slug)) === "1"; } catch { return false; }
+}
+function offerUnwrap(): void {
+  if (!doc || !ed || wasDeclined(doc.narrative) || !ed.looksHardWrapped()) { noticeEl.hidden = true; return; }
+  noticeText.textContent = "This narrative is hard-wrapped. Unwrap it to one line per paragraph, as CommonMark reads it? One edit, one save; the display already reads it this way.";
+  noticeEl.hidden = false;
+}
+document.getElementById("notice-dismiss")!.addEventListener("click", () => {
+  noticeEl.hidden = true;
+  if (!doc) return;
+  declined.add(doc.narrative);
+  try { localStorage.setItem(declinedKey(doc.narrative), "1"); } catch { /* no storage: the session remembers */ }
+});
+document.getElementById("notice-go")!.addEventListener("click", () => {
+  noticeEl.hidden = true;
+  if (!ed) return;
+  const n = ed.unwrap();
+  notice(`${n} wrapping newline${n === 1 ? "" : "s"} became spaces; saving`, 5);
+  void saveNow(ed.getText());
+});
 
 function reportMissing(r: { missing: string[] }): void {
   if (r.missing.length) notice(`${r.missing.length} anchor${r.missing.length === 1 ? "" : "s"} no longer in the prose`, 8);

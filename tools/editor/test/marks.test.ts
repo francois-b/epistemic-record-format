@@ -127,3 +127,27 @@ test("a hand-wrapped paragraph reads as one: its inner newlines are soft, its en
   assert.equal(doc.slice(soft[2]!.to, soft[2]!.to + 12), "<!-- claims:", "the marker joins its passage");
   assert.equal(soft.some((r) => doc.slice(r.to).startsWith("<!-- claims: c2")), false, "a marker after a blank line stands alone");
 });
+
+test("unwrapping turns wrapping newlines into spaces and nothing else, and a CommonMark file is not called hand-wrapped", async () => {
+  const { unwrapChanges, looksHardWrapped } = await import("../src/marks.ts");
+  const doc = `---\ntitle: x\n---\n\nOne line of a\nwrapped paragraph\n    with a footnote continuation.\n\nA hard break  \nkept, then a marker.\n<!-- claims: c1 "A hard break" -->\n\nAnother wrapped\nparagraph here.\n`;
+  const paras = [
+    { from: doc.indexOf("One line"), to: doc.indexOf("continuation.") + "continuation.".length },
+    { from: doc.indexOf("A hard break"), to: doc.indexOf("marker.") + "marker.".length },
+    { from: doc.indexOf("Another"), to: doc.indexOf("here.") + "here.".length },
+  ];
+  const hard = [{ from: doc.indexOf("  \nkept"), to: doc.indexOf("kept") }];
+  assert.equal(looksHardWrapped(doc, paras, hard), true);
+  const changes = unwrapChanges(doc, paras, hard);
+  let out = doc;
+  for (const ch of [...changes].reverse()) out = out.slice(0, ch.from) + ch.insert + out.slice(ch.to);
+  assert.equal(out, `---\ntitle: x\n---\n\nOne line of a wrapped paragraph with a footnote continuation.\n\nA hard break  \nkept, then a marker.\n<!-- claims: c1 "A hard break" -->\n\nAnother wrapped paragraph here.\n`);
+  const paras2 = [
+    { from: out.indexOf("One line"), to: out.indexOf("continuation.") + "continuation.".length },
+    { from: out.indexOf("A hard break"), to: out.indexOf("marker.") + "marker.".length },
+    { from: out.indexOf("Another"), to: out.indexOf("here.") + "here.".length },
+  ];
+  const hard2 = [{ from: out.indexOf("  \nkept"), to: out.indexOf("kept") }];
+  assert.equal(looksHardWrapped(out, paras2, hard2), false, "once unwrapped, the notice never returns");
+  assert.deepEqual(unwrapChanges(out, paras2, hard2), [], "and there is nothing left to unwrap");
+});
