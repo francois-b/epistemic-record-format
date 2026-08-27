@@ -236,6 +236,8 @@ async function saveNow(text: string, force = false): Promise<void> {
     ed.markSaved();
     hideBanner();
     reportMissing(ed.setMarks({ flags: data.flags, bindings: data.bindings }));
+    // the steady line is cleared before the notice, or "saving…" returns when the notice fades
+    setStatus("");
     const line = data.check.split("\n").find((l) => l.includes("binding(s)")) ?? "";
     notice(`saved${line ? ` · ${line.replace(/^\S+:\s*/, "")}` : ""}`, 5);
     schedulePolling(data.flags);
