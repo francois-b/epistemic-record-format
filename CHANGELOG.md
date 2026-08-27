@@ -9,6 +9,18 @@ everything else.
 
 ## Unreleased
 
+Tooling, 2026-08-27: no requirement changed. erf-mcp 0.3.0 gains three
+narrative tools, `erf_narrative_read`, `erf_narrative_write` and
+`erf_narrative_status`: the file as it is on disk with a digest of its bytes as
+its version id, a write that is refused when that digest no longer matches, and
+a cheap read-only poll of a narrative's flags and bindings. A flag gains
+`research` (`mint`, `back`, `opposite`), which records what the person asked
+for when they marked the passage; flags written before the field existed still
+parse and read as `mint`. The MCP app gains an editor: a narrative opened
+fullscreen is edited in place over its markdown source (`tools/editor/`, a
+host-agnostic CodeMirror bundle), with flags and bindings drawn on the prose
+and the narrative check running on every save.
+
 No requirement changed. Repository layout, 2026-08-26: the data model moved
 to `schema/erf.schema.json` with `schema/erf.generated.ts` generated from it (a
 pre-commit hook regenerates it; `tools/generate/generate-types.py --check` is the

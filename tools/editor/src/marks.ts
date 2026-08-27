@@ -154,6 +154,6 @@ export function anchorFrom(selected: string, maxWords = 12): string {
 export function claimLines(b: BindingMark): string[] {
   return b.claims.map((id) => {
     const info = b.claimInfo?.[id];
-    return info ? `${id} · ${info.kind} · ${info.disposition} · ${info.evidence} atom${info.evidence === 1 ? "" : "s"} — ${info.title}` : id;
+    return info ? `${info.title} · ${id} · ${info.kind} · ${info.disposition} · ${info.evidence} atom${info.evidence === 1 ? "" : "s"}` : id;
   });
 }

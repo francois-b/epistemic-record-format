@@ -101,7 +101,7 @@ test("a tooltip line carries kind, disposition and evidence where they are known
     anchor: "x", status: "current", claims: ["a", "b"],
     claimInfo: { a: { title: "Citators disagree", kind: "observation", disposition: "active", evidence: 1 } },
   });
-  assert.match(lines[0]!, /^a · observation · active · 1 atom — Citators disagree$/);
+  assert.match(lines[0]!, /^Citators disagree · a · observation · active · 1 atom$/);
   assert.equal(lines[1], "b");
 });
 

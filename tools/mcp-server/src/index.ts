@@ -59,7 +59,7 @@ function outcomeOf(r: { isError?: boolean; content: { type: string; text?: strin
 }
 
 export function buildServer(ws: Workspace): McpServer {
-  const server = new McpServer({ name: "erf-mcp", version: "0.2.0", title: "Epistemic Record Format", websiteUrl: "https://github.com/francois-b/epistemic-record-format", icons: [{ src: ICON, mimeType: "image/svg+xml", sizes: ["any"] }] }, { instructions: INSTRUCTIONS });
+  const server = new McpServer({ name: "erf-mcp", version: "0.3.0", title: "Epistemic Record Format", websiteUrl: "https://github.com/francois-b/epistemic-record-format", icons: [{ src: ICON, mimeType: "image/svg+xml", sizes: ["any"] }] }, { instructions: INSTRUCTIONS });
   const corpusArg = z.string().optional().describe("corpus id; defaults to the active corpus");
   // Hosts sometimes send a list as one string ("a, b" or a JSON array in quotes); accept both, so a
   // shape slip never bounces a call before the server can say anything useful.

@@ -32,11 +32,11 @@ The loop below is written bottom-up. Top-down uses the same steps from step 3 on
 
 ## The loop
 
-1. **Flag.** Reading the narrative, the person marks a passage that asserts something worth backing. A flag is a note to self, not a record: it names the narrative, an anchor (a few exact words of the passage), and optionally why. Flags accumulate; nothing else happens yet. *Tooling: `erf_flag` from the viewer's selection toolbar or from chat; `flags.jsonl` at the corpus root holds them; the viewer shows flagged passages.*
+1. **Flag.** Reading the narrative, the person marks a passage that asserts something worth backing. A flag is a note to self, not a record: it names the narrative, an anchor (a few exact words of the passage), and optionally why. A flag also says what the person wants done about it: propose the claims and stop, back it once the claims are ruled, or back it and search for the opposite as well. Flags accumulate; nothing else happens yet. *Tooling: `erf_flag` from a selection in the app's editor (which asks what the flag is for) or from chat; `flags.jsonl` at the corpus root holds them; the viewer and the editor both show flagged passages.*
 
 2. **Decompose.** For a flagged passage, the LLM lists every assertion a reader could check, each typed by what would settle it (`observation`, `argument`, `commitment`, `bet`), with the claim stated no stronger than the passage states it, what would back it, and the anchor words. Assertions that are one claim are merged. Nothing is written. *Tooling: the `decompose-passage` prompt; `erf_flags` lists what is waiting.*
 
-3. **Rule.** The person accepts, narrows, merges, or drops each proposal, in a sentence. A narrowing is the ordinary outcome. *Tooling: none; it is a conversation.*
+3. **Rule.** The person accepts, narrows, merges, or drops each proposal, in a sentence. A narrowing is the ordinary outcome. *Tooling: none; it is a conversation. A flag made in the editor puts the opening request into that conversation itself, so the ruling happens in the same chat with the document still open.*
 
 4. **Mint and bind.** Accepted claims are written, and the passage is bound to them with an instant-stamped marker. The flag is resolved by the binding. *Tooling: `erf_claim_mint`, `erf_narrative_bind`; `erf_narrative_check` reports the binding as current.*
 
@@ -48,17 +48,17 @@ The loop below is written bottom-up. Top-down uses the same steps from step 3 on
 
 8. **Look.** The person reads the claim with its evidence and standings, the narrative with its bound passages, or the whole tree. *Tooling: `erf_view` inline for a record, fullscreen for the narrative; `erf_render_site` for a browser.*
 
-9. **Revise.** The prose changes: a claim narrowed, a sentence overclaims, a section is rewritten. Bindings whose claims changed read stale; anchors edited away read broken; passages left unbound are listed. The person rewrites, the LLM rebinds. *Tooling: a markdown editor or the brain's editor for the prose; `erf_narrative_check`, `erf_narrative_bind` with `replace`.*
+9. **Revise.** The prose changes: a claim narrowed, a sentence overclaims, a section is rewritten. Bindings whose claims changed read stale; anchors edited away read broken; passages left unbound are listed. The person rewrites, the LLM rebinds. *Tooling: any markdown editor for the prose, the app's editor among them, where the check runs on every save and stale and broken passages are marked as they happen; `erf_narrative_check`, `erf_narrative_bind` with `replace`.*
 
 Then the next flag. A section of an essay is one sitting; a whole essay is a week of them.
 
 ## Conventions this pattern adds
 
-- **A flag** is `{ts, narrative, anchor, note?, by, status}` in `flags.jsonl` at the corpus root, append-only, resolved by the binding that covers its anchor. It is producer machinery, like the research log; the format does not see it.
+- **A flag** is `{ts, narrative, anchor, note?, research?, by, status}` in `flags.jsonl` at the corpus root, append-only, resolved by the binding that covers its anchor. `research` is what the flag asked for (propose, back, or back and oppose) and defaults to proposing. It is producer machinery, like the research log; the format does not see it.
 - **Anchors are exact words from the passage**, unique in the narrative, chosen at flag time and kept through to the binding.
 - **The narrative's own source is never backing.** A corpus may hold the shipped version of the narrative as a source, pinned by digest, so a reader can tell the living text from the sent one; an atom quoting it records what the document says and never appears in a claim's `atoms_for`.
 - **Log before capture, capture before quote, quote before claim backing.** The order the gates assume.
 
 ## What this pattern does not decide
 
-Where the prose is edited (a text editor, a brain's in-conversation editor, a word processor that exports markdown); whether flags are shared between people; how many sittings a document takes. Those are the person's.
+Where the prose is edited (a text editor, the app's editor, a brain's in-conversation editor, a word processor that exports markdown: the app's editor is one option and not the pattern's choice); whether flags are shared between people; how many sittings a document takes. Those are the person's.

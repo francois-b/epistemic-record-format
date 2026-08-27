@@ -71,9 +71,12 @@ wrote. Every refusal names the requirement. Nothing writes a raw file.
 | `erf_claim_update(id, title?, atoms_for?, atoms_against?, surveys?, edges?, families?, notes?)` | rewrites the named fields, stamps `last_modified` | unresolved ids; an attempt to touch `standings` or `evidence_audit` |
 | `erf_claim_stand(id, stance, why)` | appends a standing under the corpus owner with a full RFC 3339 instant (`ERF-19`, `ERF-40`); returns the computed disposition | empty `why`; no `owner` on the declaration |
 | `erf_survey_record(id, title, notable_results?, coverage_bounds, from_log?: date + for, searches?: [...])` | writes the survey; `searches` come from the research log for the given day **and question** (`for`), or from the argument | no acts at all (`ERF-26`); `hits_reported` missing; `from_log` without `for`; no act logged for `for` |
-| `erf_flag(narrative, anchor, note?)` / `erf_flags(narrative?, all?)` / `erf_flag_resolve(id)` | a passage marked to back later, in `flags.jsonl` (a working file, not a record); listed with its passage text; resolved by the binding that covers its anchor. The pattern: `docs/patterns/narrative-backing-loop.md` | anchor not in the narrative, or not unique; already flagged |
+| `erf_flag(narrative, anchor, note?, research?)` / `erf_flags(narrative?, all?)` / `erf_flag_resolve(id)` | a passage marked to back later, in `flags.jsonl` (a working file, not a record); listed with its passage text and what it asked for; resolved by the binding that covers its anchor. `research` is `mint` (propose claims, stop for the ruling), `back` (gather the evidence after it, then bind) or `opposite` (and state the case against before anyone stands); absent on older flags and read as `mint`. The pattern: `docs/patterns/narrative-backing-loop.md` | anchor not in the narrative, or not unique; already flagged; an unknown `research` |
 | `erf_narrative_bind(narrative, anchor, claims, replace?: true)` | inserts the `YAMLB-1` marker after the passage ending with `anchor`, `bound-at` today; with `replace`, rewrites the marker already on that passage | anchor not found or found twice; a claim id unresolved |
 | `erf_narrative_check(narrative?)` | unresolved ids, stale bindings, broken anchors, malformed candidates (`ERF-31/32/33`) | never |
+| `erf_narrative_read(narrative)` | the file as it is on disk (frontmatter included), a 12-character sha256 digest of its bytes as its version id, and every binding and flag with its status and line | no such narrative |
+| `erf_narrative_write(narrative, text, expected_digest?, force?)` | replaces the file with the text as sent, never parsing or reformatting it; runs the narrative check; commits | `expected_digest` no longer matches the file (the current one comes back); an empty text |
+| `erf_narrative_status(narrative)` | the digest, the flags and the bindings, without the text: the polling call, read-only and local | no such narrative |
 | `erf_render_site(out?)` | runs the reference viewer into `site/` (or `out`) inside the corpus; gitignores it | `out` outside the corpus |
 | `erf_view(page?)` | the viewer's page (index, sources, health, claim:, atom:, capture:, survey:, narrative:) as `structuredContent`, carried by the app | unknown page or id |
 | `erf_source_read(id, find?)` | the source entry and its held normalized text, whole when short, else windows around `find` under the fold | unknown source |
@@ -107,7 +110,11 @@ one into context without a tool call.
 > Mint atoms only with verbatim quotes; the server checks each one against
 > the held text and refuses paraphrase. Claims are typed by what would settle
 > them. Propose; the user rules; never write a record the user has not
-> confirmed.
+> confirmed. A flag's `research` says what the user asked for: `mint`
+> proposes claims and stops for the ruling, `back` gathers the evidence
+> after it and binds, `opposite` adds the strongest case against before
+> anyone stands. While the user has the narrative open in the editor,
+> answer in text and do not call `erf_view` to re-open it.
 
 ## Capture
 
@@ -193,3 +200,60 @@ purpose: the bar returns and browsing is expected; a control toggles the two
 (`requestDisplayMode`). Nothing in the card writes; "Back this" turns a
 gesture into a proposal in chat.
 
+
+### The editor (2026-08-27)
+
+A narrative opened fullscreen is now an editor, not a page. The app reads the
+file with `erf_narrative_read`, mounts `tools/editor/` over the markdown
+source, and writes back through `erf_narrative_write`. Inline is unchanged: a
+narrative is still its outline there, because a document inside a card the host
+caps in height is a document nobody reads.
+
+**CodeMirror 6, over the source, not ProseMirror over a document model.** The thing the
+rest depends on is that a binding marker is an HTML comment inside the prose.
+An editor with a document model has to parse the markdown, hold the comment as
+some node, and write it back; every round trip is a chance to move a byte, and
+a moved byte is a broken anchor. Working on the source means markers,
+footnotes and frontmatter survive by construction, and there is nothing to
+bridge. Decorations do the reading work: flagged passages underlined, bound
+ones marked by status, each marker collapsed to a diamond that expands when the
+cursor enters it, a hover listing the claims a passage rests on with their kind
+and disposition. No typography, on purpose: a monospace face and a comfortable
+measure, nothing sized, nothing rendered.
+
+**The host interface.** `tools/editor/` knows nothing about MCP. It takes a
+parent element and the text, and offers `setText`, `getText`, `setMarks`
+(returning the anchors it could not place), `onSelectionChange`, `onSave`,
+`isDirty`, `markSaved` and `destroy`. The app is its first host and does all
+the deciding: what a gesture means, which tool to call, what to say in chat. A
+native application with a web view can be its second without a rewrite, and if
+the folder becomes its own repository it moves as a unit. `setMarks` returns
+`{missing}` rather than nothing, which the plan's behaviour asked for and its
+interface sketch did not: an anchor the prose moved under has to be reportable,
+or the editor silently draws less than the record says.
+
+**Saving is digest-gated.** `erf_narrative_read` returns a 12-character sha256
+of the file's bytes; `erf_narrative_write` takes it back as `expected_digest`
+and refuses when the file moved underneath, returning what is on disk. The app
+raises a banner with two buttons that do exactly the two things available:
+reload, or overwrite. Two writers cannot silently overtake each other, and the
+person is never asked to guess which version they have.
+
+**The trigger is a message, and the answer is polled.** MCP sampling and
+elicitation are not assumed to exist in the host, so a flag asking for `back`
+or `opposite` puts one line into the conversation with `sendMessage`: a message
+the person could have typed. The LLM answers in the same chat while the editor
+stays open. From then on the app watches by polling `erf_narrative_status`
+every three seconds for a quarter of an hour, then every half minute, stopping
+the moment no such flag is open. Polling is a local read of files this machine
+owns: no LLM, no git, no network, and the app still pushes no record. When a
+binding lands, the flag resolves, the decoration turns from flagged to bound,
+and the header says so for a few seconds.
+
+**Bundle size.** The app resource is 1065 KB (script 831 KB), of which
+CodeMirror and the editor are about 520. Most of that last figure is
+`@codemirror/lang-markdown` pulling `@codemirror/lang-html` in at module scope
+for embedded HTML, which no configuration turns off. The resource is served
+over stdio and cached by the host against its content-hashed URI, so it is paid
+once a session; if it ever needs to shrink, the markdown language is where to
+look.
