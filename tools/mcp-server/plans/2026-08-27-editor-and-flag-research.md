@@ -139,3 +139,138 @@ Hand-off checklist (fill in with real steps and expected results):
 ## Out of scope, on purpose
 
 Typography; the claims tree page; Bind to… and Rewrite gestures; the unbound-passages report; the `.mcpb` bundle and the plugin; the Bookeh host; any change to the format.
+
+## Hand-off checklist
+
+Everything above is built, tested and committed. What follows cannot be done
+from a terminal: it needs Claude Desktop, a person, and a chat. Nothing here
+has been run, and nothing here is claimed to work.
+
+**0. Pick a corpus, outside this repository.** The server commits its own
+writes, so a corpus inside `epistemic-record-format/` would commit into it.
+For a throwaway:
+
+```
+cp -R examples/corpora/minimal ~/erf-corpora/editor-trial
+cd ~/erf-corpora/editor-trial && git init -q && git add -A && git commit -qm "trial corpus"
+```
+
+Make sure the root in the Desktop connector's `args` covers that folder.
+
+**1. Restart Desktop and check the handshake.** Quit Claude Desktop from the
+menu bar (closing the window is not enough), reopen it, start a new chat. The
+app resource is versioned by the hash of its bytes, so a restart is what makes
+the host fetch the new bundle rather than the cached old one.
+*Expected:* asking "which erf tools do you have" lists `erf_narrative_read`,
+`erf_narrative_write` and `erf_narrative_status` beside the others. If it does
+not, the host is still on the cached resource, or the connector is pointing at
+another checkout.
+
+**2. Open the narrative and look at it.** "Open the narrative in the ERF
+viewer."
+*Expected:* the card appears inline as the outline, then asks for fullscreen.
+Fullscreen shows the markdown source in a monospace face, frontmatter at the
+top, wrapped at a comfortable measure. Each `<!-- claims: … -->` shows as a
+small boxed diamond, not as the comment. Hovering a bound passage raises a
+tooltip listing each claim: title, id, kind, disposition, atom count. Clicking
+into the diamond expands it to the raw marker; moving the cursor out of it
+collapses it again. A previously flagged passage carries a dashed underline.
+
+**3. Type, and watch it save.** Put the cursor in a paragraph, type a
+character, wait two seconds.
+*Expected:* the header reads `saved · N binding(s) · N current · …` for about
+five seconds. `git -C ~/erf-corpora/editor-trial log --oneline -1` shows
+`erf-mcp: edit narrative <slug>`. `Cmd-S` does the same immediately rather than
+after the pause.
+
+**4. Flag a passage and ask for it to be backed.** Select a sentence of at
+least eight words.
+*Expected:* a small toolbar appears above the selection with **Flag** and
+**Back this**. Press Flag: a popover offers three choices (propose and stop /
+back it / back it and the opposite) and a note field. Choose "Back it", write a
+note, press Flag.
+*Expected:* the popover closes; the header reads `flagged #N · back`; the
+selected words gain a dashed underline; and a message appears in the chat as
+though you had typed it, of the form `Back flag #N in "<title>": "<anchor>". My
+note: … Propose the claims first and stop for my ruling. After I rule, back
+each accepted observation and bind the passage.` The LLM answers with proposed
+claims and stops. The editor stays open the whole time, and the header reads
+`researching #N`.
+
+**5. Rule, and watch the passage change on its own.** Answer in the chat ("take
+the first two, drop the third"). The LLM mints the claims, backs them, and
+binds the passage.
+*Expected:* within about three seconds of the binding landing, the header reads
+`#N: bound to 2 claims`, the dashed flag underline becomes the bound highlight,
+and a collapsed diamond appears at the end of the passage. Nothing was clicked
+in the app to make that happen; the app polled. Once no research flag is open,
+`researching` disappears from the header and the polling stops.
+
+**6. Break a binding on purpose.** Edit the words of the bound passage that the
+marker quotes as its anchor. Wait for the save.
+*Expected:* the passage's highlight turns to the broken colour, and the saved
+line reports `… · 0 current · 1 broken`. Asking for `erf_narrative_check` in
+chat says the same thing, in the same words. Then have the LLM update one of
+the claims instead: that passage should read `1 stale`, and rebinding it with
+`replace` should clear it.
+
+**7. Two collisions worth provoking.**
+- With the app's editor open and untouched, change a word in the same file from
+  a text editor outside Desktop and save. *Expected:* while polling is running,
+  the app reloads the text silently within a few seconds and the cursor
+  position is lost. With an unsaved change in the app's editor instead,
+  *expected:* the banner "This narrative changed on disk while you were
+  editing. Reload to take what is on disk, or overwrite it with what is here."
+  with two buttons that do exactly those two things.
+- Press **inline** with an unsaved change. *Expected:* the change is saved
+  before the view collapses to the outline.
+
+**8. Write down what Desktop actually did.** Anything this plan did not expect
+goes in `tools/mcp-server/DESIGN.md` under "Findings from building it": the app
+collapsing during a long turn, a second card opening for the flag's message,
+the host refusing `sendMessage`, the resource cache holding the old bundle
+through a restart, the editor losing focus when the popover opens.
+
+## Deviations
+
+Everything in the plan was built. Four places where what was built is wider
+than what was written, each with the reason:
+
+1. **A fifth binding status, `indeterminate`.** The plan enumerates `current`,
+   `stale`, `broken` and `missing-claim`, and separately requires that the
+   status come from the same logic `erf_narrative_check` uses. Those two cannot
+   both hold: `ERF-32`'s staleness reading answers `indeterminate` for a
+   binding with no `bound-at` to compare, and `narrativeCheck` already counted
+   that state. Mapping it onto `current` would state a check that was not made,
+   and onto `stale` would state a change that was not seen. It is carried
+   through as its own value, and the editor draws it like `stale`, since what
+   the passage rests on is not confirmed current either way.
+
+2. **`setMarks` returns `{missing}`, where the interface sketch says `void`.**
+   The behaviour paragraph in the same work package requires a missing anchor
+   to be "reported through a `missing` list on `setMarks`'s return value". The
+   more specific requirement won.
+
+3. **Two tool results carry more than the plan lists.** `erf_narrative_write`
+   returns `flags` and `bindings` beside `{written, digest, check}`, because
+   WP3 asks the app to call `setMarks` after a save and `check` is a string,
+   not marks. Each binding item carries `claimInfo` (title, kind, disposition,
+   atom count per claim), because WP3 asks the hover to show kind and
+   disposition and the editor is not allowed to call a tool. Both are additions
+   to the shapes the plan names; nothing the plan names is missing.
+
+4. **The app bundle is 1065 KB, not under 600.** The 600 KB ceiling is stated
+   in WP2, about the editor bundle, and the editor bundle is 520 KB minified.
+   The app resource that ships is the editor plus the apps SDK plus the
+   viewer's stylesheet with its fonts inlined: 1065 KB, of which 831 is script.
+   Most of the editor's share is `@codemirror/lang-markdown` importing
+   `@codemirror/lang-html` at module scope for embedded HTML, which no
+   configuration turns off and which the plan's fixed dependency list requires.
+   The resource is served over stdio and cached by the host against its
+   content-hashed URI, so it is paid once a session. Noted here in case 600 was
+   meant to bound the shipped resource rather than the editor.
+
+One thing outside the plan was changed: `tools/mcp-server/tsconfig.json` now
+includes `app/*.ts` and `../editor/src/*.ts`, so `npm run typecheck` covers the
+app and the editor, which it did not before. Without it, none of this work
+package's browser code would have been typechecked at all.
