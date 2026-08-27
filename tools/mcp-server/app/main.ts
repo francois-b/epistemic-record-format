@@ -14,15 +14,19 @@
  * markdown source it gets from `erf_narrative_read`, saves through
  * `erf_narrative_write`, and draws what the record says on top of the prose.
  *
- * The app still writes exactly one kind of file, the narrative. Every record
- * is written by a tool the LLM calls, with the person ruling in chat. A
- * selection becomes a flag and, when the flag asks for more than a
- * proposal, one message into the conversation; from there the app only
- * watches, by polling `erf_narrative_status`, which is local and read-only.
+ * The app writes the narrative, and carries the person's rulings. A worker's
+ * proposals for a flag arrive as a card (`erf_propose` returns them with this
+ * resource); the person accepts, narrows or drops each there, and each action
+ * is one tool call (`erf_proposal_rule`, then `erf_proposal_finish`), so a
+ * claim is written by the ruling and by nothing the LLM says. A selection
+ * becomes a flag and, when the flag asks for research, one message into the
+ * conversation; from there the app watches by polling `erf_narrative_status`,
+ * which is local and read-only.
  */
 import { App } from "@modelcontextprotocol/ext-apps";
 import { createEditor, isWorked, type EditorHandle, type FlagMark, type BindingMark } from "../../editor/src/index.ts";
 import { trailLines, trailSummary, type FlagTrail } from "../../editor/src/trail.ts";
+import { rulingLine, type ProposalSetView, type ProposalView, type Ruling } from "../src/proposals.ts";
 
 interface Page { page: string; title: string; html: string; corpus?: string; flags?: { id: number; anchor: string; note?: string }[] }
 interface NarrativeRead { narrative: string; path: string; title: string; text: string; digest: string; bindings: BindingMark[]; flags: FlagMark[] }
@@ -122,6 +126,7 @@ const narrativeSlug = (p: Page | null): string => slugIn(p) || doc?.narrative ||
 // iframe itself, so the outline inline stands and the jump is left alone.
 function render(): void {
   const p = current; if (!p) return;
+  if (p.page.startsWith("proposals:") && proposalSet) { editorEl.hidden = true; main.hidden = false; hideSelection(); renderProposals(proposalSet); main.scrollTop = 0; return; }
   const slug = narrativeSlug(p);
   if (isNarrative(p) && mode === "fullscreen") {
     main.hidden = true;
@@ -141,6 +146,7 @@ function render(): void {
     main.innerHTML = `<main><h1>${escapeHtml(p.title)}</h1><p class="sub">Narrative · ${bound} bound passage${bound === 1 ? "" : "s"} · ${flagged} flagged · the outline; press <b>open</b> to edit it fullscreen</p><ul class="outline">${items}</ul></main>`;
   } else {
     main.innerHTML = (mode === "fullscreen" ? null : compactRecord(p)) ?? p.html;
+    if (returnTo) main.insertAdjacentHTML("afterbegin", `<p class="back"><a href="#proposals">← back to the proposals for flag #${returnTo.flag}</a></p>`);
   }
   main.scrollTop = 0;
 }
@@ -611,6 +617,131 @@ function again(): void {
   pollTimer = setTimeout(() => void pollOnce(), fast ? FAST_MS : SLOW_MS);
 }
 
+// ---- the ruling card ---------------------------------------------------------
+// A worker's proposals for one flag, with the evidence in full, and the three
+// things the person can do with each. Every action is one tool call from here;
+// the claim exists only once the person accepted or narrowed it. The set is
+// re-rendered from what the server returns, so the card never shows a state
+// the record does not hold.
+
+let proposalSet: ProposalSetView | null = null;
+/** The card a page was opened from, so the page can offer the way back. */
+let returnTo: ProposalSetView | null = null;
+const isProposalSet = (x: unknown): x is ProposalSetView => !!x && typeof x === "object" && (x as { kind?: string }).kind === "proposals";
+
+function showProposals(v: ProposalSetView): void {
+  proposalSet = v;
+  returnTo = null;
+  current = { page: `proposals:${v.flag}`, title: `Proposals for flag #${v.flag}`, html: "", corpus: v.corpus };
+  for (const c of crumbs) c.textContent = current.title;
+  setStatus("");
+  render();
+}
+
+function renderProposals(v: ProposalSetView): void {
+  const root = el("main", "props");
+  root.appendChild(el("h1", "", `${v.counts.total} proposal${v.counts.total === 1 ? "" : "s"} for flag #${v.flag}`));
+  const scope = v.span ?? v.anchor;
+  root.appendChild(el("p", "lead", `${v.narrative_title} · “${scope.length > 160 ? scope.slice(0, 157) + "…" : scope}” · ${v.research}${v.survey ? ` · survey ${v.survey}` : ""} · by ${v.by}`));
+  if (v.summary) root.appendChild(el("p", "summary", v.summary));
+  for (const p of v.proposals) root.appendChild(renderProposal(v, p));
+  const foot = el("div", "foot");
+  const count = el("span", "count", v.status === "ruled"
+    ? `finished · ${v.bound?.length ? `bound to ${v.bound.join(", ")}` : "nothing bound, flag resolved"}`
+    : `${v.counts.ruled} of ${v.counts.total} ruled${v.counts.ruled ? ` · ${v.counts.accepted} accepted · ${v.counts.narrowed} narrowed · ${v.counts.dropped} dropped` : ""}`);
+  foot.appendChild(count);
+  if (v.status === "open") {
+    const fin = el("button", "", v.counts.accepted + v.counts.narrowed ? "bind and finish" : "finish");
+    fin.type = "button"; fin.disabled = !v.all_ruled;
+    fin.title = v.all_ruled ? "bind the passage to the accepted claims and resolve the flag" : "rule on every proposal first";
+    fin.addEventListener("click", () => void finishProposals(v));
+    foot.appendChild(fin);
+  } else if (v.status === "superseded") foot.appendChild(el("span", "", "superseded by a later set"));
+  root.appendChild(foot);
+  const err = el("p", "err"); err.id = "props-err"; err.hidden = true; root.appendChild(err);
+  main.replaceChildren(root);
+}
+
+function renderProposal(v: ProposalSetView, p: ProposalView): HTMLElement {
+  const box = el("div", `prop${p.ruled ? ` ruled-${p.ruled.ruling}` : ""}`);
+  const head = el("div", "");
+  head.appendChild(el("span", "id", p.id));
+  head.appendChild(el("span", "kind", p.epistemic_kind));
+  box.appendChild(head);
+  const title = document.createElement("textarea");
+  title.className = "title"; title.rows = 2; title.value = p.ruled?.title ?? p.title;
+  title.disabled = !!p.ruled || v.status !== "open";
+  title.setAttribute("aria-label", `title of ${p.id}; edit it to narrow`);
+  box.appendChild(title);
+  for (const a of p.atoms) {
+    const row = el("div", `atom ${a.side}${a.missing ? " missing" : ""}`);
+    row.appendChild(el("span", `side ${a.side}`, a.side));
+    if (a.missing) { row.appendChild(el("span", "", `${a.id}: no such atom`)); box.appendChild(row); continue; }
+    const q = document.createElement("blockquote"); q.textContent = `“${a.quote}”`; row.appendChild(q);
+    row.appendChild(el("div", "finding", a.finding));
+    const cite = el("div", "cite");
+    const link = el("a", "", `${a.id} · ${a.citation ?? a.source}${a.page ? ` · page ${a.page}` : ""}`);
+    link.href = a.url ?? `capture-${encodeURIComponent(a.id)}.html`;
+    if (a.url) { link.target = "_blank"; link.rel = "noopener"; link.title = a.url; }
+    else link.title = "the quote in the held text";
+    cite.appendChild(link);
+    if (a.url) { const held = el("a", "", " · held text"); held.href = `capture-${encodeURIComponent(a.id)}.html`; held.title = "the quote in the held text"; cite.appendChild(held); }
+    if (a.quality || a.as_of) cite.appendChild(document.createTextNode(` · ${[a.quality, a.as_of].filter(Boolean).join(" · ")}`));
+    row.appendChild(cite);
+    box.appendChild(row);
+  }
+  if (!p.atoms.length) box.appendChild(el("p", "settles", "no evidence attached: an argument, a commitment, or a gap"));
+  if (p.settles) { const d = el("p", "settles"); d.appendChild(el("b", "", "What would settle it: ")); d.appendChild(document.createTextNode(p.settles)); box.appendChild(d); }
+  if (p.note) { const d = el("p", "note"); d.appendChild(el("b", "", "The worker's note: ")); d.appendChild(document.createTextNode(p.note)); box.appendChild(d); }
+  const actions = el("div", "actions");
+  if (p.ruled) {
+    actions.appendChild(el("span", `ruled ${p.ruled.ruling}`, p.ruled.ruling === "dropped" ? "dropped" : `${p.ruled.ruling} · claim ${p.ruled.claim ?? p.id}`));
+  } else if (v.status === "open") {
+    const accept = el("button", "accept", "accept"); accept.type = "button"; accept.title = "mint the claim as proposed";
+    const narrow = el("button", "narrow", "narrow"); narrow.type = "button"; narrow.title = "edit the title above, then mint it narrowed"; narrow.disabled = true;
+    const drop = el("button", "drop", "drop"); drop.type = "button"; drop.title = "no claim; the drop is recorded";
+    title.addEventListener("input", () => { const changed = title.value.trim() !== p.title; narrow.disabled = !changed; accept.disabled = changed; });
+    accept.addEventListener("click", () => void rule(v, p.id, "accepted"));
+    narrow.addEventListener("click", () => void rule(v, p.id, "narrowed", title.value.trim()));
+    drop.addEventListener("click", () => void rule(v, p.id, "dropped"));
+    actions.append(accept, narrow, drop);
+  }
+  box.appendChild(actions);
+  return box;
+}
+
+function propsError(text: string): void {
+  const e = document.getElementById("props-err");
+  if (e) { e.textContent = text; e.hidden = !text; }
+}
+
+async function rule(v: ProposalSetView, id: string, ruling: Ruling, title?: string): Promise<void> {
+  propsError("");
+  setStatus(`${ruling === "dropped" ? "dropping" : ruling === "narrowed" ? "narrowing" : "accepting"} ${id}…`, "working");
+  try {
+    const { data, text } = await call<ProposalSetView>("erf_proposal_rule", { flag: v.flag, id, ruling, ...(title ? { title } : {}) });
+    if (!data) { setStatus(""); propsError(text.replace(/^\[[^\]]*\]\s*/, "")); return; }
+    proposalSet = data; setStatus(""); render();
+    const r = data.proposals.find((p) => p.id === id)?.ruled;
+    notice(`${id}: ${ruling}${data.all_ruled ? " · every proposal ruled" : ""}`, 5);
+    if (r) { try { await app.updateModelContext({ content: [{ type: "text", text: rulingLine(data, id, r) + (data.all_ruled ? " Every proposal is ruled; the user can now bind and finish from the card." : "") }] }); } catch { /* a host without model context */ } }
+  } catch (e) { setStatus(""); propsError(`could not rule: ${String(e)}`); }
+}
+
+async function finishProposals(v: ProposalSetView): Promise<void> {
+  propsError("");
+  setStatus("binding…", "working");
+  try {
+    const { data, text } = await call<ProposalSetView>("erf_proposal_finish", { flag: v.flag });
+    if (!data) { setStatus(""); propsError(text.replace(/^\[[^\]]*\]\s*/, "")); return; }
+    proposalSet = data; setStatus(""); render();
+    const line = text.replace(/^\[[^\]]*\]\s*/, "").split("\n")[0] ?? `Flag #${v.flag} ruled.`;
+    notice(data.bound?.length ? `bound to ${data.bound.join(", ")}` : "flag resolved", 6);
+    try { await app.updateModelContext({ content: [{ type: "text", text: `${line} The passage is bound and the flag resolved; carry on with what the flag asked for, if anything remains.` }] }); } catch { /* a host without model context */ }
+    try { await app.sendMessage({ role: "user", content: [{ type: "text", text: line }] }); } catch { notice("the host declined to send the line; say it in chat", 8); }
+  } catch (e) { setStatus(""); propsError(`could not finish: ${String(e)}`); }
+}
+
 // ---- browsing --------------------------------------------------------------
 
 /** The viewer's file names map onto erf_view pages one for one. */
@@ -640,6 +771,7 @@ function fromResult(r: unknown): Page | null {
 }
 
 async function open(page: string): Promise<void> {
+  if (proposalSet && current?.page.startsWith("proposals:")) returnTo = proposalSet;
   setStatus("…", "working");
   try {
     const r = await app.callServerTool({ name: "erf_view", arguments: { page, ...(current?.corpus ? { corpus: current.corpus } : {}) } });
@@ -655,12 +787,15 @@ document.addEventListener("click", (e) => {
   if (!a) return;
   const href = a.getAttribute("href") ?? "";
   e.preventDefault();
+  if (href === "#proposals") { if (returnTo) showProposals(returnTo); return; }
   const page = pageFromHref(href);
   if (page) { void open(page); return; }
   if (/^https?:\/\//.test(href)) void app.openLink({ url: href });
 });
 
 app.ontoolresult = (params) => {
+  const sc = structuredOf<unknown>(params);
+  if (isProposalSet(sc)) { showProposals(sc); return; }
   const p = fromResult(params);
   if (p) show(p);
 };

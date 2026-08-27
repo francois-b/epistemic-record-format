@@ -70,6 +70,44 @@ body.mode-fullscreen #main { flex: 1; overflow: auto; padding-bottom: calc(1rem 
 #notice button { border: 1px solid var(--rule); background: transparent; color: var(--ink); border-radius: 4px; padding: .05rem .5rem; cursor: pointer; font: inherit; }
 #notice button#notice-go { border-color: var(--accent); color: var(--accent); }
 
+/* the ruling card: proposals with their evidence, three visible actions each, one finish; the host's tokens where it sets them */
+.props { font-family: var(--sans); font-size: .86rem; }
+.props h1 { font-size: 1.1rem; line-height: 1.35; margin: .3rem 0 .2rem; }
+.props .lead { color: var(--muted); margin: .1rem 0 .5rem; }
+.props .summary { margin: .2rem 0 .6rem; }
+.props .prop { border: 1px solid var(--rulelt); border-radius: 6px; padding: .5rem .65rem; margin: .45rem 0; background: var(--paper); }
+.props .prop.ruled-accepted, .props .prop.ruled-narrowed { border-color: var(--good); }
+.props .prop.ruled-dropped { opacity: .55; }
+.props .prop .id { font-family: var(--mono); font-size: .78rem; color: var(--muted); }
+.props .prop .kind { font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; color: var(--accent); margin-left: .4rem; }
+.props .prop .title { width: 100%; box-sizing: border-box; margin: .3rem 0; padding: .3rem .4rem; border: 1px solid var(--rule); border-radius: 4px; background: var(--codebg); color: var(--ink); font: inherit; font-size: .95rem; line-height: 1.35; resize: vertical; }
+.props .prop .title:disabled { background: transparent; border-color: transparent; padding-left: 0; opacity: 1; color: var(--ink); }
+.props .atom { display: grid; grid-template-columns: auto 1fr; gap: .25rem .5rem; margin: .35rem 0; padding: .3rem .45rem; border-left: 3px solid var(--good); background: var(--codebg); border-radius: 0 4px 4px 0; }
+.props .atom.against { border-left-color: var(--warn); }
+.props .atom .side { font-size: .7rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); align-self: start; padding-top: .15rem; }
+.props .atom .side.against { color: var(--warn); }
+.props .atom blockquote { margin: 0; font-style: italic; }
+.props .atom .finding { grid-column: 2; color: var(--ink); }
+.props .atom .cite { grid-column: 2; font-size: .78rem; color: var(--muted); }
+.props .atom .cite a { color: var(--accent); }
+.props .atom.missing { border-left-color: var(--warn); color: var(--warn); }
+.props .settles, .props .note { font-size: .8rem; color: var(--muted); margin: .2rem 0; }
+.props .settles b, .props .note b { color: var(--ink); font-weight: 600; }
+.props .actions { display: flex; gap: .4rem; align-items: center; margin-top: .4rem; flex-wrap: wrap; }
+.props .actions button { border: 1px solid var(--rule); background: var(--codebg); color: var(--ink); border-radius: 4px; padding: .22rem .6rem; cursor: pointer; font: inherit; }
+.props .actions button:disabled { opacity: .45; cursor: default; }
+.props .actions button.accept { border-color: var(--good); color: var(--good); }
+.props .actions button.narrow { border-color: var(--accent); color: var(--accent); }
+.props .actions button.drop { border-color: var(--warn); color: var(--warn); }
+.props .actions .ruled { font-size: .8rem; color: var(--good); }
+.props .actions .ruled.dropped { color: var(--muted); }
+.props .foot { display: flex; gap: .6rem; align-items: baseline; margin-top: .6rem; padding-top: .5rem; border-top: 1px solid var(--rulelt); }
+.props .foot .count { margin-right: auto; color: var(--muted); }
+.props .foot button { border: 1px solid var(--accent); background: var(--codebg); color: var(--accent); border-radius: 4px; padding: .25rem .7rem; cursor: pointer; font: inherit; font-weight: 600; }
+.props .foot button:disabled { opacity: .45; cursor: default; }
+.props .done { color: var(--good); }
+.props .err { color: var(--warn); font-size: .8rem; margin-top: .3rem; }
+#main p.back { font-family: var(--sans); font-size: .8rem; margin: .2rem 0 .4rem; }
 #selbar { position: fixed; z-index: 10; display: flex; gap: .4rem; padding: .3rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper); box-shadow: 0 2px 10px rgba(0,0,0,.25); font-family: var(--sans); font-size: .85rem; }
 #selbar[hidden] { display: none; }
 mark.flag { background: transparent; color: inherit; border-bottom: 2px dashed var(--warn); padding: 0; }
