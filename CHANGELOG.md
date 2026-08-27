@@ -9,6 +9,8 @@ everything else.
 
 ## Unreleased
 
+Tooling, 2026-08-27, from the first Cowork session: the active corpus is kept on disk per set of roots (`~/.erf/active.json`), so a host that starts one server per turn or per worker keeps the choice; Cowork lost it between two calls. `erf_view` no longer declares an output schema: the SDK emits draft-07 for it and the bundled Claude Code client validates 2020-12, so every call was refused before it reached the server.
+
 Tooling, 2026-08-27: the server instructions say what a report on a flag contains (proposals with atoms and what would settle them, coverage in two lines with sources sought and not reached, what could not be held) and what it leaves out (corpus state, tool results, digests, the worker's own steps). Found when a survey pass opened with a paragraph on digests.
 
 Known host behaviour, 2026-08-27: leaving fullscreen in Claude Desktop, the app's view jumps while the host animates it back into its inline slot. Holding the content still and showing the editor inline too were both tried and changed nothing; it is the host's animation of the iframe, and the outline inline stands.

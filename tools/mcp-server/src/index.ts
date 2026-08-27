@@ -126,7 +126,9 @@ export function buildServer(ws: Workspace): McpServer {
     title: "View the corpus",
     description: "Show a page of the corpus in the ERF viewer, rendered inside the conversation. Use this whenever the user says show me, open, view, look at, or browse: the corpus index, a claim with its disposition, evidence and standings, an atom with its quote check and source page, a survey, the narrative with its bound passages, sources, or health. Pages: a path inside the corpus such as wiki/narrative/opening.md, or index, sources, health, claim:<id>, atom:<id>, capture:<id>, survey:<id>, narrative:<slug>. To read a record's data for your own reasoning, use erf_record_read instead.",
     inputSchema: { corpus: corpusArg, page: z.string().optional().describe("a path inside the corpus (wiki/narrative/opening.md, wiki/claims/x.md) or a page: index (default), sources, health, claim:<id>, atom:<id>, capture:<id>, survey:<id>, narrative:<slug>") },
-    outputSchema: { page: z.string(), title: z.string(), html: z.string(), corpus: z.string(), flags: z.array(z.object({ id: z.number(), anchor: z.string(), note: z.string().optional() })).optional() },
+    // No declared outputSchema: with zod v3 the SDK can only emit it as JSON Schema draft-07, and the bundled Claude Code
+    // client (Cowork) validates output schemas as 2020-12 and refused every erf_view call (2026-08-27). The structured
+    // content is returned regardless; the app reads it, and Chat never needed the schema.
     annotations: { readOnlyHint: true },
     _meta: { ui: { resourceUri: appUri } },
   }, async (a) => {

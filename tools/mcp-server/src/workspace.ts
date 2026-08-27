@@ -3,8 +3,9 @@
  * their declarations (ERF-54: discovery by content, never by path), and the
  * corpus the session is working on. Every tool resolves its corpus here.
  */
-import { existsSync, readdirSync, readFileSync, statSync, mkdirSync } from "node:fs";
-import { basename, join, resolve, relative, isAbsolute } from "node:path";
+import { existsSync, readdirSync, readFileSync, statSync, mkdirSync, writeFileSync } from "node:fs";
+import { basename, join, resolve, relative, isAbsolute, dirname } from "node:path";
+import { homedir } from "node:os";
 import yaml from "js-yaml";
 import { openCorpus, Refusal, YAML_LOAD, type Corpus, type CorpusOptions } from "./corpus.ts";
 import type { CorpusDeclaration } from "../../../schema/erf.generated.ts";
@@ -26,7 +27,22 @@ export function openWorkspace(roots: string[], options: Omit<CorpusOptions, "dir
   const ws: Workspace = { roots: abs, options, active: null };
   const found = discover(ws);
   if (found.size === 1) ws.active = [...found.keys()][0]!;
+  else { const kept = readActive(ws); if (kept && found.has(kept)) ws.active = kept; }
   return ws;
+}
+
+/** The active corpus is kept on disk, per set of roots, so it holds across server processes: a host may start
+ *  one server per turn or per worker (Cowork did, 2026-08-27, and lost the choice between two calls). The file
+ *  is the truth; the in-memory field is a cache. ERF_STATE_FILE overrides the location (tests). */
+function stateFile(): string { return process.env["ERF_STATE_FILE"] ?? join(homedir(), ".erf", "active.json"); }
+function readState(): Record<string, string> {
+  try { return JSON.parse(readFileSync(stateFile(), "utf8")) as Record<string, string>; } catch { return {}; }
+}
+function readActive(ws: Workspace): string | null { return readState()[ws.roots.join("|")] ?? null; }
+function writeActive(ws: Workspace, id: string): void {
+  const f = stateFile();
+  mkdirSync(dirname(f), { recursive: true });
+  writeFileSync(f, JSON.stringify({ ...readState(), [ws.roots.join("|")]: id }, null, 2) + "\n", "utf8");
 }
 
 /** Every folder under the roots (to a small depth) whose corpus.yaml declares `type: corpus`. */
@@ -59,6 +75,7 @@ export function discover(ws: Workspace): Map<string, Found> {
 /** The corpus a call addresses: the `corpus` argument, else the active one, else the only one. */
 export function resolveCorpus(ws: Workspace, id?: string): Corpus & { id: string } {
   const found = discover(ws);
+  if (!id && found.size > 1) { const kept = readActive(ws); if (kept && found.has(kept)) ws.active = kept; }
   const want = id ?? ws.active ?? (found.size === 1 ? [...found.keys()][0]! : null);
   if (!want) {
     throw new Refusal(found.size === 0
@@ -74,6 +91,7 @@ export function useCorpus(ws: Workspace, id: string): Found {
   const f = discover(ws).get(id);
   if (!f) throw new Refusal(`no corpus with id ${id}; known: ${[...discover(ws).keys()].join(", ") || "none"}`);
   ws.active = id;
+  writeActive(ws, id);
   return f;
 }
 

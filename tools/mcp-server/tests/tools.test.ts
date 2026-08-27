@@ -485,6 +485,8 @@ function await0(fn: () => unknown): void { fn(); }
 
 // ---------- workspace: roots, discovery, the active corpus ----------
 import { openWorkspace, discover, resolveCorpus, useCorpus, newCorpusDir } from "../src/workspace.ts";
+// the active-corpus state file lives under ~/.erf; the tests keep theirs in a temp path
+process.env["ERF_STATE_FILE"] = `${process.env["TMPDIR"] ?? "/tmp"}/erf-test-active-${process.pid}.json`;
 
 test("workspace: corpora are found under roots by their declarations; one corpus is active by default", () => {
   const root = mkdtempSync(join(tmpdir(), "erf-ws-"));
@@ -507,6 +509,10 @@ test("workspace: two corpora need an explicit choice; duplicate ids are refused;
   const ws = openWorkspace([root], { agent: "agent/test", fetchEnabled: false, commit: false });
   assert.equal(ws.active, null);
   assert.throws(() => resolveCorpus(ws), /none active/);
+  // the choice holds across processes: a second workspace over the same roots sees it (Cowork lost it, 2026-08-27)
+  useCorpus(ws, [...discover(ws).keys()][0]!);
+  const again = openWorkspace([root], { agent: "agent/test", fetchEnabled: false, commit: false });
+  assert.equal(resolveCorpus(again).id, ws.active);
   assert.throws(() => useCorpus(ws, "nope"), /no corpus with id nope/);
   useCorpus(ws, "fixture-second");
   assert.equal(resolveCorpus(ws).id, "fixture-second");
