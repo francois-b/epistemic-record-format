@@ -24,9 +24,11 @@ let current: Page | null = null;
 let mode: "inline" | "fullscreen" | "pip" = "inline";
 
 function applyMode(m: typeof mode): void {
+  const changed = m !== mode;
   mode = m;
   document.body.classList.toggle("mode-fullscreen", m === "fullscreen");
   document.body.classList.toggle("mode-inline", m !== "fullscreen");
+  if (changed && current) render();
 }
 applyMode("inline");
 
@@ -40,29 +42,32 @@ function pageFromHref(href: string): string | null {
   return m ? `${m[1]}:${decodeURIComponent(m[2]!)}` : null;
 }
 
-function show(p: Page): void {
-  current = p;
-  main.innerHTML = p.html;
-  for (const c of crumbs) c.textContent = p.title;
-  status.textContent = "";
+/** What the card shows for the current page in the current mode. A narrative is a document,
+ *  not an answer: inline it would scroll inside a card the host caps in height, so inline it
+ *  is its outline, and the full text renders only in fullscreen. Records fit either way. */
+function render(): void {
+  const p = current; if (!p) return;
+  if (p.page.startsWith("narrative") && mode !== "fullscreen") {
+    const probe = document.createElement("div"); probe.innerHTML = p.html;
+    const headings = [...probe.querySelectorAll("h2, h3")].map((h) => h.textContent ?? "");
+    const bound = probe.querySelectorAll(".bind").length;
+    const items = headings.map((t) => `<li>${escapeHtml(t)}</li>`).join("") || "<li>(no sections)</li>";
+    main.innerHTML = `<main><h1>${escapeHtml(p.title)}</h1><p class="sub">Narrative · ${bound} bound passage${bound === 1 ? "" : "s"} · the outline; press <b>open</b> to read it fullscreen</p><ol>${items}</ol></main>`;
+  } else {
+    main.innerHTML = p.html;
+  }
   main.scrollTop = 0;
-  // A narrative is a document, not an answer: inline it would scroll inside a card the host
-  // caps in height, one scrollbar inside another. Ask for fullscreen; if the host declines,
-  // show the outline instead of the whole text, with the open button as the way in.
-  if (p.page.startsWith("narrative") && mode !== "fullscreen") void narrativeInline(p);
 }
 
-async function narrativeInline(p: Page): Promise<void> {
-  try {
-    const r = await app.requestDisplayMode({ mode: "fullscreen" });
-    const got = (r as { mode?: typeof mode }).mode;
-    if (got === "fullscreen") { applyMode("fullscreen"); return; }
-  } catch { /* the host cannot or will not; fall through to the outline */ }
-  if (current !== p) return;
-  const headings = [...main.querySelectorAll("h1, h2, h3")].map((h) => ({ level: Number(h.tagName[1]), text: h.textContent ?? "" }));
-  const bound = main.querySelectorAll(".bind").length;
-  const items = headings.filter((h) => h.level >= 2).map((h) => `<li>${escapeHtml(h.text)}</li>`).join("") || "<li>(no sections)</li>";
-  main.innerHTML = `<main><h1>${escapeHtml(p.title)}</h1><p class="sub">Narrative · ${bound} bound passage${bound === 1 ? "" : "s"} · shown as an outline inline; press <b>open</b> to read it fullscreen</p><ol>${items}</ol></main>`;
+function show(p: Page): void {
+  current = p;
+  for (const c of crumbs) c.textContent = p.title;
+  status.textContent = "";
+  render();
+  // opening a narrative asks for the reader straight away; the host may decline, and the outline stands
+  if (p.page.startsWith("narrative") && mode !== "fullscreen") {
+    app.requestDisplayMode({ mode: "fullscreen" }).then((r) => { const got = (r as { mode?: typeof mode }).mode; if (got) applyMode(got); }).catch(() => {});
+  }
 }
 
 /** In-card navigation is never silent: the model is told what the user is now looking at. */
