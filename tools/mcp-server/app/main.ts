@@ -93,23 +93,14 @@ function escapeHtml(s: string): string {
 
 // ---- modes -----------------------------------------------------------------
 
-let modeTimer: number | undefined;
-function applyMode(m: typeof mode, settled = false): void {
+function applyMode(m: typeof mode): void {
   const changed = m !== mode;
   const leavingFullscreen = changed && mode === "fullscreen" && m !== "fullscreen";
-  window.clearTimeout(modeTimer);
-  // Leaving fullscreen, the host animates the view back into its inline slot. Swapping the editor for the
-  // outline at that moment changes the content height mid-flight and the card jumps; so the content is
-  // left as it is until the animation has settled, and only then laid out inline (a try, 2026-08-27).
-  if (leavingFullscreen && !settled) {
-    if (ed?.isDirty()) void saveNow(ed.getText()); // an editor left with unsaved work saves before the view goes away
-    modeTimer = window.setTimeout(() => applyMode(m, true), 400);
-    return;
-  }
   mode = m;
   document.body.classList.toggle("mode-fullscreen", m === "fullscreen");
   document.body.classList.toggle("mode-inline", m !== "fullscreen");
   toggleBtn.textContent = m === "fullscreen" ? "inline" : "open";
+  // an editor left with unsaved work saves before the view goes away
   if (leavingFullscreen && ed?.isDirty()) void saveNow(ed.getText());
   if (changed && current) render();
 }
@@ -123,14 +114,14 @@ const narrativeSlug = (p: Page | null): string => slugIn(p) || doc?.narrative ||
 /** What the card shows for the current page in the current mode. A narrative is a document,
  *  not an answer: inline it would scroll inside a card the host caps in height, so inline it
  *  is its outline; fullscreen it is the editor. Records fit either way. */
-/** Try, 2026-08-27: the narrative is the editor inline as well as fullscreen, so nothing swaps while the host
- *  animates the view between the two and the card has no reason to jump. Inline the editor gets a fixed
- *  height (template.html) and scrolls inside the card. Set false to return to the outline inline. */
-const INLINE_EDITOR = true;
+// Leaving fullscreen, Desktop animates the view back into its inline slot and the card jumps on the way.
+// Two things were tried on 2026-08-27 and neither changed it: holding the content for 400 ms before laying
+// out inline, and showing the editor inline too so nothing swaps at all. It is the host's animation of the
+// iframe itself, so the outline inline stands and the jump is left alone.
 function render(): void {
   const p = current; if (!p) return;
   const slug = narrativeSlug(p);
-  if (isNarrative(p) && (mode === "fullscreen" || INLINE_EDITOR)) {
+  if (isNarrative(p) && mode === "fullscreen") {
     main.hidden = true;
     editorEl.hidden = false;
     void mountEditor(slug);

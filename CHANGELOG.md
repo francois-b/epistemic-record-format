@@ -9,6 +9,8 @@ everything else.
 
 ## Unreleased
 
+Known host behaviour, 2026-08-27: leaving fullscreen in Claude Desktop, the app's view jumps while the host animates it back into its inline slot. Holding the content still and showing the editor inline too were both tried and changed nothing; it is the host's animation of the iframe, and the outline inline stands.
+
 Tooling and pattern, 2026-08-27: no requirement changed. A flag can ask for a
 survey: research the span first (searches logged, sources captured, the survey
 recorded with its coverage bounds and notable results, atoms minted), then the
