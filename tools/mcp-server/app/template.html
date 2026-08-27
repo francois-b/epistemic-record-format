@@ -23,6 +23,13 @@ body.mode-fullscreen #head { position: sticky; top: 0; background: var(--paper);
 body.mode-fullscreen #main { flex: 1; overflow: auto; }
 #main[hidden] { display: none; }
 #main main { max-width: none; }
+/* a record inline is a card: the title at reading size, one line for what it is, one for how much sits under each heading */
+#main main.compact h1 { font-size: 1.15rem; line-height: 1.35; margin: .3rem 0 .35rem; }
+#main main.compact p { margin: .15rem 0; }
+#main main.compact .tags.head { display: inline; }
+#main main.compact .tags.head .t { font-size: .75rem; }
+#main main.compact .finding { margin: .45rem 0; }
+#main main.compact .hint { opacity: .7; }
 
 /* the editor: shown only fullscreen, and it scrolls on its own */
 #editor { flex: 1; min-height: 0; overflow: hidden; }

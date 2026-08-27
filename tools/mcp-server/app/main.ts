@@ -134,9 +134,43 @@ function render(): void {
     const items = headings.map((t) => `<li>${escapeHtml(t)}</li>`).join("") || "<li>(no sections)</li>";
     main.innerHTML = `<main><h1>${escapeHtml(p.title)}</h1><p class="sub">Narrative · ${bound} bound passage${bound === 1 ? "" : "s"} · ${flagged} flagged · the outline; press <b>open</b> to edit it fullscreen</p><ul class="outline">${items}</ul></main>`;
   } else {
-    main.innerHTML = p.html;
+    main.innerHTML = (mode === "fullscreen" ? null : compactRecord(p)) ?? p.html;
   }
   main.scrollTop = 0;
+}
+
+/**
+ * A record inline: the card is an answer in a conversation, not a page, and
+ * the host caps its height. So a claim, atom or survey shows its title, the
+ * line that says what it is, and how much sits under each heading of the
+ * full page; the page itself is one press of open away. The counts are read
+ * off the rendered page rather than the record, so they cannot disagree with
+ * it. Index, sources and health are lists meant for browsing, and stay whole.
+ */
+function compactRecord(p: Page): string | null {
+  const kind = p.page.split(":")[0] ?? "";
+  if (!["claim", "atom", "survey", "capture"].includes(kind)) return null;
+  const probe = document.createElement("div"); probe.innerHTML = p.html;
+  const h1 = probe.querySelector("h1")?.innerHTML ?? escapeHtml(p.title);
+  const sub = probe.querySelector("p.sub")?.innerHTML ?? "";
+  const tags = probe.querySelector(".tags.head")?.innerHTML ?? "";
+  const counts: string[] = [];
+  let finding = "";
+  for (const h of probe.querySelectorAll("h3")) {
+    const label = (h.textContent ?? "").trim();
+    let n = 0;
+    for (let el = h.nextElementSibling; el && !/^H[23]$/.test(el.tagName); el = el.nextElementSibling) {
+      if (el.tagName === "TABLE") n += Math.max(0, el.querySelectorAll("tr").length - 1);
+      else if (el.tagName === "UL" || el.tagName === "OL") n += el.children.length;
+      else if (el.classList.contains("ledger")) n += el.querySelectorAll(".row").length;
+      else if (kind === "atom" && label === "Finding" && el.tagName === "P") finding = el.innerHTML;
+    }
+    if (n || /^(Evidence|Coverage|Relations|Standings|Search acts|Notable results|Audit)/.test(label)) counts.push(`${escapeHtml(label.toLowerCase())} ${n}`);
+  }
+  return `<main class="compact"><h1>${h1}</h1><p class="sub">${sub}${tags ? ` <span class="tags head">${tags}</span>` : ""}</p>`
+    + (finding ? `<p class="finding">${finding}</p>` : "")
+    + (counts.length ? `<p class="sub counts">${counts.join(" &middot; ")}</p>` : "")
+    + `<p class="sub hint">press <b>open</b> for the full record</p></main>`;
 }
 
 function show(p: Page): void {
