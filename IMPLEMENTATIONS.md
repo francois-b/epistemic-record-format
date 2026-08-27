@@ -15,7 +15,7 @@ it was built.
 
 ## Implementations
 
-None yet, other than the reference validator in [`validator/yaml-markdown/typescript/`](validator/yaml-markdown/typescript/) and the viewer over it in [`tools/viewer/`](tools/viewer/), which are
+None yet, other than the reference validator in [`implementations/yaml-markdown/typescript/`](implementations/yaml-markdown/typescript/) and the viewer over it in [`tools/viewer/`](tools/viewer/), which are
 part of this repository and therefore not an independent reading of it. 1.0
 waits on implementations other than the author's.
 
@@ -24,7 +24,7 @@ The machine-readable list, with each artifact's versioning policy, is
 
 | Name | Language | Spec version | Conformance classes | Link |
 |---|---|---|---|---|
-| `@epistemic-record-format/validator-yaml-markdown` 0.9.x (`erf-check`), the reference | TypeScript | 0.9.0 | corpus, consumer; the conformance suite runs against it | [`validator/yaml-markdown/typescript/`](validator/yaml-markdown/typescript/), npm `@epistemic-record-format/validator-yaml-markdown` |
+| `@epistemic-record-format/validator-yaml-markdown` 0.9.x (`erf-check`), the reference | TypeScript | 0.9.0 | corpus, consumer; the conformance suite runs against it | [`implementations/yaml-markdown/typescript/`](implementations/yaml-markdown/typescript/), npm `@epistemic-record-format/validator-yaml-markdown` |
 
 **To add yours**, open a pull request adding a row: the name, the language,
 the specification version you built against, which conformance classes you

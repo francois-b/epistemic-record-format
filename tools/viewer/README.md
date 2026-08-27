@@ -9,7 +9,7 @@ npx tsx erf-view.ts ../../examples/corpora/minimal -o ../../examples/site
 ```
 
 Everything this renders is computed by the reference validator in
-[`validator/yaml-markdown/typescript/`](../../validator/yaml-markdown/typescript/) (`corpus.ts` loads, `compute.ts` derives,
+[`implementations/yaml-markdown/typescript/`](../../implementations/yaml-markdown/typescript/) (`corpus.ts` loads, `compute.ts` derives,
 `erf-check.ts` is the command line); this folder holds only the rendering.
 
 Output is self-contained HTML. Inline CSS, no scripts, no external requests,
@@ -35,7 +35,7 @@ under `strict`.
 
 ## Dependencies
 
-The validator's, resolved from `validator/yaml-markdown/typescript/node_modules`: `js-yaml` for the
+The validator's, resolved from `implementations/yaml-markdown/typescript/node_modules`: `js-yaml` for the
 frontmatter, `ajv` for the schema, and `commonmark` for the render step
 `ERF-51` opens with. This folder's own development
 dependencies are `tsx` to run TypeScript directly, `typescript` for the type

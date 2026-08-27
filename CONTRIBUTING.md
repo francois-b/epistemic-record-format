@@ -47,7 +47,7 @@ the linters, so a green suite means those passed too; run them alone when
 editing prose. The last two files are generated and never hand-edited.
 
 ```
-cd validator/yaml-markdown/typescript && npx tsc --noEmit   # types, reference validator
+cd implementations/yaml-markdown/typescript && npx tsc --noEmit   # types, reference validator
 cd tools/viewer && npx tsc --noEmit    # the viewer over it
 cd conformance && npx tsc --noEmit     # types, suite
 cd conformance && npm test             # every case, then the coverage line
@@ -71,7 +71,7 @@ Two licences, split the way the repository is. Prose (`SPEC.md`, `serialization/
 `docs/`, `examples/`, `reviews/`, `CHANGELOG.md`, this file, and
 the fixture corpora and case tables under `conformance/`) is contributed under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), the text in
-[`LICENSE`](LICENSE). Code (`validator/`, `tools/`, `schema/erf.generated.ts`, and the runner and
+[`LICENSE`](LICENSE). Code (`implementations/`, `tools/`, `schema/erf.generated.ts`, and the runner and
 suites under `conformance/`) is contributed under
 [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0), the text in
 [`LICENSE-CODE`](LICENSE-CODE). Opening a pull request is your agreement to
@@ -81,7 +81,7 @@ you record is yours.
 
 ## Publishing the reference validator
 
-`validator/yaml-markdown/typescript/` is the npm package
+`implementations/yaml-markdown/typescript/` is the npm package
 `@epistemic-record-format/validator-yaml-markdown`. Its version tracks the specification's:
 the package's major.minor equals the spec's (validator `0.9.x` implements
 spec `0.9`), and the patch digit is the implementation's own, for fixes
@@ -96,7 +96,7 @@ the conformance suite. A new validator (a Swift one for an editor, a Python
 one on PyPI) is one more entry there. To publish:
 
 ```
-cd validator/yaml-markdown/typescript
+cd implementations/yaml-markdown/typescript
 npm version patch            # minor and major follow the spec, never lead it
 git push origin main "validator-yaml-markdown-typescript-v$(node -p "require('./package.json').version")"
 ```

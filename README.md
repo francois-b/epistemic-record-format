@@ -59,7 +59,7 @@ npm run check -- examples/corpora/minimal    # the reference validator
 npm run view -- examples/corpora/minimal -o /tmp/erf-site   # render a corpus to static HTML
 ```
 
-- **`@epistemic-record-format/validator-yaml-markdown`** ([`validator/yaml-markdown/typescript/`](validator/yaml-markdown/typescript/)) is the reference validator, as a library and as the `erf-check` command. It loads a corpus, validates every document against the schema, runs the quote check, and computes every reading the specification defines. Exit 1 on any violation.
+- **`@epistemic-record-format/validator-yaml-markdown`** ([`implementations/yaml-markdown/typescript/`](implementations/yaml-markdown/typescript/)) is the reference validator, as a library and as the `erf-check` command. It loads a corpus, validates every document against the schema, runs the quote check, and computes every reading the specification defines. Exit 1 on any violation.
 - **`erf-view`** ([`tools/viewer/`](tools/viewer/)) renders a corpus as a self-contained static site: every claim with its evidence and standings, every atom with its quote check, the narrative with its bound passages, and a health page.
 - **`erf-mcp`** ([`tools/mcp-server/`](tools/mcp-server/)) is the format as a local MCP server for Claude Desktop and Claude Code. The LLM captures sources, mints atoms and claims, records surveys, and binds prose through tools that enforce the rules: a paraphrased quote is refused, an unheld source cannot be cited, a standing needs a reason. The server is the only writer; the user rules on every proposal.
 
@@ -86,7 +86,7 @@ The specification is normative. Everything else explains, demonstrates, or check
 | [`docs/`](docs/) | Why a rule is the way it is (`design-history.md`), what was declined (`non-goals.md`), what is open (`backlog/`), where the ideas come from (`influences.md`), the objections (`objections.md`). |
 | [`examples/`](examples/) | One record per type in [`records/`](examples/records/), and complete corpora in [`corpora/`](examples/corpora/). |
 | [`conformance/`](conformance/) | Cases, fixtures, and a map from every requirement to what defends it. The case tables are normative for the quote check. |
-| [`validator/`](validator/) | Maintained validators, one folder per serialization and language. |
+| [`implementations/`](implementations/) | Maintained implementations of the format, one folder per serialization and language: each reads, validates, computes, and writes. |
 | [`tools/`](tools/) | The MCP server, the viewer, the type generator, and the repository's own lints. |
 | [`reviews/`](reviews/) | Adversarial reads and cold trials of the specification, with what they found. |
 | [`IMPLEMENTATIONS.md`](IMPLEMENTATIONS.md) | Maintained implementations, and the cold trials built from the specification alone. |
@@ -97,4 +97,4 @@ The specification is normative. Everything else explains, demonstrates, or check
 
 The specification and prose (`SPEC.md`, this file, `CHANGELOG.md`, `docs/`, `examples/`, `reviews/`, and the fixture corpora and case tables under `conformance/`) are under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); text in [`LICENSE`](LICENSE). An implementation is not a derivative work of the specification, and nothing in the licence reaches the corpora you build with it.
 
-The reference implementation and tooling (`validator/`, `tools/`, `schema/erf.generated.ts`, and the runner and suites under `conformance/`) are under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0); text in [`LICENSE-CODE`](LICENSE-CODE).
+The reference implementation and tooling (`implementations/`, `tools/`, `schema/erf.generated.ts`, and the runner and suites under `conformance/`) are under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0); text in [`LICENSE-CODE`](LICENSE-CODE).

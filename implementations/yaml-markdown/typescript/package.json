@@ -4,10 +4,10 @@
   "description": "Reference validator for the Epistemic Record Format (YAML/Markdown serialization): loads a corpus against the schema and computes every derived reading from the specification text.",
   "type": "module",
   "bin": {
-    "erf-check": "./dist/validator/yaml-markdown/typescript/erf-check.js"
+    "erf-check": "./dist/implementations/yaml-markdown/typescript/erf-check.js"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig.build.json && mkdir -p dist/schema && cp ../../../schema/erf.schema.json dist/schema/ && sed -i '' '1s#^\\#!/usr/bin/env -S npx tsx$#\\#!/usr/bin/env node#' dist/validator/yaml-markdown/typescript/erf-check.js && chmod +x dist/validator/yaml-markdown/typescript/erf-check.js",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && mkdir -p dist/schema && cp ../../../schema/erf.schema.json dist/schema/ && sed -i '' '1s#^\\#!/usr/bin/env -S npx tsx$#\\#!/usr/bin/env node#' dist/implementations/yaml-markdown/typescript/erf-check.js && chmod +x dist/implementations/yaml-markdown/typescript/erf-check.js",
     "prepack": "npm run build",
     "check": "tsx erf-check.ts ../../../examples/corpora/minimal",
     "typecheck": "tsc --noEmit"
@@ -28,7 +28,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/francois-b/epistemic-record-format",
-    "directory": "validator/yaml-markdown/typescript"
+    "directory": "implementations/yaml-markdown/typescript"
   },
   "homepage": "https://github.com/francois-b/epistemic-record-format",
   "keywords": [
@@ -48,8 +48,8 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/validator/yaml-markdown/typescript/index.d.ts",
-      "import": "./dist/validator/yaml-markdown/typescript/index.js"
+      "types": "./dist/implementations/yaml-markdown/typescript/index.d.ts",
+      "import": "./dist/implementations/yaml-markdown/typescript/index.js"
     },
     "./schema": "./dist/schema/erf.schema.json",
     "./package.json": "./package.json"

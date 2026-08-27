@@ -5,14 +5,14 @@
   "description": "The Epistemic Record Format: specification, reference validator and viewer, conformance suite.",
   "license": "Apache-2.0",
   "scripts": {
-    "postinstall": "git config core.hooksPath .githooks && npm install --prefix validator/yaml-markdown/typescript && npm install --prefix tools/viewer && npm install --prefix conformance && npm install --prefix tools/mcp-server",
-    "check": "validator/yaml-markdown/typescript/node_modules/.bin/tsx validator/yaml-markdown/typescript/erf-check.ts",
+    "postinstall": "git config core.hooksPath .githooks && npm install --prefix implementations/yaml-markdown/typescript && npm install --prefix tools/viewer && npm install --prefix conformance && npm install --prefix tools/mcp-server",
+    "check": "implementations/yaml-markdown/typescript/node_modules/.bin/tsx implementations/yaml-markdown/typescript/erf-check.ts",
     "view": "tools/viewer/node_modules/.bin/tsx tools/viewer/erf-view.ts",
     "test": "npm test --prefix conformance && npm test --prefix tools/mcp-server",
     "site": "./site/build.sh",
     "types": "python3 tools/generate/generate-types.py --write",
     "mcp": "tools/mcp-server/node_modules/.bin/tsx tools/mcp-server/src/index.ts",
-    "build:validator": "npm run build --prefix validator/yaml-markdown/typescript"
+    "build:validator": "npm run build --prefix implementations/yaml-markdown/typescript"
   },
   "devDependencies": {
     "json-schema-to-typescript": "^15.0.0"

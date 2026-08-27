@@ -2,7 +2,7 @@
   "name": "erf-view",
   "version": "1.0.2",
   "private": true,
-  "description": "Reference consumer for the Epistemic Record Format: renders a corpus as a static site, reading every derived value from validator/.",
+  "description": "Reference consumer for the Epistemic Record Format: renders a corpus as a static site, reading every derived value from implementations/yaml-markdown/typescript/.",
   "type": "module",
   "bin": {
     "erf-view": "./erf-view.ts"

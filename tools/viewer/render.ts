@@ -7,14 +7,14 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Atom, Claim, LoadedCorpus, Narrative, Source, Survey } from "../../validator/yaml-markdown/typescript/corpus.ts";
-import { bindingCandidates, bindingRe, shipsWithCorpus } from "../../validator/yaml-markdown/typescript/corpus.ts";
+import type { Atom, Claim, LoadedCorpus, Narrative, Source, Survey } from "../../implementations/yaml-markdown/typescript/corpus.ts";
+import { bindingCandidates, bindingRe, shipsWithCorpus } from "../../implementations/yaml-markdown/typescript/corpus.ts";
 import {
   backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,
   brokenAnchors, evidenceRefsFlagged, retiredPremises, standingTies, undatedRetrievals,
   disposition, normalizeForCheck, quoteCheck, resolvable, staleAudits,
   staleEvidenceAudit, stoodOn, unbacked,
-} from "../../validator/yaml-markdown/typescript/compute.ts";
+} from "../../implementations/yaml-markdown/typescript/compute.ts";
 
 export const CSS = `
 :root { --ink:#1a1a1a; --muted:#5a5550; --mutedlt:#a5a09a; --rule:#d8d3cc;

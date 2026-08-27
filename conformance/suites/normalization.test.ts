@@ -9,7 +9,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { normalizeForCheck } from "../../validator/yaml-markdown/typescript/compute.ts";
+import { normalizeForCheck } from "../../implementations/yaml-markdown/typescript/compute.ts";
 import { NORMALIZATION_CASES } from "../paths.ts";
 
 interface Case { line: number; raw: string; expected: string }

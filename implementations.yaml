@@ -26,7 +26,7 @@ spec:
 artifacts:
   - id: validator-yaml-markdown-typescript
     name: "@epistemic-record-format/validator-yaml-markdown"
-    path: validator/yaml-markdown/typescript
+    path: implementations/yaml-markdown/typescript
     language: typescript
     serialization: yaml-markdown
     registry: npm
@@ -35,7 +35,7 @@ artifacts:
     version: { kind: package.json }
     spec_version: { kind: package.json, key: erf.spec_version }
     also:
-      - { kind: regex, file: validator/yaml-markdown/typescript/index.ts, pattern: 'export const SPEC_VERSION = "([^"]+)"', equals: spec }
+      - { kind: regex, file: implementations/yaml-markdown/typescript/index.ts, pattern: 'export const SPEC_VERSION = "([^"]+)"', equals: spec }
 
   - id: erf-mcp
     name: erf-mcp

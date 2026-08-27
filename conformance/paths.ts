@@ -11,5 +11,5 @@ export const NORMALIZATION_CASES = join(CASES, "normalization.tsv");
 export const QUOTE_CASES = join(CASES, "quote-check.tsv");
 export const SPEC = join(REPO, "SPEC.md");
 export const SERIALIZATION = join(REPO, "serialization");
-export const VALIDATOR = join(REPO, "validator", "yaml-markdown", "typescript");
+export const VALIDATOR = join(REPO, "implementations", "yaml-markdown", "typescript");
 export const VIEWER = join(REPO, "tools", "viewer");

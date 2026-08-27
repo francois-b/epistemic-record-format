@@ -10,7 +10,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSy
 import { execFileSync } from "node:child_process";
 import { basename, join, relative, resolve } from "node:path";
 import yaml from "js-yaml";
-import { loadCorpus, splitDocument, type LoadedCorpus } from "../../../validator/yaml-markdown/typescript/corpus.ts";
+import { loadCorpus, splitDocument, type LoadedCorpus } from "../../../implementations/yaml-markdown/typescript/corpus.ts";
 import type { CorpusDeclaration, Source } from "../../../schema/erf.generated.ts";
 
 export class Refusal extends Error {

@@ -12,5 +12,5 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": false
   },
-  "include": ["*.ts", "../../validator/yaml-markdown/typescript/*.ts", "../../schema/*.ts"]
+  "include": ["*.ts", "../../implementations/yaml-markdown/typescript/*.ts", "../../schema/*.ts"]
 }

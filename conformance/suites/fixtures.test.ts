@@ -12,8 +12,8 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import yaml from "js-yaml";
-import { loadCorpus } from "../../validator/yaml-markdown/typescript/corpus.ts";
-import { bindingStaleness, brokenAnchors, danglingRefs, disposition, evidenceRefsFlagged, quoteCheck, standingTies, stoodOn, unbacked } from "../../validator/yaml-markdown/typescript/compute.ts";
+import { loadCorpus } from "../../implementations/yaml-markdown/typescript/corpus.ts";
+import { bindingStaleness, brokenAnchors, danglingRefs, disposition, evidenceRefsFlagged, quoteCheck, standingTies, stoodOn, unbacked } from "../../implementations/yaml-markdown/typescript/compute.ts";
 import { FIXTURES } from "../paths.ts";
 
 interface Expectation {

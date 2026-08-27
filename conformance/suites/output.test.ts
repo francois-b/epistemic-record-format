@@ -14,7 +14,7 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, readdirSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { bindingRe } from "../../validator/yaml-markdown/typescript/corpus.ts";
+import { bindingRe } from "../../implementations/yaml-markdown/typescript/corpus.ts";
 import { REPO, VIEWER } from "../paths.ts";
 
 const CORPUS = join(REPO, "examples", "corpora", "minimal");

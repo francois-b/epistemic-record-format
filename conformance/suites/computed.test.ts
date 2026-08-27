@@ -6,8 +6,8 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { unbacked } from "../../validator/yaml-markdown/typescript/compute.ts";
-import type { Claim } from "../../validator/yaml-markdown/typescript/corpus.ts";
+import { unbacked } from "../../implementations/yaml-markdown/typescript/compute.ts";
+import type { Claim } from "../../implementations/yaml-markdown/typescript/corpus.ts";
 
 const claim = (over: Partial<Claim>): Claim => ({
   id: "fx-claim", type: "claim", corpus: "fx", title: "t",

@@ -4,5 +4,5 @@
     "allowImportingTsExtensions": true, "noEmit": true, "esModuleInterop": true, "skipLibCheck": true,
     "types": ["node"], "noUncheckedIndexedAccess": true
   },
-  "include": ["src/*.ts", "tests/*.ts", "../../validator/yaml-markdown/typescript/*.ts", "../../schema/*.ts"]
+  "include": ["src/*.ts", "tests/*.ts", "../../implementations/yaml-markdown/typescript/*.ts", "../../schema/*.ts"]
 }

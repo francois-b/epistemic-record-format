@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: validator/yaml-markdown/typescript
+        working-directory: implementations/yaml-markdown/typescript
     steps:
       - uses: actions/checkout@v4
 
