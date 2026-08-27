@@ -24,7 +24,7 @@ import { hitBinding, popoverAfterClick, step, mapPopover, claimCard, sourceHref,
 import { livePreview, classFor, type Span } from "./emphasis.ts";
 
 export type { Marks, FlagMark, BindingMark, ClaimInfo, AtomInfo } from "./marks.ts";
-export { anchorFrom, mergeMarkers } from "./marks.ts";
+export { anchorFrom, mergeMarkers, isWorked } from "./marks.ts";
 
 /** What a selection offers the host: the words, the anchor to flag on, and where to put a popover. */
 export interface Selected { text: string; anchor: string; rect: DOMRect }

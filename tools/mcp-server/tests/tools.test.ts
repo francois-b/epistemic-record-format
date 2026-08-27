@@ -10,7 +10,7 @@ import { cpSync, mkdtempSync, readFileSync, writeFileSync, existsSync } from "no
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { openCorpus, readLog, readSourceList, Refusal, type Corpus } from "../src/corpus.ts";
+import { openCorpus, readLog, readSourceList, readFlags, writeFlags, Refusal, type Corpus } from "../src/corpus.ts";
 import * as T from "../src/tools.ts";
 import { normalizeText } from "../src/capture.ts";
 import { loadCorpus } from "@epistemic-record-format/yaml-markdown";
@@ -385,7 +385,14 @@ test("flags can be taken: one worker at a time, a stale take is re-takable, reso
   assert.equal((t.data as { taken_by: string }).taken_by, "agent/first");
   assert.match(T.flags(c, {}).text, /taken by agent\/first, just now/);
   assert.equal((T.narrativeStatus(c, { narrative: n.slug }).data as { flags: T.FlagItem[] }).flags[0]!.taken_by, "agent/first");
+  assert.equal((T.narrativeStatus(c, { narrative: n.slug }).data as { flags: T.FlagItem[] }).flags[0]!.take_stale, false, "a take made just now is fresh");
   assert.equal((T.narrativeRead(c, { narrative: n.slug }).data as { flags: T.FlagItem[] })["flags"][0]!.taken_by, "agent/first");
+  // a take older than TAKE_MINUTES is reported stale: the editor must not read it as research in progress
+  {
+    const all = readFlags(c); all[0]!.taken_ts = new Date(Date.now() - 31 * 60000).toISOString(); writeFlags(c, all);
+    assert.equal((T.narrativeStatus(c, { narrative: n.slug }).data as { flags: T.FlagItem[] }).flags[0]!.take_stale, true);
+    all[0]!.taken_ts = new Date().toISOString(); writeFlags(c, all);
+  }
 
   // a second worker is told who has it; the holder may refresh their own take
   assert.throws(() => T.flagTake(c, { id: 1, by: "agent/second" }), /taken by agent\/first[\s\S]*goes stale after 30 minutes/);

@@ -21,7 +21,7 @@
  * watches, by polling `erf_narrative_status`, which is local and read-only.
  */
 import { App } from "@modelcontextprotocol/ext-apps";
-import { createEditor, type EditorHandle, type FlagMark, type BindingMark } from "../../editor/src/index.ts";
+import { createEditor, isWorked, type EditorHandle, type FlagMark, type BindingMark } from "../../editor/src/index.ts";
 import { trailLines, trailSummary, type FlagTrail } from "../../editor/src/trail.ts";
 
 interface Page { page: string; title: string; html: string; corpus?: string; flags?: { id: number; anchor: string; note?: string }[] }
@@ -57,6 +57,7 @@ let epoch = 0;
 // doing for us (a request in flight), and a notice that fades.
 
 let steady = "";
+let steadyTone: "" | "working" | "settled" = "";
 let noticeTimer: ReturnType<typeof setTimeout> | null = null;
 
 function paint(text: string, tone: "" | "working" | "settled"): void {
@@ -64,14 +65,14 @@ function paint(text: string, tone: "" | "working" | "settled"): void {
   statusEl.className = tone;
 }
 function setStatus(text: string, tone: "" | "working" | "settled" = ""): void {
-  steady = text;
+  steady = text; steadyTone = tone;
   if (!noticeTimer) paint(text, tone);
 }
-/** Something just happened; say so for a few seconds, then fall back to the steady line. */
+/** Something just happened; say so for a few seconds, then fall back to the steady line in its own tone. */
 function notice(text: string, seconds = 6): void {
   if (noticeTimer) clearTimeout(noticeTimer);
   paint(text, "settled");
-  noticeTimer = setTimeout(() => { noticeTimer = null; paint(steady, steady ? "working" : ""); }, seconds * 1000);
+  noticeTimer = setTimeout(() => { noticeTimer = null; paint(steady, steadyTone); }, seconds * 1000);
 }
 
 // ---- calling the server ----------------------------------------------------
@@ -492,7 +493,7 @@ async function submitFlag(research: Research, note: string): Promise<void> {
         const r = await app.sendMessage({ role: "user", content: [{ type: "text", text: requestLine(data, title) }] });
         if ((r as { isError?: boolean }).isError) notice("the host declined to send the request; ask in chat", 8);
       } catch { notice("could not send the request; ask in chat", 8); }
-      startPolling();
+      startPolling(true);   // the take that answers the request is seconds away: watch fast for a while
     }
     if (status) schedulePolling(status.flags);
   } catch (e) {
@@ -502,36 +503,58 @@ async function submitFlag(research: Research, note: string): Promise<void> {
 
 // ---- watching for the answer ----------------------------------------------
 // The app never pushes a record. While a flag asking for research is open it
-// polls, which is a local read of files this machine owns: every three seconds
-// for a quarter of an hour, then every half minute, and it stops the moment no
-// such flag is open.
+// polls, which is a local read of files this machine owns. A flag someone is
+// working now (taken, and the take fresh: the server says which) is watched
+// every three seconds; a flag nobody is on, or whose take has gone stale, is
+// watched every half minute, since nothing is about to land. A flag placed
+// from this editor is watched fast for a quarter of an hour regardless, so
+// the take that follows the request is seen the moment it happens. Polling
+// stops when no flag asking for research is open.
 
 let pollTimer: ReturnType<typeof setTimeout> | null = null;
-let pollSince = 0;
+let burstUntil = 0;
+let fastWanted = false;
 const FAST_MS = 3000, SLOW_MS = 30000, FAST_FOR_MS = 15 * 60 * 1000;
 /** Flags seen open last time round, to tell a resolution from a flag that was never open. */
 let watching = new Map<number, string>();
+/** The line the flags last put on the status bar, so stopping clears only that and never a message of the app's own. */
+let flagLine = "";
 
-const researching = (flags: FlagMark[]): FlagMark[] => flags.filter((f) => f.status === "open" && f.research && f.research !== "mint");
-/** The queue is shared, so the line says who is on a flag when someone has taken it. */
-const researchingLine = (open: FlagMark[]): string =>
-  `researching ${open.map((f) => `#${f.id}${f.taken_by ? ` (taken by ${f.taken_by})` : ""}`).join(", ")}`;
+const askingForResearch = (flags: FlagMark[]): FlagMark[] => flags.filter((f) => f.status === "open" && f.research && f.research !== "mint");
 
-function startPolling(): void {
-  if (!pollSince) pollSince = Date.now();
+/**
+ * What the flags say about the moment: research in progress (someone holds a
+ * fresh take), in the working tone; or flags waiting for someone, in the
+ * neutral tone, a stale take named as such. Null when nothing asks for research.
+ */
+function flagStatus(flags: FlagMark[]): { line: string; tone: "" | "working"; fast: boolean } | null {
+  const worked = flags.filter(isWorked);
+  if (worked.length) return { line: `researching ${worked.map((f) => `#${f.id} (taken by ${f.taken_by})`).join(", ")}`, tone: "working", fast: true };
+  const waiting = askingForResearch(flags);
+  if (!waiting.length) return null;
+  const one = (f: FlagMark): string => `#${f.id} flagged · ${f.research}${f.taken_by ? ` · ${f.taken_by}'s take went stale` : ""} · not being worked`;
+  return { line: waiting.map(one).join(" · "), tone: "", fast: false };
+}
+
+function startPolling(burst = false): void {
+  if (burst) burstUntil = Date.now() + FAST_FOR_MS;
   if (!pollTimer) pollTimer = setTimeout(() => void pollOnce(), FAST_MS);
 }
 function stopPolling(): void {
   if (pollTimer) clearTimeout(pollTimer);
-  pollTimer = null; pollSince = 0; watching = new Map();
-  if (steady.startsWith("researching")) setStatus("");
+  pollTimer = null; burstUntil = 0; fastWanted = false; watching = new Map();
+  if (flagLine && steady === flagLine) setStatus("");
+  flagLine = "";
 }
-/** Start or stop watching, from a set of flags we already have in hand. */
+/** Say what the flags say, and watch at the pace they call for; the same flags always give the same line. */
 function schedulePolling(flags: FlagMark[]): void {
-  const open = researching(flags);
-  for (const f of open) if (!watching.has(f.id)) watching.set(f.id, f.research ?? "back");
-  if (open.length) { setStatus(researchingLine(open), "working"); startPolling(); }
-  else if (!pollTimer) stopPolling();
+  const s = flagStatus(flags);
+  if (!s) { stopPolling(); return; }
+  for (const f of askingForResearch(flags)) if (!watching.has(f.id)) watching.set(f.id, f.research ?? "back");
+  fastWanted = s.fast;
+  flagLine = s.line;
+  setStatus(s.line, s.tone);
+  startPolling();
 }
 
 async function pollOnce(): Promise<void> {
@@ -562,14 +585,16 @@ async function pollOnce(): Promise<void> {
   }
   paintTrail(data.trail ?? []);
 
-  const open = researching(data.flags);
-  if (!open.length) { stopPolling(); return; }
-  setStatus(researchingLine(open), "working");
+  const s = flagStatus(data.flags);
+  if (!s) { stopPolling(); return; }
+  fastWanted = s.fast;
+  flagLine = s.line;
+  setStatus(s.line, s.tone);
   again();
 }
 function again(): void {
-  const slow = pollSince > 0 && Date.now() - pollSince > FAST_FOR_MS;
-  pollTimer = setTimeout(() => void pollOnce(), slow ? SLOW_MS : FAST_MS);
+  const fast = fastWanted || Date.now() < burstUntil;
+  pollTimer = setTimeout(() => void pollOnce(), fast ? FAST_MS : SLOW_MS);
 }
 
 // ---- browsing --------------------------------------------------------------

@@ -458,6 +458,11 @@ export function flag(c: Corpus, a: { narrative: string; anchor: string; note?: s
 }
 
 /** Whole minutes since an instant, or null when it cannot be read as one. */
+/** Whether a take has aged past `TAKE_MINUTES` (or carries no instant): held, but not by anyone working now. */
+function takeStale(f: Flag): boolean {
+  const m = minutesSince(f.taken_ts);
+  return m === null || m >= TAKE_MINUTES;
+}
 function minutesSince(ts: string | undefined): number | null {
   if (!ts) return null;
   const t = Date.parse(ts);
@@ -605,7 +610,8 @@ export interface BindingItem {
 export interface BoundAtom { id: string; side: "for" | "against"; finding: string; source: string; citation?: string; url?: string }
 export interface BoundClaimInfo { title: string; kind: string; disposition: string; evidence: number; atoms?: BoundAtom[] }
 
-export interface FlagItem { id: number; anchor: string; note?: string; research: Research; status: "open" | "done"; claims?: string[]; line: number | null; taken_by?: string; taken_ts?: string }
+/** A flag as the editor reads it. `take_stale` is the 30-minute rule (`TAKE_MINUTES`) applied here, once, so no host re-implements it: a stale take is not research in progress. */
+export interface FlagItem { id: number; anchor: string; note?: string; research: Research; status: "open" | "done"; claims?: string[]; line: number | null; taken_by?: string; taken_ts?: string; take_stale?: boolean }
 
 /**
  * Where an anchor occurs in a text, at most `limit` times. Runs of whitespace
@@ -676,7 +682,7 @@ function flagItems(c: Corpus, slug: string, fileText: string | null): FlagItem[]
     id: f.id, anchor: f.anchor, ...(f.note ? { note: f.note } : {}),
     research: (f.research ?? "mint") as Research, status: f.status,
     ...(f.claims?.length ? { claims: f.claims } : {}),
-    ...(f.taken_by ? { taken_by: f.taken_by, ...(f.taken_ts ? { taken_ts: f.taken_ts } : {}) } : {}),
+    ...(f.taken_by ? { taken_by: f.taken_by, ...(f.taken_ts ? { taken_ts: f.taken_ts } : {}), take_stale: takeStale(f) } : {}),
     line: fileText ? lineOf(fileText, f.anchor) : null,
   }));
 }

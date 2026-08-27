@@ -22,6 +22,8 @@ export interface FlagMark {
   /** Who is working this flag, when someone has taken it, and since when. */
   taken_by?: string;
   taken_ts?: string;
+  /** The server's word that the take has aged out (TAKE_MINUTES): held by someone who is not working now. */
+  take_stale?: boolean;
 }
 
 /** One atom under a bound claim: its side, its finding, and the page it was captured from (absent when the source was a file). */
@@ -110,11 +112,17 @@ export function paragraphRange(doc: string, at: number): Range {
 /**
  * How a flagged passage draws: open and free, open and taken by a worker, or
  * done. A taken flag reads differently because the queue is shared: someone is
- * already on it.
+ * already on it. A take the server reports stale draws as open again: the
+ * worker who held it is gone, and the rule (thirty minutes) is the server's.
  */
 export function flagClass(f: FlagMark): "erf-flag-open" | "erf-flag-taken" | "erf-flag-done" {
   if (f.status === "done") return "erf-flag-done";
-  return f.taken_by ? "erf-flag-taken" : "erf-flag-open";
+  return f.taken_by && !f.take_stale ? "erf-flag-taken" : "erf-flag-open";
+}
+
+/** Whether a flag is being worked now: open, asking for research, taken, and the take fresh. */
+export function isWorked(f: FlagMark): boolean {
+  return f.status === "open" && !!f.research && f.research !== "mint" && !!f.taken_by && !f.take_stale;
 }
 
 /** current is bound; broken and missing-claim are broken; stale and indeterminate both mean the backing is not confirmed. */

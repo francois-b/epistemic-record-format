@@ -91,6 +91,7 @@ test("a flag another worker has taken draws as taken, and a resolved one still d
   });
   assert.deepEqual(c.flags.map((f) => f.cls), ["erf-flag-taken", "erf-flag-done"]);
   assert.equal(flagClass({ id: 3, anchor: "x", status: "open" }), "erf-flag-open", "nobody on it: the ordinary open underline");
+  assert.equal(flagClass({ id: 4, anchor: "x", status: "open", taken_by: "agent/gone", taken_ts: "2026-08-26T17:13:00Z", take_stale: true }), "erf-flag-open", "a stale take is nobody on it");
 });
 
 test("status becomes a class: current bound, stale and indeterminate not confirmed, broken and missing-claim broken", () => {
