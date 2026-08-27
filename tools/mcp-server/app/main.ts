@@ -28,7 +28,11 @@ import { createEditor, isWorked, type EditorHandle, type FlagMark, type BindingM
 import { trailLines, trailSummary, type FlagTrail } from "../../editor/src/trail.ts";
 import { rulingLine, type ProposalSetView, type ProposalView, type Ruling } from "../src/proposals.ts";
 
-interface Page { page: string; title: string; html: string; corpus?: string; flags?: { id: number; anchor: string; note?: string }[] }
+interface Page { page: string; title: string; html: string; corpus?: string; flags?: { id: number; anchor: string; note?: string }[]; served_at?: string }
+/** A view the server produced moments ago, as opposed to one the host replays when a chat is re-entered (2026-08-27: every
+ *  re-entry went fullscreen). Only a fresh narrative view asks for the editor; a replayed one stays inline until asked. */
+const FRESH_MS = 2 * 60 * 1000;
+const isFresh = (p: Page): boolean => !!p.served_at && Date.now() - Date.parse(p.served_at) < FRESH_MS;
 interface NarrativeRead { narrative: string; path: string; title: string; text: string; digest: string; bindings: BindingMark[]; flags: FlagMark[] }
 interface NarrativeWritten { written: string; digest: string; check: string; bindings: BindingMark[]; flags: FlagMark[] }
 interface NarrativeStatus { digest: string; bindings: BindingMark[]; flags: FlagMark[]; trail?: FlagTrail[] }
@@ -190,8 +194,8 @@ function show(p: Page): void {
   for (const c of crumbs) c.textContent = p.title;
   setStatus("");
   render();
-  // opening a narrative asks for the editor straight away; the host may decline, and the outline stands
-  if (isNarrative(p) && mode !== "fullscreen") {
+  // opening a narrative asks for the editor straight away, when the view is fresh; the host may decline, and the outline stands
+  if (isNarrative(p) && mode !== "fullscreen" && isFresh(p)) {
     app.requestDisplayMode({ mode: "fullscreen" }).then((r) => { const got = (r as { mode?: typeof mode }).mode; if (got) applyMode(got); }).catch(() => {});
   }
 }

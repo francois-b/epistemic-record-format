@@ -149,7 +149,7 @@ export function buildServer(ws: Workspace): McpServer {
       const p = T.viewPage(c, a);
       trace("erf_view", corpus, started, `ok: ${p.page}`);
       const plain = p.html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 1500);
-      return { content: [{ type: "text" as const, text: `[${c.id}] ${p.title}\n${plain}` }], structuredContent: { ...p } as Record<string, unknown> };
+      return { content: [{ type: "text" as const, text: `[${c.id}] ${p.title}\n${plain}` }], structuredContent: { ...p, served_at: new Date().toISOString() } as Record<string, unknown> }; // served_at: the app opens the editor only for a fresh view, not when a host replays an old result
     } catch (e) { trace("erf_view", corpus, started, outcomeOf(refused(e))); return refused(e); }
   });
 
