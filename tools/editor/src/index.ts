@@ -17,9 +17,9 @@ import { EditorState, StateField, StateEffect, Annotation, type Extension } from
 import { EditorView, keymap, Decoration, WidgetType, hoverTooltip, drawSelection, highlightSpecialChars, type DecorationSet, type Tooltip } from "@codemirror/view";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { markdown } from "@codemirror/lang-markdown";
-import { syntaxHighlighting, HighlightStyle } from "@codemirror/language";
+import { syntaxHighlighting, HighlightStyle, ensureSyntaxTree, syntaxTree } from "@codemirror/language";
 import { tags } from "@lezer/highlight";
-import { computeMarks, anchorFrom, claimLines, type Marks, type BoundRange } from "./marks.ts";
+import { computeMarks, anchorFrom, claimLines, softBreakRanges, frontmatterRange, type Marks, type BoundRange, type Range } from "./marks.ts";
 
 export type { Marks, FlagMark, BindingMark, ClaimInfo } from "./marks.ts";
 export { anchorFrom } from "./marks.ts";
@@ -75,11 +75,38 @@ class MarkerWidget extends WidgetType {
   override ignoreEvent(): boolean { return false; }
 }
 
+/**
+ * A newline that is only wrapping, shown as the space markdown reads it as.
+ * The newline stays in the document and in `getText()`; a hand-wrapped file
+ * is written back exactly as it was read.
+ */
+class SpaceWidget extends WidgetType {
+  override eq(): boolean { return true; }
+  override toDOM(): HTMLElement { const s = document.createElement("span"); s.className = "erf-soft"; s.textContent = " "; return s; }
+}
+
+/** Paragraphs and hard breaks, from the markdown syntax tree; the arithmetic is in marks.ts. */
+function blocks(state: EditorState): { paragraphs: Range[]; hardBreaks: Range[] } {
+  const tree = ensureSyntaxTree(state, state.doc.length, 200) ?? syntaxTree(state);
+  const paragraphs: Range[] = [], hardBreaks: Range[] = [];
+  tree.iterate({ enter(n) {
+    if (n.name === "Paragraph") paragraphs.push({ from: n.from, to: n.to });
+    else if (n.name === "HardBreak") hardBreaks.push({ from: n.from, to: n.to });
+  } });
+  return { paragraphs, hardBreaks };
+}
+
 /** Everything the marks say, as decorations, recomputed from the document each time it or they move. */
 function build(state: EditorState): DecorationSet {
   const doc = state.doc.toString();
   const c = computeMarks(doc, state.field(marksField));
   const out: { from: number; to: number; value: Decoration }[] = [];
+  // wrapping newlines read as one space, so a hand-wrapped paragraph flows with the measure
+  const { paragraphs, hardBreaks } = blocks(state);
+  for (const r of softBreakRanges(doc, paragraphs, hardBreaks)) out.push({ from: r.from, to: r.to, value: Decoration.replace({ widget: new SpaceWidget() }) });
+  // the frontmatter belongs to the record, not the prose: shown, dimmed, never reflowed
+  const fm = frontmatterRange(doc);
+  if (fm) for (let pos = fm.from; pos < fm.to; ) { const line = state.doc.lineAt(pos); out.push({ from: line.from, to: line.from, value: Decoration.line({ class: "erf-frontmatter" }) }); pos = line.to + 1; }
   for (const b of c.bound) {
     if (b.to <= b.from) continue;
     out.push({ from: b.from, to: b.to, value: Decoration.mark({ class: b.cls, attributes: { "data-erf-claims": b.binding.claims.join(" ") } }) });
@@ -157,12 +184,17 @@ function theme(): Extension {
     ".cm-line": { padding: "0 .4rem" },
     "&.cm-focused": { outline: "none" },
     ".cm-cursor, .cm-dropCursor": { borderLeftColor: "var(--accent, #1a3a6e)" },
-    "&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": { backgroundColor: "var(--highlight, #fcf6ec)" },
+    // the base theme names these with the scroller in the selector, so the override has to as well
+    ".cm-selectionLayer .cm-selectionBackground, &.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground": { backgroundColor: "color-mix(in srgb, var(--accent, #1a3a6e) 30%, transparent)" },
+    ".cm-content ::selection": { backgroundColor: "transparent" },
+    ".erf-frontmatter": { opacity: "0.55" },
+    ".erf-soft": { whiteSpace: "pre-wrap" },
     ".erf-flag-open": { borderBottom: "2px dashed var(--warn, #8a4b1e)" },
     ".erf-flag-done": { borderBottom: "1px dotted var(--mutedlt, #a5a09a)" },
-    ".erf-bound": { backgroundColor: "var(--okbg, #f4f9f6)", boxShadow: "inset 0 -1px 0 var(--good, #1f5c3d)" },
-    ".erf-bound-stale": { backgroundColor: "var(--warnbg, #fdf7f2)", boxShadow: "inset 0 -1px 0 var(--warn, #8a4b1e)" },
-    ".erf-bound-broken": { backgroundColor: "var(--brokenbg, #fdf0ee)", boxShadow: "inset 0 -1px 0 var(--brokenrule, #c0392b)" },
+    // translucent, so the selection layer beneath the content stays visible inside a bound passage
+    ".erf-bound": { backgroundColor: "color-mix(in srgb, var(--good, #1f5c3d) 9%, transparent)", boxShadow: "inset 0 -1px 0 var(--good, #1f5c3d)" },
+    ".erf-bound-stale": { backgroundColor: "color-mix(in srgb, var(--warn, #8a4b1e) 10%, transparent)", boxShadow: "inset 0 -1px 0 var(--warn, #8a4b1e)" },
+    ".erf-bound-broken": { backgroundColor: "color-mix(in srgb, #c0392b 12%, transparent)", boxShadow: "inset 0 -1px 0 var(--brokenrule, #c0392b)" },
     ".erf-marker": {
       display: "inline-block", cursor: "default", padding: "0 .35em", marginLeft: ".3em",
       borderRadius: "3px", border: "1px solid var(--rule, #d8d3cc)",

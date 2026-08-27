@@ -111,3 +111,19 @@ test("a document with no marks computes to nothing, and an empty document does n
   assert.equal(c.markers.length, 1);
   assert.deepEqual(computeMarks("", { flags: [], bindings: [] }).markers, []);
 });
+
+test("a hand-wrapped paragraph reads as one: its inner newlines are soft, its ending one is not", async () => {
+  const { softBreakRanges, frontmatterRange } = await import("../src/marks.ts");
+  const doc = `---\ntitle: x\ntype: narrative\n---\n\nFirst line of a paragraph\nsecond line, hand-wrapped\n    third line, indented as a footnote continues.\n\nNext paragraph.  \nafter a hard break.\n<!-- claims: c1 "Next paragraph" -->\n\n<!-- claims: c2 "stands alone" -->\n`;
+  const fm = frontmatterRange(doc)!;
+  assert.equal(doc.slice(fm.from, fm.to), "---\ntitle: x\ntype: narrative\n---\n");
+  const p1 = { from: doc.indexOf("First"), to: doc.indexOf("continues.") + "continues.".length };
+  const p2 = { from: doc.indexOf("Next paragraph"), to: doc.indexOf("break.") + "break.".length };
+  const hard = [{ from: doc.indexOf("  \nafter"), to: doc.indexOf("after") }];
+  const fmPara = { from: 4, to: doc.indexOf("narrative") + "narrative".length };
+  const soft = softBreakRanges(doc, [fmPara, p1, p2], hard);
+  const joined = soft.map((r) => doc.slice(r.from, r.to));
+  assert.deepEqual(joined, ["\n", "\n    ", "\n"], "two inner wraps, the indentation swallowed, and the newline before the first marker; nothing in the frontmatter, nothing at the hard break");
+  assert.equal(doc.slice(soft[2]!.to, soft[2]!.to + 12), "<!-- claims:", "the marker joins its passage");
+  assert.equal(soft.some((r) => doc.slice(r.to).startsWith("<!-- claims: c2")), false, "a marker after a blank line stands alone");
+});

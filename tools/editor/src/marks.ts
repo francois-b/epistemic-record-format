@@ -157,3 +157,53 @@ export function claimLines(b: BindingMark): string[] {
     return info ? `${info.title} · ${id} · ${info.kind} · ${info.disposition} · ${info.evidence} atom${info.evidence === 1 ? "" : "s"}` : id;
   });
 }
+
+/**
+ * The frontmatter block, when the document opens with one: from the first
+ * `---` line to the closing one, inclusive. Null when there is none.
+ */
+export function frontmatterRange(doc: string): Range | null {
+  if (!doc.startsWith("---\n") && !doc.startsWith("---\r\n")) return null;
+  const close = /\n---[ \t]*(?:\r?\n|$)/.exec(doc.slice(3));
+  if (!close) return null;
+  return { from: 0, to: 3 + close.index + close[0].length };
+}
+
+/**
+ * Line breaks that are only wrapping: a newline inside a paragraph, which
+ * markdown reads as a space, and the newline before a binding marker, which
+ * belongs to the passage the marker ends. Each range covers the newline and
+ * the indentation that follows it, so hiding it joins the lines with one
+ * displayed space. A hard break (two trailing spaces, or a backslash) is a
+ * real break and is left alone; so is anything inside the frontmatter.
+ *
+ * `paragraphs` and `hardBreaks` come from the markdown syntax tree; this
+ * function only does the arithmetic.
+ */
+export function softBreakRanges(doc: string, paragraphs: Range[], hardBreaks: Range[] = []): Range[] {
+  const fm = frontmatterRange(doc);
+  const out: Range[] = [];
+  const isHard = (at: number): boolean => hardBreaks.some((h) => at >= h.from && at < h.to);
+  const run = (at: number): number => { let i = at + 1; while (i < doc.length && (doc[i] === " " || doc[i] === "\t")) i++; return i; };
+  for (const p of paragraphs) {
+    if (fm && p.from < fm.to) continue;
+    for (let i = p.from; i < p.to; i++) {
+      if (doc[i] !== "\n" || isHard(i)) continue;
+      const to = run(i);
+      if (to >= p.to) continue;               // a newline that ends the paragraph is not inside it
+      out.push({ from: i, to });
+    }
+  }
+  for (const m of markerRanges(doc)) {
+    let i = m.from;
+    while (i > 0 && (doc[i - 1] === " " || doc[i - 1] === "\t")) i--;
+    if (i === 0 || doc[i - 1] !== "\n") continue;
+    const nl = i - 1;
+    if (fm && nl < fm.to) continue;
+    const lineStart = doc.lastIndexOf("\n", nl - 1) + 1;
+    if (!doc.slice(lineStart, nl).trim()) continue;     // a marker after a blank line stands alone
+    if (out.some((r) => r.from === nl)) continue;
+    out.push({ from: nl, to: m.from });
+  }
+  return out.sort((a, b) => a.from - b.from);
+}
