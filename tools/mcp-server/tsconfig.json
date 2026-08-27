@@ -21,6 +21,8 @@
   },
   "include": [
     "src/*.ts",
+    "app/*.ts",
+    "../editor/src/*.ts",
     "tests/*.ts",
     "../../implementations/yaml-markdown/typescript/*.ts",
     "../../schema/*.ts"

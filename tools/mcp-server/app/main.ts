@@ -1,38 +1,400 @@
 /**
- * The ERF app: the viewer's pages, shown inside the MCP host.
+ * The ERF app: the viewer's pages inside the MCP host, and an editor under the
+ * narrative.
  *
  * The host opens this resource when a tool carrying `_meta.ui.resourceUri`
  * returns, and feeds the tool result in through `ontoolresult`. The result's
- * `structuredContent.html` is one of the reference viewer's pages, body
- * only; this script places it and turns the page's own links (claim-x.html,
+ * `structuredContent.html` is one of the reference viewer's pages, body only;
+ * this script places it and turns the page's own links (claim-x.html,
  * atom-y.html, index.html …) into calls back to `erf_view`, so browsing the
- * corpus never leaves the conversation. Anything else is handed to the host
- * to open as a link. Read-only by construction: the app calls one tool.
+ * corpus never leaves the conversation.
+ *
+ * A narrative opened fullscreen is different: it is not a page to read but a
+ * file to work on, so the app mounts the editor (`tools/editor/`) over the
+ * markdown source it gets from `erf_narrative_read`, saves through
+ * `erf_narrative_write`, and draws what the record says on top of the prose.
+ *
+ * The app still writes exactly one kind of file, the narrative. Every record
+ * is written by a tool the LLM calls, with the person ruling in chat. A
+ * selection becomes a flag and, when the flag asks for more than a
+ * proposal, one message into the conversation; from there the app only
+ * watches, by polling `erf_narrative_status`, which is local and read-only.
  */
 import { App } from "@modelcontextprotocol/ext-apps";
+import { createEditor, type EditorHandle, type FlagMark, type BindingMark } from "../../editor/src/index.ts";
 
 interface Page { page: string; title: string; html: string; corpus?: string; flags?: { id: number; anchor: string; note?: string }[] }
+interface NarrativeRead { narrative: string; path: string; title: string; text: string; digest: string; bindings: BindingMark[]; flags: FlagMark[] }
+interface NarrativeWritten { written: string; digest: string; check: string; bindings: BindingMark[]; flags: FlagMark[] }
+interface NarrativeStatus { digest: string; bindings: BindingMark[]; flags: FlagMark[] }
+interface FlagWritten { id: number; narrative: string; anchor: string; research: string; note?: string }
+
+type Research = "mint" | "back" | "opposite";
 
 // autoResize: the app reports its content height to the host, so inline the card fits
 // its page and the host's scrollbar is the only one.
-const app = new App({ name: "ERF", version: "0.1.0" }, undefined, { autoResize: true });
-const main = document.getElementById("main")!;
+const app = new App({ name: "ERF", version: "0.2.0" }, undefined, { autoResize: true });
+const main = document.getElementById("main") as HTMLElement;
+const editorEl = document.getElementById("editor") as HTMLElement;
+const banner = document.getElementById("banner") as HTMLElement;
+const bannerText = document.getElementById("banner-text") as HTMLElement;
 const crumbs = [document.getElementById("crumb-inline")!];
-const statuses = [document.getElementById("status-inline")!];
+const statusEl = document.getElementById("status-inline") as HTMLElement;
 const toggleBtn = document.getElementById("mode-toggle") as HTMLButtonElement;
-const status = { set textContent(v: string) { for (const s of statuses) s.textContent = v; } };
+
 let current: Page | null = null;
 let mode: "inline" | "fullscreen" | "pip" = "inline";
 
+/** The narrative the editor holds, and the digest the next write will be checked against. */
+let doc: { narrative: string; title: string; digest: string } | null = null;
+let ed: EditorHandle | null = null;
+/** Bumped on every write, so a poll result from before it is discarded rather than acted on. */
+let epoch = 0;
+
+// ---- the status line -------------------------------------------------------
+// One line, three registers: what the app is doing now, what the corpus is
+// doing for us (a request in flight), and a notice that fades.
+
+let steady = "";
+let noticeTimer: ReturnType<typeof setTimeout> | null = null;
+
+function paint(text: string, tone: "" | "working" | "settled"): void {
+  statusEl.textContent = text;
+  statusEl.className = tone;
+}
+function setStatus(text: string, tone: "" | "working" | "settled" = ""): void {
+  steady = text;
+  if (!noticeTimer) paint(text, tone);
+}
+/** Something just happened; say so for a few seconds, then fall back to the steady line. */
+function notice(text: string, seconds = 6): void {
+  if (noticeTimer) clearTimeout(noticeTimer);
+  paint(text, "settled");
+  noticeTimer = setTimeout(() => { noticeTimer = null; paint(steady, steady ? "working" : ""); }, seconds * 1000);
+}
+
+// ---- calling the server ----------------------------------------------------
+
+function structuredOf<T>(r: unknown): T | null {
+  const x = r as { structuredContent?: T; result?: { structuredContent?: T } };
+  return x?.structuredContent ?? x?.result?.structuredContent ?? null;
+}
+function textOf(r: unknown): string {
+  return (r as { content?: { text?: string }[] }).content?.[0]?.text ?? "";
+}
+async function call<T>(name: string, args: Record<string, unknown>): Promise<{ data: T | null; text: string }> {
+  const r = await app.callServerTool({ name, arguments: { ...args, ...(current?.corpus ? { corpus: current.corpus } : {}) } });
+  return { data: structuredOf<T>(r), text: textOf(r) };
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
+}
+
+// ---- modes -----------------------------------------------------------------
+
 function applyMode(m: typeof mode): void {
   const changed = m !== mode;
+  const leavingFullscreen = changed && mode === "fullscreen" && m !== "fullscreen";
   mode = m;
   document.body.classList.toggle("mode-fullscreen", m === "fullscreen");
   document.body.classList.toggle("mode-inline", m !== "fullscreen");
   toggleBtn.textContent = m === "fullscreen" ? "inline" : "open";
+  // an editor left with unsaved work saves before the view goes away
+  if (leavingFullscreen && ed?.isDirty()) void saveNow(ed.getText());
   if (changed && current) render();
 }
-applyMode("inline");
+
+const isNarrative = (p: Page | null): boolean => !!p && p.page.startsWith("narrative");
+/** The slug in a narrative page id. Empty for the bare `narrative` page, which the server reads as "the only one". */
+const slugIn = (p: Page | null): string => (p ? p.page.replace(/^narrative:?/, "") : "");
+/** What to ask the server for: what the page names, else what the editor already holds. */
+const narrativeSlug = (p: Page | null): string => slugIn(p) || doc?.narrative || "";
+
+/** What the card shows for the current page in the current mode. A narrative is a document,
+ *  not an answer: inline it would scroll inside a card the host caps in height, so inline it
+ *  is its outline; fullscreen it is the editor. Records fit either way. */
+function render(): void {
+  const p = current; if (!p) return;
+  const slug = narrativeSlug(p);
+  if (isNarrative(p) && mode === "fullscreen") {
+    main.hidden = true;
+    editorEl.hidden = false;
+    void mountEditor(slug);
+    return;
+  }
+  editorEl.hidden = true;
+  main.hidden = false;
+  hideSelection();
+  if (isNarrative(p)) {
+    const probe = document.createElement("div"); probe.innerHTML = p.html;
+    const headings = [...probe.querySelectorAll("h2, h3")].map((h) => h.textContent ?? "");
+    const bound = probe.querySelectorAll(".bind").length;
+    const flagged = p.flags?.length ?? 0;
+    const items = headings.map((t) => `<li>${escapeHtml(t)}</li>`).join("") || "<li>(no sections)</li>";
+    main.innerHTML = `<main><h1>${escapeHtml(p.title)}</h1><p class="sub">Narrative · ${bound} bound passage${bound === 1 ? "" : "s"} · ${flagged} flagged · the outline; press <b>open</b> to edit it fullscreen</p><ul class="outline">${items}</ul></main>`;
+  } else {
+    main.innerHTML = p.html;
+  }
+  main.scrollTop = 0;
+}
+
+function show(p: Page): void {
+  current = p;
+  for (const c of crumbs) c.textContent = p.title;
+  setStatus("");
+  render();
+  // opening a narrative asks for the editor straight away; the host may decline, and the outline stands
+  if (isNarrative(p) && mode !== "fullscreen") {
+    app.requestDisplayMode({ mode: "fullscreen" }).then((r) => { const got = (r as { mode?: typeof mode }).mode; if (got) applyMode(got); }).catch(() => {});
+  }
+}
+
+// ---- the editor ------------------------------------------------------------
+
+/** Load the narrative into the editor. Called whenever the fullscreen view of a narrative is entered. */
+async function mountEditor(slug: string): Promise<void> {
+  if (doc?.narrative === slug && ed) { refreshMarks(); return; }
+  setStatus("reading…", "working");
+  try {
+    const { data, text } = await call<NarrativeRead>("erf_narrative_read", { narrative: slug });
+    if (!data) { setStatus(text.slice(0, 140)); return; }
+    doc = { narrative: data.narrative, title: data.title, digest: data.digest };
+    if (!ed) { ed = createEditor(editorEl, data.text, { autosaveMs: 2000 }); wireEditor(ed); }
+    else ed.setText(data.text);
+    reportMissing(ed.setMarks({ flags: data.flags, bindings: data.bindings }));
+    setStatus("");
+    ed.focus();
+    schedulePolling(data.flags);
+  } catch (e) {
+    setStatus(`could not open the editor: ${String(e)}`);
+  }
+}
+
+function reportMissing(r: { missing: string[] }): void {
+  if (r.missing.length) notice(`${r.missing.length} anchor${r.missing.length === 1 ? "" : "s"} no longer in the prose`, 8);
+}
+
+function wireEditor(handle: EditorHandle): void {
+  handle.onSave((text) => { void saveNow(text); });
+  handle.onSelectionChange((sel) => {
+    if (!sel) { hideSelection(); return; }
+    pending = { anchor: sel.anchor, text: sel.text };
+    placeAt(document.getElementById("selbar") as HTMLElement, sel.rect);
+  });
+}
+
+/** Write the narrative, with the digest of the version this edit was made against. */
+async function saveNow(text: string, force = false): Promise<void> {
+  if (!doc || !ed) return;
+  setStatus("saving…", "working");
+  const mine = ++epoch;
+  try {
+    const { data, text: said } = await call<NarrativeWritten>("erf_narrative_write", {
+      narrative: doc.narrative, text, ...(force ? { force: true } : { expected_digest: doc.digest }),
+    });
+    if (!data) {
+      if (/changed on disk/.test(said)) showBanner("This narrative changed on disk since you opened it.");
+      else setStatus(said.replace(/^\[[^\]]*\]\s*/, "").slice(0, 160));
+      return;
+    }
+    if (mine !== epoch) return;
+    doc.digest = data.digest;
+    ed.markSaved();
+    hideBanner();
+    reportMissing(ed.setMarks({ flags: data.flags, bindings: data.bindings }));
+    const line = data.check.split("\n").find((l) => l.includes("binding(s)")) ?? "";
+    notice(`saved${line ? ` · ${line.replace(/^\S+:\s*/, "")}` : ""}`, 5);
+    schedulePolling(data.flags);
+  } catch (e) {
+    setStatus(`could not save: ${String(e)}`);
+  }
+}
+
+function showBanner(text: string): void { bannerText.textContent = `${text} Reload to take what is on disk, or overwrite it with what is here.`; banner.hidden = false; }
+function hideBanner(): void { banner.hidden = true; }
+
+document.getElementById("banner-reload")!.addEventListener("click", () => {
+  hideBanner();
+  if (doc) { const slug = doc.narrative; doc = null; void mountEditor(slug); }
+});
+document.getElementById("banner-force")!.addEventListener("click", () => {
+  hideBanner();
+  if (ed) void saveNow(ed.getText(), true);
+});
+
+/** Re-read the flags and bindings without touching the text. */
+async function refreshMarks(): Promise<NarrativeStatus | null> {
+  if (!doc || !ed) return null;
+  const { data } = await call<NarrativeStatus>("erf_narrative_status", { narrative: doc.narrative });
+  if (!data) return null;
+  reportMissing(ed.setMarks({ flags: data.flags, bindings: data.bindings }));
+  return data;
+}
+
+// ---- the selection: flag it, and say what to do about it -------------------
+
+const selbar = document.getElementById("selbar") as HTMLElement;
+const flagpop = document.getElementById("flagpop") as HTMLElement;
+const flagQuote = document.getElementById("flag-quote") as HTMLElement;
+const flagNote = document.getElementById("flag-note") as HTMLInputElement;
+let pending: { anchor: string; text: string } | null = null;
+
+function placeAt(el: HTMLElement, rect: { top: number; left: number; bottom: number }): void {
+  el.hidden = false;
+  const above = rect.top - el.offsetHeight - 8;
+  el.style.top = `${above > 4 ? above : rect.bottom + 8}px`;
+  el.style.left = `${Math.max(4, Math.min(rect.left, window.innerWidth - el.offsetWidth - 8))}px`;
+}
+function hideSelection(): void { selbar.hidden = true; flagpop.hidden = true; pending = null; }
+
+// In the rendered narrative (never fullscreen now, but a host may show it) the
+// selection is a DOM selection; in the editor it arrives through the handle.
+const domSelection = (): string => {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed || !sel.rangeCount) return "";
+  if (!main.contains(sel.getRangeAt(0).commonAncestorContainer)) return "";
+  return sel.toString().replace(/\s+/g, " ").trim();
+};
+function placeBarFromDom(): void {
+  if (!editorEl.hidden) return;
+  const text = domSelection();
+  if (!isNarrative(current) || text.length < 12) { selbar.hidden = true; return; }
+  pending = { anchor: text.split(" ").slice(0, 12).join(" "), text };
+  placeAt(selbar, window.getSelection()!.getRangeAt(0).getBoundingClientRect());
+}
+document.addEventListener("mouseup", () => setTimeout(placeBarFromDom, 0));
+document.addEventListener("keyup", (e) => { if (e.shiftKey || e.key === "Shift") placeBarFromDom(); });
+document.addEventListener("selectionchange", () => { if (!editorEl.hidden) return; if (!domSelection()) selbar.hidden = true; });
+selbar.addEventListener("mousedown", (e) => e.preventDefault()); // keep the selection while clicking a button
+
+document.getElementById("flag-this")!.addEventListener("click", () => {
+  if (!pending) return;
+  flagQuote.textContent = `“${pending.text.slice(0, 180)}${pending.text.length > 180 ? "…" : ""}”`;
+  flagNote.value = "";
+  (flagpop.querySelector('input[value="mint"]') as HTMLInputElement).checked = true;
+  const r = selbar.getBoundingClientRect();
+  selbar.hidden = true;
+  placeAt(flagpop, { top: r.top, left: r.left, bottom: r.bottom });
+  flagNote.focus();
+});
+document.getElementById("flag-cancel")!.addEventListener("click", () => hideSelection());
+document.getElementById("flag-go")!.addEventListener("click", () => {
+  const chosen = (flagpop.querySelector('input[name="research"]:checked') as HTMLInputElement | null)?.value as Research | undefined;
+  void submitFlag(chosen ?? "mint", flagNote.value.trim());
+});
+// Back this is the shortcut: the same flag, with `back` already chosen.
+document.getElementById("back-this")!.addEventListener("click", () => { void submitFlag("back", ""); });
+
+/** The one line the app puts in the conversation, so the loop starts in the same chat. */
+function requestLine(f: FlagWritten, title: string): string {
+  const opposite = f.research === "opposite";
+  return `Back flag #${f.id} in "${title}"${opposite ? " (opposite requested)" : ""}: "${f.anchor}".`
+    + (f.note ? ` My note: ${f.note}.` : "")
+    + ` Propose the claims first and stop for my ruling. After I rule, back each accepted observation and bind the passage`
+    + (opposite ? `, and state the strongest case against before I stand on anything.` : `.`);
+}
+
+async function submitFlag(research: Research, note: string): Promise<void> {
+  const sel = pending;
+  const slug = doc?.narrative ?? slugIn(current);
+  if (!sel || !isNarrative(current)) { hideSelection(); return; }
+  const title = doc?.title ?? current?.title ?? slug;
+  hideSelection();
+  setStatus("flagging…", "working");
+  try {
+    const { data, text } = await call<FlagWritten>("erf_flag", { narrative: slug, anchor: sel.anchor, research, ...(note ? { note } : {}) });
+    if (!data) { setStatus(text.replace(/^\[[^\]]*\]\s*/, "").slice(0, 160)); return; }
+    const status = await refreshMarks();
+    setStatus("");
+    notice(`flagged #${data.id} · ${research}`, 5);
+    const asked = research === "mint" ? "propose the claims and stop for a ruling"
+      : research === "back" ? "back it: after the ruling, gather the evidence and bind"
+      : "back it and state the strongest case against before standing";
+    try {
+      await app.updateModelContext({ content: [{ type: "text", text: `The user flagged a passage of "${title}" (flag #${data.id} at "${data.anchor}") and asked you to ${asked}.${note ? ` Their note: ${note}.` : ""} They have the narrative open in the editor, so answer in text and do not call erf_view to re-open it.` }] });
+    } catch { /* a host without model context: the flag stands, the conversation did not learn of it */ }
+    if (research !== "mint") {
+      try {
+        const r = await app.sendMessage({ role: "user", content: [{ type: "text", text: requestLine(data, title) }] });
+        if ((r as { isError?: boolean }).isError) notice("the host declined to send the request; ask in chat", 8);
+      } catch { notice("could not send the request; ask in chat", 8); }
+      startPolling();
+    }
+    if (status) schedulePolling(status.flags);
+  } catch (e) {
+    setStatus(`could not flag: ${String(e)}`);
+  }
+}
+
+// ---- watching for the answer ----------------------------------------------
+// The app never pushes a record. While a flag asking for research is open it
+// polls, which is a local read of files this machine owns: every three seconds
+// for a quarter of an hour, then every half minute, and it stops the moment no
+// such flag is open.
+
+let pollTimer: ReturnType<typeof setTimeout> | null = null;
+let pollSince = 0;
+const FAST_MS = 3000, SLOW_MS = 30000, FAST_FOR_MS = 15 * 60 * 1000;
+/** Flags seen open last time round, to tell a resolution from a flag that was never open. */
+let watching = new Map<number, string>();
+
+const researching = (flags: FlagMark[]): FlagMark[] => flags.filter((f) => f.status === "open" && f.research && f.research !== "mint");
+
+function startPolling(): void {
+  if (!pollSince) pollSince = Date.now();
+  if (!pollTimer) pollTimer = setTimeout(() => void pollOnce(), FAST_MS);
+}
+function stopPolling(): void {
+  if (pollTimer) clearTimeout(pollTimer);
+  pollTimer = null; pollSince = 0; watching = new Map();
+  if (steady.startsWith("researching")) setStatus("");
+}
+/** Start or stop watching, from a set of flags we already have in hand. */
+function schedulePolling(flags: FlagMark[]): void {
+  const open = researching(flags);
+  for (const f of open) if (!watching.has(f.id)) watching.set(f.id, f.research ?? "back");
+  if (open.length) { setStatus(`researching ${open.map((f) => `#${f.id}`).join(", ")}`, "working"); startPolling(); }
+  else if (!pollTimer) stopPolling();
+}
+
+async function pollOnce(): Promise<void> {
+  pollTimer = null;
+  if (!doc || !ed || editorEl.hidden) { stopPolling(); return; }
+  const mine = epoch;
+  let data: NarrativeStatus | null = null;
+  try { data = (await call<NarrativeStatus>("erf_narrative_status", { narrative: doc.narrative })).data; } catch { /* the next tick tries again */ }
+  if (!doc || !ed) return;
+  if (mine !== epoch) { again(); return; }  // a write landed while this was in flight
+  if (!data) { again(); return; }
+
+  // a flag we were watching has been resolved: say what it was bound to
+  for (const [id] of watching) {
+    const f = data.flags.find((x) => x.id === id);
+    if (f && f.status === "done") {
+      watching.delete(id);
+      notice(`#${id}: bound to ${f.claims?.length ?? 0} claim${f.claims?.length === 1 ? "" : "s"}`);
+    }
+  }
+
+  if (data.digest !== doc.digest) {
+    if (ed.isDirty()) showBanner("This narrative changed on disk while you were editing.");
+    else { doc.digest = data.digest; const slug = doc.narrative; doc = null; await mountEditor(slug); return; }
+  } else {
+    reportMissing(ed.setMarks({ flags: data.flags, bindings: data.bindings }));
+  }
+
+  const open = researching(data.flags);
+  if (!open.length) { stopPolling(); return; }
+  setStatus(`researching ${open.map((f) => `#${f.id}`).join(", ")}`, "working");
+  again();
+}
+function again(): void {
+  const slow = pollSince > 0 && Date.now() - pollSince > FAST_FOR_MS;
+  pollTimer = setTimeout(() => void pollOnce(), slow ? SLOW_MS : FAST_MS);
+}
+
+// ---- browsing --------------------------------------------------------------
 
 /** The viewer's file names map onto erf_view pages one for one. */
 function pageFromHref(href: string): string | null {
@@ -44,36 +406,7 @@ function pageFromHref(href: string): string | null {
   return m ? `${m[1]}:${decodeURIComponent(m[2]!)}` : null;
 }
 
-/** What the card shows for the current page in the current mode. A narrative is a document,
- *  not an answer: inline it would scroll inside a card the host caps in height, so inline it
- *  is its outline, and the full text renders only in fullscreen. Records fit either way. */
-function render(): void {
-  const p = current; if (!p) return;
-  if (p.page.startsWith("narrative") && mode !== "fullscreen") {
-    const probe = document.createElement("div"); probe.innerHTML = p.html;
-    const headings = [...probe.querySelectorAll("h2, h3")].map((h) => h.textContent ?? "");
-    const bound = probe.querySelectorAll(".bind").length;
-    const flagged = p.flags?.length ?? 0;
-    const items = headings.map((t) => `<li>${escapeHtml(t)}</li>`).join("") || "<li>(no sections)</li>";
-    main.innerHTML = `<main><h1>${escapeHtml(p.title)}</h1><p class="sub">Narrative · ${bound} bound passage${bound === 1 ? "" : "s"} · ${flagged} flagged · the outline; press <b>open</b> to read it fullscreen</p><ul class="outline">${items}</ul></main>`;
-  } else {
-    main.innerHTML = p.html;
-  }
-  main.scrollTop = 0;
-}
-
-function show(p: Page): void {
-  current = p;
-  for (const c of crumbs) c.textContent = p.title;
-  status.textContent = "";
-  render();
-  // opening a narrative asks for the reader straight away; the host may decline, and the outline stands
-  if (p.page.startsWith("narrative") && mode !== "fullscreen") {
-    app.requestDisplayMode({ mode: "fullscreen" }).then((r) => { const got = (r as { mode?: typeof mode }).mode; if (got) applyMode(got); }).catch(() => {});
-  }
-}
-
-/** In-card navigation is never silent: the model is told what the user is now looking at. */
+/** In-card navigation is never silent: the LLM is told what the user is now looking at. */
 async function tellModel(p: Page): Promise<void> {
   try {
     await app.updateModelContext({ content: [{ type: "text", text: `The user navigated the ERF viewer to ${p.page} ("${p.title}")${p.corpus ? ` in corpus ${p.corpus}` : ""}. Answer questions about it from erf_record_read; do not re-open it unless asked.` }] });
@@ -89,18 +422,14 @@ function fromResult(r: unknown): Page | null {
   return null;
 }
 
-function escapeHtml(s: string): string {
-  return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
-}
-
 async function open(page: string): Promise<void> {
-  status.textContent = "…";
+  setStatus("…", "working");
   try {
     const r = await app.callServerTool({ name: "erf_view", arguments: { page, ...(current?.corpus ? { corpus: current.corpus } : {}) } });
     const p = fromResult(r);
-    if (p) { show(p); void tellModel(p); } else status.textContent = "no page in the result";
+    if (p) { setStatus(""); show(p); void tellModel(p); } else setStatus("no page in the result");
   } catch (e) {
-    status.textContent = `could not open ${page}: ${String(e)}`;
+    setStatus(`could not open ${page}: ${String(e)}`);
   }
 }
 
@@ -112,50 +441,6 @@ document.addEventListener("click", (e) => {
   const page = pageFromHref(href);
   if (page) { void open(page); return; }
   if (/^https?:\/\//.test(href)) void app.openLink({ url: href });
-});
-
-// ---- mark for backing: select a passage of the narrative, hand it to the conversation ----
-// The app never writes here. "Back this" sends the selection as a message, so the LLM proposes
-// claims and the user rules, exactly as when the passage was pasted by hand.
-const bar = document.getElementById("selbar")!;
-const selText = (): string => {
-  const sel = window.getSelection();
-  if (!sel || sel.isCollapsed || !sel.rangeCount) return "";
-  const range = sel.getRangeAt(0);
-  if (!main.contains(range.commonAncestorContainer)) return "";
-  return sel.toString().replace(/\s+/g, " ").trim();
-};
-function placeBar(): void {
-  const text = selText();
-  if (!current || !current.page.startsWith("narrative") || text.length < 12) { bar.hidden = true; return; }
-  const rect = window.getSelection()!.getRangeAt(0).getBoundingClientRect();
-  bar.hidden = false;
-  // fixed against the viewport: #main scrolls on its own, so document offsets would drift
-  bar.style.top = `${Math.max(4, rect.top - bar.offsetHeight - 8)}px`;
-  bar.style.left = `${Math.max(4, Math.min(rect.left, window.innerWidth - bar.offsetWidth - 8))}px`;
-}
-document.addEventListener("mouseup", () => setTimeout(placeBar, 0));
-document.addEventListener("keyup", (e) => { if (e.shiftKey || e.key === "Shift") placeBar(); });
-document.addEventListener("selectionchange", () => { if (!selText()) bar.hidden = true; });
-bar.addEventListener("mousedown", (e) => e.preventDefault()); // keep the selection while clicking a button
-// One gesture: Back this marks the passage as one to back. The flag is the durable record of
-// that intent (underlined in the narrative, listed by erf_flags); the conversation is told a
-// passage was marked, without a turn. "Work the flags" in chat proposes the claims.
-document.getElementById("back-this")!.addEventListener("click", async () => {
-  const text = selText(); if (!text || !current) return;
-  const anchor = text.split(" ").slice(0, 8).join(" ");
-  status.textContent = "marking…";
-  try {
-    const r = await app.callServerTool({ name: "erf_flag", arguments: { narrative: current.page.replace(/^narrative:/, ""), anchor, ...(current.corpus ? { corpus: current.corpus } : {}) } });
-    const t = (r as { content?: { text?: string }[] }).content?.[0]?.text ?? "";
-    if (t.startsWith("REFUSED")) { status.textContent = t.slice(0, 120); }
-    else {
-      status.textContent = "marked for backing";
-      try { await app.updateModelContext({ content: [{ type: "text", text: `The user marked a passage of "${current.title}" to be backed (a flag at "${anchor}"). Do nothing yet; when asked to work the flags, list them with erf_flags and propose claims for each in turn.` }] }); } catch { /* host without model context */ }
-      await open(current.page);
-    }
-  } catch (e) { status.textContent = `could not mark: ${String(e)}`; }
-  bar.hidden = true;
 });
 
 app.ontoolresult = (params) => {
@@ -172,12 +457,17 @@ app.onhostcontextchanged = (ctx) => {
 const toggle = async () => {
   const want = mode === "fullscreen" ? "inline" : "fullscreen";
   try { const r = await app.requestDisplayMode({ mode: want }); const got = (r as { mode?: typeof mode }).mode; if (got) applyMode(got); }
-  catch (e) { status.textContent = `display mode: ${String(e)}`; }
+  catch (e) { setStatus(`display mode: ${String(e)}`); }
 };
 toggleBtn.addEventListener("click", () => void toggle());
 // the page a chat holds is the server's answer at the time; ↻ asks again
-document.getElementById("refresh")!.addEventListener("click", () => { if (current) void open(current.page); });
+document.getElementById("refresh")!.addEventListener("click", () => {
+  if (!current) return;
+  if (doc && !editorEl.hidden) { const slug = doc.narrative; doc = null; void mountEditor(slug); return; }
+  void open(current.page);
+});
 
+applyMode("inline");
 await app.connect();
 const ctx = app.getHostContext() as { theme?: string; displayMode?: typeof mode } | undefined;
 if (ctx?.theme) document.documentElement.dataset["theme"] = ctx.theme;

@@ -197,11 +197,13 @@ export function createEditor(parent: HTMLElement, text: string, opts?: { autosav
   let timer: ReturnType<typeof setTimeout> | null = null;
   let saved = text;
 
+  // The host, not the editor, decides that a save happened: a write the server
+  // refuses must leave the document dirty, or the next digest change would be
+  // reconciled against text nobody kept.
   const fire = (): void => {
     timer = null;
     const now = view.state.doc.toString();
     if (now === saved) return;
-    saved = now;
     onSaveCb(now);
   };
   const save = (): boolean => { if (timer) { clearTimeout(timer); timer = null; } fire(); return true; };

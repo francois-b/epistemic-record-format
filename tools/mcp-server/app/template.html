@@ -15,11 +15,27 @@ body.mode-fullscreen { height: 100vh; }
 #head { display: flex; gap: .6rem; align-items: baseline; padding: .4rem .9rem 0; font-family: var(--sans); font-size: .8rem; opacity: .75; }
 body.mode-fullscreen #head { position: sticky; top: 0; background: var(--paper); padding-bottom: .3rem; border-bottom: 1px solid var(--rulelt); opacity: 1; }
 #head #crumb-inline { font-style: italic; }
-#head #status-inline { margin-left: auto; }
+#head #status-inline { margin-left: auto; font-variant-numeric: tabular-nums; }
+#head #status-inline.working { color: var(--warn); }
+#head #status-inline.settled { color: var(--good); }
 #head button { border: 1px solid var(--rule); background: var(--codebg); color: var(--ink); border-radius: 4px; padding: .05rem .45rem; cursor: pointer; font: inherit; }
 #main { padding: 0 .9rem 1rem; }
 body.mode-fullscreen #main { flex: 1; overflow: auto; }
+#main[hidden] { display: none; }
 #main main { max-width: none; }
+
+/* the editor: shown only fullscreen, and it scrolls on its own */
+#editor { flex: 1; min-height: 0; overflow: hidden; }
+#editor[hidden] { display: none; }
+#editor .cm-editor { height: 100%; }
+
+/* the file moved under an open editor: two ways out, both said aloud */
+#banner { display: flex; gap: .5rem; align-items: baseline; padding: .35rem .9rem; font-family: var(--sans); font-size: .8rem;
+  background: var(--warnbg); color: var(--warn); border-bottom: 1px solid var(--rule); }
+#banner[hidden] { display: none; }
+#banner span { margin-right: auto; }
+#banner button { border: 1px solid var(--warn); background: transparent; color: var(--warn); border-radius: 4px; padding: .05rem .5rem; cursor: pointer; font: inherit; }
+
 #selbar { position: fixed; z-index: 10; display: flex; gap: .4rem; padding: .3rem .4rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper); box-shadow: 0 2px 10px rgba(0,0,0,.25); font-family: var(--sans); font-size: .85rem; }
 #selbar[hidden] { display: none; }
 mark.flag { background: transparent; color: inherit; border-bottom: 2px dashed var(--warn); padding: 0; }
@@ -27,12 +43,39 @@ ul.outline { list-style: none; padding-left: 0; }
 ul.outline li { padding: .15rem 0; }
 #selbar button { border: 1px solid var(--rule); background: var(--codebg); color: var(--ink); border-radius: 4px; padding: .2rem .55rem; cursor: pointer; }
 #selbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+/* what the flag asks for, chosen at the selection and nowhere else */
+#flagpop { position: fixed; z-index: 11; width: 22rem; max-width: calc(100vw - 1rem); padding: .55rem .65rem; border: 1px solid var(--rule); border-radius: 6px;
+  background: var(--paper); box-shadow: 0 3px 14px rgba(0,0,0,.28); font-family: var(--sans); font-size: .82rem; }
+#flagpop[hidden] { display: none; }
+#flagpop .quote { color: var(--muted); font-style: italic; margin-bottom: .45rem; max-height: 3.4em; overflow: hidden; }
+#flagpop .choices { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .45rem; }
+#flagpop .choices label { display: flex; gap: .4rem; align-items: baseline; cursor: pointer; padding: .12rem .2rem; border-radius: 4px; }
+#flagpop .choices label:hover { background: var(--highlight); }
+#flagpop .choices em { font-style: normal; color: var(--muted); }
+#flagpop input[type=text] { width: 100%; box-sizing: border-box; padding: .25rem .35rem; border: 1px solid var(--rule); border-radius: 4px;
+  background: var(--codebg); color: var(--ink); font: inherit; margin-bottom: .45rem; }
+#flagpop .row { display: flex; gap: .4rem; justify-content: flex-end; }
+#flagpop button { border: 1px solid var(--rule); background: var(--codebg); color: var(--ink); border-radius: 4px; padding: .2rem .6rem; cursor: pointer; font: inherit; }
+#flagpop button#flag-go { border-color: var(--accent); color: var(--accent); }
 </style>
 </head>
 <body>
 <div id="head"><span id="crumb-inline"></span><span id="status-inline"></span><button id="refresh" title="Re-read this page from the corpus">↻</button><button id="mode-toggle" title="Fullscreen or back inline">open</button></div>
-<div id="selbar" hidden><button id="back-this" title="Mark this passage to be backed: it is flagged in the corpus and the conversation is told; say “work the flags” when you want them proposed">Back this</button></div>
+<div id="banner" hidden><span id="banner-text"></span><button id="banner-reload">reload</button><button id="banner-force">overwrite</button></div>
+<div id="selbar" hidden><button id="flag-this" title="Flag this passage, and say what should happen to it">Flag</button><button id="back-this" title="Flag this passage and ask for it to be backed now: the request goes into the conversation">Back this</button></div>
+<div id="flagpop" hidden>
+  <div class="quote" id="flag-quote"></div>
+  <div class="choices">
+    <label><input type="radio" name="research" value="mint" checked><span>Propose claims <em>and stop for my ruling</em></span></label>
+    <label><input type="radio" name="research" value="back"><span>Back it <em>gather the evidence after the ruling, then bind</em></span></label>
+    <label><input type="radio" name="research" value="opposite"><span>Back it, and the opposite <em>the case against, before I stand</em></span></label>
+  </div>
+  <input type="text" id="flag-note" placeholder="a note to self (optional)">
+  <div class="row"><button id="flag-cancel">cancel</button><button id="flag-go">Flag</button></div>
+</div>
 <div id="main"><main><p class="gap">Waiting for a page…</p></main></div>
+<div id="editor" hidden></div>
 <script type="module">
 /*SCRIPT*/
 </script>
