@@ -173,6 +173,21 @@ export function readLog(c: Corpus): LogEntry[] {
   return readFileSync(p, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l) as LogEntry);
 }
 
+// ---------- flags: passages marked for backing ----------
+
+/** A note to self, not a record: this passage of this narrative should be backed. Resolved by the binding that covers its anchor. */
+export interface Flag { id: number; ts: string; narrative: string; anchor: string; note?: string; by: string; status: "open" | "done"; done_ts?: string; claims?: string[] }
+
+export function flagsPath(c: Corpus): string { return join(c.dir, "flags.jsonl"); }
+export function readFlags(c: Corpus): Flag[] {
+  const p = flagsPath(c);
+  if (!existsSync(p)) return [];
+  return readFileSync(p, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l) as Flag);
+}
+export function writeFlags(c: Corpus, flags: Flag[]): void {
+  writeFileSync(flagsPath(c), flags.map((f) => JSON.stringify(f)).join("\n") + (flags.length ? "\n" : ""), "utf8");
+}
+
 // ---------- git ----------
 
 export function commit(c: Corpus, paths: string[], message: string): string | null {

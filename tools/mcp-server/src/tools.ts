@@ -9,7 +9,7 @@ import { join, relative } from "node:path";
 import {
   Refusal, type Corpus, readDeclaration, readSourceList, load, writeRecord, writeYamlDocument,
   readRecordFile, recordFiles, nextAtomId, idInUse, today, now, appendLog, readLog,
-  declarationPath, sourceListPath, commit, frontmatter,
+  declarationPath, sourceListPath, commit, frontmatter, readFlags, writeFlags, flagsPath, type Flag,
 } from "./corpus.ts";
 import { captureUrl, capturePath } from "./capture.ts";
 import { renderSite } from "../../viewer/erf-view.ts";
@@ -246,6 +246,72 @@ export function surveyRecord(c: Corpus, a: { id: string; title: string; coverage
   return finish(c, `survey ${a.id} recorded with ${searches.length} act(s)`, [path], `record survey ${a.id}`);
 }
 
+// ---------- flags ----------
+
+function proseOf(c: Corpus, narrative: string): { path: string; slug: string; body: string; prose: string } {
+  const { path, slug } = narrativeFile(c, narrative);
+  const split = splitDocument(readFileSync(path, "utf8"));
+  if (split === null || typeof split === "string") throw new Refusal(`${narrative}: ${split ?? "no frontmatter"} (YAMLB-3)`);
+  const prose = split.body.replace(/<!--\s*claims:[\s\S]*?-->/g, (m) => " ".repeat(m.length));
+  return { path, slug, body: split.body, prose };
+}
+
+/** The passage an anchor sits in: from the previous blank line to the next. */
+function passageAround(prose: string, at: number): string {
+  const start = prose.lastIndexOf("\n\n", at) + 2;
+  const end = prose.indexOf("\n\n", at);
+  return prose.slice(Math.max(0, start), end < 0 ? prose.length : end).replace(/\s+/g, " ").trim();
+}
+
+export function flag(c: Corpus, a: { narrative: string; anchor: string; note?: string }): Result {
+  readDeclaration(c);
+  const anchor = a.anchor.replace(/\s+/g, " ").trim();
+  if (anchor.length < 8) throw new Refusal("an anchor is a few exact words of the passage; give at least a phrase");
+  const { slug, prose } = proseOf(c, a.narrative);
+  const first = prose.indexOf(anchor);
+  if (first < 0) throw new Refusal(`"${anchor}" does not occur in ${slug}; the anchor must be exact words from the passage`);
+  if (prose.indexOf(anchor, first + 1) >= 0) throw new Refusal(`"${anchor}" occurs more than once in ${slug}; choose words unique to the passage`);
+  const flags = readFlags(c);
+  if (flags.some((f) => f.status === "open" && f.narrative === slug && f.anchor === anchor)) throw new Refusal("that passage is already flagged");
+  const f: Flag = { id: (flags.at(-1)?.id ?? 0) + 1, ts: now(), narrative: slug, anchor, ...(a.note ? { note: a.note } : {}), by: c.options.agent, status: "open" };
+  flags.push(f); writeFlags(c, flags);
+  const open = flags.filter((x) => x.status === "open").length;
+  return finish(c, `flag #${f.id} on ${slug} at "${anchor}"${a.note ? ` (${a.note})` : ""}; ${open} open flag${open === 1 ? "" : "s"}`, [flagsPath(c)], `flag passage in ${slug}`);
+}
+
+export function flags(c: Corpus, a: { narrative?: string; all?: boolean }): Result {
+  readDeclaration(c);
+  let list = readFlags(c).filter((f) => a.all || f.status === "open");
+  if (a.narrative) { const { slug } = narrativeFile(c, a.narrative); list = list.filter((f) => f.narrative === slug); }
+  if (!list.length) return { text: a.all ? "no flags" : "no open flags; flag a passage in the viewer or with erf_flag" };
+  const cache = new Map<string, string>();
+  const lines = list.map((f) => {
+    if (!cache.has(f.narrative)) cache.set(f.narrative, proseOf(c, f.narrative).prose);
+    const prose = cache.get(f.narrative)!; const at = prose.indexOf(f.anchor);
+    const passage = at >= 0 ? passageAround(prose, at) : "(anchor no longer occurs; the prose moved)";
+    return `#${f.id} [${f.status}] ${f.narrative} · anchor "${f.anchor}"${f.note ? ` · ${f.note}` : ""}${f.claims?.length ? ` · bound to ${f.claims.join(", ")}` : ""}\n  ${passage}`;
+  });
+  return { text: `${list.length} flag(s):\n` + lines.join("\n") };
+}
+
+export function flagResolve(c: Corpus, a: { id: number; claims?: string[] }): Result {
+  readDeclaration(c);
+  const all = readFlags(c); const f = all.find((x) => x.id === a.id);
+  if (!f) throw new Refusal(`no flag #${a.id}`);
+  if (f.status === "done") throw new Refusal(`flag #${a.id} is already resolved`);
+  f.status = "done"; f.done_ts = now(); if (a.claims?.length) f.claims = a.claims;
+  writeFlags(c, all);
+  return finish(c, `flag #${a.id} resolved${a.claims?.length ? ` (${a.claims.join(", ")})` : ""}`, [flagsPath(c)], `resolve flag #${a.id}`);
+}
+
+/** A binding covers a flag when the flag's anchor sits in the passage that was bound. */
+function resolveFlagsCoveredBy(c: Corpus, slug: string, passage: string, claims: string[]): number[] {
+  const all = readFlags(c); const hit: number[] = [];
+  for (const f of all) if (f.status === "open" && f.narrative === slug && passage.includes(f.anchor)) { f.status = "done"; f.done_ts = now(); f.claims = claims; hit.push(f.id); }
+  if (hit.length) writeFlags(c, all);
+  return hit;
+}
+
 // ---------- narratives ----------
 
 function narrativeFile(c: Corpus, name: string): { path: string; slug: string } {
@@ -285,7 +351,10 @@ export function narrativeBind(c: Corpus, a: { narrative: string; anchor: string;
   const cut = existing ? first + existing.index : end;
   const newBody = body.slice(0, cut).replace(/\s+$/, "") + marker + body.slice(end);
   writeFileSync(path, raw.slice(0, bodyStart) + newBody + raw.slice(bodyStart + body.length), "utf8");
-  return finish(c, `bound ${a.claims.length} claim(s) to "${a.anchor}" (bound-at ${now()})`, [path], `bind narrative passage "${a.anchor.slice(0, 40)}"`);
+  const pStart = prose.lastIndexOf("\n\n", first) + 2;
+  const resolved = resolveFlagsCoveredBy(c, narrativeFile(c, a.narrative).slug, prose.slice(Math.max(0, pStart), end), a.claims);
+  const wrote = resolved.length ? [path, flagsPath(c)] : [path];
+  return finish(c, `bound ${a.claims.length} claim(s) to "${a.anchor}" (bound-at ${now()})${resolved.length ? `; resolved flag${resolved.length === 1 ? "" : "s"} #${resolved.join(", #")}` : ""}`, wrote, `bind narrative passage "${a.anchor.slice(0, 40)}"`);
 }
 
 export function narrativeCheck(c: Corpus, a: { narrative?: string }): Result {
@@ -331,7 +400,7 @@ export function renderSiteTool(c: Corpus, a: { out?: string }): Result {
 }
 
 /** One viewer page, body only, for the app: `index`, `sources`, `health`, `claim:<id>`, `atom:<id>`, `capture:<id>`, `survey:<id>`, `narrative:<slug>`. */
-export interface ViewPage { page: string; title: string; html: string; corpus: string }
+export interface ViewPage { page: string; title: string; html: string; corpus: string; flags?: { id: number; anchor: string; note?: string }[] }
 
 export function viewPage(c: Corpus & { id?: string }, a: { page?: string }): ViewPage {
   const decl = readDeclaration(c);
@@ -353,7 +422,7 @@ export function viewPage(c: Corpus & { id?: string }, a: { page?: string }): Vie
     const type = String(fm["type"]); const id = type === "narrative" ? byPath[1].split("/").pop()!.replace(/\.md$/, "") : String(fm["id"]);
     page = `${type}:${id}`;
   }
-  const [kind, id] = page.includes(":") ? [page.slice(0, page.indexOf(":")), page.slice(page.indexOf(":") + 1)] : [page, ""];
+  let [kind, id] = page.includes(":") ? [page.slice(0, page.indexOf(":")), page.slice(page.indexOf(":") + 1)] : [page, ""];
   let full: string, title: string;
   switch (kind) {
     case "index": full = renderIndex(l); title = String(decl.title); break;
@@ -363,11 +432,18 @@ export function viewPage(c: Corpus & { id?: string }, a: { page?: string }): Vie
     case "atom": { const at = l.atoms.get(id); if (!at) throw new Refusal(`no atom ${id}`); full = renderAtom(at, l, claimsUsingAtom(l).get(id) ?? [], captureText(id)); title = `atom ${id}`; break; }
     case "capture": { const at = l.atoms.get(id); if (!at) throw new Refusal(`no atom ${id}`); full = renderCapture(at, l, captureText(id)); title = `capture for ${id}`; break; }
     case "survey": { const sv = l.surveys.get(id); if (!sv) throw new Refusal(`no survey ${id}`); full = renderSurvey(sv, l); title = sv.title; break; }
-    case "narrative": { const n = l.narratives.find((x) => x.slug === id) ?? (id ? undefined : l.narratives[0]); if (!n) throw new Refusal(`no narrative ${id}`); full = renderNarrative(n, l); title = n.title; break; }
+    case "narrative": { const n = l.narratives.find((x) => x.slug === id) ?? (id ? undefined : l.narratives[0]); if (!n) throw new Refusal(`no narrative ${id}`); full = renderNarrative(n, l); title = n.title; id = n.slug; break; }
     default: throw new Refusal(`unknown page ${page}; use index, sources, health, claim:<id>, atom:<id>, capture:<id>, survey:<id>, narrative:<slug>`);
   }
   const m = /<main>([\s\S]*)<\/main>/.exec(full);
-  return { page, title, html: `<main>${m?.[1] ?? full}</main>`, corpus: String(decl.id) };
+  let html = m?.[1] ?? full;
+  let flagged: { id: number; anchor: string; note?: string }[] = [];
+  if (kind === "narrative") {
+    flagged = readFlags(c).filter((f) => f.status === "open" && f.narrative === id).map((f) => ({ id: f.id, anchor: f.anchor, note: f.note }));
+    const esc = (x: string) => x.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    for (const f of flagged) { const a = esc(f.anchor); const at = html.indexOf(a); if (at >= 0) html = html.slice(0, at) + `<mark class="flag" title="flag #${f.id}${f.note ? `: ${esc(f.note)}` : ""}">${a}</mark>` + html.slice(at + a.length); }
+  }
+  return { page, title, html: `<main>${html}</main>`, corpus: String(decl.id), ...(kind === "narrative" ? { flags: flagged } : {}) };
 }
 
 // ---------- reading ----------

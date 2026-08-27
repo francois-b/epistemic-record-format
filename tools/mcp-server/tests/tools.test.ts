@@ -226,6 +226,27 @@ test("view: the viewer's pages, body only, addressed by kind and id", () => {
   assert.throws(() => T.viewPage(c, { page: "bogus" }), /unknown page/);
 });
 
+test("flags: mark a passage, list it with its text, binding the passage resolves it, the view marks it", () => {
+  const c = fresh();
+  const n = loadCorpus(c.dir).narratives[0]!;
+  const para = n.body.split("\n\n").find((p) => !/<!--/.test(p) && p.trim().length > 60)!;
+  const ws = para.trim().split(/\s+/); let anchor = "";
+  for (let i = 0; i + 5 <= ws.length; i++) { const cand = ws.slice(i, i + 5).join(" "); if (n.body.indexOf(cand) === n.body.lastIndexOf(cand)) { anchor = cand; break; } }
+  assert.throws(() => T.flag(c, { narrative: n.slug, anchor: "not in the text at all" }), /does not occur/);
+  const r = T.flag(c, { narrative: n.slug, anchor, note: "back this" });
+  assert.match(r.text, /flag #1 .* 1 open flag/);
+  assert.throws(() => T.flag(c, { narrative: n.slug, anchor }), /already flagged/);
+  assert.match(T.flags(c, {}).text, /#1 \[open\][\s\S]*back this/);
+  assert.match(T.viewPage(c, { page: `narrative:${n.slug}` }).html, /<mark class="flag"/);
+  T.claimMint(c, { id: "flagged-claim", title: "A claim from a flagged passage", epistemic_kind: "commitment" });
+  const b = T.narrativeBind(c, { narrative: n.slug, anchor, claims: ["flagged-claim"] });
+  assert.match(b.text, /resolved flag #1/);
+  assert.match(T.flags(c, {}).text, /no open flags/);
+  assert.match(T.flags(c, { all: true }).text, /#1 \[done\][\s\S]*bound to flagged-claim/);
+  assert.throws(() => T.flagResolve(c, { id: 1 }), /already resolved/);
+  clean(c);
+});
+
 test("record_read and record_list", () => {
   const c = fresh();
   assert.match(T.recordList(c, { type: "claim" }).text, /^claim /m);

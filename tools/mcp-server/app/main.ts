@@ -11,7 +11,7 @@
  */
 import { App } from "@modelcontextprotocol/ext-apps";
 
-interface Page { page: string; title: string; html: string; corpus?: string }
+interface Page { page: string; title: string; html: string; corpus?: string; flags?: { id: number; anchor: string; note?: string }[] }
 
 // autoResize: the app reports its content height to the host, so inline the card fits
 // its page and the host's scrollbar is the only one.
@@ -53,8 +53,9 @@ function render(): void {
     const probe = document.createElement("div"); probe.innerHTML = p.html;
     const headings = [...probe.querySelectorAll("h2, h3")].map((h) => h.textContent ?? "");
     const bound = probe.querySelectorAll(".bind").length;
+    const flagged = p.flags?.length ?? 0;
     const items = headings.map((t) => `<li>${escapeHtml(t)}</li>`).join("") || "<li>(no sections)</li>";
-    main.innerHTML = `<main><h1>${escapeHtml(p.title)}</h1><p class="sub">Narrative · ${bound} bound passage${bound === 1 ? "" : "s"} · the outline; press <b>open</b> to read it fullscreen</p><ol>${items}</ol></main>`;
+    main.innerHTML = `<main><h1>${escapeHtml(p.title)}</h1><p class="sub">Narrative · ${bound} bound passage${bound === 1 ? "" : "s"} · ${flagged} flagged · the outline; press <b>open</b> to read it fullscreen</p><ul class="outline">${items}</ul></main>`;
   } else {
     main.innerHTML = p.html;
   }
@@ -137,6 +138,18 @@ document.addEventListener("mouseup", () => setTimeout(placeBar, 0));
 document.addEventListener("keyup", (e) => { if (e.shiftKey || e.key === "Shift") placeBar(); });
 document.addEventListener("selectionchange", () => { if (!selText()) bar.hidden = true; });
 bar.addEventListener("mousedown", (e) => e.preventDefault()); // keep the selection while clicking a button
+document.getElementById("flag-this")!.addEventListener("click", async () => {
+  const text = selText(); if (!text || !current) return;
+  const anchor = text.split(" ").slice(0, 8).join(" ");
+  status.textContent = "flagging…";
+  try {
+    const r = await app.callServerTool({ name: "erf_flag", arguments: { narrative: current.page.replace(/^narrative:/, ""), anchor, ...(current.corpus ? { corpus: current.corpus } : {}) } });
+    const t = (r as { content?: { text?: string }[] }).content?.[0]?.text ?? "";
+    status.textContent = t.startsWith("REFUSED") ? t.slice(0, 120) : "flagged";
+    if (!t.startsWith("REFUSED")) await open(current.page);
+  } catch (e) { status.textContent = `could not flag: ${String(e)}`; }
+  bar.hidden = true;
+});
 document.getElementById("back-this")!.addEventListener("click", async () => {
   const text = selText(); if (!text) return;
   const passage = text.length > 1200 ? text.slice(0, 1200) + " […]" : text;
