@@ -19,6 +19,9 @@ None yet, other than the reference validator in [`validator/yaml-markdown/typesc
 part of this repository and therefore not an independent reading of it. 1.0
 waits on implementations other than the author's.
 
+The machine-readable list, with each artifact's versioning policy, is
+[`implementations.yaml`](implementations.yaml); the pre-commit hook checks it.
+
 | Name | Language | Spec version | Conformance classes | Link |
 |---|---|---|---|---|
 | `@epistemic-record-format/validator` 0.9.x (`erf-check`), the reference | TypeScript | 0.9.0 | corpus, consumer; the conformance suite runs against it | [`validator/yaml-markdown/typescript/`](validator/yaml-markdown/typescript/), npm `@epistemic-record-format/validator` |

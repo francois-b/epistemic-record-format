@@ -1,0 +1,60 @@
+# The maintained, individually usable artifacts of this repository, and how
+# each is versioned. Read by tools/lint/lint-versions.py from the pre-commit
+# hook and the conformance suite. IMPLEMENTATIONS.md is the prose; this is
+# the machine-readable statement.
+#
+# policy:
+#   tracks-spec   the artifact's major.minor equals the specification's;
+#                 the patch digit is the artifact's own. Reference
+#                 implementations and anything a consumer picks by spec version.
+#   independent   the artifact has its own version; it must still declare the
+#                 spec version it implements, and that declaration must be
+#                 the current spec version.
+# version:        where the version is read from. kind: package.json |
+#                 pyproject | cargo | regex (file + a pattern with one group).
+# spec_version:   where the artifact declares the spec version it implements.
+# also:           other places that must equal the version (or the spec
+#                 version, with `equals: spec`), so a number stated twice
+#                 cannot drift.
+spec:
+  # the one machine-readable statement of the specification's version
+  from: { kind: regex, file: schema/erf.schema.json, pattern: '"\$id":\s*"[^"]*/schema/(\d+\.\d+\.\d+)/erf\.schema\.json"' }
+  also:
+    - { kind: regex, file: SPEC.md, pattern: '^Specification, v(\d+\.\d+)', equals: spec-major-minor }
+
+artifacts:
+  - id: validator-yaml-markdown-typescript
+    name: "@epistemic-record-format/validator"
+    path: validator/yaml-markdown/typescript
+    language: typescript
+    serialization: yaml-markdown
+    registry: npm
+    policy: tracks-spec
+    version: { kind: package.json }
+    spec_version: { kind: package.json, key: erf.spec_version }
+    also:
+      - { kind: regex, file: validator/yaml-markdown/typescript/index.ts, pattern: 'export const SPEC_VERSION = "([^"]+)"', equals: spec }
+
+  - id: erf-mcp
+    name: erf-mcp
+    path: tools/mcp-server
+    language: typescript
+    registry: none
+    policy: independent
+    version: { kind: package.json }
+    spec_version: { kind: package.json, key: erf.spec_version }
+    also:
+      - { kind: regex, file: tools/mcp-server/src/index.ts, pattern: 'name: "erf-mcp", version: "([^"]+)"' }
+
+  - id: erf-view
+    name: erf-view
+    path: tools/viewer
+    language: typescript
+    registry: none
+    policy: independent
+    version: { kind: package.json }
+    spec_version: { kind: package.json, key: erf.spec_version }
+
+  # Later, in the same shape:
+  # - id: validator-yaml-markdown-swift   (for Bookeh; registry: swiftpm; version from a Version.swift constant)
+  # - id: validator-yaml-markdown-python  (registry: pypi; version: { kind: pyproject }; spec_version: { kind: pyproject, key: tool.erf.spec_version })

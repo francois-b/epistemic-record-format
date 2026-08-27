@@ -10,5 +10,5 @@ if ! python3 tools/generate/generate-types.py --check >/dev/null 2>&1; then
   git add schema/erf.generated.ts
   echo "pre-commit: schema/erf.generated.ts regenerated from the schema and staged"
 fi
-# The validator's version tracks the specification's (major.minor); refuse a commit that breaks that.
-python3 tools/lint/lint-validator-version.py || exit 1
+# Every artifact in implementations.yaml is versioned against the specification; refuse a commit that breaks that.
+python3 tools/lint/lint-versions.py || exit 1

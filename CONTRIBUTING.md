@@ -88,8 +88,12 @@ spec `0.9`), and the patch digit is the implementation's own, for fixes
 that change no requirement. A spec release therefore forces a validator
 release at the same major.minor. `erf.spec_version` in `package.json` and
 the exported `SPEC_VERSION` state the spec version exactly.
-`tools/lint/lint-validator-version.py` enforces all of this from the
-pre-commit hook and the conformance suite. To publish:
+`implementations.yaml` lists every versioned artifact with its policy
+(`tracks-spec` for reference implementations, `independent` for tools, which
+still declare the spec version they implement), and where each number is
+stated; `tools/lint/lint-versions.py` enforces it from the pre-commit hook and
+the conformance suite. A new validator (a Swift one for an editor, a Python
+one on PyPI) is one more entry there. To publish:
 
 ```
 cd validator/yaml-markdown/typescript
