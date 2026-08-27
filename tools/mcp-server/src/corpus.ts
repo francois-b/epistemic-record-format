@@ -175,8 +175,18 @@ export function readLog(c: Corpus): LogEntry[] {
 
 // ---------- flags: passages marked for backing ----------
 
+/**
+ * What the person asked for when they flagged the passage. `mint` proposes
+ * claims and stops for a ruling; `back` carries on after the ruling, gathering
+ * evidence and binding; `opposite` adds the strongest case against before
+ * anyone stands. Absent on a flag written before the field existed, and read
+ * as `mint`, so old `flags.jsonl` lines still parse.
+ */
+export type Research = "mint" | "back" | "opposite";
+export const RESEARCH = ["mint", "back", "opposite"] as const;
+
 /** A note to self, not a record: this passage of this narrative should be backed. Resolved by the binding that covers its anchor. */
-export interface Flag { id: number; ts: string; narrative: string; anchor: string; note?: string; by: string; status: "open" | "done"; done_ts?: string; claims?: string[] }
+export interface Flag { id: number; ts: string; narrative: string; anchor: string; note?: string; research?: Research; by: string; status: "open" | "done"; done_ts?: string; claims?: string[] }
 
 export function flagsPath(c: Corpus): string { return join(c.dir, "flags.jsonl"); }
 export function readFlags(c: Corpus): Flag[] {

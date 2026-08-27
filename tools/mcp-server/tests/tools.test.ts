@@ -247,6 +247,73 @@ test("flags: mark a passage, list it with its text, binding the passage resolves
   clean(c);
 });
 
+test("narrative read/write/status: the digest gates the write, and the check comes back with it", () => {
+  const c = fresh();
+  const n = loadCorpus(c.dir).narratives[0]!;
+  const read = T.narrativeRead(c, { narrative: n.slug });
+  const d = read.data as { text: string; digest: string; path: string; title: string; bindings: T.BindingItem[]; flags: T.FlagItem[] };
+  assert.equal(d.digest.length, 12);
+  assert.match(d.text, /^---\n/, "the file as on disk, frontmatter included");
+  assert.ok(d.bindings.length > 0, "the minimal narrative is bound somewhere");
+  assert.ok(d.bindings.every((b) => b.line !== null), "every anchor is located in the file");
+  assert.ok(d.bindings.every((b) => b.status === "current" || b.status === "indeterminate"));
+  const first = d.bindings[0]!;
+  assert.ok(first.claimInfo?.[first.claims[0]!]?.title, "a bound claim carries its title, kind and disposition for the hover");
+
+  // a stale digest is refused, and the current one comes back
+  const edited = d.text.replace(/\n$/, "") + "\n\nA paragraph the editor added.\n";
+  await0(() => assert.throws(() => T.narrativeWrite(c, { narrative: n.slug, text: edited, expected_digest: "000000000000" }), /changed on disk[\s\S]*000000000000/));
+  assert.equal(T.narrativeRead(c, { narrative: n.slug }).data!["digest"], d.digest, "a refused write wrote nothing");
+
+  // the matching digest writes, and the check rides back with it
+  const w = T.narrativeWrite(c, { narrative: n.slug, text: edited, expected_digest: d.digest });
+  const wd = w.data as { digest: string; check: string; bindings: T.BindingItem[] };
+  assert.notEqual(wd.digest, d.digest);
+  assert.match(wd.check, /binding\(s\)/);
+  assert.equal(readFileSync(join(c.dir, "narratives", `${n.slug}.md`), "utf8"), edited, "written exactly as sent");
+  clean(c);
+
+  // a claim update makes its binding stale, and the write reports it
+  const bound = wd.bindings.find((b) => b.status !== "missing-claim")!;
+  T.claimUpdate(c, { id: bound.claims[0]!, title: "A title the editor has not seen" });
+  const after = T.narrativeWrite(c, { narrative: n.slug, text: edited + "\nAnd another.\n", expected_digest: wd.digest });
+  assert.match((after.data as { check: string }).check, /1 stale/);
+  assert.equal((after.data as { bindings: T.BindingItem[] }).bindings.find((b) => b.anchor === bound.anchor)?.status, "stale");
+});
+
+test("narrative status: a flag carries what it asked for, and a binding resolves it", () => {
+  const c = fresh();
+  const n = loadCorpus(c.dir).narratives[0]!;
+  const para = n.body.split("\n\n").find((p) => !/<!--/.test(p) && p.trim().length > 60)!;
+  const ws = para.trim().split(/\s+/); let anchor = "";
+  for (let i = 0; i + 5 <= ws.length; i++) { const cand = ws.slice(i, i + 5).join(" "); if (n.body.indexOf(cand) === n.body.lastIndexOf(cand)) { anchor = cand; break; } }
+  assert.throws(() => T.flag(c, { narrative: n.slug, anchor, research: "sideways" }), /research is one of/);
+  T.flag(c, { narrative: n.slug, anchor, note: "the case against, please", research: "opposite" });
+  assert.match(T.flags(c, {}).text, /research opposite/);
+  const s = T.narrativeStatus(c, { narrative: n.slug }).data as { digest: string; flags: T.FlagItem[]; bindings: T.BindingItem[] };
+  const f = s.flags.find((x) => x.id === 1)!;
+  assert.equal(f.research, "opposite");
+  assert.equal(f.status, "open");
+  assert.ok(f.line !== null);
+  assert.ok(!("text" in s), "status carries no text; it is the polling call");
+
+  T.claimMint(c, { id: "polled-claim", title: "A claim the poll should see", epistemic_kind: "commitment" });
+  T.narrativeBind(c, { narrative: n.slug, anchor, claims: ["polled-claim"] });
+  const s2 = T.narrativeStatus(c, { narrative: n.slug }).data as { digest: string; flags: T.FlagItem[]; bindings: T.BindingItem[] };
+  assert.notEqual(s2.digest, s.digest, "binding rewrote the file");
+  assert.equal(s2.flags.find((x) => x.id === 1)!.status, "done");
+  assert.deepEqual(s2.flags.find((x) => x.id === 1)!.claims, ["polled-claim"]);
+  const b = s2.bindings.find((x) => x.claims.includes("polled-claim"))!;
+  assert.equal(b.status, "current");
+  assert.equal(b.claimInfo!["polled-claim"]!.kind, "commitment");
+  clean(c);
+
+  // a flag written before the field existed still parses, and reads as mint
+  writeFileSync(join(c.dir, "flags.jsonl"), JSON.stringify({ id: 9, ts: new Date().toISOString(), narrative: n.slug, anchor, by: "agent/old", status: "open" }) + "\n");
+  assert.match(T.flags(c, {}).text, /#9 \[open\][\s\S]*research mint/);
+  assert.equal((T.narrativeStatus(c, { narrative: n.slug }).data as { flags: T.FlagItem[] }).flags[0]!.research, "mint");
+});
+
 test("record_read and record_list", () => {
   const c = fresh();
   assert.match(T.recordList(c, { type: "claim" }).text, /^claim /m);

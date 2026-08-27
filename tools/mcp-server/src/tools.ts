@@ -5,11 +5,13 @@
  * refuse.
  */
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join, relative } from "node:path";
 import {
   Refusal, type Corpus, readDeclaration, readSourceList, load, writeRecord, writeYamlDocument,
   readRecordFile, recordFiles, nextAtomId, idInUse, today, now, appendLog, readLog,
   declarationPath, sourceListPath, commit, frontmatter, readFlags, writeFlags, flagsPath, type Flag,
+  RESEARCH, type Research,
 } from "./corpus.ts";
 import { captureUrl, capturePath } from "./capture.ts";
 import { renderSite } from "../../viewer/erf-view.ts";
@@ -19,10 +21,15 @@ import {
   quoteCheck, normalizeForCheck, disposition, unbacked, stoodOn, danglingRefs, brokenAnchors,
   bindingStaleness, findWholeWords, claimsUsingAtom,
 } from "@epistemic-record-format/yaml-markdown";
-import type { Atom, Claim } from "@epistemic-record-format/yaml-markdown";
+import type { Atom, Claim, LoadedCorpus, Narrative } from "@epistemic-record-format/yaml-markdown";
 import type { Source } from "../../../schema/erf.generated.ts";
 
-export interface Result { text: string; wrote?: string[] }
+/**
+ * `data` is the machine-readable half of a result, handed to the host as
+ * `structuredContent`. The editor in the app reads it; a host that shows only
+ * text still gets `text`. Tools that write nothing structured leave it unset.
+ */
+export interface Result { text: string; wrote?: string[]; data?: Record<string, unknown> }
 
 const KINDS = ["observation", "argument", "bet", "commitment"] as const;
 const STANCES = ["for", "against", "withdrawn"] as const;
@@ -263,20 +270,26 @@ function passageAround(prose: string, at: number): string {
   return prose.slice(Math.max(0, start), end < 0 ? prose.length : end).replace(/\s+/g, " ").trim();
 }
 
-export function flag(c: Corpus, a: { narrative: string; anchor: string; note?: string }): Result {
+export function flag(c: Corpus, a: { narrative: string; anchor: string; note?: string; research?: string }): Result {
   readDeclaration(c);
   const anchor = a.anchor.replace(/\s+/g, " ").trim();
   if (anchor.length < 8) throw new Refusal("an anchor is a few exact words of the passage; give at least a phrase");
+  if (a.research !== undefined && !(RESEARCH as readonly string[]).includes(a.research)) throw new Refusal(`research is one of ${RESEARCH.join(", ")}`);
+  const research = (a.research ?? "mint") as Research;
   const { slug, prose } = proseOf(c, a.narrative);
   const first = prose.indexOf(anchor);
   if (first < 0) throw new Refusal(`"${anchor}" does not occur in ${slug}; the anchor must be exact words from the passage`);
   if (prose.indexOf(anchor, first + 1) >= 0) throw new Refusal(`"${anchor}" occurs more than once in ${slug}; choose words unique to the passage`);
   const flags = readFlags(c);
   if (flags.some((f) => f.status === "open" && f.narrative === slug && f.anchor === anchor)) throw new Refusal("that passage is already flagged");
-  const f: Flag = { id: (flags.at(-1)?.id ?? 0) + 1, ts: now(), narrative: slug, anchor, ...(a.note ? { note: a.note } : {}), by: c.options.agent, status: "open" };
+  const f: Flag = { id: (flags.at(-1)?.id ?? 0) + 1, ts: now(), narrative: slug, anchor, ...(a.note ? { note: a.note } : {}), research, by: c.options.agent, status: "open" };
   flags.push(f); writeFlags(c, flags);
   const open = flags.filter((x) => x.status === "open").length;
-  return finish(c, `flag #${f.id} on ${slug} at "${anchor}"${a.note ? ` (${a.note})` : ""}; ${open} open flag${open === 1 ? "" : "s"}`, [flagsPath(c)], `flag passage in ${slug}`);
+  const asked = research === "back" ? "; back it: after the ruling, gather the evidence and bind"
+    : research === "opposite" ? "; back it and state the strongest case against before standing"
+    : "; propose claims and stop for a ruling";
+  const r = finish(c, `flag #${f.id} on ${slug} at "${anchor}"${a.note ? ` (${a.note})` : ""} · research ${research}${asked}; ${open} open flag${open === 1 ? "" : "s"}`, [flagsPath(c)], `flag passage in ${slug}`);
+  return { ...r, data: { id: f.id, narrative: slug, anchor, research, ...(a.note ? { note: a.note } : {}) } };
 }
 
 export function flags(c: Corpus, a: { narrative?: string; all?: boolean }): Result {
@@ -289,7 +302,7 @@ export function flags(c: Corpus, a: { narrative?: string; all?: boolean }): Resu
     if (!cache.has(f.narrative)) cache.set(f.narrative, proseOf(c, f.narrative).prose);
     const prose = cache.get(f.narrative)!; const at = prose.indexOf(f.anchor);
     const passage = at >= 0 ? passageAround(prose, at) : "(anchor no longer occurs; the prose moved)";
-    return `#${f.id} [${f.status}] ${f.narrative} · anchor "${f.anchor}"${f.note ? ` · ${f.note}` : ""}${f.claims?.length ? ` · bound to ${f.claims.join(", ")}` : ""}\n  ${passage}`;
+    return `#${f.id} [${f.status}] ${f.narrative} · research ${f.research ?? "mint"} · anchor "${f.anchor}"${f.note ? ` · ${f.note}` : ""}${f.claims?.length ? ` · bound to ${f.claims.join(", ")}` : ""}\n  ${passage}`;
   });
   return { text: `${list.length} flag(s):\n` + lines.join("\n") };
 }
@@ -357,6 +370,77 @@ export function narrativeBind(c: Corpus, a: { narrative: string; anchor: string;
   return finish(c, `bound ${a.claims.length} claim(s) to "${a.anchor}" (bound-at ${now()})${resolved.length ? `; resolved flag${resolved.length === 1 ? "" : "s"} #${resolved.join(", #")}` : ""}`, wrote, `bind narrative passage "${a.anchor.slice(0, 40)}"`);
 }
 
+/**
+ * How one binding reads, in one word. The order matters: a binding naming a
+ * claim that does not exist is `missing-claim` whatever else is true of it
+ * (`ERF-31/33`); an anchor no longer in its passage is `broken` (`ERF-31`);
+ * otherwise `ERF-32`'s staleness answers, and `indeterminate` is one of its
+ * answers, for a legacy binding with no `bound-at` to compare.
+ */
+export type BindingStatus = "current" | "stale" | "broken" | "missing-claim" | "indeterminate";
+
+export interface BindingItem {
+  anchor: string;
+  claims: string[];
+  bound_at: string | null;
+  status: BindingStatus;
+  /** 1-based line of the file where the anchor's words sit, or null when they do not occur verbatim (a hand-wrapped anchor spans a line break). */
+  line: number | null;
+  /** What each named claim is, for a reader hovering the passage. Absent ids are simply not listed. */
+  claimInfo?: Record<string, { title: string; kind: string; disposition: string; evidence: number }>;
+}
+
+export interface FlagItem { id: number; anchor: string; note?: string; research: Research; status: "open" | "done"; claims?: string[]; line: number | null }
+
+/** The 1-based line of `text` where `needle` first occurs outside a binding marker, or null. */
+function lineOf(text: string, needle: string): number | null {
+  if (!needle) return null;
+  const masked = text.replace(/<!--\s*claims:[\s\S]*?-->/g, (m) => " ".repeat(m.length));
+  const at = masked.indexOf(needle);
+  if (at < 0) return null;
+  return text.slice(0, at).split("\n").length;
+}
+
+/**
+ * Every binding of one narrative with its status. `erf_narrative_check`,
+ * `erf_narrative_read` and `erf_narrative_status` all read bindings through
+ * here, so the check the LLM is told and the decoration the editor draws can
+ * never disagree. The readings themselves are the reference validator's.
+ */
+function bindingItems(l: LoadedCorpus, n: Narrative, fileText: string | null): BindingItem[] {
+  // brokenAnchors is the oracle for ERF-31; it answers for the corpus, and each
+  // line opens with the narrative and the anchor it is about.
+  const brokenLines = brokenAnchors(l);
+  return [...n.bindings].sort((a, b) => a.index - b.index).map((b) => {
+    const missing = b.claims.filter((id) => !l.claims.has(id));
+    const isBroken = brokenLines.some((s) => s.startsWith(`${n.slug}: anchor "${b.anchor}" does not occur`));
+    const status: BindingStatus = missing.length ? "missing-claim" : isBroken ? "broken" : bindingStaleness(b.boundAt, b.claims, l).state;
+    const claimInfo: Record<string, { title: string; kind: string; disposition: string; evidence: number }> = {};
+    for (const id of b.claims) {
+      const cl = l.claims.get(id);
+      if (cl) claimInfo[id] = { title: cl.title, kind: cl.epistemic_kind, disposition: disposition(cl).disposition, evidence: cl.atoms_for.length + cl.atoms_against.length };
+    }
+    return {
+      anchor: b.anchor, claims: b.claims, bound_at: b.boundAt ?? null, status,
+      line: fileText ? lineOf(fileText, b.anchor) : null,
+      ...(Object.keys(claimInfo).length ? { claimInfo } : {}),
+    };
+  });
+}
+
+/** Every flag on one narrative, open and done, in the shape the editor decorates from. */
+function flagItems(c: Corpus, slug: string, fileText: string | null): FlagItem[] {
+  return readFlags(c).filter((f) => f.narrative === slug).map((f) => ({
+    id: f.id, anchor: f.anchor, ...(f.note ? { note: f.note } : {}),
+    research: (f.research ?? "mint") as Research, status: f.status,
+    ...(f.claims?.length ? { claims: f.claims } : {}),
+    line: fileText ? lineOf(fileText, f.anchor) : null,
+  }));
+}
+
+/** The version id of a narrative file: sha256 of its bytes, first 12 hex characters. */
+function digestOf(text: string): string { return createHash("sha256").update(text, "utf8").digest("hex").slice(0, 12); }
+
 export function narrativeCheck(c: Corpus, a: { narrative?: string }): Result {
   readDeclaration(c);
   const l = load(c);
@@ -365,19 +449,91 @@ export function narrativeCheck(c: Corpus, a: { narrative?: string }): Result {
   const lines: string[] = [];
   for (const n of targets) {
     const findings = l.findings.filter((f) => f.record === n.slug);
-    let current = 0, stale = 0, indeterminate = 0; const unresolved: string[] = [], staleList: string[] = [];
-    for (const b of n.bindings) {
-      for (const id of b.claims) if (!l.claims.has(id)) unresolved.push(id);
-      const s = bindingStaleness(b.boundAt, b.claims, l).state;
-      if (s === "current") current++; else if (s === "stale") { stale++; staleList.push(`"${b.anchor}"`); } else indeterminate++;
-    }
-    lines.push(`${n.slug}: ${n.bindings.length} binding(s) · ${current} current · ${stale} stale · ${indeterminate} indeterminate`);
+    const items = bindingItems(l, n, null);
+    const count = (s: BindingStatus) => items.filter((x) => x.status === s).length;
+    const unresolved = n.bindings.flatMap((b) => b.claims.filter((id) => !l.claims.has(id)));
+    const staleList = items.filter((x) => x.status === "stale").map((x) => `"${x.anchor}"`);
+    lines.push(`${n.slug}: ${items.length} binding(s) · ${count("current")} current · ${count("stale")} stale · ${count("broken")} broken · ${count("missing-claim")} missing-claim · ${count("indeterminate")} indeterminate`);
     if (unresolved.length) lines.push(`  unresolved claim ids (ERF-31/33): ${[...new Set(unresolved)].join(", ")}`);
     if (staleList.length) lines.push(`  stale (claim changed after bound-at, ERF-32): ${staleList.join("; ")}`);
     for (const f of findings) lines.push(`  ${f.field}: ${f.detail}`);
   }
   const anchors = brokenAnchors(l); if (anchors.length) lines.push(`broken anchors (flag, ERF-31): ${anchors.join("; ")}`);
   return { text: lines.join("\n") };
+}
+
+// ---------- the narrative as a file: read, write, poll ----------
+
+/** The loaded narrative behind a name, with the file as it is on disk. */
+function narrativeOf(c: Corpus, name: string): { path: string; slug: string; title: string; text: string; l: LoadedCorpus; n: Narrative } {
+  const { path, slug } = narrativeFile(c, name);
+  const text = readFileSync(path, "utf8");
+  const l = load(c);
+  const n = l.narratives.find((x) => x.slug === slug);
+  if (!n) throw new Refusal(`${slug} is not loaded as a narrative; check its frontmatter (type: narrative, ERF-73)`);
+  return { path, slug, title: n.title, text, l, n };
+}
+
+/**
+ * The narrative as an editor needs it: the file as on disk, its digest, and
+ * where every binding and flag sits. The digest is the version id a write
+ * sends back, so two editors cannot silently overwrite each other.
+ */
+export function narrativeRead(c: Corpus, a: { narrative: string }): Result {
+  readDeclaration(c);
+  const { path, slug, title, text, l, n } = narrativeOf(c, a.narrative);
+  const bindings = bindingItems(l, n, text);
+  const flags = flagItems(c, slug, text);
+  const digest = digestOf(text);
+  const open = flags.filter((f) => f.status === "open").length;
+  return {
+    text: `narrative ${slug} "${title}" · ${text.length} chars · digest ${digest} · ${bindings.length} binding(s) · ${open} open flag(s)`,
+    data: { narrative: slug, path: relative(c.dir, path), title, text, digest, bindings, flags },
+  };
+}
+
+/**
+ * Write the narrative file, whole. `expected_digest` is the digest the writer
+ * last read: when it no longer matches the file, the write is refused and the
+ * current digest comes back, so the editor can reload or overwrite on purpose.
+ * The text is written exactly as sent, frontmatter included; this tool does not
+ * parse it. The narrative check runs after the write, since a rewrite is what
+ * breaks anchors.
+ */
+export function narrativeWrite(c: Corpus, a: { narrative: string; text: string; expected_digest?: string; force?: boolean }): Result {
+  readDeclaration(c);
+  const { path, slug } = narrativeFile(c, a.narrative);
+  const onDisk = digestOf(readFileSync(path, "utf8"));
+  if (typeof a.text !== "string" || !a.text.trim()) throw new Refusal("a narrative write carries the whole file, frontmatter included; an empty text is refused");
+  if (a.expected_digest && !a.force && a.expected_digest !== onDisk) {
+    throw new Refusal(`${slug} changed on disk since you read it: its digest is ${onDisk}, you sent ${a.expected_digest}. Read it again and merge, or pass force=true to overwrite what is there.`);
+  }
+  writeFileSync(path, a.text, "utf8");
+  const digest = digestOf(a.text);
+  const check = narrativeCheck(c, { narrative: slug });
+  const { l, n, text } = narrativeOf(c, slug);
+  const bindings = bindingItems(l, n, text);
+  const flags = flagItems(c, slug, text);
+  const r = finish(c, `wrote ${slug} · ${a.text.length} chars · digest ${digest}\n${check.text}`, [path], `edit narrative ${slug}`);
+  return { ...r, data: { written: relative(c.dir, path), digest, check: check.text, bindings, flags } };
+}
+
+/**
+ * What an open editor polls: the digest, the flags and the bindings, without
+ * the text. Read-only, local, no git and no LLM, so it can be called every few
+ * seconds while a request is in flight.
+ */
+export function narrativeStatus(c: Corpus, a: { narrative: string }): Result {
+  readDeclaration(c);
+  const { slug, text, l, n } = narrativeOf(c, a.narrative);
+  const bindings = bindingItems(l, n, text);
+  const flags = flagItems(c, slug, text);
+  const digest = digestOf(text);
+  const open = flags.filter((f) => f.status === "open");
+  return {
+    text: `${slug} · digest ${digest} · ${bindings.length} binding(s) · ${open.length} open flag(s)${open.length ? ` (${open.map((f) => `#${f.id} ${f.research}`).join(", ")})` : ""}`,
+    data: { digest, flags, bindings },
+  };
 }
 
 // ---------- rendering ----------
