@@ -97,10 +97,19 @@ one on PyPI) is one more entry there. To publish:
 
 ```
 cd validator/yaml-markdown/typescript
-npm run build && npm test --prefix ../../../conformance   # the suite is the gate
 npm version patch            # minor and major follow the spec, never lead it
-npm publish --access public                               # needs npm login and the epistemic-record-format org
+git push origin main "validator-v$(node -p "require('./package.json').version")"
 ```
+
+The tag is the release. `.github/workflows/publish-validator.yml` runs on it:
+the tag must equal the package version, every artifact must be versioned
+against the spec, the conformance suite must pass, then npm publishes from
+the workflow through trusted publishing (OIDC, no stored token) with a
+provenance attestation naming the commit and the workflow. Setting the
+trusted publisher on npmjs.com (package settings, repository
+`francois-b/epistemic-record-format`, workflow `publish-validator.yml`) is
+a one-time step. Publishing by hand (`npm publish --access public` from a
+logged-in machine) still works and produces no attestation; prefer the tag.
 
 `prepack` rebuilds `dist/`, so a stale build cannot be published. The
 schema ships inside the package (`@epistemic-record-format/validator/schema`) and also at its

@@ -1,0 +1,59 @@
+# Publish @epistemic-record-format/validator to npm with provenance.
+#
+# Trigger: a tag validator-vX.Y.Z pushed to the repository. The tag must equal
+# the package version, the version must track the spec (tools/lint/lint-versions.py),
+# and the conformance suite must pass; then npm publishes from this workflow
+# through trusted publishing (OIDC, no stored token) and attaches a provenance
+# attestation naming this commit and this workflow.
+#
+# One-time setup on npmjs.com, package settings > Trusted publishers:
+#   repository francois-b/epistemic-record-format, workflow publish-validator.yml.
+name: publish validator
+
+on:
+  push:
+    tags: ["validator-v*"]
+
+permissions:
+  contents: read
+  id-token: write   # the OIDC token npm exchanges for a publish credential
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: validator/yaml-markdown/typescript
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      # trusted publishing needs a recent npm CLI
+      - run: npm install -g npm@latest
+
+      - name: the tag names the package version
+        run: |
+          tag="${GITHUB_REF_NAME#validator-v}"
+          ver="$(node -p "require('./package.json').version")"
+          test "$tag" = "$ver" || { echo "tag validator-v$tag but package.json says $ver"; exit 1; }
+
+      - name: every artifact is versioned against the specification
+        run: pip3 install --quiet pyyaml && python3 ../../../tools/lint/lint-versions.py
+
+      - name: install
+        run: |
+          npm install --no-audit --no-fund
+          npm install --no-audit --no-fund --prefix ../../../conformance
+
+      - name: the conformance suite is the gate
+        run: npm test --prefix ../../../conformance
+
+      - name: build
+        run: npm run build
+
+      - name: publish with provenance
+        run: npm publish --provenance --access public

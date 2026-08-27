@@ -1,0 +1,34 @@
+# The gates the pre-commit hook runs, on every push and pull request, for
+# machines without the hook: generated types current, versions consistent,
+# the spec's style lints, the conformance suite, and the server's tests.
+name: ci
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  suite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: pip3 install --quiet pyyaml
+      - name: install (root postinstall installs the validator, viewer, conformance suite and server)
+        run: npm install --no-audit --no-fund
+      - name: generated types are current
+        run: python3 tools/generate/generate-types.py --check
+      - name: versions
+        run: python3 tools/lint/lint-versions.py
+      - name: conformance suite (includes the style and field-name lints)
+        run: npm test --prefix conformance
+      - name: erf-mcp tests
+        run: npm test --prefix tools/mcp-server
+      - name: the validator builds as a package
+        run: npm run build --prefix validator/yaml-markdown/typescript
