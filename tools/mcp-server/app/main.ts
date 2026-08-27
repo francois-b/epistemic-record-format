@@ -217,8 +217,33 @@ function wireEditor(handle: EditorHandle): void {
   });
 }
 
+/**
+ * One write at a time. A save asked for while one is in flight is remembered,
+ * not sent: a second write would carry the digest the first is about to
+ * invalidate, and the person would be told their own typing had changed the
+ * file underneath them. When the write returns, the document is saved again if
+ * it moved on. The returned promise settles when the whole chain has.
+ */
+let writing: Promise<void> | null = null;
+let pendingSave = false, pendingForce = false;
+
+function saveNow(text: string, force = false): Promise<void> {
+  if (writing) { pendingSave = true; pendingForce = pendingForce || force; return writing; }
+  const run = (async () => {
+    await writeNarrative(text, force);
+    while (pendingSave && ed) {
+      pendingSave = false;
+      const f = pendingForce; pendingForce = false;
+      if (!f && !ed.isDirty()) break;
+      await writeNarrative(ed.getText(), f);
+    }
+  })();
+  writing = run.finally(() => { writing = null; });
+  return writing;
+}
+
 /** Write the narrative, with the digest of the version this edit was made against. */
-async function saveNow(text: string, force = false): Promise<void> {
+async function writeNarrative(text: string, force = false): Promise<void> {
   if (!doc || !ed) return;
   setStatus("saving…", "working");
   const mine = ++epoch;
@@ -227,6 +252,7 @@ async function saveNow(text: string, force = false): Promise<void> {
       narrative: doc.narrative, text, ...(force ? { force: true } : { expected_digest: doc.digest }),
     });
     if (!data) {
+      // reconcile writes for itself: it must not queue behind the write it is answering
       if (/changed on disk/.test(said)) await reconcile();
       else setStatus(said.replace(/^\[[^\]]*\]\s*/, "").slice(0, 160));
       return;
@@ -268,7 +294,7 @@ async function reconcile(): Promise<void> {
   if (!r.inserted) { showBanner("This narrative changed on disk while you were editing, and the change was not a binding."); return; }
   doc.digest = data.digest;   // this text now holds theirs as well as mine
   hideBanner();
-  await saveNow(ed.getText(), true);
+  await writeNarrative(ed.getText(), true);
   notice(`merged ${r.inserted} binding${r.inserted === 1 ? "" : "s"} from elsewhere`, 6);
 }
 function hideBanner(): void { banner.hidden = true; }
@@ -360,6 +386,8 @@ async function submitFlag(research: Research, note: string): Promise<void> {
   if (!sel || !isNarrative(current)) { hideSelection(); return; }
   const title = doc?.title ?? current?.title ?? slug;
   hideSelection();
+  // the server checks the anchor against the file, so words just typed have to be on disk first
+  if (ed && !editorEl.hidden && ed.isDirty()) await saveNow(ed.getText());
   setStatus("flagging…", "working");
   try {
     const { data, text } = await call<FlagWritten>("erf_flag", { narrative: slug, anchor: sel.anchor, research, ...(note ? { note } : {}) });
@@ -440,7 +468,8 @@ async function pollOnce(): Promise<void> {
   }
 
   if (data.digest !== doc.digest) {
-    if (ed.isDirty()) await reconcile();
+    // a write already in flight will meet the same change and reconcile for itself
+    if (ed.isDirty()) { if (!writing) await reconcile(); }
     else { doc.digest = data.digest; const slug = doc.narrative; doc = null; await mountEditor(slug); return; }
   } else {
     reportMissing(ed.setMarks({ flags: data.flags, bindings: data.bindings }));
