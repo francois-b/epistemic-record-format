@@ -185,7 +185,12 @@ function createPopover(view: EditorView): TooltipView {
   dom.className = "erf-pop";
   // a button in the card takes focus from the editor, so Escape has to be answered here as well
   dom.addEventListener("keydown", (e) => { if (e.key === "Escape") { e.preventDefault(); closePopover(view); view.focus(); } });
-  const paint = (p: Popover | null): void => { if (p) renderPopover(dom, p, view); };
+  // the card paints into its own body: CodeMirror appends the anchor arrow to `dom` after `create`, and a repaint that
+  // replaced `dom`'s children would remove it, which also shifts the tooltip (found stepping through claims, 2026-08-27)
+  const body = document.createElement("div");
+  body.className = "erf-pop-body";
+  dom.appendChild(body);
+  const paint = (p: Popover | null): void => { if (p) renderPopover(body, p, view); };
   paint(view.state.field(popoverField));
   return { dom, update(u: ViewUpdate) { if (u.state.field(popoverField) !== u.startState.field(popoverField)) paint(u.state.field(popoverField)); } };
 }
