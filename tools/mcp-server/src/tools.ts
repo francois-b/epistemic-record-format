@@ -13,7 +13,7 @@ import {
   declarationPath, sourceListPath, commit, frontmatter, readFlags, writeFlags, flagsPath, type Flag, type LogEntry,
   RESEARCH, type Research, TAKE_MINUTES, readProposalSets, writeProposalSets, proposalsPath,
 } from "./corpus.ts";
-import { RULINGS, counts as proposalCounts, allRuled, acceptedClaims, finishLine, type Proposal, type ProposalSet, type ProposalSetView, type ProposalView, type ResolvedAtom, type Ruling } from "./proposals.ts";
+import { RULINGS, counts as proposalCounts, allRuled, acceptedClaims, finishLine, type Proposal, type ProposalSet, type ProposalSetView, type ProposalView, type ResolvedAtom, type Ruling, proseFindings } from "./proposals.ts";
 import { captureUrl, capturePath, pageOfQuote } from "./capture.ts";
 import { readTrail, trailBetween, type Trail } from "../../viewer/trail.ts";
 import { renderSite } from "../../viewer/erf-view.ts";
@@ -632,6 +632,8 @@ export function propose(c: Corpus, a: { flag: number; proposals: Proposal[]; sur
     if (!(KINDS as readonly string[]).includes(p.epistemic_kind)) throw new Refusal(`proposal ${p.id}: epistemic_kind is one of ${KINDS.join(", ")}`);
     for (const id of [...(p.atoms_for ?? []), ...(p.atoms_against ?? [])]) if (!atoms.has(id)) throw new Refusal(`proposal ${p.id} cites atom ${id}, which does not exist (ERF-35); mint the evidence before proposing`);
   }
+  const prose = proseFindings({ ...(a.summary ? { summary: a.summary } : {}), proposals: a.proposals });
+  if (prose.refusals.length) throw new Refusal(`the prose is refused: ${prose.refusals.join("; ")}`);
   const sets = readProposalSets(c);
   for (const x of sets) if (x.flag === a.flag && x.status === "open") x.status = "superseded";
   const set: ProposalSet = {
@@ -642,7 +644,7 @@ export function propose(c: Corpus, a: { flag: number; proposals: Proposal[]; sur
   };
   sets.push(set); writeProposalSets(c, sets);
   const v = proposalSetView(c, set);
-  const r = finish(c, `${set.proposals.length} proposal(s) for flag #${a.flag} are on the card, waiting for the ruling; no claim is written until the user accepts or narrows one there. Say so in one line and stop.\n${summaryLine(v)}`, [proposalsPath(c)], `propose ${set.proposals.length} claim(s) for flag #${a.flag}`);
+  const r = finish(c, `${set.proposals.length} proposal(s) for flag #${a.flag} are on the card, waiting for the ruling; no claim is written until the user accepts or narrows one there. Say so in one line and stop.\n${summaryLine(v)}${prose.warnings.length ? `\nwarning: ${prose.warnings.join("\nwarning: ")}` : ""}`, [proposalsPath(c)], `propose ${set.proposals.length} claim(s) for flag #${a.flag}`);
   return { ...r, data: v as unknown as Record<string, unknown> };
 }
 

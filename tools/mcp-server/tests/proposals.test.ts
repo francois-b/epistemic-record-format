@@ -4,7 +4,7 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { counts, allRuled, acceptedClaims, finishLine, rulingLine, type ProposalSet } from "../src/proposals.ts";
+import { counts, allRuled, acceptedClaims, finishLine, rulingLine, proseFindings, sentenceCount, type ProposalSet } from "../src/proposals.ts";
 
 const set = (): ProposalSet => ({
   flag: 3, ts: "2026-08-27T20:00:00Z", by: "agent/test", narrative: "essay", anchor: "tried this in the", research: "survey",
@@ -46,4 +46,22 @@ test("a ruling reads as one line for the LLM", () => {
   assert.equal(rulingLine(s, "x", { ruling: "accepted", ts: "t", claim: "x" }), "Flag #3: the user accepted x; it is minted as claim x.");
   assert.equal(rulingLine(s, "x", { ruling: "narrowed", ts: "t", claim: "x", title: "Narrower." }), 'Flag #3: the user narrowed x to "Narrower." and it is minted as claim x.');
   assert.equal(rulingLine(s, "x", { ruling: "dropped", ts: "t" }), "Flag #3: the user dropped the proposal x.");
+});
+
+test("the prose is governed: load-bearing and the em dash are refused, length is warned", () => {
+  assert.equal(sentenceCount("How strong it is. What the gap is."), 2);
+  assert.equal(sentenceCount("One line, no stop"), 1);
+  const clean = proseFindings({ summary: "The dating holds. The cause does not yet.", proposals: [{ id: "a", title: "The wave dates to the 1990s.", note: "Strong but single-sourced. A second dating would settle it." }] });
+  assert.deepEqual(clean, { refusals: [], warnings: [] });
+  const bad = proseFindings({ summary: "One. Two. Three.", proposals: [
+    { id: "a", title: "The load-bearing claim for the span.", note: "Note the tension \u2014 inside it." },
+    { id: "b", title: Array.from({ length: 31 }, (_, i) => `w${i}`).join(" "), note: "One. Two. Three sentences." },
+  ] });
+  assert.equal(bad.refusals.length, 2, "load-bearing in a title, an em dash in a note");
+  assert.match(bad.refusals[0]!, /a's title says "load-bearing"/);
+  assert.match(bad.refusals[1]!, /a's note uses an em dash/);
+  assert.equal(bad.warnings.length, 3, "a long summary, a long title, a long note");
+  assert.match(bad.warnings[0]!, /summary runs to 3 sentences/);
+  assert.match(bad.warnings[1]!, /b's title is 31 words/);
+  assert.match(bad.warnings[2]!, /b's note runs to 3 sentences/);
 });

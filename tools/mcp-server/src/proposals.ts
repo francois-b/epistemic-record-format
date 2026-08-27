@@ -123,6 +123,45 @@ export function finishLine(set: Pick<ProposalSet, "flag" | "proposals" | "ruling
   return `Flag #${set.flag} ruled: ${parts.join("; ") || "nothing"}; ${bound ? "bound." : "nothing to bind, flag resolved."}`;
 }
 
+/**
+ * The prose a card carries is governed: two things are refused outright, the
+ * rest is warned about. "load-bearing" and the em dash are banned in every
+ * field the person reads (title, note, what would settle it, summary); a title
+ * over thirty words, a note over two sentences, or a summary over two
+ * sentences gets a warning line in the result, not a refusal, so a worker
+ * learns the shape without losing the set.
+ */
+export const BANNED_PHRASES = ["load-bearing"] as const;
+export const EM_DASH = "\u2014";
+export const TITLE_MAX_WORDS = 30;
+export const NOTE_MAX_SENTENCES = 2;
+
+export function wordCount(s: string): number { return s.trim() ? s.trim().split(/\s+/).length : 0; }
+export function sentenceCount(s: string): number {
+  const t = s.trim(); if (!t) return 0;
+  return t.split(/[.!?]+(?:\s+|$)/).filter((x) => x.trim()).length;
+}
+
+export interface ProseFindings { refusals: string[]; warnings: string[] }
+
+/** What the prose of a set violates (refused) and what it stretches (warned). */
+export function proseFindings(set: { summary?: string; proposals: Pick<Proposal, "id" | "title" | "note" | "settles">[] }): ProseFindings {
+  const refusals: string[] = [], warnings: string[] = [];
+  const banned = (where: string, text: string | undefined) => {
+    if (!text) return;
+    for (const b of BANNED_PHRASES) if (text.toLowerCase().includes(b)) refusals.push(`${where} says "${b}"; say what it rests on, or that it is the strongest, in plain words`);
+    if (text.includes(EM_DASH)) refusals.push(`${where} uses an em dash; use a comma, a colon, or two sentences`);
+  };
+  banned("the summary", set.summary);
+  if (set.summary && sentenceCount(set.summary) > NOTE_MAX_SENTENCES) warnings.push(`the summary runs to ${sentenceCount(set.summary)} sentences; two at most, or none`);
+  for (const p of set.proposals) {
+    banned(`${p.id}'s title`, p.title); banned(`${p.id}'s note`, p.note); banned(`${p.id}'s settles`, p.settles);
+    if (wordCount(p.title) > TITLE_MAX_WORDS) warnings.push(`${p.id}'s title is ${wordCount(p.title)} words; one plain sentence, ${TITLE_MAX_WORDS} at most`);
+    if (p.note && sentenceCount(p.note) > NOTE_MAX_SENTENCES) warnings.push(`${p.id}'s note runs to ${sentenceCount(p.note)} sentences; two at most: how strong, and what the gap is`);
+  }
+  return { refusals, warnings };
+}
+
 /** A ruling as one line for the LLM's context. */
 export function rulingLine(set: Pick<ProposalSet, "flag">, id: string, r: Ruled): string {
   if (r.ruling === "dropped") return `Flag #${set.flag}: the user dropped the proposal ${id}.`;

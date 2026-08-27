@@ -426,6 +426,11 @@ test("proposals: put for an open flag with minted atoms, read back with the evid
   await refuses(() => T.propose(c, { flag: 1, proposals: [{ ...props[0]!, epistemic_kind: "hunch" }] }), /epistemic_kind is one of/);
   await refuses(() => T.propose(c, { flag: 1, proposals: [props[0]!, props[0]!] }), /given twice/);
   await refuses(() => T.propose(c, { flag: 1, proposals: props, survey: "no-such-survey" }), /survey no-such-survey does not exist/);
+  // the prose is governed: banned words refuse the set, length warns in the result
+  await refuses(() => T.propose(c, { flag: 1, proposals: [{ ...props[0]!, note: "The load-bearing one." }] }), /prose is refused: wave-dates's note says "load-bearing"/);
+  await refuses(() => T.propose(c, { flag: 1, proposals: props, summary: "Holds \u2014 mostly." }), /the summary uses an em dash/);
+  const warned = T.propose(c, { flag: 1, proposals: [{ ...props[0]!, note: "One. Two. Three." }] });
+  assert.match(warned.text, /warning: wave-dates's note runs to 3 sentences/);
   // stored, nothing minted, the view resolves the evidence
   const r = T.propose(c, { flag: 1, proposals: props, summary: "The dating holds; the cause does not yet." });
   assert.match(r.text, /3 proposal\(s\) for flag #1 are on the card/);

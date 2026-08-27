@@ -9,6 +9,8 @@ everything else.
 
 ## Unreleased
 
+Tooling, 2026-08-27: the prose on the ruling card is governed. `erf_propose` refuses a set whose title, note, settling line or summary says "load-bearing" or uses an em dash, and warns (in the result, the set kept) on a title over thirty words, a note over two sentences, a summary over two. The prompts and the server instructions carry the style: a title is one plain sentence no stronger than the evidence with no reference to the essay and no provenance; a note is how strong and what the gap is; the summary is two sentences or none; a finding says what the source says. Found on the first card, whose note opened "The load-bearing claim for the span" and whose summary ran to a paragraph.
+
 Tooling, 2026-08-27: a PDF's text layer is reflowed before it is held: words broken at the margin are joined ("be-" "ginning" reads "beginning" when the continuation is lowercase), typeset lines join into paragraphs, page markers stand. New captures only; held texts keep their digests. Found when the first PDF quote on a card read "the be- ginning of the knowledge management timeline".
 
 Tooling, 2026-08-27: the research trail shows inline as well as fullscreen, folded to its summary line there, so a pass can be watched from the conversation view where the host draws no chat sheet over the app.
