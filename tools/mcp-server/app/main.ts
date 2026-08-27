@@ -123,10 +123,14 @@ const narrativeSlug = (p: Page | null): string => slugIn(p) || doc?.narrative ||
 /** What the card shows for the current page in the current mode. A narrative is a document,
  *  not an answer: inline it would scroll inside a card the host caps in height, so inline it
  *  is its outline; fullscreen it is the editor. Records fit either way. */
+/** Try, 2026-08-27: the narrative is the editor inline as well as fullscreen, so nothing swaps while the host
+ *  animates the view between the two and the card has no reason to jump. Inline the editor gets a fixed
+ *  height (template.html) and scrolls inside the card. Set false to return to the outline inline. */
+const INLINE_EDITOR = true;
 function render(): void {
   const p = current; if (!p) return;
   const slug = narrativeSlug(p);
-  if (isNarrative(p) && mode === "fullscreen") {
+  if (isNarrative(p) && (mode === "fullscreen" || INLINE_EDITOR)) {
     main.hidden = true;
     editorEl.hidden = false;
     void mountEditor(slug);

@@ -35,6 +35,8 @@ body.mode-fullscreen #main { flex: 1; overflow: auto; }
 #editor { flex: 1; min-height: 0; overflow: hidden; }
 #editor[hidden] { display: none; }
 #editor .cm-editor { height: 100%; }
+/* inline, the editor is the card: a fixed height, scrolling inside (the host caps inline cards anyway) */
+body.mode-inline #editor { height: 640px; border-top: 1px solid var(--rulelt); }
 
 /* the file moved under an open editor: two ways out, both said aloud */
 #banner { display: flex; gap: .5rem; align-items: baseline; padding: .35rem .9rem; font-family: var(--sans); font-size: .8rem;
