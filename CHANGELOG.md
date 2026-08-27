@@ -9,6 +9,14 @@ everything else.
 
 ## Unreleased
 
+Tooling and pattern, 2026-08-27: no requirement changed. A flag can ask for a
+survey: research the span first (searches logged, sources captured, the survey
+recorded with its coverage bounds and notable results, atoms minted), then the
+claims the survey supports, scoped to the span, for one ruling. Backing an
+observation now records a survey for it whether or not the claim is a gap. The
+editor's selection bar offers Survey and Back; its popup offers all four verbs.
+Found when a flag on "tried this in the '90s" wanted the review, not the claims.
+
 Tooling and pattern, 2026-08-27: no requirement changed. A flag's anchor is its
 scope. `erf_flags` lists each flag's scope and shows the passage around it as
 context with the scope marked «so»; `decompose-passage` takes the span and

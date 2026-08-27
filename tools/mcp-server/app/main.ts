@@ -29,7 +29,7 @@ interface NarrativeWritten { written: string; digest: string; check: string; bin
 interface NarrativeStatus { digest: string; bindings: BindingMark[]; flags: FlagMark[] }
 interface FlagWritten { id: number; narrative: string; anchor: string; research: string; note?: string }
 
-type Research = "mint" | "back" | "opposite";
+type Research = "mint" | "survey" | "back" | "opposite";
 
 // autoResize: the app reports its content height to the host, so inline the card fits
 // its page and the host's scrollbar is the only one.
@@ -402,11 +402,17 @@ document.getElementById("flag-go")!.addEventListener("click", () => {
   const chosen = (flagpop.querySelector('input[name="research"]:checked') as HTMLInputElement | null)?.value as Research | undefined;
   void submitFlag(chosen ?? "mint", flagNote.value.trim());
 });
-// Back this is the shortcut: the same flag, with `back` already chosen.
+// Survey and Back are the shortcuts: the same flag, with the verb already chosen; Flag opens the popup for the rest.
+document.getElementById("survey-this")!.addEventListener("click", () => { void submitFlag("survey", ""); });
 document.getElementById("back-this")!.addEventListener("click", () => { void submitFlag("back", ""); });
 
 /** The one line the app puts in the conversation, so the loop starts in the same chat. */
 function requestLine(f: FlagWritten, title: string): string {
+  if (f.research === "survey") {
+    return `Survey flag #${f.id} in "${title}": "${f.anchor}".`
+      + (f.note ? ` My note: ${f.note}.` : "")
+      + ` Research the span first: log the searches, capture the sources, record the survey with its coverage bounds and notable results, mint the atoms. Then propose the claims the survey supports, scoped to the span, and stop for my ruling.`;
+  }
   const opposite = f.research === "opposite";
   return `Back flag #${f.id} in "${title}"${opposite ? " (opposite requested)" : ""}: "${f.anchor}".`
     + (f.note ? ` My note: ${f.note}.` : "")
@@ -430,6 +436,7 @@ async function submitFlag(research: Research, note: string): Promise<void> {
     setStatus("");
     notice(`flagged #${data.id} · ${research}`, 5);
     const asked = research === "mint" ? "propose the claims and stop for a ruling"
+      : research === "survey" ? "survey it: research the span first, record the survey, then propose the claims it supports"
       : research === "back" ? "back it: after the ruling, gather the evidence and bind"
       : "back it and state the strongest case against before standing";
     try {

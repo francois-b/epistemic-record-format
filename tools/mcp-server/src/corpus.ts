@@ -182,8 +182,9 @@ export function readLog(c: Corpus): LogEntry[] {
  * anyone stands. Absent on a flag written before the field existed, and read
  * as `mint`, so old `flags.jsonl` lines still parse.
  */
-export type Research = "mint" | "back" | "opposite";
-export const RESEARCH = ["mint", "back", "opposite"] as const;
+/** What a flag asks for: mint (propose claims, stop), survey (research first, then the claims it supports), back (claims, then evidence), opposite (back plus the case against). */
+export type Research = "mint" | "survey" | "back" | "opposite";
+export const RESEARCH = ["mint", "survey", "back", "opposite"] as const;
 
 /**
  * A note to self, not a record: this passage of this narrative should be

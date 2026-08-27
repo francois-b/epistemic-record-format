@@ -79,13 +79,14 @@ ul.outline li { padding: .15rem 0; }
 <div id="head"><span id="crumb-inline"></span><span id="status-inline"></span><button id="refresh" title="Re-read this page from the corpus">↻</button><button id="mode-toggle" title="Fullscreen or back inline">open</button></div>
 <div id="banner" hidden><span id="banner-text"></span><button id="banner-reload">reload</button><button id="banner-force">overwrite</button></div>
 <div id="notice" hidden><span id="notice-text"></span><button id="notice-dismiss">leave it</button><button id="notice-go">Unwrap</button></div>
-<div id="selbar" hidden><button id="flag-this" title="Flag this passage, and say what should happen to it">Flag</button><button id="back-this" title="Flag this passage and ask for it to be backed now: the request goes into the conversation">Back this</button></div>
+<div id="selbar" hidden><button id="flag-this" title="Flag this span, and say what should happen to it">Flag</button><button id="survey-this" title="What is known about this? Research first, then the claims it supports: the request goes into the conversation">Survey</button><button id="back-this" title="Claims first, then the evidence, then bind: the request goes into the conversation">Back</button></div>
 <div id="flagpop" hidden>
   <div class="quote" id="flag-quote"></div>
   <div class="choices">
-    <label><input type="radio" name="research" value="mint" checked><span>Propose claims <em>and stop for my ruling</em></span></label>
-    <label><input type="radio" name="research" value="back"><span>Back it <em>gather the evidence after the ruling, then bind</em></span></label>
-    <label><input type="radio" name="research" value="opposite"><span>Back it, and the opposite <em>the case against, before I stand</em></span></label>
+    <label><input type="radio" name="research" value="mint" checked><span>What does this claim? <em>propose the claims, stop for my ruling</em></span></label>
+    <label><input type="radio" name="research" value="survey"><span>Survey it <em>what is known about this, before I decide what to claim</em></span></label>
+    <label><input type="radio" name="research" value="back"><span>Back it <em>claims first, then the evidence, then bind</em></span></label>
+    <label><input type="radio" name="research" value="opposite"><span>Oppose it <em>back it, and the strongest case against before I stand</em></span></label>
   </div>
   <input type="text" id="flag-note" placeholder="a note to self (optional)">
   <div class="row"><button id="flag-cancel">cancel</button><button id="flag-go">Flag</button></div>

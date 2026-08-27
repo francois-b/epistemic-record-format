@@ -409,6 +409,12 @@ test("narrative status: a flag carries what it asked for, and a binding resolves
   assert.throws(() => T.flag(c, { narrative: n.slug, anchor, research: "sideways" }), /research is one of/);
   T.flag(c, { narrative: n.slug, anchor, note: "the case against, please", research: "opposite" });
   assert.match(T.flags(c, {}).text, /research opposite/);
+  // survey: research first, claims after; flagged on a second passage so the first stays a single flag
+  const para2 = n.body.split("\n\n").filter((p) => !/<!--/.test(p) && p.trim().length > 60 && p !== para)[0]!;
+  const ws2 = para2.trim().split(/\s+/); let anchor2 = "";
+  for (let i = 0; i + 5 <= ws2.length; i++) { const cand = ws2.slice(i, i + 5).join(" "); if (n.body.indexOf(cand) === n.body.lastIndexOf(cand)) { anchor2 = cand; break; } }
+  T.flag(c, { narrative: n.slug, anchor: anchor2, research: "survey" });
+  assert.match(T.flags(c, {}).text, /research survey/);
   const s = T.narrativeStatus(c, { narrative: n.slug }).data as { digest: string; flags: T.FlagItem[]; bindings: T.BindingItem[] };
   const f = s.flags.find((x) => x.id === 1)!;
   assert.equal(f.research, "opposite");
