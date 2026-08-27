@@ -9,6 +9,8 @@ everything else.
 
 ## Unreleased
 
+Tooling, 2026-08-27: the status line is the same on re-entering the editor as on first opening it. Leaving fullscreen stopped the watch and cleared the line, and re-entering took a path that re-read the marks without saying what the flags said; now every way in hands the flags to the same scheduler.
+
 Tooling, 2026-08-27: the status line reads the flag's real state. A take that has aged past `TAKE_MINUTES` is reported by the server as `take_stale` on each flag (`erf_narrative_status`, `erf_narrative_read`), the one place the thirty-minute rule lives; the editor draws such a flag as open, not taken, and the app's status line says "researching #N (taken by X)" only for a fresh take, watching every three seconds, and "#N flagged · survey · not being worked" (a stale take named) otherwise, watching every half minute. A flag placed from the editor is watched fast for a quarter of an hour regardless. Found when a day-old take read as research in progress after a restart.
 
 Probe, 2026-08-27, removable: what a host shows of a server besides results. `erf_source_add` and `erf_render_site` send `notifications/progress` at their steps when the call carries a progress token (nothing otherwise); every write sends a logging message naming the paths written (the logging capability is declared for it); `work-the-flags` and `survey-span` ask the worker to keep a task list and check the steps off. Verified on the wire with `scripts/smoke-notifications.ts`; whether Claude Desktop or Cowork shows any of it is the question, and the three are marked PROBE in the code so they can go if the answer is nothing.

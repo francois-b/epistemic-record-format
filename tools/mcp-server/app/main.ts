@@ -194,7 +194,9 @@ function show(p: Page): void {
 
 /** Load the narrative into the editor. Called whenever the fullscreen view of a narrative is entered. */
 async function mountEditor(slug: string): Promise<void> {
-  if (doc?.narrative === slug && ed) { refreshMarks(); return; }
+  // re-entering an editor that already holds this narrative: the marks and the status come back the same way
+  // they came the first time (refreshMarks schedules the watch); leaving fullscreen had stopped it and cleared the line
+  if (doc?.narrative === slug && ed) { void refreshMarks(); return; }
   setStatus("reading…", "working");
   try {
     const { data, text } = await call<NarrativeRead>("erf_narrative_read", { narrative: slug });
@@ -348,13 +350,19 @@ document.getElementById("banner-force")!.addEventListener("click", () => {
   if (ed) void saveNow(ed.getText(), true);
 });
 
-/** Re-read the flags and bindings without touching the text. */
+/**
+ * Re-read the flags and bindings without touching the text, and say what they
+ * say. Every way into the editor ends here or in mountEditor's first read, and
+ * both hand the flags to schedulePolling, so the same flags give the same
+ * status line whether the editor is opened the first time or re-entered.
+ */
 async function refreshMarks(): Promise<NarrativeStatus | null> {
   if (!doc || !ed) return null;
   const { data } = await call<NarrativeStatus>("erf_narrative_status", { narrative: doc.narrative });
   if (!data) return null;
   reportMissing(ed.setMarks({ flags: data.flags, bindings: data.bindings }));
   paintTrail(data.trail ?? []);
+  if (!editorEl.hidden) schedulePolling(data.flags);
   return data;
 }
 
