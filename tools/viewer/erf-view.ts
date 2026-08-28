@@ -20,6 +20,7 @@ import { claimsUsingAtom } from "@epistemic-record-format/yaml-markdown";
 import {
   renderAtom, renderCapture, renderClaim, renderCut, renderHealth, renderIndex,
   renderNarrative, renderSources, renderSurvey, setSiteLinks, setSiteStamp, stylesheet,
+  type CutPlacement,
 } from "./render.ts";
 import { readTrail } from "./trail.ts";
 import { buildCutTree, readCuts } from "./cut.ts";
@@ -63,8 +64,13 @@ export function renderSite(corpusDir: string, outDir: string, links: { label: st
   write("sources.html", renderSources(c));
   write("health.html", renderHealth(c, captureText));
   for (const n of c.narratives) write(`narrative-${n.slug}.html`, renderNarrative(n, c));
-  for (const k of cuts) write(`cut-${k.name}.html`, renderCut(buildCutTree(k, c), c));
-  for (const cl of c.claims.values()) write(`claim-${cl.id}.html`, renderClaim(cl, c, trail));
+  // Each cut's tree is built once: the cut page renders it, and every claim
+  // page links to its position in each cut that places it.
+  const trees = cuts.map((k) => buildCutTree(k, c));
+  const placements = new Map<string, CutPlacement[]>();
+  for (const t of trees) for (const [id, number] of t.placed) placements.set(id, [...(placements.get(id) ?? []), { cut: t.cut, number }]);
+  for (const t of trees) write(`cut-${t.cut.name}.html`, renderCut(t, c));
+  for (const cl of c.claims.values()) write(`claim-${cl.id}.html`, renderClaim(cl, c, trail, placements.get(cl.id) ?? []));
   for (const s of c.surveys.values()) write(`survey-${s.id}.html`, renderSurvey(s, c, trail));
   for (const a of c.atoms.values()) {
     const text = captureText(a.id);

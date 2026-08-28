@@ -101,8 +101,11 @@ is `ERF-52`, split before normalizing.
   marks; kinds are set plain and dispositions in their colour, the
   viewer's convention. Plain grade only: no review marks
 - **Claim** disposition and why it computes that way, evidence for and
-  against, coverage, relations (including conflicts declared on the other
-  side of the pair), and the standings ledger
+  against, coverage, relations in both directions (the edges the claim
+  carries, then every edge on another claim that points at it, marked as
+  stored there; a conflict stored on either side shows on both), its
+  position in every cut that places it (`1.2.2 in <cut title>`, linking
+  to the node), and the standings ledger
 - **Atom** finding, quote, the quote check's own verdict, citation, quality,
   limitations, audit verdicts, every claim that leans on it, and the source
   entry with its status, licence, retrieval date and pipeline tools

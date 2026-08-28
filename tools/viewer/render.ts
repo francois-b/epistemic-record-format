@@ -961,7 +961,10 @@ function howFoundForClaim(cl: Claim, c: LoadedCorpus, trail: Trail): string {
   o.search ? `<br><span class="id">found by</span> ${esc(o.search.tool)}: ${esc(o.search.query)} <span class="id">${esc(o.search.ts)}</span>` : `<br><span class="id">captured with no search logged before it</span>`}</li>`).join("")}</ul>`;
 }
 
-export function renderClaim(cl: Claim, c: LoadedCorpus, trail?: Trail): string {
+/** Where a cut places a claim: the cut, and the claim's number in that rendering. */
+export interface CutPlacement { cut: Cut; number: string }
+
+export function renderClaim(cl: Claim, c: LoadedCorpus, trail?: Trail, placements: CutPlacement[] = []): string {
   const d = disposition(cl);
   const b = backing(cl, c);
   const atomRow = (id: string) => {
@@ -995,21 +998,26 @@ ${(cl.surveys?.length ?? 0) ? `<h3>Coverage</h3><ul class="plain">${(cl.surveys 
   return `<li><a href="survey-${esc(s)}.html">${esc(sv?.title ?? s)}</a><br>
     <span class="id">${sv?.searches.length ?? 0} search acts</span></li>`;
 }).join("")}</ul>` : ""}
-${cl.edges.length ? `<h3>Relations</h3><ul class="plain">${cl.edges.map((e) =>
-  `<li><span class="id">${esc(e.relation)}</span> &rarr; <a href="claim-${esc(e.to)}.html">${esc(c.claims.get(e.to)?.title ?? e.to)}</a></li>`).join("")}</ul>` : ""}
 ${(() => {
-  // `ERF-44`: the pair is stored once on either side, so the inbound half
-  // belongs here too. Rendering only outbound edges showed an incomplete
-  // conflict set, and which half a reader saw depended on which claim the
-  // author happened to write it on.
-  const inbound = conflictsFor(cl.id, c).filter((id) =>
-    !cl.edges.some((e) => e.relation === "conflicts-with" && e.to === id));
-  return inbound.length
-    ? `<h3>Conflicts declared elsewhere</h3><ul class="plain">${inbound.map((id) =>
-        `<li><a href="claim-${esc(id)}.html">${esc(c.claims.get(id)?.title ?? id)}</a>
-         <span class="id">stored on that claim</span></li>`).join("")}</ul>`
-    : "";
+  // Both directions. An edge is stored on the claim that carries it, so a
+  // page showing only its own edges hides what rests on it; `ERF-44` makes
+  // the case sharpest for conflicts, stored once on either side, where
+  // which half a reader saw depended on which claim the author wrote it
+  // on. So: the edges this claim carries, then every edge on another claim
+  // that points here, each marked as stored on that claim.
+  const name = (id: string): string => esc(c.claims.get(id)?.title ?? id);
+  const inbound = [...c.claims.values()].flatMap((o) => o.edges.filter((e) => e.to === cl.id).map((e) => ({ from: o.id, relation: e.relation })));
+  if (!cl.edges.length && !inbound.length) return "";
+  return `<h3>Relations</h3>
+<p class="sub">Both directions: the edges this claim carries, then the edges on other claims that point at it.</p>
+<ul class="plain">${cl.edges.map((e) =>
+    `<li>this claim <span class="id">${esc(e.relation)}</span> &rarr; <a href="claim-${esc(e.to)}.html">${name(e.to)}</a></li>`).join("")}${inbound.map((i) =>
+    `<li><a href="claim-${esc(i.from)}.html">${name(i.from)}</a> <span class="id">${esc(i.relation)}</span> &rarr; this claim <span class="t">stored on that claim</span></li>`).join("")}</ul>`;
 })()}
+${placements.length ? `<h3>In cuts</h3>
+<p class="sub">Where a cut places this claim; the number is that rendering's, and the claim is cited by its id.</p>
+<ul class="plain">${placements.map((p) =>
+  `<li><a href="cut-${esc(p.cut.name)}.html#k-${esc(cl.id)}"><span class="id">${esc(p.number)}</span> in ${esc(p.cut.title)}</a></li>`).join("")}</ul>` : ""}
 ${staleEvidenceAudit(cl, c) ? `<div class="warnbox">A backing verdict on this claim predates its last change (<span class="id">ERF-47</span>).</div>` : ""}
 ${trail ? howFoundForClaim(cl, c, trail) : ""}
 <h3>Standings</h3>

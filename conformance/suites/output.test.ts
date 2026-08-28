@@ -312,6 +312,39 @@ test("footer: the version id is stable across renders and copies, and changes wh
   assert.notEqual(versionId(copy), changed, "a change to a cut changes the id");
 });
 
+test("claim page: relations read both ways, and every cut placing the claim links its position", () => {
+  const out = build(CAPEX);
+  const c = loadCorpus(CAPEX);
+  const cut = readCuts(CAPEX)[0]!;
+  const t = buildCutTree(cut, c);
+  const claimPage = (id: string) => readFileSync(join(out, `claim-${id}.html`), "utf8");
+  const relations = (html: string): string => {
+    const at = html.indexOf("<h3>Relations</h3>");
+    assert.ok(at > 0, "the page has a relations section");
+    return html.slice(at, html.indexOf("<h3>", at + 1));
+  };
+  // Every edge shows on both pages: as the edge this claim carries on the
+  // source's page, as an edge pointing here on the target's page.
+  let seen = 0;
+  for (const cl of c.claims.values()) {
+    for (const e of cl.edges) {
+      if (!c.claims.has(e.to)) continue;
+      assert.ok(relations(claimPage(cl.id)).includes(`this claim <span class="id">${e.relation}</span> &rarr; <a href="claim-${e.to}.html">`), `${cl.id}: carries ${e.relation} to ${e.to}`);
+      assert.ok(relations(claimPage(e.to)).includes(`<a href="claim-${cl.id}.html">${escHtml(c.claims.get(cl.id)!.title)}</a> <span class="id">${e.relation}</span> &rarr; this claim`), `${e.to}: shows ${cl.id}'s ${e.relation} pointing at it`);
+      seen++;
+    }
+  }
+  assert.ok(seen >= 4, "the example corpus has edges of more than one relation");
+  assert.ok([...c.claims.values()].some((cl) => cl.edges.some((e) => e.relation === "conflicts-with")), "including a conflict, stored on one side and shown on both");
+  // The cut's placements: every placed claim links its number in the cut, at the node's anchor.
+  for (const [id, number] of t.placed) {
+    assert.ok(claimPage(id).includes(`<a href="cut-${cut.name}.html#k-${id}"><span class="id">${number}</span> in ${escHtml(cut.title)}</a>`), `${id} links ${number} in ${cut.title}`);
+  }
+  const unplaced = [...c.claims.keys()].find((id) => !t.placed.has(id));
+  assert.ok(unplaced, "the example cut leaves some claim unplaced");
+  assert.ok(!claimPage(unplaced!).includes("<h3>In cuts</h3>"), `${unplaced} is placed by no cut and says nothing about cuts`);
+});
+
 test("claims-tree: the index lists every cut", () => {
   const out = build(CAPEX);
   const index = readFileSync(join(out, "index.html"), "utf8");
