@@ -639,7 +639,7 @@ function showProposals(v: ProposalSetView): void {
   proposalSet = v;
   returnTo = null;
   current = { page: `proposals:${v.flag}`, title: `Proposals for flag #${v.flag}`, html: "", corpus: v.corpus };
-  for (const c of crumbs) c.textContent = current.title;
+  for (const c of crumbs) c.textContent = ""; // the card carries its own title (the flagged passage); the head bar keeps only its controls
   setStatus("");
   render();
 }
