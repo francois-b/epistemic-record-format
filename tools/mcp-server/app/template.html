@@ -19,6 +19,9 @@ body.mode-fullscreen #head { position: sticky; top: 0; background: var(--paper);
 #head #status-inline.working { color: var(--warn); }
 #head #status-inline.settled { color: var(--good); }
 #head button { border: 1px solid var(--rule); background: var(--codebg); color: var(--ink); border-radius: 4px; padding: .05rem .45rem; cursor: pointer; font: inherit; }
+#head button[hidden] { display: none; }
+/* the queue control: same size as the mode toggle, right of the status line, and there only while there is a queue */
+#head #work-flags { border-color: var(--accent); color: var(--accent); }
 #main { padding: 0 .9rem 1rem; }
 body.mode-fullscreen #main { flex: 1; overflow: auto; padding-bottom: calc(1rem + var(--safe-bottom, 0px)); }
 #main[hidden] { display: none; }
@@ -177,7 +180,7 @@ ul.outline li { padding: .15rem 0; }
 </style>
 </head>
 <body>
-<div id="head"><span id="crumb-inline"></span><span id="status-inline"></span><button id="refresh" title="Re-read this page from the corpus">↻</button><button id="mode-toggle" title="Fullscreen or back inline">open</button></div>
+<div id="head"><span id="crumb-inline"></span><span id="status-inline"></span><button id="work-flags" hidden title="Ask for every open flag nobody is working, in one message">Work the flags</button><button id="refresh" title="Re-read this page from the corpus">↻</button><button id="mode-toggle" title="Fullscreen or back inline">open</button></div>
 <div id="trail" hidden><div id="trail-head"><button id="trail-chev" title="Fold the trail to one line">▾</button><span id="trail-title">the research trail</span><button id="trail-card" hidden title="Where the pass ended up">the card</button><button id="trail-all" title="Every search, capture, atom and claim">all lines</button></div><div id="trail-body"></div></div>
 <div id="banner" hidden><span id="banner-text"></span><button id="banner-reload">reload</button><button id="banner-force">overwrite</button></div>
 <div id="notice" hidden><span id="notice-text"></span><button id="notice-dismiss">leave it</button><button id="notice-go">Unwrap</button></div>

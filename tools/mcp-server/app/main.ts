@@ -28,6 +28,7 @@ import { createEditor, isWorked, type EditorHandle, type FlagMark, type BindingM
 import { trailLines, trailSummary, type FlagTrail } from "../../editor/src/trail.ts";
 import { rulingLine, type ProposalSetView, type Ruling } from "../src/proposals.ts";
 import { openingState, proposalsCard, type CardState } from "./card.ts";
+import { flagsToWork, workTheFlagsLine } from "./flags.ts";
 
 interface Page { page: string; title: string; html: string; corpus?: string; flags?: { id: number; anchor: string; note?: string }[]; served_at?: string }
 /** A view the server produced moments ago, as opposed to one the host replays when a chat is re-entered (2026-08-27: every
@@ -620,6 +621,7 @@ function stopPolling(): void {
   pollTimer = null; burstUntil = 0; fastWanted = false; watching = new Map();
   if (flagLine && steady === flagLine) setStatus("");
   flagLine = "";
+  paintWorkControl([]);   // nothing asks for research: there is no queue to work
 }
 /** Say what the flags say, and watch at the pace they call for; the same flags always give the same line. */
 function schedulePolling(flags: FlagMark[]): void {
@@ -629,6 +631,7 @@ function schedulePolling(flags: FlagMark[]): void {
   fastWanted = s.fast;
   flagLine = s.line;
   setStatus(s.line, s.tone);
+  paintWorkControl(flags);
   startPolling();
 }
 
@@ -671,6 +674,38 @@ function again(): void {
   const fast = fastWanted || Date.now() < burstUntil;
   pollTimer = setTimeout(() => void pollOnce(), fast ? FAST_MS : SLOW_MS);
 }
+
+// ---- working the queue -------------------------------------------------------
+// A flag placed at the selection sends its own request line, one flag per
+// gesture, and that stays. This is for the queue: two or more flags asking for
+// research with nobody on them. One message names them all and asks for them in
+// parallel, which the LLM does with a sub-agent per flag where the host has
+// them and one after another where it does not; either way each flag ends on
+// its own ruling card. The control sits beside the mode toggle and is there
+// only while there is a queue.
+
+const workBtn = document.getElementById("work-flags") as HTMLButtonElement;
+let workIds: number[] = [];
+
+function paintWorkControl(flags: FlagMark[]): void {
+  workIds = flagsToWork(flags);
+  workBtn.hidden = !workIds.length;
+  if (workIds.length) workBtn.title = `Ask for ${workIds.map((i) => `#${i}`).join(", ")} in one message, worked in parallel where the host can`;
+}
+
+async function workFlags(): Promise<void> {
+  if (!workIds.length) return;
+  const ids = workIds;
+  const line = workTheFlagsLine(ids);
+  try {
+    const r = await app.sendMessage({ role: "user", content: [{ type: "text", text: line }] });
+    if ((r as { isError?: boolean }).isError) { notice("the host declined to send the request; ask in chat", 8); return; }
+  } catch { notice("could not send the request; ask in chat", 8); return; }
+  notice(`asked for ${ids.length} flags: ${ids.map((i) => `#${i}`).join(", ")}`, 6);
+  startPolling(true);   // the takes that answer the request are seconds away
+}
+
+workBtn.addEventListener("click", () => void workFlags());
 
 // ---- the ruling card ---------------------------------------------------------
 // A worker's proposals for one flag, with the evidence in full, and the three
