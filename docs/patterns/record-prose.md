@@ -13,6 +13,8 @@ An LLM writes claim titles, notes, findings and summaries into the record, and a
 
 A banned-word list chases the tells one at a time. This pattern states the sentence instead, and says which of its rules a server can enforce without a person in the loop.
 
+The target is plain and precise, not human-sounding. Record prose does not want voice, warmth or variation, and it does not want the sophistication of a good writer; it wants the fewest plain words that state one thing exactly. It is not terse either: a fragment or a clipped noun phrase is a failure the same as a flourish. Tools and prompts whose aim is to "write like a human" are the wrong instrument here; the right ones remove slop and enforce plainness.
+
 ## The one rule
 
 **One sentence, one idea, the actor as its subject, the action as its verb, the point at the end.** Everything below is that rule applied to a particular kind of text.
