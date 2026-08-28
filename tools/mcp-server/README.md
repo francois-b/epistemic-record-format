@@ -25,8 +25,10 @@ Add to `claude_desktop_config.json` (Settings > Developer > Edit Config), then r
 ## Claude Code
 
 ```
-claude mcp add erf -- /absolute/path/to/tools/mcp-server/node_modules/.bin/tsx --tsconfig /absolute/path/to/tools/mcp-server/tsconfig.json /absolute/path/to/tools/mcp-server/src/index.ts /absolute/path/to/your/corpora --agent agent/claude-code --fetch
+claude mcp add ERF -- /absolute/path/to/tools/mcp-server/node_modules/.bin/tsx --tsconfig /absolute/path/to/tools/mcp-server/tsconfig.json /absolute/path/to/tools/mcp-server/src/index.ts /absolute/path/to/your/corpora --agent agent/claude-code --fetch
 ```
+
+The name given to `claude mcp add` is what Claude Code prints in its activity line ("Calling ERF 28 times"), so give it a name you want to read: `ERF`, or the full "Epistemic Record Format" as Claude Desktop shows it.
 
 ## The tools
 
