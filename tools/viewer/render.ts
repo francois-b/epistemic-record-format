@@ -60,6 +60,8 @@ main { max-width:var(--measure); margin:0 auto; padding:2.6em var(--gutter) 4em;
 footer { max-width:var(--measure); margin:0 auto; padding:1.1em var(--gutter) 2.5em;
   color:var(--muted); font-size:12px; border-top:1px solid var(--rulelt);
   font-family:var(--sans); }
+footer p { margin:0 0 .45em; } footer p:last-child { margin:0; }
+footer .stamp { color:var(--ink); }
 a { color:var(--accent); text-decoration:none; }
 a:hover { text-decoration:underline; }
 h1 { font-size:1.65em; font-weight:700; margin:0 0 .3em; line-height:1.2;
@@ -331,6 +333,17 @@ let siteLinks: SiteLink[] = [];
 export function setSiteLinks(links: SiteLink[]): void { siteLinks = links; }
 
 /**
+ * The stamp every page's footer carries: the corpus title, the version id
+ * (`version.ts`: a content hash over the records rendered), the day of the
+ * render, and that the pages are a read-only snapshot. Set by the site
+ * renderer; a page rendered on its own carries no stamp rather than a
+ * made-up one.
+ */
+export interface SiteStamp { title: string; versionId: string; rendered: string }
+let siteStamp: SiteStamp | null = null;
+export function setSiteStamp(stamp: SiteStamp | null): void { siteStamp = stamp; }
+
+/**
  * The one script the site carries, on the pages that show evidence cards.
  * Every card is a disclosure that opens with no script at all, and that
  * stays the keyboard path: Enter on the evidence line opens the cards inline.
@@ -499,9 +512,10 @@ function page(title: string, bodyHtml: string, manifestTitle: string, opts: { sc
 <body>
 <nav class="topbar"><a href="index.html">${esc(manifestTitle)}</a><a href="sources.html">sources</a><a href="health.html">health</a>${extra}</nav>
 <main>${bodyHtml}</main>
-<footer>Rendered by <span class="id">erf-view</span>, the reference consumer for the
+<footer>${siteStamp ? `<p class="stamp">${esc(siteStamp.title)} &middot; version id <span class="id">${esc(siteStamp.versionId)}</span> &middot; rendered ${esc(siteStamp.rendered)} &middot; read-only snapshot</p>
+` : ""}<p>Rendered by <span class="id">erf-view</span>, the reference consumer for the
 Epistemic Record Format. Every reading on these pages is computed from the records at
-render time and stored nowhere.</footer>
+render time and stored nowhere.</p></footer>
 ${opts.script ? `<script>${SCRIPT}</script>\n` : ""}</body></html>`;
 }
 
@@ -738,7 +752,8 @@ export function renderCut(t: CutTree, c: LoadedCorpus): string {
   const body = `
 <h1>${esc(t.cut.title)}</h1>
 <p class="sub">A cut of <a href="index.html">${esc(c.manifest.title)}</a> &middot; ${t.placed.size} claim${t.placed.size === 1 ? "" : "s"} placed${
-    kinds.size ? ` (${[...kinds].map(([k, n]) => `${n} ${k}`).join(", ")})` : ""} &middot; the tree under each root is computed from <span class="id">decomposes-into</span> and <span class="id">assumes</span> edges, and the numbers are assigned by this rendering: cite a claim by its id.</p>
+    kinds.size ? ` (${[...kinds].map(([k, n]) => `${n} ${k}`).join(", ")})` : ""}${
+    siteStamp ? ` &middot; version id <span class="id">${esc(siteStamp.versionId)}</span>` : ""} &middot; the tree under each root is computed from <span class="id">decomposes-into</span> and <span class="id">assumes</span> edges, and the numbers are assigned by this rendering: cite a claim by its id.</p>
 ${t.unresolvedRoots.length ? `<div class="warnbox"><b>Roots that name no claim in this corpus.</b><br>${t.unresolvedRoots.map((r) => `<span class="id">${esc(r)}</span>`).join(", ")}. They are shown in place rather than dropped.</div>` : ""}
 <nav class="toc">${t.sections.map((s) => `<div class="tocg">${toc(s)}</div>`).join("")}</nav>
 ${legendHtml()}

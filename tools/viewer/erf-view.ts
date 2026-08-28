@@ -19,17 +19,22 @@ import { loadCorpus } from "@epistemic-record-format/yaml-markdown";
 import { claimsUsingAtom } from "@epistemic-record-format/yaml-markdown";
 import {
   renderAtom, renderCapture, renderClaim, renderCut, renderHealth, renderIndex,
-  renderNarrative, renderSources, renderSurvey, setSiteLinks, stylesheet,
+  renderNarrative, renderSources, renderSurvey, setSiteLinks, setSiteStamp, stylesheet,
 } from "./render.ts";
 import { readTrail } from "./trail.ts";
 import { buildCutTree, readCuts } from "./cut.ts";
+import { versionId } from "./version.ts";
 
-export interface RenderedSite { corpus: string; pages: number; atoms: number; claims: number; surveys: number; cuts: number; findings: number; outDir: string }
+export interface RenderedSite { corpus: string; versionId: string; pages: number; atoms: number; claims: number; surveys: number; cuts: number; findings: number; outDir: string }
 
 /** Render a corpus to a folder of self-contained pages. The library entry; the CLI below wraps it. */
 export function renderSite(corpusDir: string, outDir: string, links: { label: string; href: string }[] = [], onPage?: (n: number, total: number) => void): RenderedSite {
   setSiteLinks(links);
   const c = loadCorpus(corpusDir);
+  // The footer's stamp: the version id is a content hash over the records
+  // rendered (version.ts), the date is the day of this render.
+  const id = versionId(corpusDir);
+  setSiteStamp({ title: String(c.manifest.title ?? c.manifest.id), versionId: id, rendered: new Date().toISOString().slice(0, 10) });
   mkdirSync(outDir, { recursive: true });
   // One stylesheet for the whole render, with the faces inside it: inlining
   // 240KB of embedded fonts into every page would multiply by the page count
@@ -67,7 +72,7 @@ export function renderSite(corpusDir: string, outDir: string, links: { label: st
     write(`capture-${a.id}.html`, renderCapture(a, c, text));
   }
 
-  return { corpus: String(c.manifest.id), pages: total, atoms: c.atoms.size, claims: c.claims.size, surveys: c.surveys.size, cuts: cuts.length, findings: c.findings.length, outDir };
+  return { corpus: String(c.manifest.id), versionId: id, pages: total, atoms: c.atoms.size, claims: c.claims.size, surveys: c.surveys.size, cuts: cuts.length, findings: c.findings.length, outDir };
 }
 
 function main(argv: string[]): number {
@@ -91,7 +96,7 @@ function main(argv: string[]): number {
     links.push({ label: raw.slice(0, at), href: raw.slice(at + 1) });
   }
   const r = renderSite(corpusDir, outDir, links);
-  console.log(`${r.corpus}: ${r.pages} pages -> ${outDir}`);
+  console.log(`${r.corpus}: ${r.pages} pages -> ${outDir} (version id ${r.versionId})`);
   console.log(`  ${r.atoms} atoms, ${r.claims} claims, ${r.surveys} surveys${r.cuts ? `, ${r.cuts} cut${r.cuts === 1 ? "" : "s"}` : ""}`);
   if (r.findings) console.log(`  ${r.findings} records diverge from the normative model (see health.html)`);
   return 0;

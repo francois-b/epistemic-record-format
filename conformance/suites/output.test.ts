@@ -11,13 +11,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, readFileSync, readdirSync, existsSync } from "node:fs";
+import { appendFileSync, cpSync, mkdtempSync, readFileSync, readdirSync, existsSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { homedir } from "node:os";
 import { bindingRe, loadCorpus } from "@epistemic-record-format/yaml-markdown";
 import { buildCutTree, flattenTree, readCuts } from "../../tools/viewer/cut.ts";
 import { DISPOSITIONS, KINDS, LEGEND_LEAD, MARKS } from "../../tools/viewer/vocabulary.ts";
+import { recordFiles, versionId } from "../../tools/viewer/version.ts";
 import { REPO, VIEWER } from "../paths.ts";
 
 const CORPUS = join(REPO, "examples", "corpora", "minimal");
@@ -258,6 +259,57 @@ test("claims-tree: a node's relations line reads in both directions", () => {
     .map((e) => ({ from: cl.id, to: e.to })))[0];
   assert.ok(outside, "the example corpus has a supporter outside the cut");
   assert.ok(nodeHtml(outside!.to).includes(`supported by <a href="claim-${outside!.from}.html">`), `${outside!.to} links the unplaced ${outside!.from} to its page`);
+});
+
+/**
+ * The footer: every page names the corpus, its version id, the day it was
+ * rendered, and that it is a read-only snapshot. The version id is a
+ * content hash over the records rendered (`tools/viewer/version.ts`), so it
+ * is the same for the same records wherever and whenever they are rendered,
+ * and different as soon as any record differs.
+ */
+test("footer: every page carries the corpus title, the version id, the render date and read-only snapshot", () => {
+  const id = versionId(CORPUS);
+  assert.match(id, /^[0-9a-f]{5}$/, "five hex characters");
+  const title = /^title:\s*['"]?(.+?)['"]?\s*$/m.exec(readFileSync(join(CORPUS, "corpus.yaml"), "utf8"))![1]!;
+  for (const f of pages()) {
+    const foot = page(f).slice(page(f).lastIndexOf("<footer>"));
+    assert.ok(foot.includes(`version id <span class="id">${id}</span>`), `${f}: the footer carries the version id`);
+    assert.ok(foot.includes(escHtml(title)), `${f}: the footer names the corpus`);
+    assert.match(foot, /rendered \d{4}-\d{2}-\d{2}/, `${f}: the footer carries the render date`);
+    assert.ok(foot.includes("read-only snapshot"), `${f}: the footer says read-only snapshot`);
+  }
+  // The cut page's header line carries it too.
+  const out = build(CAPEX);
+  const cut = readFileSync(join(out, `cut-${readCuts(CAPEX)[0]!.name}.html`), "utf8");
+  const head = cut.slice(cut.indexOf("<h1>"), cut.indexOf("</p>", cut.indexOf('<p class="sub">')));
+  assert.ok(head.includes(`version id <span class="id">${versionId(CAPEX)}</span>`), "the cut page's sub line carries the version id");
+  assert.match(head, /\d+ claims placed \(/, "and keeps the counts");
+});
+
+test("footer: the version id is stable across renders and copies, and changes when a record changes", () => {
+  assert.equal(versionId(CAPEX), versionId(CAPEX), "two readings of the same records agree");
+  const copy = mkdtempSync(join(tmpdir(), "erf-conformance-copy-"));
+  cpSync(CAPEX, copy, { recursive: true });
+  assert.equal(versionId(copy), versionId(CAPEX), "a copy at another path has the same id");
+  // What is not a record does not move it: the README, the line endings.
+  writeFileSync(join(copy, "README.md"), "# a different readme\n", "utf8");
+  const claim = recordFiles(copy).find((f) => f.startsWith("claims/"))!;
+  writeFileSync(join(copy, claim), readFileSync(join(copy, claim), "utf8").replace(/\n/g, "\r\n"), "utf8");
+  assert.equal(versionId(copy), versionId(CAPEX), "a readme edit and CRLF line endings leave the id alone");
+  // A record change moves it, and the rendered site carries the new id.
+  appendFileSync(join(copy, claim), "\nOne more sentence in the working notes.\n", "utf8");
+  const changed = versionId(copy);
+  assert.notEqual(changed, versionId(CAPEX), "a change to one claim changes the id");
+  assert.equal(versionId(copy), changed, "and the new id is itself stable");
+  const out = build(copy);
+  for (const f of ["index.html", "sources.html", "health.html"]) {
+    assert.ok(readFileSync(join(out, f), "utf8").includes(`version id <span class="id">${changed}</span>`), `${f} carries the new id`);
+  }
+  // A cut is part of the rendered records too.
+  const cut = readCuts(copy)[0]!;
+  appendFileSync(join(copy, "cuts", `${cut.name}.yaml`), "\n# a comment\n", "utf8");
+  assert.notEqual(versionId(copy), changed, "a change to a cut changes the id");
 });
 
 test("claims-tree: the index lists every cut", () => {

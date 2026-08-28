@@ -148,6 +148,29 @@ extracted from, and so is how the cards open:
 render dropped under a larger site points back at it. The viewer is told
 where it was published; it never guesses.
 
+## The version id
+
+Every page ends with one line: the corpus title, a version id, the day
+of the render, and the words read-only snapshot; the cut page repeats the
+id in its header line. The id is a content hash, which is the author's
+convention for a built artifact: which version do you have is answered by
+reading the corner of the page, not by a filename suffix or a version
+field somebody had to remember to bump.
+
+The rule (`version.ts`): take every record file the render reads (the
+atoms, claims, surveys and narratives, found by their `type` as the loader
+finds them; the source list; the cuts), sorted by their path relative to
+the corpus with `/` separators; for each, feed the path, a NUL, the file's
+canonical bytes and a NUL into one SHA-256; the id is the first five hex
+characters of the digest. Canonical bytes means the text with a byte order
+mark dropped and line endings folded to LF. So two renders of the same
+records give the same id, at any path, on any day, from any checkout, and
+any change to any record (a word in a claim, an atom added, a cut
+reordered) gives a different one. Outside the hash: the corpus
+declaration, which is not a record; the normalized texts, whose bytes the
+source list already pins by digest; the research trail; and any file the
+loader does not recognize. `erf-view` prints the id when it finishes.
+
 One reading in that table is not a rule of the format. Showing whether a
 reader can resolve a claim's backing was a numbered requirement until 2026-08-23,
 when it was retired: v1 says nothing about how a claim is presented to
