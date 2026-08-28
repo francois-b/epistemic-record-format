@@ -24,6 +24,7 @@
     "app/*.ts",
     "../editor/src/*.ts",
     "tests/*.ts",
+    "scripts/preview-*.ts",
     "../../implementations/yaml-markdown/typescript/*.ts",
     "../../schema/*.ts"
   ]

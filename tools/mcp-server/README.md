@@ -48,6 +48,16 @@ Rebuild the bundle after changing `app/`, `../editor/`, or the viewer's styleshe
 
 A quote not in the held text (the nearest passage comes back), a PDF with no text layer (OCR is not done), a source not captured, a reference to a record that does not exist, a standing without a why, an edit to a standing, a URL when fetching is off, a survey with no search acts, a raw file write of any kind. Each refusal names the requirement.
 
+## Previewing the app
+
+To look at what the app shows for a page without a screenshot from Claude Desktop:
+
+```
+npx tsx scripts/preview-app.ts <corpus-dir> <page> [--mode inline|fullscreen] [--theme dark|light] [--out <dir>] [--serve <port>]
+```
+
+`page` is what `erf_view` or `erf_proposals` would show: `index`, `sources`, `health`, `claim:<id>`, `atom:<id>`, `capture:<id>`, `survey:<id>`, `narrative:<slug>`, `proposals[:<flag>]`. The script computes the tool's structured content in-process and writes a page that hosts the real app bundle in an iframe behind a real `AppBridge` (`@modelcontextprotocol/ext-apps/app-bridge`) over a postMessage transport, so the app runs the code it runs in Desktop: initialize, host context (theme, display mode, safe-area insets, the design guide's style tokens), the tool result delivered the way a host delivers it. `sendMessage`, `updateModelContext`, `openLink` and display-mode requests are logged under the frame. Without `--serve` the page is written to a file and the app's tool calls are refused with a notice; with `--serve` it is served on localhost and the app's read-only calls (`erf_view`, `erf_proposals`, `erf_narrative_read`, `erf_narrative_status`, `erf_record_read`, `erf_flags`) are answered from the corpus. Writes are refused either way: a preview never touches a corpus, so point it at a copy when in doubt. What the host draws around the app (its header, composer, animations) is not previewed.
+
 ## Tests
 
 `npm test` here: every tool's output loads clean under the reference validator, and every refusal fires. The fixture is a temporary copy of `examples/corpora/minimal`. `npm run typecheck` covers `src/`, `app/` and `../editor/src/`. The editor's own arithmetic is tested separately, without a DOM: `npm run test:editor` from the repository root.
