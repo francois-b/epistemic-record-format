@@ -118,9 +118,25 @@ in the source list), the page number when the atom's working notes record
 one, and the site it was retrieved from. The atom's id sits in the
 corner; quality and as-of date on the top line. With the script, the
 cards show one atom at a time and the arrows, the arrow keys, step
-through them; Escape closes the card. Without it, every card shows,
-stacked. The design is ported from the author's published claims-tree
-documents, which the pattern was extracted from.
+through them; Escape closes whatever is open. Without it, every card
+shows, stacked, under the disclosure. The design is ported from the
+author's published claims-tree documents, which the pattern was
+extracted from, and so is how the cards open:
+
+- On a device with a pointer that hovers (`(hover: hover) and (pointer:
+  fine)`), the card opens on hover intent: about 130 ms of the pointer
+  resting on the trigger, and it closes about 260 ms after the pointer
+  leaves. A trigger the pointer passes through on its way down a wrapped
+  relations line never opens, and the pointer has time to reach the open
+  card and its arrows. One card is open at a time. The card floats under
+  its line, kept inside the viewport (above the line when that fits
+  better, scrolling inside when neither side fits, never past the right
+  edge); a click on the trigger pins it in place as the inline disclosure.
+- On a touch device the trigger opens the cards as a sheet from the bottom
+  of the screen, with a close control and a link to the claim's page; the
+  document is locked behind it and the back gesture closes it.
+- The disclosure itself is the keyboard path and the no-script path: Enter
+  on the evidence line opens the cards inline under it.
 
 `--link "Label=href"` adds an entry to every page's topbar, which is how a
 render dropped under a larger site points back at it. The viewer is told

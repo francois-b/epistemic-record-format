@@ -1,6 +1,7 @@
 /**
  * HTML rendering. Self-contained output: one shared stylesheet carrying its
- * own embedded faces, no external requests, no scripts. The visual language
+ * own embedded faces, no external requests, one inline script on the pages
+ * that show evidence cards (every card opens without it). The visual language
  * follows the author's published documents (Literata for prose, Inter for
  * apparatus, DejaVu Sans Mono for identifiers and the epistemic apparatus).
  */
@@ -196,19 +197,24 @@ details.ev > summary::-webkit-details-marker { display:none; }
 details.ev > summary:hover, details.ev[open] > summary { color:var(--accent); text-decoration-color:var(--accent); }
 details.ev > summary:focus-visible { outline:2px solid var(--accent); outline-offset:2px; border-radius:2px; }
 .rel details.ev > summary { font-size:1em; }
+/* The card's size is absolute, as in the documents it was ported from: it
+   sits inside the relations line on a cut page and after a paragraph on a
+   narrative page, and an em size would make it a different card on each. */
 .cards { margin:.55em 0 .4em; background:var(--codebg); border:1px solid var(--rule); border-radius:3px;
   box-shadow:0 2px 12px rgba(0,0,0,.07); padding:.7em .95em .75em; font-family:var(--serif);
-  font-size:.86em; line-height:1.55; color:var(--ink); }
+  font-size:13.5px; line-height:1.55; color:var(--ink); font-style:normal; font-weight:400; }
 .cards .pvhead { display:flex; justify-content:space-between; align-items:baseline; gap:1em;
   font-family:var(--mono); font-size:.8em; color:var(--muted); margin-bottom:.4em; }
 .cards .pvhead .claimref { font-weight:400; }
 .cards .pvhead .claimref a { color:var(--ink); }
+.cards .pvctl { white-space:nowrap; }
 .cards .pvnav { display:none; white-space:nowrap; }
 .js .cards .pvnav { display:inline; }
-.cards .pvarr { font:inherit; color:var(--muted); background:none; border:1px solid var(--rule);
+.cards .pvarr, .cards .pvclose { font:inherit; color:var(--muted); background:none; border:1px solid var(--rule);
   border-radius:3px; cursor:pointer; padding:0 .45em; margin:0 .15em; line-height:1.5; }
-.cards .pvarr:hover { color:var(--ink); border-color:var(--muted); }
+.cards .pvarr:hover, .cards .pvclose:hover { color:var(--ink); border-color:var(--muted); }
 .cards .pvcount { margin:0 .2em; }
+.cards .pvclose, .cards .pvopen { display:none; }
 .cards .pvatom { display:block; padding:.4em 0 .2em; border-top:1px solid var(--rulelt); }
 .cards .pvatom:first-of-type { border-top:0; padding-top:0; }
 .js .cards .pvatom { display:none; border-top:0; padding-top:0; }
@@ -227,6 +233,42 @@ details.ev > summary:focus-visible { outline:2px solid var(--accent); outline-of
 .cards .pvsrc a:hover { text-decoration-color:var(--accent); }
 .cards .pvnone { color:var(--muted); font-family:var(--mono); font-size:.8em; }
 @media (max-width: 640px) { .cards { padding:.6em .7em; } .cards .pvtop { flex-wrap:wrap; } }
+
+/* ---- Hover intent: the cards float under their line instead of pushing
+   the page down. The disclosure is the positioned box, and once its body
+   is out of flow the box is the trigger line alone, so the card hangs
+   under that line (or above it, when the script finds more room there),
+   aligned to the claim's left edge. The gap between the line and the card
+   is crossed on the script's closing delay, so nothing here bridges it. */
+.hoverable details.ev { position:relative; }
+details.ev.float > .evbody { position:absolute; left:0; top:100%; margin:.5em 0 0; z-index:3;
+  width:max-content; max-width:min(30em, calc(100vw - 4em)); overflow-y:auto; }
+details.ev.float.above > .evbody { top:auto; bottom:100%; margin:0 0 .5em; }
+details.ev.float .cards { margin:0; box-shadow:0 2px 12px rgba(0,0,0,.12); }
+details.ev.float .cards + .cards { margin-top:.6em; }
+details.ev.float .pvnone { margin:.4em 0 0; }
+
+/* ---- Touch: the cards open as a sheet from the bottom of the screen, the
+   one surface that can show an atom whole, since it scrolls. The head bar
+   of each card block stays put while its atoms scroll under it, so the
+   arrows and the close control are always in reach. */
+details.ev.sheet > .evbody { position:fixed; left:0; right:0; bottom:0; top:auto; z-index:50; margin:0;
+  max-height:88vh; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
+  background:var(--paper); border-top:1px solid var(--rule); border-radius:10px 10px 0 0;
+  box-shadow:0 -6px 24px rgba(0,0,0,.18); padding:0 1em calc(env(safe-area-inset-bottom, 0px) + 1.2em); }
+details.ev.sheet .cards { margin:0; padding:0 0 .9em; border:0; border-radius:0; box-shadow:none;
+  background:var(--paper); font-size:16px; line-height:1.6; }
+details.ev.sheet .cards + .cards { border-top:1px solid var(--rule); }
+details.ev.sheet .cards .pvhead { position:sticky; top:0; z-index:1; background:var(--paper);
+  padding:.8em 0 .5em; margin:0; border-bottom:1px solid var(--rulelt); }
+details.ev.sheet .cards .pvclose { display:inline-block; min-width:40px; height:34px; font-size:18px; margin-left:.4em; }
+details.ev.sheet .cards .pvarr { min-width:40px; height:34px; font-size:18px; }
+details.ev.sheet .cards .pvatom { padding-top:.6em; }
+details.ev.sheet .cards .pvopen { display:block; margin-top:1em; padding-top:.7em; border-top:1px solid var(--rulelt);
+  font-family:var(--mono); font-size:.8em; }
+details.ev.sheet .pvnone { padding:.8em 0; }
+body.sheet-open { position:fixed; left:0; right:0; width:100%; overflow:hidden; }
+body.sheet-open::before { content:""; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:49; }
 `;
 
 /**
@@ -276,42 +318,157 @@ export function setSiteLinks(links: SiteLink[]): void { siteLinks = links; }
 
 /**
  * The one script the site carries, on the pages that show evidence cards.
- * Every card is a disclosure that opens with no script at all; this adds the
- * cycler (one atom at a time, arrows and the arrow keys step through them),
- * Escape to close, and on the narrative page a click on the bound passage
- * opening the cards under it. Written against the DOM alone, no library.
+ * Every card is a disclosure that opens with no script at all, and that
+ * stays the keyboard path: Enter on the evidence line opens the cards inline.
+ * The script adds three things, written against the DOM alone.
+ *
+ * Hover intent (a device with a pointer that hovers). The cards open as a
+ * floating card after the pointer has rested on the trigger for OPEN_MS,
+ * and close CLOSE_MS after it leaves: a trigger the pointer passes through
+ * on its way down a wrapped relations line never fires, and the pointer has
+ * time to cross the gap into the open card and reach its arrows. One card
+ * is open at a time; a click on the trigger pins the floating card in
+ * place as the inline disclosure. The card is kept inside the viewport:
+ * under its line when that fits, above it when that fits better, scrolling
+ * inside when neither does, and never past the right edge. Ported from the
+ * author's published claims-tree documents, timings included.
+ *
+ * Touch (no hover). A tap on the trigger opens the cards as a sheet from the
+ * bottom of the screen, with a close control, the document locked behind it
+ * and a history entry pushed so the back gesture closes it; a link followed
+ * from inside the sheet unwinds that entry first.
+ *
+ * Everywhere: the cycler (one atom at a time, arrows and the arrow keys),
+ * Escape closing whatever is open, and on the narrative page the bound
+ * passage and its note as triggers for the cards under the paragraph.
  */
 const SCRIPT = `
 document.documentElement.classList.add('js');
 (function () {
+  var HOVERABLE = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  document.documentElement.classList.add(HOVERABLE ? 'hoverable' : 'touch');
+  var OPEN_MS = 130, CLOSE_MS = 260;
+  var cur = null, openT = null, closeT = null, closeW = null;  /* the one hover-opened card */
+  var sheet = null, savedY = 0, pendingNav = null;             /* the one touch-opened sheet */
+
+  function bodyOf(w) { return w.querySelector('.evbody'); }
+  /* The disclosure a trigger belongs to: the disclosure itself, or an element
+     carrying data-ev (a bound passage, its note) naming it. */
+  function groupOf(el) {
+    if (!el || !el.closest) return null;
+    var d = el.closest('details.ev'); if (d) return d;
+    var t = el.closest('[data-ev]'); return t ? document.getElementById(t.getAttribute('data-ev')) : null;
+  }
   function step(cards, d) {
     var items = cards.querySelectorAll('.pvatom'); if (!items.length) return;
-    var cur = 0; items.forEach(function (n, i) { if (n.classList.contains('on')) cur = i; });
-    var next = (cur + d + items.length) % items.length;
-    items[cur].classList.remove('on'); items[next].classList.add('on');
+    var at = 0; items.forEach(function (n, i) { if (n.classList.contains('on')) at = i; });
+    var next = (at + d + items.length) % items.length;
+    items[at].classList.remove('on'); items[next].classList.add('on');
     var c = cards.querySelector('.pvcount'); if (c) c.textContent = (next + 1) + '/' + items.length;
     var s = cards.querySelector('.pvhead .pvside');
     if (s) s.textContent = items[next].getAttribute('data-side') === 'against' ? 'Evidence against' : 'Evidence for';
+    var w = cards.closest('details.ev');
+    if (w && w.classList.contains('float')) place(w);
+    if (w && w.classList.contains('sheet')) bodyOf(w).scrollTop = cards.offsetTop;
   }
+  /* Keep a floating card inside the viewport. The card hangs off the
+     disclosure's own box (the trigger line, once the body is out of flow),
+     so the room is measured from that box, under the sticky topbar. */
+  function place(w) {
+    var body = bodyOf(w); if (!body) return;
+    body.style.left = ''; body.style.maxHeight = ''; w.classList.remove('above');
+    var r = body.getBoundingClientRect();
+    var over = r.right - (window.innerWidth - 8);
+    if (over > 0) body.style.left = (-Math.min(over, Math.max(0, r.left - 8))) + 'px';
+    var bar = document.querySelector('.topbar');
+    var top = bar ? bar.getBoundingClientRect().bottom : 0;
+    var d = w.getBoundingClientRect();
+    var below = window.innerHeight - d.bottom - 16, above = d.top - top - 16;
+    if (r.height > below && above > below) w.classList.add('above');
+    var room = w.classList.contains('above') ? above : below;
+    if (r.height > room) body.style.maxHeight = Math.max(96, room) + 'px';
+  }
+  function unfloat(w) {
+    w.classList.remove('float', 'above');
+    var body = bodyOf(w); if (body) { body.style.left = ''; body.style.maxHeight = ''; }
+    if (cur === w) cur = null;
+  }
+  function show(w) {
+    if (cur && cur !== w) hide(cur);
+    if (w.open && !w.classList.contains('float')) return;  /* opened inline by a click or the keyboard: leave it */
+    w.classList.add('float'); w.setAttribute('open', ''); cur = w; place(w);
+  }
+  function hide(w) { unfloat(w); w.removeAttribute('open'); }
+
+  if (HOVERABLE) {
+    document.addEventListener('mouseover', function (e) {
+      var w = groupOf(e.target); if (!w) return;
+      if (w === closeW) { clearTimeout(closeT); closeW = null; }
+      if (w === cur) return;
+      clearTimeout(openT);
+      openT = setTimeout(function () { show(w); }, OPEN_MS);
+    });
+    document.addEventListener('mouseout', function (e) {
+      var w = groupOf(e.target); if (!w) return;
+      if (groupOf(e.relatedTarget) === w) return;
+      clearTimeout(openT);
+      if (w !== cur) return;
+      closeW = w;
+      closeT = setTimeout(function () { closeW = null; if (w.classList.contains('float')) hide(w); }, CLOSE_MS);
+    });
+  }
+
+  function openSheet(w) {
+    if (sheet) return;
+    savedY = window.pageYOffset;
+    sheet = w; w.classList.add('sheet'); w.setAttribute('open', '');
+    document.body.classList.add('sheet-open'); document.body.style.top = (-savedY) + 'px';
+    history.pushState({ sheet: 1 }, '');
+  }
+  function closeSheet() {
+    if (!sheet) return;
+    sheet.classList.remove('sheet'); sheet.removeAttribute('open'); sheet = null;
+    document.body.classList.remove('sheet-open'); document.body.style.top = '';
+    window.scrollTo(0, savedY);
+  }
+  window.addEventListener('popstate', function () {
+    closeSheet();
+    if (pendingNav) { var u = pendingNav; pendingNav = null; location.href = u; }
+  });
+  /* the back/forward cache restores the DOM as it was, locked body and open sheet included */
+  window.addEventListener('pageshow', function (e) { if (e.persisted) closeSheet(); });
+
   document.addEventListener('click', function (e) {
     var t = e.target; if (!t || !t.closest) return;
     var b = t.closest('.pvarr');
     if (b) { e.preventDefault(); step(b.closest('.cards'), Number(b.getAttribute('data-d'))); return; }
-    /* the narrative: a click on the bound passage or its note opens the cards under it */
-    var p = t.closest('.bind, .bindnote');
-    if (!p || t.closest('a')) return;
-    var id = p.getAttribute('data-ev'); var d = id && document.getElementById(id);
-    if (!d) return;
-    if (d.open) { d.removeAttribute('open'); } else { d.setAttribute('open', ''); }
+    if (t.closest('.pvclose')) { e.preventDefault(); if (sheet) history.back(); else if (cur) hide(cur); return; }
+    if (sheet) {
+      var out = t.closest('a[href]');
+      if (out && out.closest('.evbody')) { e.preventDefault(); pendingNav = out.href; history.back(); return; }
+      if (!t.closest('.evbody')) { e.preventDefault(); history.back(); }  /* a tap on the backdrop */
+      return;
+    }
+    if (t.closest('a')) return;
+    var s = t.closest('summary');
+    var w = s ? s.closest('details.ev') : groupOf(t.closest('.bind, .bindnote'));
+    if (!w || !bodyOf(w)) return;
+    clearTimeout(openT);
+    if (!HOVERABLE) { e.preventDefault(); openSheet(w); return; }
+    if (w.classList.contains('float')) { e.preventDefault(); unfloat(w); return; }  /* a click pins the hovered card */
+    if (!s) { if (w.open) w.removeAttribute('open'); else w.setAttribute('open', ''); }  /* on a summary the disclosure toggles itself */
   });
   document.addEventListener('keydown', function (e) {
-    var t = e.target; if (!t || !t.closest) return;
-    var open = t.closest('details.ev[open]'); if (!open) return;
+    var t = e.target;
+    var focused = t && t.closest ? t.closest('details.ev[open]') : null;
     if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-      var cards = t.closest('.cards') || open.querySelector('.cards'); if (!cards) return;
+      var w = focused || sheet || cur; if (!w) return;
+      var cards = (t.closest && t.closest('.cards')) || w.querySelector('.cards'); if (!cards) return;
       e.preventDefault(); step(cards, e.key === 'ArrowLeft' ? -1 : 1);
     } else if (e.key === 'Escape') {
-      open.removeAttribute('open'); var s = open.querySelector('summary'); if (s) s.focus();
+      if (sheet) history.back();
+      if (cur) hide(cur);
+      if (focused && focused.open) { focused.removeAttribute('open'); var s = focused.querySelector('summary'); if (s) s.focus(); }
     }
   });
 })();
@@ -453,7 +610,7 @@ function evidenceSummary(cl: Claim, c: LoadedCorpus): string {
  */
 export function evidenceCards(cl: Claim, c: LoadedCorpus, id: string, summaryHtml: string, headHtml = ""): string {
   const cards = cardBlock(cl, c, headHtml);
-  return cards ? `<details class="ev" id="${esc(id)}"><summary>${summaryHtml}</summary>${cards}</details>` : "";
+  return cards ? `<details class="ev" id="${esc(id)}"><summary>${summaryHtml}</summary><div class="evbody">${cards}</div></details>` : "";
 }
 
 /** The card block alone: one cycler over one claim's atoms. A narrative passage holds one per bound claim under a single disclosure. */
@@ -475,9 +632,12 @@ export function cardBlock(cl: Claim, c: LoadedCorpus, headHtml = ""): string {
 <p class="pvfinding">${esc(a.finding)}</p>
 <span class="pvsrc">${citationHtml(a, c)}</span></article>`;
   };
+  // The close control and the link to the claim's page show only on the
+  // touch sheet, where the trigger's tap is spent opening it.
   return `<div class="cards">
-<div class="pvhead"><span><span class="pvside">Evidence ${atoms[0]![1]}</span>${headHtml}</span><span class="pvnav"><button type="button" class="pvarr" data-d="-1" aria-label="previous atom">&lsaquo;</button><span class="pvcount">1/${atoms.length}</span><button type="button" class="pvarr" data-d="1" aria-label="next atom">&rsaquo;</button></span></div>
-${atoms.map(card).join("\n")}</div>`;
+<div class="pvhead"><span><span class="pvside">Evidence ${atoms[0]![1]}</span>${headHtml}</span><span class="pvctl"><span class="pvnav"><button type="button" class="pvarr" data-d="-1" aria-label="previous atom">&lsaquo;</button><span class="pvcount">1/${atoms.length}</span><button type="button" class="pvarr" data-d="1" aria-label="next atom">&rsaquo;</button></span><button type="button" class="pvclose" aria-label="close">&times;</button></span></div>
+${atoms.map(card).join("\n")}
+<a class="pvopen" href="claim-${esc(cl.id)}.html">Open the claim: ${esc(cl.short_name ?? cl.title)} &rarr;</a></div>`;
 }
 
 // ------------------------------------------------------------------ cut
@@ -693,7 +853,7 @@ export function renderNarrative(n: Narrative, c: LoadedCorpus): string {
       const head = ` &middot; <span class="claimref"><a href="claim-${esc(id)}.html">${esc(cl.short_name ?? cl.title)}</a></span>`;
       return cardBlock(cl, c, head) || `<p class="pvnone">${esc(cl.short_name ?? cl.title)}: no atoms behind this claim${(cl.surveys?.length ?? 0) ? ", a survey" : ""}.</p>`;
     }).join("");
-    return `<details class="ev passage" id="ev-bind-${k}"><summary>the evidence: ${total} atom${total === 1 ? "" : "s"} behind ${withAtoms.length === ids.length ? (ids.length === 1 ? "this claim" : `these ${ids.length} claims`) : `${withAtoms.length} of these ${ids.length} claims`}</summary>${blocks}</details>`;
+    return `<details class="ev passage" id="ev-bind-${k}"><summary>the evidence: ${total} atom${total === 1 ? "" : "s"} behind ${withAtoms.length === ids.length ? (ids.length === 1 ? "this claim" : `these ${ids.length} claims`) : `${withAtoms.length} of these ${ids.length} claims`}</summary><div class="evbody">${blocks}</div></details>`;
   };
   let html = narrativeMarkdown(text);
   let noteCount = 0;
