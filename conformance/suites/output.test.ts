@@ -231,3 +231,36 @@ test("claims-tree: a cut whose roots list every claim of a section shows each cl
     nodes.reduce((n, x) => n + (x.claim?.atoms_for.length ?? 0) + (x.claim?.atoms_against.length ?? 0), 0), "one card per atom across the page");
   assert.ok(html.includes('<p class="preamble">'), "the preamble is shown");
 });
+
+/**
+ * The narrative page: each bound passage opens the evidence behind its
+ * claims, the same card block the cut page uses, one per claim, under one
+ * disclosure the note and the highlighted words both point at. What a
+ * narrative is does not change: the bindings, their staleness and their
+ * breakage are marked as before.
+ */
+test("narrative: every bound passage opens its claims' evidence cards, and the note points at them", () => {
+  const out = build(CAPEX);
+  const c = loadCorpus(CAPEX);
+  for (const n of c.narratives) {
+    const html = readFileSync(join(out, `narrative-${n.slug}.html`), "utf8");
+    n.bindings.forEach((b, i) => {
+      const k = i + 1;
+      const note = html.indexOf(`<span class="bindnote" id="bind-${k}" data-ev="ev-bind-${k}">`);
+      assert.ok(note > 0, `${n.slug}: binding ${k} carries a note pointing at its cards`);
+      const claims = b.claims.map((id) => c.claims.get(id)).filter((x): x is NonNullable<typeof x> => !!x);
+      const atoms = claims.reduce((t, cl) => t + cl.atoms_for.length + cl.atoms_against.length, 0);
+      const at = html.indexOf(`<details class="ev passage" id="ev-bind-${k}">`);
+      if (!atoms) { assert.equal(at, -1, `${n.slug}: binding ${k} has nothing to open`); return; }
+      assert.ok(at > note, `${n.slug}: the cards for binding ${k} sit under its note`);
+      const block = html.slice(at, html.indexOf("</details>", at));
+      assert.equal((block.match(/<article class="pvatom/g) ?? []).length, atoms, `${n.slug}: binding ${k} shows one card per atom of each bound claim`);
+      for (const cl of claims) assert.ok(block.includes(`href="claim-${cl.id}.html"`), `${n.slug}: the cards name ${cl.id}`);
+      // The highlighted words open the same disclosure.
+      assert.ok(html.includes(`<span class="bind" data-ev="ev-bind-${k}">`), `${n.slug}: the anchor of binding ${k} points at its cards`);
+    });
+    // The narrative's own notes are still there, one per binding, with the
+    // staleness reading where it is not current.
+    assert.equal((html.match(/class="bindnote"/g) ?? []).length, n.bindings.length);
+  }
+});

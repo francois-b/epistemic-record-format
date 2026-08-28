@@ -80,7 +80,9 @@ is `ERF-52`, split before normalizing.
 - **Index** the corpus declaration read out in full, what the corpus holds,
   and every record by type
 - **Narrative** the prose, with bound passages marked, linked to their
-  claims, and carrying the binding's staleness where it is not current
+  claims, and carrying the binding's staleness where it is not current;
+  the note under a passage, or its highlighted words, opens the evidence
+  behind the passage's claims, one card block per claim
 - **Cut** one `cuts/*.yaml` compiled (`docs/patterns/claims-tree.md`):
   the preamble where there is one, the sections with their headings, the
   numbered tree under each root computed by walking `decomposes-into` and
@@ -107,7 +109,8 @@ is `ERF-52`, split before normalizing.
   and unrunnable quote checks, dangling references, every computed flag, and
   records that diverge from the normative model
 
-**Evidence cards.** On a cut page each claim's evidence line opens the
+**Evidence cards.** On a cut page each claim's evidence line, and on a
+narrative page each bound passage's note or highlighted words, opens the
 atoms behind it, for then against, one card per atom: the verbatim quote
 first, the finding fainter under it, then the citation linking to the
 capture page where the source's text is held (else to the source's entry

@@ -125,8 +125,15 @@ ul.plain li { padding:.4em 0; border-bottom:1px solid var(--rulelt); }
 .ledger .meta { font-family:var(--mono); font-size:.78em; color:var(--muted); }
 .bind { background:var(--highlight); border-bottom:1px dotted var(--accent);
   padding:0 .12em; }
+.js .bind, .js .bindnote { cursor:pointer; }
 .bindnote { font-family:var(--sans); font-size:.72em; color:var(--muted);
   display:block; margin:.2em 0 1.1em; }
+/* The passage's disclosure sits between the note and the next paragraph, in
+   the note's face so the two read as one apparatus line. */
+details.ev.passage { margin:-.8em 0 1.2em; }
+details.ev.passage > summary { font-family:var(--sans); font-size:.72em; }
+details.ev.passage .cards { margin-top:.5em; } details.ev.passage .cards + .cards { margin-top:.6em; }
+details.ev.passage .pvnone { margin:.5em 0 0; font-family:var(--sans); }
 .bind-broken { font-family:var(--mono); font-size:.72em; display:block;
   margin:.2em 0 1.1em; padding:.4em .6em; border-left:3px solid var(--brokenrule);
   background:var(--brokenbg); color:var(--brokenink); }
@@ -301,7 +308,7 @@ document.documentElement.classList.add('js');
     var t = e.target; if (!t || !t.closest) return;
     var open = t.closest('details.ev[open]'); if (!open) return;
     if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-      var cards = open.querySelector('.cards'); if (!cards) return;
+      var cards = t.closest('.cards') || open.querySelector('.cards'); if (!cards) return;
       e.preventDefault(); step(cards, e.key === 'ArrowLeft' ? -1 : 1);
     } else if (e.key === 'Escape') {
       open.removeAttribute('open'); var s = open.querySelector('summary'); if (s) s.focus();
@@ -445,6 +452,12 @@ function evidenceSummary(cl: Claim, c: LoadedCorpus): string {
  * side label (the narrative page names the claim there).
  */
 export function evidenceCards(cl: Claim, c: LoadedCorpus, id: string, summaryHtml: string, headHtml = ""): string {
+  const cards = cardBlock(cl, c, headHtml);
+  return cards ? `<details class="ev" id="${esc(id)}"><summary>${summaryHtml}</summary>${cards}</details>` : "";
+}
+
+/** The card block alone: one cycler over one claim's atoms. A narrative passage holds one per bound claim under a single disclosure. */
+export function cardBlock(cl: Claim, c: LoadedCorpus, headHtml = ""): string {
   const atoms: [string, "for" | "against"][] = [
     ...cl.atoms_for.map((a): [string, "for"] => [a, "for"]),
     ...cl.atoms_against.map((a): [string, "against"] => [a, "against"]),
@@ -462,9 +475,9 @@ export function evidenceCards(cl: Claim, c: LoadedCorpus, id: string, summaryHtm
 <p class="pvfinding">${esc(a.finding)}</p>
 <span class="pvsrc">${citationHtml(a, c)}</span></article>`;
   };
-  return `<details class="ev" id="${esc(id)}"><summary>${summaryHtml}</summary><div class="cards">
+  return `<div class="cards">
 <div class="pvhead"><span><span class="pvside">Evidence ${atoms[0]![1]}</span>${headHtml}</span><span class="pvnav"><button type="button" class="pvarr" data-d="-1" aria-label="previous atom">&lsaquo;</button><span class="pvcount">1/${atoms.length}</span><button type="button" class="pvarr" data-d="1" aria-label="next atom">&rsaquo;</button></span></div>
-${atoms.map(card).join("\n")}</div></details>`;
+${atoms.map(card).join("\n")}</div>`;
 }
 
 // ------------------------------------------------------------------ cut
@@ -628,13 +641,15 @@ ${cuts.length ? `
 export function renderNarrative(n: Narrative, c: LoadedCorpus): string {
   // Sentinels survive HTML escaping, so marking is applied before md() and
   // turned into real HTML afterwards.
-  const OPEN = "@@BIND@@", CLOSE = "@@ENDBIND@@";
+  const CLOSE = "@@ENDBIND@@";
   let text = n.body;
-  for (const b of n.bindings) {
+  n.bindings.forEach((b, i) => {
+    // The sentinel carries the binding's number, so the marked words can open
+    // the cards under their passage.
     if (b.anchor && text.includes(b.anchor)) {
-      text = text.replace(b.anchor, OPEN + b.anchor + CLOSE);
+      text = text.replace(b.anchor, `@@BIND@@${i + 1}@@` + b.anchor + CLOSE);
     }
-  }
+  });
   // One grammar, defined once in corpus.ts. Implementing it twice is what
   // let the parser gain `bound-at` while this copy did not, after which every
   // binding stopped matching here and leaked into the page as raw markup.
@@ -660,10 +675,30 @@ export function renderNarrative(n: Narrative, c: LoadedCorpus): string {
     text = text.slice(0, cand.index) + repl + text.slice(cand.end);
   }
 
+  /**
+   * The evidence under a bound passage: one disclosure holding a card block
+   * per claim the binding names, each with its own cycler and the claim's
+   * title in its head bar. A claim with no atoms shows as a line saying so;
+   * a binding whose claims have no atoms at all gets no disclosure, and the
+   * note above it still says what it rests on.
+   */
+  const passageCards = (k: number): string => {
+    const ids = n.bindings[k - 1]?.claims ?? [];
+    const withAtoms = ids.filter((id) => { const cl = c.claims.get(id); return cl && cl.atoms_for.length + cl.atoms_against.length > 0; });
+    if (!withAtoms.length) return "";
+    const total = withAtoms.reduce((t, id) => { const cl = c.claims.get(id)!; return t + cl.atoms_for.length + cl.atoms_against.length; }, 0);
+    const blocks = ids.map((id) => {
+      const cl = c.claims.get(id);
+      if (!cl) return "";
+      const head = ` &middot; <span class="claimref"><a href="claim-${esc(id)}.html">${esc(cl.short_name ?? cl.title)}</a></span>`;
+      return cardBlock(cl, c, head) || `<p class="pvnone">${esc(cl.short_name ?? cl.title)}: no atoms behind this claim${(cl.surveys?.length ?? 0) ? ", a survey" : ""}.</p>`;
+    }).join("");
+    return `<details class="ev passage" id="ev-bind-${k}"><summary>the evidence: ${total} atom${total === 1 ? "" : "s"} behind ${withAtoms.length === ids.length ? (ids.length === 1 ? "this claim" : `these ${ids.length} claims`) : `${withAtoms.length} of these ${ids.length} claims`}</summary>${blocks}</details>`;
+  };
   let html = narrativeMarkdown(text);
   let noteCount = 0;
   html = html
-    .split(OPEN).join('<span class="bind">')
+    .replace(/@@BIND@@(\d+)@@/g, (_m, k: string) => `<span class="bind" data-ev="ev-bind-${k}">`)
     .split(CLOSE).join("</span>")
     .replace(/@@BADNOTE@@([\s\S]*?)@@ENDBADNOTE@@/g, (_m, raw: string) =>
       '<span class="bind-broken">binding does not match the grammar of '
@@ -683,13 +718,17 @@ export function renderNarrative(n: Narrative, c: LoadedCorpus): string {
       const note = st && st.state !== "current"
         ? ` &middot; binding ${esc(st.state)}: ${esc(st.why)}`
         : "";
-      return '<span class="bindnote" id="bind-' + k + '">rests on ' + links + note + "</span>";
-    });
+      return '<span class="bindnote" id="bind-' + k + '" data-ev="ev-bind-' + k + '">rests on ' + links + note + "</span>@@CARDS@@" + k + "@@";
+    })
+    // The cards are flow content and the note sits inside the passage's
+    // paragraph, so they go after it where the note ends the paragraph, which
+    // is where a binding written on its own line lands.
+    .replace(/@@CARDS@@(\d+)@@(\s*<\/p>)?/g, (_m, k: string, close: string | undefined) => (close ?? "") + passageCards(Number(k)));
   // The page carried no heading at all until 2026-08-26, so a reader
   // arriving from a link had the narrative's title only in the browser tab.
   const body = `<h1>${esc(n.title)}</h1>
-<p class="sub">Narrative &middot; ${n.bindings.length} narrative binding${n.bindings.length === 1 ? "" : "s"} &middot; highlighted passages carry one</p><div class="narrative-body">${html}</div>`;
-  return page(n.title, body, c.manifest.title);
+<p class="sub">Narrative &middot; ${n.bindings.length} narrative binding${n.bindings.length === 1 ? "" : "s"} &middot; highlighted passages carry one; the note under a passage, or its highlighted words, opens the evidence behind it</p><div class="narrative-body">${html}</div>`;
+  return page(n.title, body, c.manifest.title, { script: true });
 }
 
 // ---------------------------------------------------------------- claim
