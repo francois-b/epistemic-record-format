@@ -80,6 +80,28 @@ body.mode-inline #trail { max-height: none; }
 .props .passage.clamped { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .props .showall { border: 0; background: transparent; color: var(--accent); padding: 0; margin: -.1rem 0 .35rem; cursor: pointer; font: inherit; font-size: .78rem; }
 .props .deck { color: var(--muted); font-size: .82rem; margin: 0 0 1rem; }
+/* Three states, so a conversation with several passes stays readable: folded is one line, summary is the claims,
+   full opens every quote. Nothing here is sized and nothing scrolls inside the card, because inline the app reports
+   its own height to the host and folding has to shrink it. */
+.props .headrow { display: flex; align-items: baseline; gap: .4rem; margin: .35rem 0 .45rem; }
+.props .chev { border: 0; background: transparent; color: var(--muted); padding: 0; cursor: pointer; font: inherit; font-size: .7rem; line-height: 1; }
+.props .headrow .eyebrow { margin: 0; border: 0; background: transparent; color: var(--muted); padding: 0; cursor: pointer; font: inherit; font-size: .72rem; letter-spacing: .02em; text-align: left; }
+.props .headrow .eyebrow:hover, .props .chev:hover { color: var(--accent); }
+.props .headrow .allquotes { margin-left: auto; border: 1px solid var(--rulelt); background: transparent; color: var(--muted); border-radius: 4px; padding: .05rem .45rem; cursor: pointer; font: inherit; font-size: .74rem; }
+.props .headrow .allquotes:hover { border-color: var(--accent); color: var(--accent); }
+/* the folded card: the flagged passage in the reading face, clipped to the line, then the counts and the state word */
+.props.folded { padding: 0; }
+.props .foldline { display: flex; align-items: baseline; gap: .5rem; width: 100%; box-sizing: border-box; text-align: left;
+  border: 0; border-radius: 6px; background: transparent; color: var(--ink); padding: .45rem .1rem; cursor: pointer; font: inherit; }
+.props .foldline:hover { background: var(--highlight); }
+.props .foldline .fold-passage { flex: 1 1 auto; min-width: 0; font-family: var(--serif); font-size: 1rem; color: var(--ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.props .foldline .fold-counts, .props .foldline .fold-state { flex: 0 0 auto; font-size: .74rem; color: var(--muted); white-space: nowrap; }
+.props .foldline .fold-state.ruled { color: var(--good); }
+/* one proposal in summary: how much evidence it carries, and the disclosure that opens that proposal's quotes in place */
+.props .evidence { display: flex; align-items: baseline; gap: .5rem; margin: .1rem 0; font-size: .76rem; color: var(--muted); }
+.props .evidence .disclose { border: 1px solid var(--rulelt); background: transparent; color: var(--muted); border-radius: 4px; padding: .02rem .4rem; cursor: pointer; font: inherit; font-size: .74rem; }
+.props .evidence .disclose:hover { border-color: var(--accent); color: var(--accent); }
 /* one proposal: the title reads as text, the id and kind sit in the corner, the evidence follows as quotes */
 .props .prop { position: relative; border: 1px solid var(--rulelt); border-radius: 6px; padding: .6rem .8rem .6rem; margin: 0 0 .8rem; background: var(--paper); }
 .props .prop.ruled-accepted, .props .prop.ruled-narrowed { border-color: var(--good); }

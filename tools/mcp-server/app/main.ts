@@ -27,7 +27,7 @@ import { App } from "@modelcontextprotocol/ext-apps";
 import { createEditor, isWorked, type EditorHandle, type FlagMark, type BindingMark } from "../../editor/src/index.ts";
 import { trailLines, trailSummary, type FlagTrail } from "../../editor/src/trail.ts";
 import { rulingLine, type ProposalSetView, type Ruling } from "../src/proposals.ts";
-import { proposalsCard } from "./card.ts";
+import { openingState, proposalsCard, type CardState } from "./card.ts";
 
 interface Page { page: string; title: string; html: string; corpus?: string; flags?: { id: number; anchor: string; note?: string }[]; served_at?: string }
 /** A view the server produced moments ago, as opposed to one the host replays when a chat is re-entered (2026-08-27: every
@@ -635,18 +635,51 @@ let proposalSet: ProposalSetView | null = null;
 let returnTo: ProposalSetView | null = null;
 const isProposalSet = (x: unknown): x is ProposalSetView => !!x && typeof x === "object" && (x as { kind?: string }).kind === "proposals";
 
+// How much of a card is open outlives the app instance that drew it: the host
+// re-renders a tool result whenever a chat is re-entered, and a card the person
+// folded must come back folded. Every instance of the app shares one origin, so
+// localStorage is also how instances tell each other what they drew: the newest
+// set drawn for a corpus (a replayed conversation folds every older card), and
+// the flag each card answers (the editor's trail folds when the card lands).
+// Storage can refuse in a private window or a locked-down host; every read and
+// write is guarded and the card renders correctly with nothing stored.
+const cardKey = (v: ProposalSetView): string => `erf.card:${v.corpus}:${v.flag}:${v.ts}`;
+const newestKey = (corpus: string): string => `erf.card.newest:${corpus}`;
+const shownKey = (corpus: string, flag: number): string => `erf.card.shown:${corpus}:${flag}`;
+function stored(key: string): string | null {
+  try { return localStorage.getItem(key); } catch { return null; }
+}
+function keep(key: string, value: string): void {
+  try { localStorage.setItem(key, value); } catch { /* no storage: the state lasts as long as this render */ }
+}
+
 function showProposals(v: ProposalSetView): void {
   proposalSet = v;
   returnTo = null;
+  // this card is now the newest the corpus has seen, and it answers this flag
+  const was = stored(newestKey(v.corpus));
+  if (!was || was < v.ts) keep(newestKey(v.corpus), v.ts);
+  keep(shownKey(v.corpus, v.flag), v.ts);
+  // the trail is the record of the pass and the card is its result: the trail folds when the card arrives
+  if (trailOpen) setFolded(true);
   current = { page: `proposals:${v.flag}`, title: `Proposals for flag #${v.flag}`, html: "", corpus: v.corpus };
   for (const c of crumbs) c.textContent = ""; // the card carries its own title (the flagged passage); the head bar keeps only its controls
   setStatus("");
   render();
 }
 
-/** The ruling card is built in card.ts; here it is mounted, with the tool calls behind its buttons. */
+/**
+ * The ruling card is built in card.ts; here it is mounted, with the tool calls
+ * behind its buttons and the state the person last chose for this set. The
+ * card is inline and stays inline: nothing here asks for fullscreen, so the
+ * app's auto-resize reports the folded height and the card really shrinks.
+ */
 function renderProposals(v: ProposalSetView): void {
-  main.replaceChildren(proposalsCard(v, { rule: (set, id, ruling, title) => void rule(set, id, ruling, title), finish: (set) => void finishProposals(set) }));
+  const state = openingState({ stored: stored(cardKey(v)) as CardState | null, status: v.status, ts: v.ts, newest: stored(newestKey(v.corpus)) });
+  main.replaceChildren(proposalsCard(v, {
+    rule: (set, id, ruling, title) => void rule(set, id, ruling, title),
+    finish: (set) => void finishProposals(set),
+  }, { state, onState: (s) => keep(cardKey(v), s) }));
 }
 
 function propsError(text: string): void {
@@ -673,6 +706,8 @@ async function finishProposals(v: ProposalSetView): Promise<void> {
   try {
     const { data, text } = await call<ProposalSetView>("erf_proposal_finish", { flag: v.flag });
     if (!data) { setStatus(""); propsError(text.replace(/^\[[^\]]*\]\s*/, "")); return; }
+    // the passage is bound and the flag resolved: the card has said what it had to say, so it folds to its one line
+    keep(cardKey(data), "folded");
     proposalSet = data; setStatus(""); render();
     const line = text.replace(/^\[[^\]]*\]\s*/, "").split("\n")[0] ?? `Flag #${v.flag} ruled.`;
     notice(data.bound?.length ? `bound to ${data.bound.join(", ")}` : "flag resolved", 6);
