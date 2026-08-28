@@ -17,5 +17,6 @@ Each pattern states: the problem it answers, the records it uses (nothing outsid
 |---|---|
 | [`narrative-backing-loop.md`](narrative-backing-loop.md) | A document exists, or is being written, and its assertions need to become claims with evidence and positions, and stay tied to the prose as both change. |
 | [`claims-tree.md`](claims-tree.md) | An argument has many claims; a reader needs one ordered, numbered view of it, and the author needs to cut that view from the graph rather than maintain it by hand. |
+| [`record-prose.md`](record-prose.md) | An LLM writes titles, notes and findings into the record and a person reads them hundreds of times; default LLM prose is built for another reader. One sentence, one idea, plain words, and what a server can check of it. Draft for ruling. |
 
 Patterns that exist in practice and are not yet written up here: the research log and surveys compiled from it; the search for the opposite as a step every observation goes through; the standing watch (a survey re-run on cadence so absence claims age visibly); the venture-design specialization (a corpus of one author's own design, where `commitment` is the ordinary backing).

@@ -9,6 +9,8 @@ everything else.
 
 ## Unreleased
 
+Pattern, 2026-08-27, draft for ruling: record prose, the style for anything an LLM writes into a record or onto a card (one sentence, one idea, the actor as subject, the action as verb, the point at the end; thirteen rules for a title, two-sentence notes, findings that say no more than their quote), with a three-tier enforcement plan (refuse, warn, judge) and the in-process TypeScript stack that can run it. A research note under docs/research/ carries the sources: ASD-STE100, plain-language guides, INCOSE and EARS, Kialo and Rationale, Wikipedia's words to watch and AI-signs essay, Kobak et al. 2025, Liang et al. 2024, the sentence-craft books, the linter comparison; unverified items marked.
+
 Specification, 2026-08-27: B-45 ruled, surveys age and do not go stale. `ERF-28` no longer says a survey's staleness is computed; `ERF-47` gains a fourth reading, survey age, the newest `conducted` timestamp among a claim's surveys, reported as a date and never judged against a threshold. Reference: `surveyAge`; fixture `valid/survey-age-is-reported`.
 
 Specification, 2026-08-27: the definitions gain *assumption*, a reading and never a kind of claim: a premise reached through `assumes` edges that is not yet settled, which stops being one when it is backed without changing kind (`ERF-43`). Raised while writing the use-case table, where "an assumption reads like a fact" needed a mechanism and the mechanism was already there.
