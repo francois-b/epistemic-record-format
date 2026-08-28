@@ -17,6 +17,8 @@
 # also:           other places that must equal the version (or the spec
 #                 version, with `equals: spec`), so a number stated twice
 #                 cannot drift.
+# optional:       the artifact lives in another repository; when its path is
+#                 absent the lint notes it and moves on instead of failing.
 spec:
   # the one machine-readable statement of the specification's version
   from: { kind: regex, file: schema/erf.schema.json, pattern: '"\$id":\s*"[^"]*/schema/(\d+\.\d+\.\d+)/erf\.schema\.json"' }
@@ -39,14 +41,17 @@ artifacts:
 
   - id: erf-mcp
     name: erf-mcp
-    path: tools/mcp-server
+    # lives in the erf-workbench repository since 2026-08-28; checked here when that repository is checked out beside this one
+    path: ../erf-workbench/packages/mcp-server
+    repository: https://github.com/francois-b/erf-workbench
+    optional: true
     language: typescript
     registry: none
     policy: independent
     version: { kind: package.json }
     spec_version: { kind: package.json, key: erf.spec_version }
     also:
-      - { kind: regex, file: tools/mcp-server/src/index.ts, pattern: 'name: "erf-mcp", version: "([^"]+)"' }
+      - { kind: regex, file: ../erf-workbench/packages/mcp-server/src/index.ts, pattern: 'name: "erf-mcp", version: "([^"]+)"' }
 
   - id: erf-view
     name: erf-view

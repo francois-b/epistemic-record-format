@@ -56,7 +56,9 @@ def main() -> None:
         if got != want: problems.append(f"{a['file']} states {got}; the schema $id says {spec}")
     lines = [f"spec {spec}"]
     for art in REG["artifacts"]:
-        base = ROOT / art["path"]
+        base = (ROOT / art["path"]).resolve()
+        if art.get("optional") and not base.exists():
+            lines.append(f"{art['id']} (not checked out at {art['path']})"); continue
         try:
             ver = read(art["version"], base)
             declared = read(art["spec_version"], base)
