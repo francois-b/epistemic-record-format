@@ -13,7 +13,11 @@ An LLM writes claim titles, notes, findings and summaries into the record, and a
 
 A banned-word list chases the tells one at a time. This pattern states the sentence instead, and says which of its rules a server can enforce without a person in the loop.
 
-The target is plain and precise, not human-sounding. Record prose does not want voice, warmth or variation, and it does not want the sophistication of a good writer; it wants the fewest plain words that state one thing exactly. It is not terse either: a fragment or a clipped noun phrase is a failure the same as a flourish. Tools and prompts whose aim is to "write like a human" are the wrong instrument here; the right ones remove slop and enforce plainness.
+The target is plain and precise, not human-sounding. Record prose does not want voice, warmth or variation, and it does not want the sophistication of a good writer; it wants the fewest plain words that state one thing exactly. It is not terse either: a fragment or a clipped noun phrase is a failure the same as a flourish. Tools and prompts whose aim is to "write like a human" or to pass a detector are the wrong instrument here; whether the text reads as machine-written is of no interest.
+
+The criterion is **warranted**. A word or a construction earns its place when it adds precision; otherwise it goes, whoever wrote it. Unwarranted: imagery where a literal word exists; a coined term where a description exists; a construction that says the thing sideways ("it's not X, it's Y"); a sentence about the sentence ("worth noting", "worth sitting with", "this matters because"); a claim of importance instead of the thing that is important. The test is the same each time: say the thing.
+
+Record prose applies to mechanical writing: records, cards, notes, talking points, bullets. A person's narrative prose is the opposite kind of text and is never rewritten to this standard. The two are never confused: a record carries `created.by`, a Claude-written file in a repository carries its generation frontmatter, and in a mixed document the LLM's sections are marked as its own.
 
 ## The one rule
 
@@ -27,7 +31,7 @@ Five traditions that never cite each other arrive at it independently: technical
 
 A title is read most, so it is bound tightest.
 
-1. **One sentence, one idea.** No colon, no semicolon, no dash, no parentheses. If it needs a second clause, it is two claims. (INCOSE R18/R19; EARS; Rationale.)
+1. **One sentence, one idea.** In a title, no colon, no semicolon, no dash, no parentheses. If it needs a second clause, it is two claims. (INCOSE R18/R19; EARS; Rationale.) Elsewhere a colon before a list or a bullet is fine; a labelled bullet is the ordinary shape of mechanical writing, not a fault.
 2. **Twenty-five words or fewer.** (ASD-STE100's ceiling for descriptive text.)
 3. **A declarative sentence with a finite verb.** Not a question, not a fragment, not a noun phrase. (Rationale.)
 4. **The actor is the subject and the action is the verb.** Not a nominalization ("the codification of material" becomes "the movement codified material"). (Williams; plainlanguage.gov "hidden verbs"; Gopen and Swan.)
@@ -37,7 +41,7 @@ A title is read most, so it is bound tightest.
 8. **No intensifiers or evaluative adverbs** (very, clearly, notably, significantly, deeply, truly, fundamentally). (Wikipedia words-to-watch, editorializing; write-good.)
 9. **No vague measures** (adequate, appropriate, significant, sufficient, some, several without a number). Numbers, dates and names as the source gives them, with their units. (INCOSE R6, R7.)
 10. **No absolutes** (always, never, all, 100%) unless the source states one. (INCOSE R26.)
-11. **No rhetorical shapes.** No series of three; no "not X but Y" or "not just X, it's Y"; no "X rather than Y" as a flourish; no "serves as" or "stands as" for "is". (Wikipedia AI-signs; Kobak et al. 2025.)
+11. **No sideways constructions.** No "not X but Y" or "not just X, it's Y"; no "X rather than Y" as a flourish; no "serves as" or "stands as" for "is"; no simile ("like a", "as if"); no sentence about the sentence. A series of three is not a fault when there are three things. (Pinker on metadiscourse; Wikipedia words to watch.)
 12. **Nothing about the document or the reader.** No "this essay", "the narrative", "your section 1". Provenance lives in the note, never in the title.
 13. **No coined terms and none of the borrowed-weight words**: load-bearing, tension, nuance, crucial, pivotal, delve, underscore, tapestry, testament, landscape, robust, meticulous, intricate, showcase, foster, navigate. (Wikipedia AI-signs; Kobak et al.; Liang et al.; DAA RULE-023 and RULE-025.)
 
@@ -126,10 +130,14 @@ A genre exists (2026, active, mostly MIT): rule sets and linters written against
 - **Rule content to port**: `krishnasunkam/vale-ai-tells` and `tbhb/vale-ai-tells` (Vale YAML rules: Dash, Cliche, EpigramContrast, AbstractTriad, NegParallel, CopulaInflation, HiddenVerb, Passive, Adverb, and a commit-message set; "a rule floor, not a detector"); `seyedehsanhadi/sloptrim` (71 patterns with a detector/advisory split and an era-stable versus era-variable distinction: structural rules last, vocabulary lists decay in 12 to 18 months); `AgriciDaniel/anti-slop` (mechanical, inspectable checks only, with the studies on why humanizers degrade prose and why LLM judges disagree with people).
 - **Shape to borrow**: `ctkrug/tellsign` keeps its tells as typed TypeScript records `{id, term, kind, category, weight, explanation}`; that is the shape for `prose-lists.yaml`.
 - **Prompt text to borrow**: `fayerman-source/deslop` (plain-English legal writing from Garner and the SEC handbook: nominalizations reversed, doublets cut, "shall" and "and/or" banned, stuffy openers banned; the domain-general rules carry over); the cut-lists inside `blader/humanizer` and `petergyang/no-ai-slop`, with their voice-preservation wrappers removed.
-- **The empirical point**: `osolmaz/ai-smell` measured that vocabulary tells barely separate LLM text from human text, while structural tells do by an order of magnitude (labelled bullets, exactly-three lists, colon reveals, dash rate). A plainness check weights structure over words. Vocabulary lists still earn their place on a title, where one wrong word is the whole sentence.
+- **A measurement to read correctly**: `osolmaz/ai-smell` found that vocabulary separates LLM text from human text less than structure does. That answers a detection question, which this pattern does not ask. Unwarranted vocabulary is the fault a reader meets most, so the word rules stay first; labelled bullets and lists of three are not faults here.
 - **Already running the loop we run**: `textlint-rule-preset-ai-writing` ships as an MCP server so an agent writes, the linter refuses, the agent fixes.
 
 The research note has the full table with licences, stars and dates, and the queries that returned nothing.
+
+## One rule file, three consumers
+
+The rules live in one Vale style, `RecordProse` (`tools/prose/RecordProse/*.yml`, proposed): `substitution` rules for the borrowed-weight vocabulary and wordy phrases, each with its plain replacement; `existence` rules for the sideways constructions, coined-term signals (scare quotes on a common word, a hyphenated compound used as a name), similes and title hedges; `occurrence` rules for the word count and the one-idea punctuation in titles. Error for what the server refuses, warning for the rest. Three consumers read the same files: Vale itself over Claude-written markdown in a repository (a pre-ship check and an editor hook); erf-mcp through a small TypeScript reader for those three rule types, in-process, at `erf_propose`; and the prompts, whose style paragraph is generated from the same rules so it cannot drift. The two `vale-ai-tells` packages are the raw material; the style's aim is plainness, not detection, and its README says so.
 
 ## What this pattern does not decide
 
