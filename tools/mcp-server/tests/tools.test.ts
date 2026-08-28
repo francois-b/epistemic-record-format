@@ -367,7 +367,7 @@ test("flags: mark a passage, list it with its text, binding the passage resolves
   assert.match(r.text, /flag #1 .* 1 open flag/);
   assert.throws(() => T.flag(c, { narrative: n.slug, anchor }), /already flagged/);
   assert.match(T.flags(c, {}).text, /#1 \[open\][\s\S]*back this/);
-  assert.match(T.flags(c, {}).text, /scope "[^"]+"[\s\S]*passage \(context, scope marked «»\): [^\n]*«[^»]+»/); // the anchor is the scope; the passage is context
+  assert.match(T.flags(c, {}).text, /flagged passage "[^"]+"[\s\S]*its paragraph \(context, the flagged passage marked «»\): [^\n]*«[^»]+»/); // the anchor is the scope; the passage is context
   assert.match(T.viewPage(c, { page: `narrative:${n.slug}` }).html, /<mark class="flag"/);
   T.claimMint(c, { id: "flagged-claim", title: "A claim from a flagged passage", epistemic_kind: "commitment" });
   const b = T.narrativeBind(c, { narrative: n.slug, anchor, claims: ["flagged-claim"] });
@@ -378,7 +378,7 @@ test("flags: mark a passage, list it with its text, binding the passage resolves
   clean(c);
 });
 
-test("a flag's span is its scope: the whole selection, folded, containing the anchor and present in the prose", () => {
+test("a flag's span is the flagged passage: the whole selection, folded, containing the anchor and present in the prose", () => {
   const c = fresh();
   const n = loadCorpus(c.dir).narratives[0]!;
   const para = n.body.split("\n\n").find((p) => !/<!--/.test(p) && p.trim().length > 60)!;
@@ -388,10 +388,10 @@ test("a flag's span is its scope: the whole selection, folded, containing the an
   assert.throws(() => T.flag(c, { narrative: n.slug, anchor, span: "words that are not the anchor at all" }), /must contain the anchor/);
   assert.throws(() => T.flag(c, { narrative: n.slug, anchor, span: `${anchor} and then words the prose never says` }), /does not occur/);
   const r = T.flag(c, { narrative: n.slug, anchor, span, research: "survey" });
-  assert.match(r.text, new RegExp(`scope ${span.split(" ").length} words`));
+  assert.match(r.text, new RegExp(`flagged passage of ${span.split(" ").length} words`));
   assert.equal(r.data && (r.data as { span?: string }).span, span);
   const listed = T.flags(c, {}).text;
-  assert.ok(listed.includes(`scope "${span}"`), "the listing names the span as the scope");
+  assert.ok(listed.includes(`flagged passage "${span}"`), "the listing names the whole selection as the flagged passage");
   assert.ok(listed.includes(`«${span}»`), "and marks it inside the passage");
   const item = (T.narrativeStatus(c, { narrative: n.slug }).data as { flags: T.FlagItem[] }).flags[0]!;
   assert.equal(item.span, span);

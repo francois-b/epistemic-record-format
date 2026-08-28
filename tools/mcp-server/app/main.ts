@@ -480,7 +480,7 @@ function requestLine(f: FlagWritten, title: string): string {
   if (f.research === "survey") {
     return `Survey flag #${f.id} in "${title}": "${f.anchor}".`
       + (f.note ? ` My note: ${f.note}.` : "")
-      + ` Research the span first: log the searches, capture the sources, record the survey with its coverage bounds and notable results, mint the atoms. Then propose the claims the survey supports, scoped to the span, and stop for my ruling.`;
+      + ` Research the flagged passage first: log the searches, capture the sources, record the survey with its coverage bounds and notable results, mint the atoms. Then propose the claims the survey supports, scoped to the flagged passage, and stop for my ruling.`;
   }
   const opposite = f.research === "opposite";
   return `Back flag #${f.id} in "${title}"${opposite ? " (opposite requested)" : ""}: "${f.anchor}".`
@@ -499,7 +499,7 @@ async function submitFlag(research: Research, note: string): Promise<void> {
   if (ed && !editorEl.hidden && ed.isDirty()) await saveNow(ed.getText());
   setStatus("flagging…", "working");
   try {
-    // the anchor locates the flag; the whole selection is its scope (a flag on a paragraph is not a flag on its first twelve words)
+    // the anchor locates the flag; the whole selection is the flagged passage (a flag on a paragraph is not a flag on its first twelve words)
     const span = sel.text.replace(/\s+/g, " ").trim();
     const { data, text } = await call<FlagWritten>("erf_flag", { narrative: slug, anchor: sel.anchor, ...(span.length > sel.anchor.length ? { span } : {}), research, ...(note ? { note } : {}) });
     if (!data) { setStatus(text.replace(/^\[[^\]]*\]\s*/, "").slice(0, 160)); return; }
@@ -507,7 +507,7 @@ async function submitFlag(research: Research, note: string): Promise<void> {
     setStatus("");
     notice(`flagged #${data.id} · ${research}`, 5);
     const asked = research === "mint" ? "propose the claims and stop for a ruling"
-      : research === "survey" ? "survey it: research the span first, record the survey, then propose the claims it supports"
+      : research === "survey" ? "survey it: research the flagged passage first, record the survey, then propose the claims it supports"
       : research === "back" ? "back it: after the ruling, gather the evidence and bind"
       : "back it and state the strongest case against before standing";
     try {

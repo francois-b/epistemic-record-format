@@ -440,17 +440,17 @@ export function flag(c: Corpus, a: { narrative: string; anchor: string; span?: s
   readDeclaration(c);
   const anchor = a.anchor.replace(/\s+/g, " ").trim();
   if (anchor.length < 8) throw new Refusal("an anchor is a few exact words of the passage; give at least a phrase");
-  // the span is the scope: the whole selection, folded like an anchor; the anchor is a few of its words that locate it
+  // span holds the flagged passage: the whole selection, folded like an anchor; the anchor is a few of its words that locate it
   const spanGiven = (a.span ?? "").replace(/\s+/g, " ").trim();
   const span = spanGiven && spanGiven !== anchor ? spanGiven : undefined;
-  if (span && !span.includes(anchor)) throw new Refusal(`the span must contain the anchor: "${anchor}" is not in the span given`);
+  if (span && !span.includes(anchor)) throw new Refusal(`the flagged passage must contain the anchor: "${anchor}" is not in the passage given`);
   if (a.research !== undefined && !(RESEARCH as readonly string[]).includes(a.research)) throw new Refusal(`research is one of ${RESEARCH.join(", ")}`);
   const research = (a.research ?? "mint") as Research;
   const { slug, prose } = proseOf(c, a.narrative);
   const [first, second] = anchorOccurrences(prose, anchor);
   if (first === undefined) throw new Refusal(`"${anchor}" does not occur in ${slug}; the anchor must be exact words from the passage`);
   if (second !== undefined) throw new Refusal(`"${anchor}" occurs more than once in ${slug}; choose words unique to the passage`);
-  if (span && anchorOccurrences(prose, span, 1).length === 0) throw new Refusal(`the span does not occur in ${slug} as one run of text; a span is the selection itself, whitespace folded`);
+  if (span && anchorOccurrences(prose, span, 1).length === 0) throw new Refusal(`the flagged passage does not occur in ${slug} as one run of text; it is the selection itself, whitespace folded`);
   const flags = readFlags(c);
   if (flags.some((f) => f.status === "open" && f.narrative === slug && f.anchor === anchor)) throw new Refusal("that passage is already flagged");
   const f: Flag = { id: (flags.at(-1)?.id ?? 0) + 1, ts: now(), narrative: slug, anchor, ...(span ? { span } : {}), ...(a.note ? { note: a.note } : {}), research, by: c.options.agent, status: "open" };
@@ -460,7 +460,7 @@ export function flag(c: Corpus, a: { narrative: string; anchor: string; span?: s
     : research === "opposite" ? "; back it and state the strongest case against before standing"
     : "; propose claims and stop for a ruling";
   const words = span ? span.split(" ").length : 0;
-  const r = finish(c, `flag #${f.id} on ${slug} at "${anchor}"${span ? ` · scope ${words} words` : ""}${a.note ? ` (${a.note})` : ""} · research ${research}${asked}; ${open} open flag${open === 1 ? "" : "s"}`, [flagsPath(c)], `flag passage in ${slug}`);
+  const r = finish(c, `flag #${f.id} on ${slug} at "${anchor}"${span ? ` · flagged passage of ${words} words` : ""}${a.note ? ` (${a.note})` : ""} · research ${research}${asked}; ${open} open flag${open === 1 ? "" : "s"}`, [flagsPath(c)], `flag passage in ${slug}`);
   return { ...r, data: { id: f.id, narrative: slug, anchor, ...(span ? { span } : {}), research, ...(a.note ? { note: a.note } : {}) } };
 }
 
@@ -522,12 +522,12 @@ export function flags(c: Corpus, a: { narrative?: string; all?: boolean }): Resu
   const lines = list.map((f) => {
     if (!cache.has(f.narrative)) cache.set(f.narrative, proseOf(c, f.narrative).prose);
     const prose = cache.get(f.narrative)!; const at = prose.indexOf(f.anchor);
-    // the scope of the flag is its span (the whole selection) or, without one, its anchor: what the person selected is
-    // what gets decomposed and backed; the passage around it is context, shown with the scope marked «so» (a flag on
-    // one sentence is not a flag on its paragraph, and a flag on a paragraph is not a flag on its first line)
-    const scope = f.span ?? f.anchor;
-    const passage = at >= 0 ? passageAround(prose, at).replace(scope, `«${scope}»`) : "(anchor no longer occurs; the prose moved)";
-    return `#${f.id} [${f.status}] ${f.narrative} · research ${f.research ?? "mint"} · scope "${scope}"${f.note ? ` · ${f.note}` : ""}${takenNote(f)}${f.claims?.length ? ` · bound to ${f.claims.join(", ")}` : ""}\n  passage (context, scope marked «»): ${passage}`;
+    // the flagged passage is the flag's span (the whole selection) or, without one, its anchor: what the person selected
+    // is what gets decomposed and backed; the paragraph around it is context, shown with the flagged passage marked «so»
+    // (a flag on one sentence is not a flag on its paragraph, and a flag on a paragraph is not a flag on its first line)
+    const flagged = f.span ?? f.anchor;
+    const paragraph = at >= 0 ? passageAround(prose, at).replace(flagged, `«${flagged}»`) : "(anchor no longer occurs; the prose moved)";
+    return `#${f.id} [${f.status}] ${f.narrative} · research ${f.research ?? "mint"} · flagged passage "${flagged}"${f.note ? ` · ${f.note}` : ""}${takenNote(f)}${f.claims?.length ? ` · bound to ${f.claims.join(", ")}` : ""}\n  its paragraph (context, the flagged passage marked «»): ${paragraph}`;
   });
   return { text: `${list.length} flag(s):\n` + lines.join("\n") };
 }

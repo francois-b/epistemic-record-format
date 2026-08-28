@@ -145,7 +145,7 @@ proposals page in the viewer (the card is the only rendering).
 - `decompose-passage`: list every checkable assertion in a passage, typed by
   kind, with what would settle each and the anchor words; put them with
   `erf_propose` and stop.
-- `survey-span`: recall, then verify. The sources expected from memory
+- `survey-passage`: recall, then verify. The sources expected from memory
   first, marked as recollection; then each sought by name and its fate
   logged; then the survey with its targets; then the claims it supports.
 - `search-for-the-opposite`: the strongest case against a claim and where
@@ -289,7 +289,7 @@ a tool:
 2. **Logs.** Every write (`finish()` in `tools.ts`) sends a logging message
    at `info` naming the relative paths written, through a hook `index.ts`
    sets; the server declares the logging capability for it.
-3. **A task list.** `work-the-flags` and `survey-span` ask the worker to
+3. **A task list.** `work-the-flags` and `survey-passage` ask the worker to
    keep a task list of the steps and check each off, to see whether
    Cowork's Progress panel follows.
 

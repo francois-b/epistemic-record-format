@@ -9,6 +9,8 @@ everything else.
 
 ## Unreleased
 
+Wording, 2026-08-27: "span" and "scope" leave every surface a person reads. The flag listing, the tool descriptions, the instructions, the prompts, the editor's card and the ruling card say "the flagged passage" (the exact words the person selected) and "its paragraph" for the text around it; the worker had been echoing "span" back to the reader. The `survey-span` prompt is `survey-passage`. Field names (`span`, `anchor`) are unchanged. A proposal set's summary is one sentence or omitted and is not shown on the card.
+
 Tooling, 2026-08-27: a narrative view opens the editor fullscreen only when the server served it moments ago (`served_at` on the view); a host replaying an old view when a chat is re-entered stays inline, which Cowork did on every re-entry.
 
 Tooling, 2026-08-27: the ruling card laid out for reading. The worker's summary is one fainter line under the header, two sentences at most; a proposal's title is text, and "narrow" turns it into an edit box with "save narrowed" and "cancel" while accept and drop stay one press; the id and kind sit in the card's corner, each atom's id in its own; the quote comes first with the finding fainter under it, the citation linking to the source page with a separate "capture" link to the held text and the page number when there is one; "what would settle it" and the worker's note are labelled, smaller and fainter. From François's review of the first card.
