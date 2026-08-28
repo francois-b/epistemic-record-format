@@ -237,13 +237,14 @@ test("claims-tree: a node's relations line reads in both directions", () => {
     return html.slice(at, Math.min(...ends));
   };
   const placedNum = (id: string) => `<a href="#k-${id}"><span class="rnum">${t.placed.get(id)}</span>`;
+  const says = (nh: string, word: string, link: string): boolean => nh.includes(`&#8627; ${word} `) && nh.includes(link);
   // A supports edge reads on both ends, each linking the other by its number.
   const edge = [...c.claims.values()].flatMap((cl) => cl.edges
     .filter((e) => e.relation === "supports" && t.placed.has(cl.id) && t.placed.has(e.to))
     .map((e) => ({ from: cl.id, to: e.to })))[0];
   assert.ok(edge, "the example cut places both ends of a supports edge");
-  assert.ok(nodeHtml(edge!.from).includes(`supports ${placedNum(edge!.to)}`), `${edge!.from} says it supports ${edge!.to}`);
-  assert.ok(nodeHtml(edge!.to).includes(`supported by ${placedNum(edge!.from)}`), `${edge!.to} says it is supported by ${edge!.from}`);
+  assert.ok(says(nodeHtml(edge!.from), "supports", placedNum(edge!.to)), `${edge!.from} says it supports ${edge!.to}`);
+  assert.ok(says(nodeHtml(edge!.to), "supported by", placedNum(edge!.from)), `${edge!.to} says it is supported by ${edge!.from}`);
   // An assumes edge from a claim other than the parent reads on its target
   // as "premise of", the same words the placing edge uses.
   const parentOf = new Map(flattenTree(t).map((n) => [n.id, n.parent]));
@@ -252,13 +253,13 @@ test("claims-tree: a node's relations line reads in both directions", () => {
     .map((e) => ({ from: cl.id, to: e.to })))[0];
   assert.ok(inb, "the example cut has a premise assumed by a claim other than its parent");
   const link = t.placed.has(inb!.from) ? placedNum(inb!.from) : `<a href="claim-${inb!.from}.html">`;
-  assert.ok(nodeHtml(inb!.to).includes(`premise of ${link}`), `${inb!.to} names ${inb!.from} as what it is a premise of`);
+  assert.ok(says(nodeHtml(inb!.to), "premise of", link), `${inb!.to} names ${inb!.from} as what it is a premise of`);
   // A claim the cut does not place is linked to its own page.
   const outside = [...c.claims.values()].flatMap((cl) => cl.edges
     .filter((e) => e.relation === "supports" && !t.placed.has(cl.id) && t.placed.has(e.to))
     .map((e) => ({ from: cl.id, to: e.to })))[0];
   assert.ok(outside, "the example corpus has a supporter outside the cut");
-  assert.ok(nodeHtml(outside!.to).includes(`supported by <a href="claim-${outside!.from}.html">`), `${outside!.to} links the unplaced ${outside!.from} to its page`);
+  assert.ok(says(nodeHtml(outside!.to), "supported by", `<a href="claim-${outside!.from}.html">`), `${outside!.to} links the unplaced ${outside!.from} to its page`);
 });
 
 /**
@@ -379,6 +380,13 @@ test("claims-tree: a cut whose roots list every claim of a section shows each cl
   assert.equal(first.claim!.atoms_against.length, 0);
   for (const id of first.claim!.atoms_for) assert.ok(c.atoms.has(id), `${id} is held`);
   const out = build(VENTURE);
+  // relations are grouped by word: no node says "premise of" twice, and a long group folds
+  const cutHtml = readFileSync(join(out, "cut-ai-era-consultancy-venture-design--rumelt-kernel.html"), "utf8");
+  for (const block of cutHtml.split('<div class="node"').slice(1)) {
+    const rel = block.split('<div class="rel">')[1] ?? "";
+    assert.ok((rel.match(/&#8627; premise of /g) ?? []).length <= 1, "premise of said once per node");
+  }
+  assert.ok(cutHtml.includes('class="relmore"'), "a long relations group folds behind and N more");
   const html = readFileSync(join(out, `cut-${cuts[0]!.name}.html`), "utf8");
   assert.deepEqual(cutNumbers(html), nodes.map((n) => n.number));
   assert.ok(html.includes(`<details class="ev" id="ev-${first.id}">`), "1.1.1 carries its cards");

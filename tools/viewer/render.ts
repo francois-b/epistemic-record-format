@@ -192,6 +192,13 @@ h2 .hnum { font-size:.8em; } h3 .hnum { letter-spacing:0; text-transform:none; }
 .node .tags { display:inline; margin:0 0 0 .55em; white-space:nowrap; }
 .node .prose { margin:.12em 0 0; }
 .node .rel { color:var(--muted); font-size:.74em; line-height:1.7; font-family:var(--mono); margin-top:.25em; }
+.rel .rg { display:block; }
+.rel .relmore { display:inline; }
+.rel .relmore summary { display:inline; cursor:pointer; opacity:.75; margin-left:.35em; }
+.rel .relmore summary::-webkit-details-marker { display:none; }
+.rel .relmore summary::before { content:"\\2026 "; }
+.rel .relmore[open] summary { display:none; }
+.rel .relmore[open] .relrest::before { content:", "; }
 .node .rel a { color:var(--muted); text-decoration:underline; text-decoration-color:var(--rule); text-underline-offset:2px; }
 .node .rel a:hover { color:var(--accent); text-decoration-color:var(--accent); }
 .node .unresolved { color:var(--warn); }
@@ -719,25 +726,37 @@ export function renderCut(t: CutTree, c: LoadedCorpus): string {
       ? `<span class="mark"><span class="bkt">[</span>unbacked${stoodOn(cl) ? ", stood on" : ""}<span class="bkt">]</span></span>` : "";
     const tags = `<span class="tags">${marks}<span class="t">${esc(cl.epistemic_kind)}</span><span class="sep">&middot;</span><span class="t d-${d.disposition}">${d.disposition}</span>${
       hasAtoms && !b.presentableAsBacked ? `<span class="sep">&middot;</span><span class="t gap">backing not resolvable</span>` : ""}</span>`;
-    const rel: string[] = [];
-    if (nd.placedBy && nd.parent) rel.push(`${nd.placedBy === "assumes" ? "premise of" : "part of"} ${refLink(nd.parent)}`);
-    for (const r of nd.refs) rel.push(`${r.relation === "assumes" ? "rests on" : "includes"} ${refLink(r.id)}`);
-    for (const e of cl.edges) if (e.relation === "supports") rel.push(`supports ${refLink(e.to)}`);
+    // Relations are grouped by their word, one line per group, the word said
+    // once: a claim many others rest on used to print "premise of" a dozen
+    // times in a row (found on the venture cut, 2026-08-28). A group longer
+    // than three shows three and folds the rest behind "and N more".
+    const groups = new Map<string, string[]>();
+    const add = (word: string, link: string) => { const g = groups.get(word); if (g) g.push(link); else groups.set(word, [link]); };
+    if (nd.placedBy && nd.parent) add(nd.placedBy === "assumes" ? "premise of" : "part of", refLink(nd.parent));
+    for (const r of nd.refs) add(r.relation === "assumes" ? "rests on" : "includes", refLink(r.id));
+    for (const e of cl.edges) if (e.relation === "supports") add("supports", refLink(e.to));
     // The other direction: the claims whose edges point here, other than
     // the parent's placing edge, which the indentation already says.
     for (const i of inbound.get(cl.id) ?? []) {
       if (i.from === nd.parent && i.relation === nd.placedBy) continue;
-      if (i.relation === "assumes") rel.push(`premise of ${refLink(i.from)}`);
-      else if (i.relation === "decomposes-into") rel.push(`part of ${refLink(i.from)}`);
-      else if (i.relation === "supports") rel.push(`supported by ${refLink(i.from)}`);
+      if (i.relation === "assumes") add("premise of", refLink(i.from));
+      else if (i.relation === "decomposes-into") add("part of", refLink(i.from));
+      else if (i.relation === "supports") add("supported by", refLink(i.from));
     }
-    for (const id of conflictsFor(cl.id, c)) rel.push(`conflicts with ${refLink(id)}`);
-    for (const sid of cl.surveys ?? []) rel.push(`surveyed: <a href="survey-${esc(sid)}.html">${esc(c.surveys.get(sid)?.title ?? sid)}</a>`);
-    for (const p of passages.get(cl.id) ?? []) rel.push(`in the narrative <a href="narrative-${esc(p.slug)}.html#bind-${p.n}">${esc(p.title)}</a>`);
+    for (const id of conflictsFor(cl.id, c)) add("conflicts with", refLink(id));
+    for (const sid of cl.surveys ?? []) add("surveyed", `<a href="survey-${esc(sid)}.html">${esc(c.surveys.get(sid)?.title ?? sid)}</a>`);
+    for (const p of passages.get(cl.id) ?? []) add("in the narrative", `<a href="narrative-${esc(p.slug)}.html#bind-${p.n}">${esc(p.title)}</a>`);
+    const SHOW = 3;
+    const relLines = [...groups].map(([word, links]) => {
+      const shown = links.slice(0, SHOW).join(", ");
+      const rest = links.slice(SHOW);
+      const more = rest.length ? `<details class="relmore"><summary>and ${rest.length} more</summary><span class="relrest">${rest.join(", ")}</span></details>` : "";
+      return `<span class="rg">&#8627; ${word} ${shown}${more}</span>`;
+    });
     const prose = firstParagraph(cl);
     const ev = evidenceCards(cl, c, `ev-${cl.id}`, `&#8627; evidence: ${evidenceSummary(cl, c)}`);
     return `<div class="node" style="--d:${nd.depth}" id="k-${esc(cl.id)}"><div class="head"><span class="num">${nd.number}</span><a class="title" href="claim-${esc(cl.id)}.html" title="${esc(cl.title)}">${esc(cl.short_name ?? cl.title)}</a>${tags}</div>${
-      prose ? `<div class="prose">${prose}</div>` : ""}${rel.length || ev ? `<div class="rel">${rel.length ? `&#8627; ${rel.join(" &middot; ")}` : ""}${ev}</div>` : ""}</div>\n` + nd.children.map(node).join("");
+      prose ? `<div class="prose">${prose}</div>` : ""}${relLines.length || ev ? `<div class="rel">${relLines.join("")}${ev}</div>` : ""}</div>\n` + nd.children.map(node).join("");
   };
   const section = (s: NumberedSection): string => {
     const tag = s.depth === 0 ? "h2" : "h3";
