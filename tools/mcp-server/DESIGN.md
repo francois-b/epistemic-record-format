@@ -140,6 +140,49 @@ the person asks for in as many words, and `erf_proposal_rule` carries a
 ruling the person gives in chat instead of on the card. Not built: a
 proposals page in the viewer (the card is the only rendering).
 
+### Three states, and why summary is the default (2026-08-28)
+
+The first two-pass session produced two cards of five and four proposals.
+Each was several screens tall, every quote was open, and nothing folded, so
+after two flags the conversation was already hard to scroll and a third
+would have buried the first. The card now has three states, and the
+research trail has the same three under the same words.
+
+**Folded** is one line: the flagged passage in the reading face, clipped to
+the line, then `N proposals · k of N ruled`, then where the set stands
+(`open`, `finished`, or `bound to k claims`). **Summary** is the head as
+before and one row per proposal: kind, id, the claim, how much evidence it
+carries (`for n · against m`), and the same three buttons. **Full** opens
+every quote at once. A chevron, or the eyebrow beside it, moves between
+folded and summary; one head control opens and closes every quote; and each
+proposal has its own `quotes` disclosure, which opens that proposal's atoms,
+its settling line and the worker's note in place.
+
+Summary is the default because that is the unit of the decision. A person
+rules on a claim, and asks for the evidence when the claim is not obviously
+right; asking for it proposal by proposal is one press where reading past it
+five times is five screens. The ruling flow is untouched: accept, accept
+narrower with its edit box, drop and finish all work in summary and in full.
+
+A card opens folded when it has nothing left to ask: the set is finished or
+superseded, or a newer card has been drawn for the corpus, which is how a
+replayed conversation shows its earlier passes as one line each. `bind and
+finish` therefore folds the card it was pressed on. What the person chose is
+kept per proposal set in `localStorage`, keyed by corpus, flag and the set's
+timestamp, both reads and writes guarded, so a host that replays the tool
+result gets the card back as it was left and a host with no storage still
+renders it correctly.
+
+The card is an inline card and asks for no fullscreen. Inline the app reports
+its own height to the host, so folding has to shrink the card: nothing in it
+is sized and nothing scrolls inside it. In the preview a finished set reports
+84 pixels folded against 196 open.
+
+Every instance of the app shares one origin, so `localStorage` is also how
+instances tell each other what they drew: the newest set drawn for a corpus,
+and the flag each card answers. The editor reads the second one, which is how
+a trail folds when the card for its own flag lands in another instance.
+
 ## Prompts (judgment scaffolds, read-only)
 
 - `decompose-passage`: list every checkable assertion in a passage, typed by
@@ -174,8 +217,11 @@ one into context without a tool call.
 > confirmed. A flag's `research` says what the user asked for: `mint`
 > proposes claims and stops for the ruling, `back` gathers the evidence
 > after it and binds, `opposite` adds the strongest case against before
-> anyone stands. While the user has the narrative open in the editor,
-> answer in text and do not call `erf_view` to re-open it.
+> anyone stands. When more than one flag is open and the host runs
+> sub-agents, take each free flag and work them in parallel, one sub-agent per
+> flag, each ending with its own `erf_propose`; without sub-agents work them
+> one after another and say so. While the user has the narrative open in the
+> editor, answer in text and do not call `erf_view` to re-open it.
 
 ## Capture
 
@@ -259,7 +305,13 @@ places show it:
   there), listing each search with the captures it led to, held or refused,
   then the atoms and the claims. The panel opens itself the first time an
   act lands and folds on request. Its lines are computed in
-  `tools/editor/src/trail.ts`, pure and tested.
+  `tools/editor/src/trail.ts`, pure and tested. Since 2026-08-28 it carries
+  the ruling card's three states under the same words and the same controls:
+  folded is the title line with the counts, summary is a line of counts for
+  each flag, full is every act. The trail is the record of a pass and the
+  card is its result, so the trail steps back to its one line when a card for
+  one of its flags is drawn, once per flag, and that line carries a control
+  that scrolls to the card when both are on the page.
 - **The survey page**: "How this was found", each of the survey's own acts
   with what it led to. The survey's `searches` are matched to the log on
   instrument and query, and on the act's timestamp when the survey kept it.
@@ -402,7 +454,7 @@ owns: no LLM, no git, no network, and the app still pushes no record. When a
 binding lands, the flag resolves, the decoration turns from flagged to bound,
 and the header says so for a few seconds.
 
-**Bundle size.** The app resource is 1065 KB (script 831 KB), of which
+**Bundle size.** The app resource is 1102 KB (script 856 KB), of which
 CodeMirror and the editor are about 520. Most of that last figure is
 `@codemirror/lang-markdown` pulling `@codemirror/lang-html` in at module scope
 for embedded HTML, which no configuration turns off. The resource is served
@@ -442,6 +494,22 @@ minutes, so a worker that stopped does not lock a flag for good, and the
 re-take says whose take expired. Nothing clears a take: once the flag is
 resolved it says who did the work. The editor draws a taken flag differently
 from a free one, and the status line names the holder.
+
+**Flags are worked in parallel where sub-agents exist.** Taking a flag made
+several workers possible; nothing said to use them, so the first two-pass
+session in Cowork ran its two flags one after the other. The server's
+instructions and the `work-the-flags` prompt now say that when more than one
+flag is open and the host has sub-agents, the LLM takes each free flag and
+gives one sub-agent one flag, each running the whole loop for its own flag and
+ending with its own `erf_propose`; a refused take means another worker holds
+that flag, and it is skipped. The report comes once, when they are all on
+cards, one line per flag. Without sub-agents the flags run one after another,
+still one card each, and the LLM says so in a line. The app has the matching
+gesture: a flag placed at the selection still sends its own request line, one
+flag per gesture, and the head bar carries **Work the flags** while two or
+more flags asking for research are open with nobody on them, which sends one
+message naming them all. The rule for whether that control is there at all is
+pure, in `app/flags.ts`, and tested.
 
 **Bindings are merged, never overwritten.** An open editor with unsaved typing
 used to meet a binding written from elsewhere as a banner offering reload or

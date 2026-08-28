@@ -69,7 +69,7 @@ function outcomeOf(r: { isError?: boolean; content: { type: string; text?: strin
 export function buildServer(ws: Workspace): McpServer {
   // PROBE (2026-08-27): the logging capability is declared so that every write can be sent as a logging
   // message; remove with the probe if the host shows nothing of it.
-  const server = new McpServer({ name: "erf-mcp", version: "0.4.0", title: "Epistemic Record Format", websiteUrl: "https://github.com/francois-b/epistemic-record-format", icons: [{ src: ICON, mimeType: "image/svg+xml", sizes: ["any"] }] }, { instructions: INSTRUCTIONS, capabilities: { logging: {} } });
+  const server = new McpServer({ name: "erf-mcp", version: "0.5.0", title: "Epistemic Record Format", websiteUrl: "https://github.com/francois-b/epistemic-record-format", icons: [{ src: ICON, mimeType: "image/svg+xml", sizes: ["any"] }] }, { instructions: INSTRUCTIONS, capabilities: { logging: {} } });
   T.setOnWrote((paths) => { void server.server.sendLoggingMessage({ level: "info", logger: "erf-mcp", data: `wrote ${paths.join(", ")}` }).catch(() => {}); });
   const corpusArg = z.string().optional().describe("corpus id; defaults to the active corpus");
   // Hosts sometimes send a list as one string ("a, b" or a JSON array in quotes); accept both, so a

@@ -57,3 +57,101 @@ Tests: the instruction text is covered by the existing instructions test if ther
 ## Out of scope
 
 The `.mcpb` bundle and the plugin; typography; the tree page; Bookeh.
+
+## Deviations
+
+Three, all additions or restatements; nothing in the plan was narrowed.
+
+1. **The version number is in `package.json`, not `implementations.yaml`.** WP4
+   says to bump erf-mcp to 0.5.0 "in `src/index.ts` and `implementations.yaml`".
+   `implementations.yaml` states where each artifact's version is *read from*,
+   not the number itself: for erf-mcp that is `tools/mcp-server/package.json`,
+   with `src/index.ts` as its one `also`. Both were bumped and
+   `tools/lint/lint-versions.py` passes; `implementations.yaml` needed no edit.
+2. **A head control was added to reach the full card.** The plan gives the
+   chevron for folded and summary and a per-proposal disclosure for quotes,
+   which leaves no way into *full*. The card's head therefore carries one more
+   control, `all quotes` / `fewer quotes`, the same size as the others; the
+   trail carries its twin, `all lines` / `fewer lines`.
+3. **"Every card but the newest opens folded" is done through `localStorage`.**
+   Each tool result gets its own instance of the app in the host, so one
+   instance cannot see the other cards on the page. Every instance shares one
+   origin, so each card records the newest proposal-set timestamp it has drawn
+   for the corpus, and a card older than that opens folded. The same mechanism
+   carries the flag each card answers, which is how the editor's trail folds
+   when the card lands in a different instance. Both reads and writes are
+   guarded, and with no storage every card simply opens in summary.
+
+## Hand-off checklist
+
+Nothing below was verified from the session: Claude Desktop and Cowork cannot
+be driven from it. The card's three states, the trail's three states, and the
+**Work the flags** control were checked in a browser with
+`npx tsx scripts/preview-app.ts <corpus> proposals:<flag>` and
+`... narrative:<slug> --mode fullscreen --serve 8792`, against a copy of
+`examples/corpora/minimal` with proposal sets written onto it. What follows is
+for a real two-flag session.
+
+**Before starting.** Rebuild nothing: the bundle is committed. Point the
+connector at a corpus with a narrative worth flagging, and open that narrative
+in the editor (`erf_view` on it, fullscreen).
+
+1. **Two flags, one gesture.** Flag two passages, each asking for research
+   (Survey or Back, not "What does this claim?"). Expect: the **Work the
+   flags** control appears in the head bar, right of the status line, the
+   moment the second flag is placed and while nobody has taken either. Press
+   it. Expect exactly one message in the conversation, reading
+   `Work the open flags: #N, #M. In parallel where you can; one ruling card per flag.`
+   and nothing else sent. Report: did the control appear, and did the host
+   accept the message.
+2. **Sub-agents, in Cowork.** Watch what the LLM does with that message.
+   Expect: one `erf_flag_take` per flag, then two sub-agents, one per flag,
+   each ending with its own `erf_propose`, then one report of one line per
+   flag. Report: how many sub-agents ran, whether both flags were taken before
+   any work, whether any take was refused, and whether two separate ruling
+   cards appeared in the conversation. In a host without sub-agents (plain
+   Desktop), expect the flags one after another, two cards still, and a line
+   saying they ran in series.
+3. **Cards open in summary.** Look at the newer card. Expect: the eyebrow, the
+   flagged passage as the title, the narrative's title, then one row per
+   proposal (kind and id in the corner, the claim, `for n · against m`, a
+   `quotes` control, and accept / accept narrower / drop). No quotes open.
+   Report: how many screens tall the card is now, against the five-proposal
+   card of 2026-08-28.
+4. **The older card is folded.** Look at the first card, above it in the
+   conversation. Expect one line: the flagged passage clipped to the line,
+   `N proposals · k of N ruled`, and `open`. Press it: it opens in summary.
+   Press the chevron or the eyebrow: it folds again. Report whether the older
+   card was already folded when the second one arrived, or only after a
+   scroll or a re-render.
+5. **Quotes, one proposal at a time.** On a proposal with evidence, press
+   `quotes`. Expect its atoms, its settling line and the worker's note to open
+   in place, and nothing to move in the other proposals. Press `hide quotes`:
+   they close. Press `all quotes` in the head: every proposal opens at once,
+   and the control reads `fewer quotes`.
+6. **Ruling still works.** Rule the whole set from the summary card: accept
+   one, accept narrower on another (the edit box opens in place, `save` enables
+   only once the wording changed), drop a third. Expect each ruling to redraw
+   the card in the state it was in and to put its one line in the LLM's
+   context. Report anything that lost the state or the scroll position.
+7. **Finish folds the card.** Press `bind and finish`. Expect: the card folds
+   itself to one line reading `bound to k claims` (or `finished` when
+   everything was dropped), the flag resolves in the editor, and the finish
+   line goes into the conversation as before. Report the card's height before
+   and after; folding must shrink the card, not scroll inside it.
+8. **The trail.** While a pass is running, press the status line
+   ("researching #N"). Expect the trail to open in summary: a heading per flag
+   with its counts. `all lines` opens every search, capture, atom and claim;
+   the chevron folds it to the title line. When that flag's ruling card
+   arrives, expect the trail to fold itself once, and the folded line to carry
+   `the card for #N`, which scrolls to it. Report whether the trail folded on
+   its own in Cowork, where the card is a separate instance of the app.
+9. **What is remembered.** Re-enter the chat so the host replays the tool
+   results. Expect each card to come back in the state it was left in, and any
+   card that is not the newest to come back folded. Report anything that came
+   back open that had been folded.
+
+If a step fails, the file to look at is named in it: the card and its states
+are `tools/mcp-server/app/card.ts`, the trail and the queue control are
+`app/main.ts` with `app/flags.ts`, and what the LLM was told is `INSTRUCTIONS`
+and the `work-the-flags` prompt in `src/index.ts`.
