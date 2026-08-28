@@ -2,7 +2,7 @@
 title: "Pattern: record prose"
 purpose: "The style for anything an LLM writes into a record or onto a card: one sentence, one idea, plain words, readable at a glance; and what a server can check of it."
 status: non-normative, draft for ruling
-last_updated: 2026-08-27
+last_updated: 2026-08-28
 ---
 
 # Pattern: record prose
@@ -118,6 +118,18 @@ Kept in one file the server reads (`prose-lists.yaml`, proposed), so a ruling ch
 - **Weasel and puffery** (warn): some say, it is believed, experts argue, many scholars, widely regarded, best, legendary, iconic, visionary.
 - **Loaded verbs of saying** (warn): claimed, insisted, admitted, revealed, exposed.
 - **Rhetorical shapes** (warn, by pattern): a three-item series; not … but; not just … ; it's not … it's; … rather than … as a flourish; serves as; stands as; marks a pivotal; a testament to.
+
+## Projects built for this problem
+
+A genre exists (2026, active, mostly MIT): rule sets and linters written against LLM prose rather than prose in general. Most call themselves "humanizers" and aim at voice or at passing detectors, which is not this pattern's aim; the ones below aim at plainness and say so.
+
+- **Rule content to port**: `krishnasunkam/vale-ai-tells` and `tbhb/vale-ai-tells` (Vale YAML rules: Dash, Cliche, EpigramContrast, AbstractTriad, NegParallel, CopulaInflation, HiddenVerb, Passive, Adverb, and a commit-message set; "a rule floor, not a detector"); `seyedehsanhadi/sloptrim` (71 patterns with a detector/advisory split and an era-stable versus era-variable distinction: structural rules last, vocabulary lists decay in 12 to 18 months); `AgriciDaniel/anti-slop` (mechanical, inspectable checks only, with the studies on why humanizers degrade prose and why LLM judges disagree with people).
+- **Shape to borrow**: `ctkrug/tellsign` keeps its tells as typed TypeScript records `{id, term, kind, category, weight, explanation}`; that is the shape for `prose-lists.yaml`.
+- **Prompt text to borrow**: `fayerman-source/deslop` (plain-English legal writing from Garner and the SEC handbook: nominalizations reversed, doublets cut, "shall" and "and/or" banned, stuffy openers banned; the domain-general rules carry over); the cut-lists inside `blader/humanizer` and `petergyang/no-ai-slop`, with their voice-preservation wrappers removed.
+- **The empirical point**: `osolmaz/ai-smell` measured that vocabulary tells barely separate LLM text from human text, while structural tells do by an order of magnitude (labelled bullets, exactly-three lists, colon reveals, dash rate). A plainness check weights structure over words. Vocabulary lists still earn their place on a title, where one wrong word is the whole sentence.
+- **Already running the loop we run**: `textlint-rule-preset-ai-writing` ships as an MCP server so an agent writes, the linter refuses, the agent fixes.
+
+The research note has the full table with licences, stars and dates, and the queries that returned nothing.
 
 ## What this pattern does not decide
 
