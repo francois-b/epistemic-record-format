@@ -193,6 +193,7 @@ h2 .hnum { font-size:.8em; } h3 .hnum { letter-spacing:0; text-transform:none; }
 .node .prose { margin:.12em 0 0; }
 .node .rel { color:var(--muted); font-size:.74em; line-height:1.7; font-family:var(--mono); margin-top:.25em; }
 .rel .rg { display:block; }
+.rel .evglyph { color: var(--accent, #7aa2d4); font-style: normal; }
 .rel .relmore { display:inline; }
 .rel .relmore summary { display:inline; cursor:pointer; opacity:.75; margin-left:.35em; }
 .rel .relmore summary::-webkit-details-marker { display:none; }
@@ -754,7 +755,7 @@ export function renderCut(t: CutTree, c: LoadedCorpus): string {
       return `<span class="rg">&#8627; ${word} ${shown}${more}</span>`;
     });
     const prose = firstParagraph(cl);
-    const ev = evidenceCards(cl, c, `ev-${cl.id}`, `&#8627; evidence: ${evidenceSummary(cl, c)}`);
+    const ev = evidenceCards(cl, c, `ev-${cl.id}`, `<span class="evglyph">&#9670;</span> evidence: ${evidenceSummary(cl, c)}`); // a diamond, not the relations arrow: evidence is not one more relation
     return `<div class="node" style="--d:${nd.depth}" id="k-${esc(cl.id)}"><div class="head"><span class="num">${nd.number}</span><a class="title" href="claim-${esc(cl.id)}.html" title="${esc(cl.title)}">${esc(cl.short_name ?? cl.title)}</a>${tags}</div>${
       prose ? `<div class="prose">${prose}</div>` : ""}${relLines.length || ev ? `<div class="rel">${relLines.join("")}${ev}</div>` : ""}</div>\n` + nd.children.map(node).join("");
   };
