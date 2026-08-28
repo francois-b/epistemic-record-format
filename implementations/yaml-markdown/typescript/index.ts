@@ -24,7 +24,7 @@ export type {
 
 export {
   admissible, currentStances, standingTies, disposition, resolvable, backing, normalizeForCheck, quoteCheck,
-  findWholeWords, staleAgainst, staleAudits, staleEvidenceAudit, bindingStaleness, conflictsFor, premiseClosure,
+  findWholeWords, staleAgainst, staleAudits, staleEvidenceAudit, bindingStaleness, surveyAge, conflictsFor, premiseClosure,
   argumentLeaves, brokenAnchors, undatedRetrievals, retiredPremises, unbacked, stoodOn, danglingRefs,
   evidenceRefsFlagged, claimsUsingAtom,
 } from "./compute.ts";

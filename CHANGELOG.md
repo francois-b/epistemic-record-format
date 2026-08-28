@@ -9,6 +9,14 @@ everything else.
 
 ## Unreleased
 
+Specification, 2026-08-27: B-45 ruled, surveys age and do not go stale. `ERF-28` no longer says a survey's staleness is computed; `ERF-47` gains a fourth reading, survey age, the newest `conducted` timestamp among a claim's surveys, reported as a date and never judged against a threshold. Reference: `surveyAge`; fixture `valid/survey-age-is-reported`.
+
+Specification, 2026-08-27: the definitions gain *assumption*, a reading and never a kind of claim: a premise reached through `assumes` edges that is not yet settled, which stops being one when it is backed without changing kind (`ERF-43`). Raised while writing the use-case table, where "an assumption reads like a fact" needed a mechanism and the mechanism was already there.
+
+Finding, 2026-08-27: F-035, a change of mind does not show in the prose. `ERF-32` stales a binding on the claim's `last_modified` and `ERF-48` forbids a standing from advancing it, so a claim rejected through its ledger leaves its bound passages reading current. Open; a second computed reading, disposition moved since bound, is proposed and not ruled.
+
+Patterns, 2026-08-27: `narrative-backing-loop.md` cited the retired `ERF-19` and `ERF-26`; it now names the schema's `StandingEntry` with `ERF-40`, and `ERF-27`.
+
 Tooling, 2026-08-27: `scripts/preview-app.ts` renders any app view locally from a real corpus, hosting the real bundle behind a real AppBridge, so a card or the editor can be looked at in a browser without a screenshot from Desktop; `--serve` answers the app's read-only tool calls from the corpus, and writes are refused either way.
 
 Tooling, 2026-08-27: the ruling card laid out as a page a person reads top down. An eyebrow (how many proposals, from what pass), the flagged passage as the title in the reading face (clipped past three lines with a toggle), the narrative's title as the deck, and nothing else above the proposals: no flag number, no ids, no worker, no survey slug, no summary. Each proposal keeps its corner row, claim, quotes and two small labelled lines, now in sentence case ("What would settle it", "Note"); the buttons read accept, accept narrower, drop, and accept narrower opens the edit box with a one-line hint. The card is built in app/card.ts, apart from the host, so it can be rendered on a plain page with real content; this layout was checked against the five-proposal set from the pilot corpus.

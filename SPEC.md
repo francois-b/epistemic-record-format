@@ -150,6 +150,11 @@ shown here.
   unsearched; a survey and no atoms means searched and nothing found,
   which is what a survey records (section 4.5). A consumer that shows
   unbacked claims says whether anyone stands on each.
+- *assumption*: a reading, never a kind of claim. A premise another claim
+  reaches through `assumes` edges (`ERF-43`) that is not yet settled: an
+  observation with no backing, a bet the world has not settled, a
+  commitment not yet made. It stops being one when it is backed, without
+  changing kind.
 - *disposition*: the computed reading of a claim's standings, one of
   `proposal`, `active`, `contested`, `rejected`, `retired` (`ERF-41`).
   Never a stored field.
@@ -653,8 +658,8 @@ correctly has nothing to state.
   stamps `last_modified` (`ERF-48`). The `title` MUST state what was
   sought. An individual act MAY carry its own `timestamp` where a survey
   spans sittings; absent one, an act inherits the survey's `conducted`
-  timestamp. Staleness of a claim's survey backing is computed from
-  `conducted` timestamps, never stored.
+  timestamp. A survey ages and does not go stale: how long ago it was
+  conducted is a reading (`ERF-47`, survey age), never a verdict.
 > *Note (non-normative):* the weight of an empty search is the relation
 > between the universe searched and the universe the claim is about. A
 > world-claim over the world's indexes (web, preprint servers, patent
@@ -866,7 +871,11 @@ checks the relations no type can see.
   full instant on the same day), the comparison MUST resolve to stale: a
   check that cannot tell says look, never rest. Two bare dates that are
   equal read as current, because the re-audit that follows an edit lands
-  on the same day.
+  on the same day. A claim resting on surveys carries one further
+  reading, its survey age: the `conducted` timestamp of the newest survey
+  it lists, reported as a date and never judged against a threshold,
+  since no fixed interval makes an old search wrong; a consumer that
+  reports staleness reports the age beside it.
 - <a id="erf-48"></a>**ERF-48** Any change to a record MUST set `last_modified`, and it MUST
   NOT precede `created`; that is the whole of what a validator decides
   here, since a corpus holds no prior value to compare against. A

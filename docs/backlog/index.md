@@ -97,7 +97,7 @@ Raised but not yet checked by anyone other than whoever raised them. **Not ready
 | [`B-42`](B-42-the-deployment-has-no-identity.md) | **closed** | The deployment has no identity | `demonstrated` | `duplicate` · `unverified` · `duplicate` ⚠ split |
 | [`B-43`](B-43-timestamps-the-type-says-instant-every-example-writes-a-ba.md) | **closed** | Timestamps: the type says instant, every example writes a bare date | `reported` | `inaccurate` · `unverified` · `stale` ⚠ split |
 | [`B-44`](B-44-erf-2-requires-a-dated-capture-and-no-field-holds-the-date.md) | **closed** | `ERF-2` requires a dated capture and no field holds the date | `demonstrated` | `accurate` · `unverified` ⚠ split |
-| [`B-45`](B-45-erf-28-asserts-a-computed-staleness-that-nothing-defines.md) | **P2** | `ERF-28` asserts a computed staleness that nothing defines | `reported` | `accurate` · `unverified` ⚠ split |
+| [`B-45`](B-45-erf-28-asserts-a-computed-staleness-that-nothing-defines.md) | **closed** | `ERF-28` asserts a computed staleness that nothing defines | `reported` | `accurate` · `unverified` ⚠ split |
 | [`B-46`](B-46-an-atom-may-name-a-corpus-that-was-never-declared.md) | **closed** | An atom may name a corpus that was never declared | `reported` | `accurate` · `unverified` · `stale` ⚠ split |
 | [`B-47`](B-47-the-serialization-rules-are-written-about-records-and-miss.md) | **closed** | The serialization rules are written about records and miss the other files | `reported` | `accurate` · `unverified` ⚠ split |
 | [`B-48`](B-48-the-validator-conformance-class-omits-section-4.md) | **closed** | The Validator conformance class omits section 4 | `demonstrated` | `accurate` · `accurate` · `unverified` ⚠ split |

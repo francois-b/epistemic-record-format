@@ -8,7 +8,9 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { staleAgainst, staleAudits, staleEvidenceAudit, bindingStaleness } from "@epistemic-record-format/yaml-markdown";
+import { staleAgainst, staleAudits, staleEvidenceAudit, bindingStaleness, surveyAge, loadCorpus } from "@epistemic-record-format/yaml-markdown";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Atom } from "@epistemic-record-format/yaml-markdown";
 
 const atom = (created: string, modified?: string, audit?: string): Atom => ({
@@ -94,4 +96,13 @@ test("ERF-32: a same-day instant edit under a date-precision binding is stale", 
 test("ERF-32: a claim never modified leaves the binding current", () => {
   const r = bindingStaleness("2026-08-10", ["c-1"], corpusWith(undefined));
   assert.equal(r.state, "current");
+});
+
+test("ERF-47: a claim resting on surveys carries its survey age, the newest conducted date, and nothing judges it (B-45)", () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const c = loadCorpus(join(here, "..", "fixtures", "valid", "survey-age-is-reported"));
+  const claim = c.claims.get("no-continuous-check")!;
+  const age = surveyAge(claim, c);
+  assert.deepEqual(age, { conducted: "2026-08-20", survey: "no-such-tool-2026-08-20" }, "the newer of two surveys of one sought");
+  assert.equal(surveyAge({ ...claim, surveys: [] }, c), null, "a claim listing no survey has no survey age");
 });

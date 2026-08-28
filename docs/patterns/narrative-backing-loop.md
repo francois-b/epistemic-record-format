@@ -28,7 +28,7 @@ The loop below is written bottom-up. Top-down uses the same steps from step 3 on
 
 - **The person** flags, rules, stands, and writes prose. Nothing enters the record as a position without them.
 - **The LLM** proposes: decompositions, claims, searches, sources, quotes, findings, rewordings. It runs the housekeeping through gated tools and never writes a record the person has not confirmed.
-- **The tools** enforce what neither can be trusted to remember: a quote is checked against held text at mint (`ERF-50`); an unheld source cannot be cited; a standing needs a reason and an instant (`ERF-19`); a survey needs logged acts (`ERF-26`); an id must resolve (`ERF-35`).
+- **The tools** enforce what neither can be trusted to remember: a quote is checked against held text at mint (`ERF-50`); an unheld source cannot be cited; a standing needs a reason and an instant (the schema's `StandingEntry`, `ERF-40`); a survey needs its acts recorded as run (`ERF-27`); an id must resolve (`ERF-35`).
 
 ## The loop
 

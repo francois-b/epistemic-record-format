@@ -386,6 +386,23 @@ export function bindingStaleness(
 }
 
 /**
+ * `ERF-47`, survey age (ruled under B-45, 2026-08-27): a claim resting on
+ * surveys carries the `conducted` timestamp of the newest survey it lists,
+ * reported as a date and never judged, because no fixed interval makes an
+ * old search wrong. Null when the claim lists no survey the corpus holds.
+ */
+export function surveyAge(claim: Claim, c: LoadedCorpus): { conducted: string; survey: string } | null {
+  let best: { conducted: string; survey: string } | null = null;
+  for (const id of claim.surveys ?? []) {
+    const s = c.surveys.get(id) as { conducted?: { timestamp?: string } } | undefined;
+    const t = s?.conducted?.timestamp;
+    if (t === undefined) continue;
+    if (!best || t > best.conducted) best = { conducted: t, survey: id };
+  }
+  return best;
+}
+
+/**
  * `ERF-44`: the pair is stored once, on either side, so a claim's conflicts
  * are its own outbound edges plus the inbound ones other claims declare. A
  * consumer reading only outbound edges shows an incomplete conflict set,

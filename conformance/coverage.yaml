@@ -60,7 +60,11 @@ requirements:
   ERF-27:
     uncovered: no fixture asserts hits_reported rejects invented precision
   ERF-28:
-    uncovered: no fixture covers survey immutability or the title stating what was sought
+    tests: [fixtures/valid/survey-age-is-reported]
+    note: >
+      survey age (the newest conducted date, reported never judged) is
+      pinned; immutability of what a survey conducted is a property of
+      history a loaded corpus does not carry
   ERF-31:
     tests: [output, fixtures/invalid/binding-without-bound-at,
             fixtures/valid/anchor-spans-a-line-wrap, fixtures/valid/anchor-with-escaped-quote,
@@ -109,7 +113,7 @@ requirements:
       the storage half; that a consumer reads both directions is exercised
       through conflictsFor in the rendered output
   ERF-47:
-    tests: [staleness]
+    tests: [staleness, fixtures/valid/survey-age-is-reported]
   ERF-48:
     tests: [fixtures/invalid/last-modified-precedes-created]
     note: >

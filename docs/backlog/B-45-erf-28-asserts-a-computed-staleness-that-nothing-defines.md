@@ -1,8 +1,8 @@
 ---
 id: B-45
 kind: defect
-status: open
-priority: P2
+status: closed
+priority: closed
 priority_because: "Fable: the dangling clause has nothing to implement and no two implementations diverge on it."
 basis: reported
 raised: "backlog verification pass, 2026-08-25"
@@ -24,6 +24,17 @@ verifications:
 ## Proposed resolution
 
 Either `ERF-47` covers surveys, or `ERF-28` stops claiming it.
+
+## Resolution
+
+Ruled 2026-08-27 (operator): surveys age, they do not go stale. `ERF-28`
+no longer speaks of staleness; `ERF-47` gains a fourth reading, survey
+age, the `conducted` timestamp of the newest survey a claim lists,
+reported as a date and never judged against a threshold, because no fixed
+interval makes an old search wrong. The reference implements it as
+`surveyAge`; fixture `valid/survey-age-is-reported` pins it (two surveys of
+one sought, the newer is the age). This also settles the `B-69` line that
+listed the struck sentence as a restatement.
 
 ## Consolidation note (2026-08-26)
 

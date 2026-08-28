@@ -1,0 +1,5 @@
+type: corpus
+id: fixture-survey-age
+title: "A gap claim resting on two surveys: the newer conducted date is its survey age"
+spec_version: "0.9.0"
+classification: public
