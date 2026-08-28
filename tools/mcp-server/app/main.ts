@@ -26,7 +26,8 @@
 import { App } from "@modelcontextprotocol/ext-apps";
 import { createEditor, isWorked, type EditorHandle, type FlagMark, type BindingMark } from "../../editor/src/index.ts";
 import { trailLines, trailSummary, type FlagTrail } from "../../editor/src/trail.ts";
-import { rulingLine, type ProposalSetView, type ProposalView, type Ruling } from "../src/proposals.ts";
+import { rulingLine, type ProposalSetView, type Ruling } from "../src/proposals.ts";
+import { proposalsCard } from "./card.ts";
 
 interface Page { page: string; title: string; html: string; corpus?: string; flags?: { id: number; anchor: string; note?: string }[]; served_at?: string }
 /** A view the server produced moments ago, as opposed to one the host replays when a chat is re-entered (2026-08-27: every
@@ -643,106 +644,9 @@ function showProposals(v: ProposalSetView): void {
   render();
 }
 
-/** The first two sentences of a summary: the card shows that much and no more. */
-function twoSentences(s: string): string {
-  const parts = s.trim().split(/(?<=[.!?])\s+/).filter(Boolean);
-  return parts.length > 2 ? parts.slice(0, 2).join(" ") : s.trim();
-}
-
+/** The ruling card is built in card.ts; here it is mounted, with the tool calls behind its buttons. */
 function renderProposals(v: ProposalSetView): void {
-  const root = el("main", "props");
-  root.appendChild(el("h1", "", `${v.counts.total} proposal${v.counts.total === 1 ? "" : "s"} for flag #${v.flag}`));
-  const scope = v.span ?? v.anchor;
-  root.appendChild(el("p", "lead", `${v.narrative_title} · “${scope.length > 160 ? scope.slice(0, 157) + "…" : scope}” · ${v.research}${v.survey ? ` · survey ${v.survey}` : ""} · by ${v.by}`));
-  if (v.summary) root.appendChild(el("p", "summary", twoSentences(v.summary)));
-  for (const p of v.proposals) root.appendChild(renderProposal(v, p));
-  const foot = el("div", "foot");
-  const count = el("span", "count", v.status === "ruled"
-    ? `finished · ${v.bound?.length ? `bound to ${v.bound.join(", ")}` : "nothing bound, flag resolved"}`
-    : `${v.counts.ruled} of ${v.counts.total} ruled${v.counts.ruled ? ` · ${v.counts.accepted} accepted · ${v.counts.narrowed} narrowed · ${v.counts.dropped} dropped` : ""}`);
-  foot.appendChild(count);
-  if (v.status === "open") {
-    const fin = el("button", "", v.counts.accepted + v.counts.narrowed ? "bind and finish" : "finish");
-    fin.type = "button"; fin.disabled = !v.all_ruled;
-    fin.title = v.all_ruled ? "bind the passage to the accepted claims and resolve the flag" : "rule on every proposal first";
-    fin.addEventListener("click", () => void finishProposals(v));
-    foot.appendChild(fin);
-  } else if (v.status === "superseded") foot.appendChild(el("span", "", "superseded by a later set"));
-  root.appendChild(foot);
-  const err = el("p", "err"); err.id = "props-err"; err.hidden = true; root.appendChild(err);
-  main.replaceChildren(root);
-}
-
-/** One atom on the card: the quote first, the finding under it fainter, the id in the corner, the citation as a link. */
-function renderAtom(a: ProposalView["atoms"][number]): HTMLElement {
-  const row = el("div", `atom ${a.side}${a.missing ? " missing" : ""}`);
-  const corner = el("div", "corner");
-  corner.appendChild(el("span", `side ${a.side}`, a.side));
-  corner.appendChild(el("span", "aid", a.id));
-  row.appendChild(corner);
-  if (a.missing) { row.appendChild(el("p", "finding", "no such atom in this corpus")); return row; }
-  const q = document.createElement("blockquote"); q.textContent = `“${a.quote}”`; row.appendChild(q);
-  row.appendChild(el("p", "finding", a.finding));
-  const cite = el("p", "cite");
-  const who = el("a", "", a.citation ?? a.source);
-  if (a.url) { who.href = a.url; who.title = a.url; who.target = "_blank"; who.rel = "noopener"; }
-  else { who.href = `capture-${encodeURIComponent(a.id)}.html`; who.title = "the quote in the held text"; }
-  cite.appendChild(who);
-  if (a.page) cite.appendChild(document.createTextNode(` · page ${a.page}`));
-  if (a.url) { cite.appendChild(document.createTextNode(" · ")); const held = el("a", "capture", "capture"); held.href = `capture-${encodeURIComponent(a.id)}.html`; held.title = "the quote in the held text"; cite.appendChild(held); }
-  if (a.quality || a.as_of) cite.appendChild(el("span", "faint", ` · ${[a.quality, a.as_of].filter(Boolean).join(" · ")}`));
-  row.appendChild(cite);
-  return row;
-}
-
-/** One proposal on the card. Its title is text; "narrow" turns it into an edit box until saved or cancelled. */
-function renderProposal(v: ProposalSetView, p: ProposalView): HTMLElement {
-  const box = el("div", `prop${p.ruled ? ` ruled-${p.ruled.ruling}` : ""}`);
-  const open = !p.ruled && v.status === "open";
-  const paint = (editing: boolean): void => {
-    box.replaceChildren();
-    const corner = el("div", "corner");
-    corner.appendChild(el("span", "kind", p.epistemic_kind));
-    corner.appendChild(el("span", "id", p.id));
-    box.appendChild(corner);
-    let edit: HTMLTextAreaElement | null = null;
-    if (editing) {
-      edit = document.createElement("textarea");
-      edit.className = "title-edit"; edit.rows = 3; edit.value = p.title;
-      edit.setAttribute("aria-label", `the narrower title for ${p.id}`);
-      box.appendChild(edit);
-    } else {
-      box.appendChild(el("p", "title", p.ruled?.title ?? p.title));
-      if (p.ruled?.title) box.appendChild(el("p", "was", `proposed as: ${p.title}`));
-    }
-    for (const a of p.atoms) box.appendChild(renderAtom(a));
-    if (!p.atoms.length) box.appendChild(el("p", "meta", "no evidence attached: an argument, a commitment, or a gap"));
-    if (p.settles) { const d = el("p", "meta"); d.appendChild(el("span", "label", "What would settle it")); d.appendChild(document.createTextNode(p.settles)); box.appendChild(d); }
-    if (p.note) { const d = el("p", "meta"); d.appendChild(el("span", "label", "The worker's note")); d.appendChild(document.createTextNode(p.note)); box.appendChild(d); }
-    const actions = el("div", "actions");
-    if (p.ruled) {
-      actions.appendChild(el("span", `ruled ${p.ruled.ruling}`, p.ruled.ruling === "dropped" ? "dropped" : `${p.ruled.ruling} · claim ${p.ruled.claim ?? p.id}`));
-    } else if (open && editing && edit) {
-      const save = el("button", "narrow", "save narrowed"); save.type = "button"; save.disabled = true; save.title = "mint the claim with this title";
-      const cancel = el("button", "", "cancel"); cancel.type = "button";
-      edit.addEventListener("input", () => { save.disabled = edit!.value.trim() === p.title || !edit!.value.trim(); });
-      save.addEventListener("click", () => void rule(v, p.id, "narrowed", edit!.value.trim()));
-      cancel.addEventListener("click", () => paint(false));
-      actions.append(save, cancel);
-      queueMicrotask(() => edit!.focus());
-    } else if (open) {
-      const accept = el("button", "accept", "accept"); accept.type = "button"; accept.title = "mint the claim as proposed";
-      const narrow = el("button", "narrow", "narrow"); narrow.type = "button"; narrow.title = "edit the title, then mint it narrowed";
-      const drop = el("button", "drop", "drop"); drop.type = "button"; drop.title = "no claim; the drop is recorded";
-      accept.addEventListener("click", () => void rule(v, p.id, "accepted"));
-      narrow.addEventListener("click", () => paint(true));
-      drop.addEventListener("click", () => void rule(v, p.id, "dropped"));
-      actions.append(accept, narrow, drop);
-    }
-    box.appendChild(actions);
-  };
-  paint(false);
-  return box;
+  main.replaceChildren(proposalsCard(v, { rule: (set, id, ruling, title) => void rule(set, id, ruling, title), finish: (set) => void finishProposals(set) }));
 }
 
 function propsError(text: string): void {

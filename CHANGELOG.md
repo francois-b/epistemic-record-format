@@ -9,6 +9,8 @@ everything else.
 
 ## Unreleased
 
+Tooling, 2026-08-27: the ruling card laid out as a page a person reads top down. An eyebrow (how many proposals, from what pass), the flagged passage as the title in the reading face (clipped past three lines with a toggle), the narrative's title as the deck, and nothing else above the proposals: no flag number, no ids, no worker, no survey slug, no summary. Each proposal keeps its corner row, claim, quotes and two small labelled lines, now in sentence case ("What would settle it", "Note"); the buttons read accept, accept narrower, drop, and accept narrower opens the edit box with a one-line hint. The card is built in app/card.ts, apart from the host, so it can be rendered on a plain page with real content; this layout was checked against the five-proposal set from the pilot corpus.
+
 Wording, 2026-08-27: "span" and "scope" leave every surface a person reads. The flag listing, the tool descriptions, the instructions, the prompts, the editor's card and the ruling card say "the flagged passage" (the exact words the person selected) and "its paragraph" for the text around it; the worker had been echoing "span" back to the reader. The `survey-span` prompt is `survey-passage`. Field names (`span`, `anchor`) are unchanged. A proposal set's summary is one sentence or omitted and is not shown on the card.
 
 Tooling, 2026-08-27: a narrative view opens the editor fullscreen only when the server served it moments ago (`served_at` on the view); a host replaying an old view when a chat is re-entered stays inline, which Cowork did on every re-entry.
