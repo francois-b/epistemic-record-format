@@ -385,17 +385,71 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls: string, text?: s
   if (text !== undefined) e.textContent = text;
   return e;
 }
+// The trail folds the way the ruling card does, in the same three states and
+// with the same words: folded is the one summary line, summary is a line of
+// counts per flag, full is every search, capture, atom and claim. The trail is
+// the record of a pass and the card is its result, so the trail steps back to
+// its one line the moment a card for one of its flags is drawn, and that line
+// points at the card when both are on the page.
 const trailEl = document.getElementById("trail") as HTMLElement;
 const trailBody = document.getElementById("trail-body") as HTMLElement;
 const trailTitle = document.getElementById("trail-title") as HTMLElement;
+const trailChev = document.getElementById("trail-chev") as HTMLButtonElement;
+const trailAll = document.getElementById("trail-all") as HTMLButtonElement;
+const trailCard = document.getElementById("trail-card") as HTMLButtonElement;
 let trails: FlagTrail[] = [];
 let trailOpen = false;
-// fold keeps the title line and the button, so the panel can be unfolded from where it was folded
-const foldBtn = document.getElementById("trail-close") as HTMLButtonElement;
-function setFolded(folded: boolean): void { trailEl.classList.toggle("folded", folded); foldBtn.textContent = folded ? "unfold" : "fold"; }
-foldBtn.addEventListener("click", () => setFolded(!trailEl.classList.contains("folded")));
+let trailState: CardState = "summary";
+/** Flags whose card has already folded the trail once, so it can be unfolded again and stay that way. */
+const foldedFor = new Set<number>();
+
+/** Folded keeps the title line and the controls, so the panel unfolds from where it was folded. */
+function setTrailState(s: CardState): void {
+  trailState = s;
+  trailEl.classList.toggle("folded", s === "folded");
+  trailChev.textContent = s === "folded" ? "▸" : "▾";
+  trailChev.title = s === "folded" ? "Open the trail" : "Fold the trail to one line";
+  trailAll.hidden = s === "folded";
+  trailAll.textContent = s === "full" ? "fewer lines" : "all lines";
+  trailAll.title = s === "full" ? "One line for each flag" : "Every search, capture, atom and claim";
+  drawTrail();
+}
+trailChev.addEventListener("click", () => setTrailState(trailState === "folded" ? "summary" : "folded"));
+trailAll.addEventListener("click", () => setTrailState(trailState === "full" ? "summary" : "full"));
+trailCard.addEventListener("click", () => { main.scrollIntoView({ behavior: "smooth", block: "start" }); });
 // the status line is the handle: "researching #1" opens into what #1 has done so far
-statusEl.addEventListener("click", () => { if (!trails.length) return; if (!trailOpen) { trailOpen = true; trailEl.hidden = false; setFolded(false); paintTrail(trails); } else setFolded(!trailEl.classList.contains("folded")); });
+statusEl.addEventListener("click", () => {
+  if (!trails.length) return;
+  if (!trailOpen) { trailOpen = true; trailEl.hidden = false; setTrailState("summary"); return; }
+  setTrailState(trailState === "folded" ? "summary" : "folded");
+});
+
+/** A ruling card was drawn for this flag after the trail's window opened: the pass has its result. */
+function cardShownFor(t: FlagTrail): boolean {
+  const ts = stored(shownKey(current?.corpus ?? "", t.flag));
+  return !!ts && ts >= t.since;
+}
+
+/** The panel as it stands: the title line always, the flags under it when it is not folded. */
+function drawTrail(): void {
+  if (!trailOpen) return;
+  trailTitle.textContent = `the research trail · ${trailSummary(trails)}`;
+  const card = proposalSet && trails.some((t) => t.flag === proposalSet!.flag) ? proposalSet : null;
+  trailCard.hidden = !card || trailState !== "folded";
+  if (card) trailCard.textContent = `the card for #${card.flag}`;
+  if (trailState === "folded") { trailBody.replaceChildren(); return; }
+  trailBody.replaceChildren(...trails.flatMap((t) => {
+    const h = el("h4", "", `#${t.flag} · ${t.research}${t.taken_by ? ` · ${t.taken_by}` : ""}${t.until ? " · resolved" : ""}`);
+    if (trailState === "summary") return [h, el("div", "line count", trailSummary([t]))];
+    return [h, ...trailLines(t).map((l) => {
+      const d = el("div", `line ${l.kind}`);
+      if (l.href && /^https?:/.test(l.href)) { const a = el("a", "", l.text); a.href = l.href; a.target = "_blank"; a.rel = "noopener"; d.appendChild(a); }
+      else if (l.href) { const a = el("a", "", l.text); a.href = l.href; d.appendChild(a); }
+      else d.textContent = l.text;
+      return d;
+    })];
+  }));
+}
 
 /** Draw the trails the last status carried; open the panel the first time work appears. */
 function paintTrail(next: FlagTrail[]): void {
@@ -406,19 +460,14 @@ function paintTrail(next: FlagTrail[]): void {
   statusEl.classList.toggle("trailable", trails.length > 0);
   if (!trails.length) { trailOpen = false; trailEl.hidden = true; return; }
   // the panel opens itself on the first act; inline it opens folded to its summary line, so the card stays an answer
-  if (acts && !hadActs && !trailOpen) { trailOpen = true; trailEl.hidden = false; setFolded(mode !== "fullscreen"); }
-  if (!trailOpen) return;
-  trailTitle.textContent = `the research trail · ${trailSummary(trails)}`;
-  trailBody.replaceChildren(...trails.flatMap((t) => {
-    const h = el("h4", "", `#${t.flag} · ${t.research}${t.taken_by ? ` · ${t.taken_by}` : ""}${t.until ? " · resolved" : ""}`);
-    return [h, ...trailLines(t).map((l) => {
-      const d = el("div", `line ${l.kind}`);
-      if (l.href && /^https?:/.test(l.href)) { const a = el("a", "", l.text); a.href = l.href; a.target = "_blank"; a.rel = "noopener"; d.appendChild(a); }
-      else if (l.href) { const a = el("a", "", l.text); a.href = l.href; d.appendChild(a); }
-      else d.textContent = l.text;
-      return d;
-    })];
-  }));
+  if (acts && !hadActs && !trailOpen) { trailOpen = true; trailEl.hidden = false; setTrailState(mode === "fullscreen" ? "summary" : "folded"); return; }
+  // a card was drawn for one of these flags, here or in another instance of the app: the trail folds, once per flag
+  for (const t of trails) {
+    if (foldedFor.has(t.flag) || !cardShownFor(t)) continue;
+    foldedFor.add(t.flag);
+    if (trailOpen && trailState !== "folded") { setTrailState("folded"); return; }
+  }
+  drawTrail();
 }
 
 // ---- the selection: flag it, and say what to do about it -------------------
@@ -661,7 +710,8 @@ function showProposals(v: ProposalSetView): void {
   if (!was || was < v.ts) keep(newestKey(v.corpus), v.ts);
   keep(shownKey(v.corpus, v.flag), v.ts);
   // the trail is the record of the pass and the card is its result: the trail folds when the card arrives
-  if (trailOpen) setFolded(true);
+  foldedFor.add(v.flag);
+  if (trailOpen && trailState !== "folded") setTrailState("folded");
   current = { page: `proposals:${v.flag}`, title: `Proposals for flag #${v.flag}`, html: "", corpus: v.corpus };
   for (const c of crumbs) c.textContent = ""; // the card carries its own title (the flagged passage); the head bar keeps only its controls
   setStatus("");

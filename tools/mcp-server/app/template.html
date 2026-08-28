@@ -51,9 +51,15 @@ body.mode-fullscreen #main { flex: 1; overflow: auto; padding-bottom: calc(1rem 
 body.mode-inline #trail { max-height: none; }
 #trail.folded #trail-body { display: none; }
 #trail.folded { padding-bottom: .3rem; }
-#trail-head { display: flex; align-items: baseline; gap: .6rem; margin-bottom: .2rem; }
+#trail-head { display: flex; align-items: baseline; gap: .5rem; margin-bottom: .2rem; }
 #trail-head span { margin-right: auto; color: var(--muted); }
 #trail-head button { border: 1px solid var(--rule); background: transparent; color: var(--ink); border-radius: 4px; padding: .05rem .5rem; cursor: pointer; font: inherit; }
+#trail-head button[hidden] { display: none; }
+/* the same ladder as the ruling card: a chevron for folded and summary, one control for every line */
+#trail-head #trail-chev { border: 0; padding: 0; color: var(--muted); font-size: .7rem; line-height: 1; }
+#trail-head #trail-chev:hover { color: var(--accent); }
+#trail-head #trail-card { border: 0; padding: 0; color: var(--accent); text-decoration: underline dotted; }
+#trail .line.count { color: var(--muted); }
 #trail h4 { margin: .4rem 0 .15rem; font-size: .78rem; font-weight: 600; }
 #trail .line { white-space: pre-wrap; margin: .05rem 0; }
 #trail .line.search { color: var(--ink); }
@@ -172,7 +178,7 @@ ul.outline li { padding: .15rem 0; }
 </head>
 <body>
 <div id="head"><span id="crumb-inline"></span><span id="status-inline"></span><button id="refresh" title="Re-read this page from the corpus">↻</button><button id="mode-toggle" title="Fullscreen or back inline">open</button></div>
-<div id="trail" hidden><div id="trail-head"><span id="trail-title">the research trail</span><button id="trail-close" title="Fold the trail away">fold</button></div><div id="trail-body"></div></div>
+<div id="trail" hidden><div id="trail-head"><button id="trail-chev" title="Fold the trail to one line">▾</button><span id="trail-title">the research trail</span><button id="trail-card" hidden title="Where the pass ended up">the card</button><button id="trail-all" title="Every search, capture, atom and claim">all lines</button></div><div id="trail-body"></div></div>
 <div id="banner" hidden><span id="banner-text"></span><button id="banner-reload">reload</button><button id="banner-force">overwrite</button></div>
 <div id="notice" hidden><span id="notice-text"></span><button id="notice-dismiss">leave it</button><button id="notice-go">Unwrap</button></div>
 <div id="selbar" hidden><button id="flag-this" title="Flag this span, and say what should happen to it">Flag</button><button id="survey-this" title="What is known about this? Research first, then the claims it supports: the request goes into the conversation">Survey</button><button id="back-this" title="Claims first, then the evidence, then bind: the request goes into the conversation">Back</button></div>
