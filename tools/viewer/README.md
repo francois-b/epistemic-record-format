@@ -90,10 +90,16 @@ is `ERF-52`, split before normalizing.
   already placed, or one the cut names as a root elsewhere, refers to its
   number instead). Each node: title or short name, kind, disposition,
   `[unbacked]` where the backing its kind owes is absent (with `stood on`
-  when someone stands on it anyway), the edge that placed it under its
-  parent, conflicts in either direction, its surveys, the narrative
-  passages bound to it, and its evidence cards. Plain grade only: no
-  review marks
+  when someone stands on it anyway), and a relations line that reads in
+  both directions: the edge that placed it under its parent, the claims
+  it rests on or includes that are placed elsewhere, what it supports and
+  what supports it, what else it is a premise or a part of, conflicts
+  either way, its surveys, the narrative passages bound to it, and its
+  evidence cards. The page opens with a legend generated from one
+  vocabulary table (`vocabulary.ts`): how a claim line reads, each kind
+  with what would settle it, each disposition with a plain gloss, and the
+  marks; kinds are set plain and dispositions in their colour, the
+  viewer's convention. Plain grade only: no review marks
 - **Claim** disposition and why it computes that way, evidence for and
   against, coverage, relations (including conflicts declared on the other
   side of the pair), and the standings ledger

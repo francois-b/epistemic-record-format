@@ -17,6 +17,7 @@ import { join } from "node:path";
 import { homedir } from "node:os";
 import { bindingRe, loadCorpus } from "@epistemic-record-format/yaml-markdown";
 import { buildCutTree, flattenTree, readCuts } from "../../tools/viewer/cut.ts";
+import { DISPOSITIONS, KINDS, LEGEND_LEAD, MARKS } from "../../tools/viewer/vocabulary.ts";
 import { REPO, VIEWER } from "../paths.ts";
 
 const CORPUS = join(REPO, "examples", "corpora", "minimal");
@@ -188,6 +189,75 @@ test("claims-tree: the rendered cut page carries the numbering, the cards, and t
     const line = html.slice(at, html.indexOf("</div></div>", at));
     assert.ok(line.includes(n.placedBy === "assumes" ? "premise of" : "part of"), `${n.id} names its placing edge`);
   }
+});
+
+const escHtml = (s: string): string => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+test("claims-tree: the legend is generated from the vocabulary table, kinds uncoloured, dispositions coloured, no [given]", () => {
+  const out = build(CAPEX);
+  const cuts = readCuts(CAPEX);
+  const html = readFileSync(join(out, `cut-${cuts[0]!.name}.html`), "utf8");
+  const at = html.indexOf('<div class="legend">');
+  assert.ok(at > 0, "the cut page carries a legend");
+  const legend = html.slice(at, html.indexOf("<h2", at));
+  assert.ok(legend.includes(escHtml(LEGEND_LEAD)), "the lead says how a claim line reads and where a click goes");
+  // The vocabulary is the specification's: the four kinds of section 5, the five dispositions of ERF-41.
+  assert.deepEqual(KINDS.map((k) => k.term).sort(), ["argument", "bet", "commitment", "observation"]);
+  assert.deepEqual(DISPOSITIONS.map((d) => d.term).sort(), ["active", "contested", "proposal", "rejected", "retired"]);
+  // Each term is glossed with the table's words, in the table's order; a
+  // kind is set plain, a disposition in its colour class.
+  let last = -1;
+  for (const k of KINDS) {
+    const i = legend.indexOf(`<span class="t">${k.term}</span></dt><dd>${escHtml(k.gloss)}</dd>`);
+    assert.ok(i > last, `${k.term}: glossed, uncoloured, in table order`); last = i;
+  }
+  for (const d of DISPOSITIONS) {
+    const i = legend.indexOf(`<span class="t d-${d.term}">${d.term}</span></dt><dd>${escHtml(d.gloss)}</dd>`);
+    assert.ok(i > last, `${d.term}: glossed, in its colour, in table order`); last = i;
+  }
+  for (const m of MARKS) {
+    const i = legend.indexOf(`</dt><dd>${escHtml(m.gloss)}</dd>`);
+    assert.ok(i > last, `${m.term}: glossed in table order`);
+    assert.ok(legend.slice(last < 0 ? 0 : last, i).includes(escHtml(m.term)), `${m.term} is the term before its gloss`); last = i;
+  }
+  assert.ok(!legend.includes("given"), "the format has no [given] mark, so the legend lists none");
+});
+
+test("claims-tree: a node's relations line reads in both directions", () => {
+  const out = build(CAPEX);
+  const c = loadCorpus(CAPEX);
+  const cuts = readCuts(CAPEX);
+  const t = buildCutTree(cuts[0]!, c);
+  const html = readFileSync(join(out, `cut-${cuts[0]!.name}.html`), "utf8");
+  const nodeHtml = (id: string): string => {
+    const at = html.indexOf(`id="k-${id}"`);
+    assert.ok(at > 0, `${id} is placed`);
+    const ends = ['<div class="node"', "<h2", "<h3", "</main>"].map((m) => html.indexOf(m, at + 1)).filter((i) => i > 0);
+    return html.slice(at, Math.min(...ends));
+  };
+  const placedNum = (id: string) => `<a href="#k-${id}"><span class="rnum">${t.placed.get(id)}</span>`;
+  // A supports edge reads on both ends, each linking the other by its number.
+  const edge = [...c.claims.values()].flatMap((cl) => cl.edges
+    .filter((e) => e.relation === "supports" && t.placed.has(cl.id) && t.placed.has(e.to))
+    .map((e) => ({ from: cl.id, to: e.to })))[0];
+  assert.ok(edge, "the example cut places both ends of a supports edge");
+  assert.ok(nodeHtml(edge!.from).includes(`supports ${placedNum(edge!.to)}`), `${edge!.from} says it supports ${edge!.to}`);
+  assert.ok(nodeHtml(edge!.to).includes(`supported by ${placedNum(edge!.from)}`), `${edge!.to} says it is supported by ${edge!.from}`);
+  // An assumes edge from a claim other than the parent reads on its target
+  // as "premise of", the same words the placing edge uses.
+  const parentOf = new Map(flattenTree(t).map((n) => [n.id, n.parent]));
+  const inb = [...c.claims.values()].flatMap((cl) => cl.edges
+    .filter((e) => e.relation === "assumes" && t.placed.has(e.to) && parentOf.get(e.to) !== cl.id)
+    .map((e) => ({ from: cl.id, to: e.to })))[0];
+  assert.ok(inb, "the example cut has a premise assumed by a claim other than its parent");
+  const link = t.placed.has(inb!.from) ? placedNum(inb!.from) : `<a href="claim-${inb!.from}.html">`;
+  assert.ok(nodeHtml(inb!.to).includes(`premise of ${link}`), `${inb!.to} names ${inb!.from} as what it is a premise of`);
+  // A claim the cut does not place is linked to its own page.
+  const outside = [...c.claims.values()].flatMap((cl) => cl.edges
+    .filter((e) => e.relation === "supports" && !t.placed.has(cl.id) && t.placed.has(e.to))
+    .map((e) => ({ from: cl.id, to: e.to })))[0];
+  assert.ok(outside, "the example corpus has a supporter outside the cut");
+  assert.ok(nodeHtml(outside!.to).includes(`supported by <a href="claim-${outside!.from}.html">`), `${outside!.to} links the unplaced ${outside!.from} to its page`);
 });
 
 test("claims-tree: the index lists every cut", () => {

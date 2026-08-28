@@ -13,6 +13,7 @@ import type { Atom, Claim, LoadedCorpus, Narrative, Source, Survey } from "@epis
 import { bindingCandidates, bindingRe, shipsWithCorpus } from "@epistemic-record-format/yaml-markdown";
 import { claimTrail, surveyTrail, type LedTo, type Trail } from "./trail.ts";
 import type { Cut, CutTree, NumberedSection, TreeNode } from "./cut.ts";
+import { legendHtml } from "./vocabulary.ts";
 import {
   backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,
   brokenAnchors, evidenceRefsFlagged, retiredPremises, standingTies, undatedRetrievals,
@@ -162,10 +163,23 @@ p { margin:0 0 1em; }
 .toc .tocg { break-inside:avoid; }
 .hnum { font-family:var(--mono); font-weight:400; color:var(--mutedlt); margin-right:.6em; }
 h2 .hnum { font-size:.8em; } h3 .hnum { letter-spacing:0; text-transform:none; }
+/* The legend: a lead line, then three groups (kinds, dispositions, marks)
+   as term and gloss on one shared term column, so the glosses form a
+   single edge down the whole legend. Generated from vocabulary.ts. */
 .legend { color:var(--muted); font-size:.82em; line-height:1.55; border-top:1px solid var(--rule);
   border-bottom:1px solid var(--rule); padding:1.1em 0 1.2em; margin:1.6em 0; }
-.legend p { margin:0 0 .5em; } .legend p:last-child { margin:0; }
+.legend .legendlead { margin:0 0 1.2em; line-height:1.6; }
 .legend .t { font-size:.9em; }
+.legendlabel { font-family:var(--sans); font-size:.8em; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--mutedlt); margin:1.15em 0 .45em; }
+.legendgrid { display:grid; grid-template-columns:11.6em 1fr; column-gap:1.1em; row-gap:.34em; margin:0; }
+.legendgrid dt { white-space:nowrap; }
+.legendgrid dd { margin:0; }
+.legendarrow { font-family:var(--mono); }
+@media (max-width: 560px) {
+  .legendgrid { grid-template-columns:1fr; row-gap:.15em; }
+  .legendgrid dd { margin:0 0 .6em; }
+}
 .node { margin:1.2em 0 1.2em calc(var(--d, 0) * 1.7em - .75em); padding:.15em .5em .15em .7em;
   border-left:3px solid transparent; border-radius:2px; }
 .node:hover { background:var(--codebg); }
@@ -666,6 +680,10 @@ function firstParagraph(cl: Claim): string {
  */
 export function renderCut(t: CutTree, c: LoadedCorpus): string {
   const passages = passagesBound(c);
+  // Every edge pointing at a claim, so a node's relations line reads in
+  // both directions: what it rests on, and what rests on it.
+  const inbound = new Map<string, { from: string; relation: string }[]>();
+  for (const cl of c.claims.values()) for (const e of cl.edges) inbound.set(e.to, [...(inbound.get(e.to) ?? []), { from: cl.id, relation: e.relation }]);
   const label = (id: string): string => { const cl = c.claims.get(id); return cl ? (cl.short_name ?? cl.title) : id; };
   // A claim placed in this cut is referred to by its number and anchor; one
   // the cut does not place is referred to by its own page.
@@ -690,6 +708,15 @@ export function renderCut(t: CutTree, c: LoadedCorpus): string {
     const rel: string[] = [];
     if (nd.placedBy && nd.parent) rel.push(`${nd.placedBy === "assumes" ? "premise of" : "part of"} ${refLink(nd.parent)}`);
     for (const r of nd.refs) rel.push(`${r.relation === "assumes" ? "rests on" : "includes"} ${refLink(r.id)}`);
+    for (const e of cl.edges) if (e.relation === "supports") rel.push(`supports ${refLink(e.to)}`);
+    // The other direction: the claims whose edges point here, other than
+    // the parent's placing edge, which the indentation already says.
+    for (const i of inbound.get(cl.id) ?? []) {
+      if (i.from === nd.parent && i.relation === nd.placedBy) continue;
+      if (i.relation === "assumes") rel.push(`premise of ${refLink(i.from)}`);
+      else if (i.relation === "decomposes-into") rel.push(`part of ${refLink(i.from)}`);
+      else if (i.relation === "supports") rel.push(`supported by ${refLink(i.from)}`);
+    }
     for (const id of conflictsFor(cl.id, c)) rel.push(`conflicts with ${refLink(id)}`);
     for (const sid of cl.surveys ?? []) rel.push(`surveyed: <a href="survey-${esc(sid)}.html">${esc(c.surveys.get(sid)?.title ?? sid)}</a>`);
     for (const p of passages.get(cl.id) ?? []) rel.push(`in the narrative <a href="narrative-${esc(p.slug)}.html#bind-${p.n}">${esc(p.title)}</a>`);
@@ -714,8 +741,7 @@ export function renderCut(t: CutTree, c: LoadedCorpus): string {
     kinds.size ? ` (${[...kinds].map(([k, n]) => `${n} ${k}`).join(", ")})` : ""} &middot; the tree under each root is computed from <span class="id">decomposes-into</span> and <span class="id">assumes</span> edges, and the numbers are assigned by this rendering: cite a claim by its id.</p>
 ${t.unresolvedRoots.length ? `<div class="warnbox"><b>Roots that name no claim in this corpus.</b><br>${t.unresolvedRoots.map((r) => `<span class="id">${esc(r)}</span>`).join(", ")}. They are shown in place rather than dropped.</div>` : ""}
 <nav class="toc">${t.sections.map((s) => `<div class="tocg">${toc(s)}</div>`).join("")}</nav>
-<div class="legend"><p>Each claim line reads: number, title, kind, disposition. A <span class="mark"><span class="bkt">[</span>unbacked<span class="bkt">]</span></span> mark means the backing its kind owes is absent: no atoms and no survey behind an observation, no premises and no atoms behind an argument (<span class="id">section 2, unbacked</span>); <span class="t">stood on</span> adds that someone stands on it anyway.</p>
-<p>Under each claim: <span class="t">premise of</span> and <span class="t">part of</span> name the edge that placed it under its parent; <span class="t">rests on</span> and <span class="t">includes</span> point at a claim already placed elsewhere in this document, shown once; <span class="t">conflicts with</span> reads in both directions. The evidence line opens the atoms, quote first.</p></div>
+${legendHtml()}
 ${t.cut.preamble ? `<p class="preamble">${esc(t.cut.preamble)}</p>` : ""}
 ${t.sections.map(section).join("")}`;
   return page(t.cut.title, body, c.manifest.title, { script: true });

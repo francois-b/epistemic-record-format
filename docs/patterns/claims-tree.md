@@ -47,6 +47,8 @@ The claim's title (or a short name), its kind, its computed disposition, whether
 
 Two grades of rendering: **plain**, the tree alone, which ships; **annotated**, the same tree with working notes and review marks in place, which never ships.
 
+A rendered tree opens with a legend, and the legend is generated from the vocabulary rather than written beside the tree: how a claim line reads (number, title, kind, disposition), each kind with what would settle it (section 5), each disposition with a plain gloss (`ERF-41`), and the marks the lines carry (`[unbacked]`, `part of`, the `↳` that opens every other relationship, counter-evidence). The format has no `[given]` mark. A personal-position corpus may add one as producer machinery later, for a claim whose backing is withheld on purpose and whose burden of proof sits with the challenger; a legend that names it names its own addition, not the format's.
+
 ## Conventions this pattern adds
 
 - Edges are written on the claim that assumes, decomposes, or supports, pointing at the other; a tree is walked from roots along `decomposes-into` and `assumes`.
