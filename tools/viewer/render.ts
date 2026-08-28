@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 import type { Atom, Claim, LoadedCorpus, Narrative, Source, Survey } from "@epistemic-record-format/yaml-markdown";
 import { bindingCandidates, bindingRe, shipsWithCorpus } from "@epistemic-record-format/yaml-markdown";
 import { claimTrail, surveyTrail, type LedTo, type Trail } from "./trail.ts";
+import type { Cut, CutTree, NumberedSection, TreeNode } from "./cut.ts";
 import {
   backing, bindingStaleness, claimsUsingAtom, conflictsFor, danglingRefs,
   brokenAnchors, evidenceRefsFlagged, retiredPremises, standingTies, undatedRetrievals,
@@ -140,6 +141,85 @@ pre.capture { white-space:pre-wrap; font-family:var(--mono);
   border:1px solid var(--rulelt); overflow-x:auto; }
 p { margin:0 0 1em; }
 @media (max-width: 560px) { li.claim { margin-left:0; } }
+
+/* ---- The cut page: a document of numbered sections and numbered claims.
+   Ported from the author's published claims-tree documents: the number is
+   mono and recedes, the title leads, the apparatus sits on the head line as
+   small mono, the relations line under the prose is smaller mono still. */
+.preamble { color:var(--muted); font-size:.92em; margin:0 0 1.6em; }
+.toc { font-family:var(--sans); font-size:.8em; line-height:1.9; margin:1.4em 0 0;
+  column-count:2; column-gap:2.5em; }
+.toc a { color:var(--ink); } .toc a:hover { color:var(--accent); }
+.toc .toc0 { font-weight:700; } .toc .toc1 { margin-left:1.1em; } .toc .toc2 { margin-left:2.2em; }
+.toc .tocg { break-inside:avoid; }
+.hnum { font-family:var(--mono); font-weight:400; color:var(--mutedlt); margin-right:.6em; }
+h2 .hnum { font-size:.8em; } h3 .hnum { letter-spacing:0; text-transform:none; }
+.legend { color:var(--muted); font-size:.82em; line-height:1.55; border-top:1px solid var(--rule);
+  border-bottom:1px solid var(--rule); padding:1.1em 0 1.2em; margin:1.6em 0; }
+.legend p { margin:0 0 .5em; } .legend p:last-child { margin:0; }
+.legend .t { font-size:.9em; }
+.node { margin:1.2em 0 1.2em calc(var(--d, 0) * 1.7em - .75em); padding:.15em .5em .15em .7em;
+  border-left:3px solid transparent; border-radius:2px; }
+.node:hover { background:var(--codebg); }
+.node:target { background:var(--highlight); border-left-color:var(--rule); }
+.node .head a.title { color:var(--ink); font-weight:700; display:inline-block; max-width:100%; vertical-align:top; }
+.node .head a.title:hover { color:var(--accent); }
+.node .num { color:var(--muted); font-family:var(--mono); font-size:.78em; margin-right:.75em; }
+.node .tags { display:inline; margin:0 0 0 .55em; white-space:nowrap; }
+.node .prose { margin:.12em 0 0; }
+.node .rel { color:var(--muted); font-size:.74em; line-height:1.7; font-family:var(--mono); margin-top:.25em; }
+.node .rel a { color:var(--muted); text-decoration:underline; text-decoration-color:var(--rule); text-underline-offset:2px; }
+.node .rel a:hover { color:var(--accent); text-decoration-color:var(--accent); }
+.node .unresolved { color:var(--warn); }
+.mark { font-family:var(--mono); font-size:.735em; color:var(--warn); margin-right:.45em; }
+.mark .bkt { color:var(--mutedlt); }
+@media (max-width: 640px) { .toc { column-count:1; } .node { margin-left:calc(var(--d, 0) * .9em); } .node .tags { white-space:normal; } }
+
+/* ---- Evidence cards. A disclosure under the claim (or under the bound
+   passage), so it works with no script and pushes the page down rather than
+   floating over it; the script adds the one-atom-at-a-time cycler, the
+   arrow keys and Escape. Quote first, finding fainter under it, the citation
+   as a link, the atom's own id in the corner: the card is one atom and says
+   which. */
+details.ev { margin:.15em 0 0; }
+details.ev > summary { cursor:pointer; list-style:none; display:inline; color:var(--muted);
+  font-family:var(--mono); font-size:.74em; line-height:1.7; text-decoration:underline;
+  text-decoration-color:var(--rule); text-underline-offset:2px; }
+details.ev > summary::-webkit-details-marker { display:none; }
+details.ev > summary:hover, details.ev[open] > summary { color:var(--accent); text-decoration-color:var(--accent); }
+details.ev > summary:focus-visible { outline:2px solid var(--accent); outline-offset:2px; border-radius:2px; }
+.rel details.ev > summary { font-size:1em; }
+.cards { margin:.55em 0 .4em; background:var(--codebg); border:1px solid var(--rule); border-radius:3px;
+  box-shadow:0 2px 12px rgba(0,0,0,.07); padding:.7em .95em .75em; font-family:var(--serif);
+  font-size:.86em; line-height:1.55; color:var(--ink); }
+.cards .pvhead { display:flex; justify-content:space-between; align-items:baseline; gap:1em;
+  font-family:var(--mono); font-size:.8em; color:var(--muted); margin-bottom:.4em; }
+.cards .pvhead .claimref { font-weight:400; }
+.cards .pvhead .claimref a { color:var(--ink); }
+.cards .pvnav { display:none; white-space:nowrap; }
+.js .cards .pvnav { display:inline; }
+.cards .pvarr { font:inherit; color:var(--muted); background:none; border:1px solid var(--rule);
+  border-radius:3px; cursor:pointer; padding:0 .45em; margin:0 .15em; line-height:1.5; }
+.cards .pvarr:hover { color:var(--ink); border-color:var(--muted); }
+.cards .pvcount { margin:0 .2em; }
+.cards .pvatom { display:block; padding:.4em 0 .2em; border-top:1px solid var(--rulelt); }
+.cards .pvatom:first-of-type { border-top:0; padding-top:0; }
+.js .cards .pvatom { display:none; border-top:0; padding-top:0; }
+.js .cards .pvatom.on { display:block; }
+.cards .pvtop { display:flex; justify-content:space-between; gap:1em; font-family:var(--mono);
+  font-size:.8em; color:var(--muted); }
+.cards .pvtop .against { color:var(--warn); }
+.cards .pvaid { color:var(--muted); }
+.cards blockquote.pvq { margin:.35em 0 .3em; padding:.05em 0 .05em .85em; border-left:3px solid var(--rule);
+  font-style:italic; }
+.cards blockquote.pvq p { margin:0 0 .4em; } .cards blockquote.pvq p:last-child { margin:0; }
+.cards .pvfinding { color:var(--muted); margin:0 0 .3em; font-size:.95em; }
+.cards .pvsrc { display:block; font-family:var(--mono); font-size:.78em; color:var(--muted);
+  line-height:1.5; overflow-wrap:anywhere; margin:0; }
+.cards .pvsrc a { color:var(--accent); text-decoration:underline; text-decoration-color:var(--rule); text-underline-offset:2px; }
+.cards .pvsrc a:hover { text-decoration-color:var(--accent); }
+.cards .pvnone { color:var(--muted); font-family:var(--mono); font-size:.8em; }
+@media (max-width: 640px) { .cards { padding:.6em .7em; } .cards .pvtop { flex-wrap:wrap; } }
 `;
 
 /**
@@ -187,7 +267,50 @@ export interface SiteLink { label: string; href: string }
 let siteLinks: SiteLink[] = [];
 export function setSiteLinks(links: SiteLink[]): void { siteLinks = links; }
 
-function page(title: string, bodyHtml: string, manifestTitle: string): string {
+/**
+ * The one script the site carries, on the pages that show evidence cards.
+ * Every card is a disclosure that opens with no script at all; this adds the
+ * cycler (one atom at a time, arrows and the arrow keys step through them),
+ * Escape to close, and on the narrative page a click on the bound passage
+ * opening the cards under it. Written against the DOM alone, no library.
+ */
+const SCRIPT = `
+document.documentElement.classList.add('js');
+(function () {
+  function step(cards, d) {
+    var items = cards.querySelectorAll('.pvatom'); if (!items.length) return;
+    var cur = 0; items.forEach(function (n, i) { if (n.classList.contains('on')) cur = i; });
+    var next = (cur + d + items.length) % items.length;
+    items[cur].classList.remove('on'); items[next].classList.add('on');
+    var c = cards.querySelector('.pvcount'); if (c) c.textContent = (next + 1) + '/' + items.length;
+    var s = cards.querySelector('.pvhead .pvside');
+    if (s) s.textContent = items[next].getAttribute('data-side') === 'against' ? 'Evidence against' : 'Evidence for';
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target; if (!t || !t.closest) return;
+    var b = t.closest('.pvarr');
+    if (b) { e.preventDefault(); step(b.closest('.cards'), Number(b.getAttribute('data-d'))); return; }
+    /* the narrative: a click on the bound passage or its note opens the cards under it */
+    var p = t.closest('.bind, .bindnote');
+    if (!p || t.closest('a')) return;
+    var id = p.getAttribute('data-ev'); var d = id && document.getElementById(id);
+    if (!d) return;
+    if (d.open) { d.removeAttribute('open'); } else { d.setAttribute('open', ''); }
+  });
+  document.addEventListener('keydown', function (e) {
+    var t = e.target; if (!t || !t.closest) return;
+    var open = t.closest('details.ev[open]'); if (!open) return;
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      var cards = open.querySelector('.cards'); if (!cards) return;
+      e.preventDefault(); step(cards, e.key === 'ArrowLeft' ? -1 : 1);
+    } else if (e.key === 'Escape') {
+      open.removeAttribute('open'); var s = open.querySelector('summary'); if (s) s.focus();
+    }
+  });
+})();
+`;
+
+function page(title: string, bodyHtml: string, manifestTitle: string, opts: { script?: boolean } = {}): string {
   const extra = siteLinks
     .map((l) => `<a href="${esc(l.href)}">${esc(l.label)}</a>`).join("");
   return `<!doctype html>
@@ -201,7 +324,7 @@ function page(title: string, bodyHtml: string, manifestTitle: string): string {
 <footer>Rendered by <span class="id">erf-view</span>, the reference consumer for the
 Epistemic Record Format. Every reading on these pages is computed from the records at
 render time and stored nowhere.</footer>
-</body></html>`;
+${opts.script ? `<script>${SCRIPT}</script>\n` : ""}</body></html>`;
 }
 
 /**
@@ -261,8 +384,172 @@ function md(text: string): string {
   }).join("\n");
 }
 
+// ------------------------------------------------------- evidence cards
+/**
+ * The passages of every narrative bound to each claim, so a tree line can
+ * point at the prose that rests on it. Numbered in the narrative's binding
+ * order, which is what the narrative page anchors on.
+ */
+export function passagesBound(c: LoadedCorpus): Map<string, { slug: string; title: string; n: number }[]> {
+  const out = new Map<string, { slug: string; title: string; n: number }[]>();
+  for (const n of c.narratives) {
+    n.bindings.forEach((b, i) => {
+      for (const id of b.claims) out.set(id, [...(out.get(id) ?? []), { slug: n.slug, title: n.title, n: i + 1 }]);
+    });
+  }
+  return out;
+}
+
+/**
+ * The page a quote starts on, when the atom's working notes record it. The
+ * format has no field for it; the workbench writes "Page N of the held PDF"
+ * into the body at minting, and a card reads the same words back.
+ */
+function atomPage(a: Atom): number | null {
+  const body = (a as unknown as { body?: string }).body ?? "";
+  const m = /Page (\d+) of the held PDF/.exec(body);
+  return m ? Number(m[1]) : null;
+}
+
+/**
+ * A card's citation line: the citation text links to the capture page where
+ * the source's text is held, else to the source's entry in the source list;
+ * then the page number when one is recorded, and the site the source was
+ * retrieved from when there is one.
+ */
+function citationHtml(a: Atom, c: LoadedCorpus): string {
+  const src = c.sources.get(a.source);
+  const text = src?.citation_text ?? `(source ${a.source} not in the source list)`;
+  const href = src?.normalized ? `capture-${esc(a.id)}.html` : `sources.html#${esc(a.source)}`;
+  const page = atomPage(a);
+  let host = "";
+  if (src?.received?.url) { try { host = new URL(src.received.url).hostname.replace(/^www\./, ""); } catch { host = "source"; } }
+  return `<a href="${href}">${esc(text)}</a>${page ? ` &middot; page ${page}` : ""}${
+    src?.received?.url ? ` &middot; <a href="${esc(src.received.url)}" rel="noopener">${esc(host)} &#8599;</a>` : ""}`;
+}
+
+/** One line saying what backs a claim: the disclosure's summary. */
+function evidenceSummary(cl: Claim, c: LoadedCorpus): string {
+  const ids = [...cl.atoms_for, ...cl.atoms_against];
+  const sources = new Set(ids.map((id) => c.atoms.get(id)?.source).filter((x): x is string => !!x));
+  const n = (k: number, w: string) => `${k} ${w}${k === 1 ? "" : "s"}`;
+  return `${n(cl.atoms_for.length, "atom")} for${cl.atoms_against.length ? `, ${cl.atoms_against.length} against` : ""}${
+    sources.size ? `, from ${n(sources.size, "source")}` : ""}`;
+}
+
+/**
+ * The evidence cards for one claim: a disclosure whose body holds one card
+ * per atom, for then against, quote first, finding under it, citation last.
+ * With no script every card shows, stacked; with it, one at a time and the
+ * arrows step through them. `headHtml` is what the head bar says beside the
+ * side label (the narrative page names the claim there).
+ */
+export function evidenceCards(cl: Claim, c: LoadedCorpus, id: string, summaryHtml: string, headHtml = ""): string {
+  const atoms: [string, "for" | "against"][] = [
+    ...cl.atoms_for.map((a): [string, "for"] => [a, "for"]),
+    ...cl.atoms_against.map((a): [string, "against"] => [a, "against"]),
+  ];
+  if (!atoms.length) return "";
+  const card = ([aid, side]: [string, "for" | "against"], i: number): string => {
+    const a = c.atoms.get(aid);
+    const on = i === 0 ? " on" : "";
+    if (!a) {
+      return `<article class="pvatom${on}" data-side="${side}"><div class="pvtop"><span><span class="pvside ${side}">${side}</span></span><span class="pvaid">${esc(aid)}</span></div><p class="pvnone">The corpus holds no atom by this id (<span class="id">ERF-35</span>).</p></article>`;
+    }
+    return `<article class="pvatom${on}" data-side="${side}">
+<div class="pvtop"><span><span class="pvside ${side}">${side}</span> &middot; quality ${esc(a.source_quality)}${a.as_of_date ? ` &middot; as of ${esc(a.as_of_date)}` : ""}</span><a class="pvaid" href="atom-${esc(a.id)}.html">${esc(a.id)}</a></div>
+<blockquote class="pvq">${quoteHtml(a.quote)}</blockquote>
+<p class="pvfinding">${esc(a.finding)}</p>
+<span class="pvsrc">${citationHtml(a, c)}</span></article>`;
+  };
+  return `<details class="ev" id="${esc(id)}"><summary>${summaryHtml}</summary><div class="cards">
+<div class="pvhead"><span><span class="pvside">Evidence ${atoms[0]![1]}</span>${headHtml}</span><span class="pvnav"><button type="button" class="pvarr" data-d="-1" aria-label="previous atom">&lsaquo;</button><span class="pvcount">1/${atoms.length}</span><button type="button" class="pvarr" data-d="1" aria-label="next atom">&rsaquo;</button></span></div>
+${atoms.map(card).join("\n")}</div></details>`;
+}
+
+// ------------------------------------------------------------------ cut
+/**
+ * The first paragraph of a claim's body, the node's description in a tree
+ * (`ERF-18`: the body opens by restating the title, and the pattern renders
+ * that paragraph). When the claim has no short name the head line already
+ * shows the title, so a first paragraph that only restates it is not shown
+ * twice.
+ */
+function firstParagraph(cl: Claim): string {
+  const block = cl.body.split(/\n\s*\n/).map((b) => b.trim())
+    .find((b) => b && !b.startsWith("#") && !b.startsWith("---"));
+  if (!block) return "";
+  const fold = (x: string) => x.toLowerCase().replace(/[.\s]+$/, "").replace(/\s+/g, " ");
+  if (!cl.short_name && fold(block) === fold(cl.title)) return "";
+  return esc(block).replace(/`([^`]+)`/g, '<span class="id">$1</span>').replace(/\n/g, " ");
+}
+
+/**
+ * The compiled cut: the pattern's document. Sections with their headings,
+ * the numbered tree under each root, each node carrying what the pattern
+ * lists (kind, disposition, backed or unbacked, the placing edge, conflicts,
+ * the passages bound to it) and its evidence cards. Plain grade: no review
+ * marks, nothing that does not ship.
+ */
+export function renderCut(t: CutTree, c: LoadedCorpus): string {
+  const passages = passagesBound(c);
+  const label = (id: string): string => { const cl = c.claims.get(id); return cl ? (cl.short_name ?? cl.title) : id; };
+  // A claim placed in this cut is referred to by its number and anchor; one
+  // the cut does not place is referred to by its own page.
+  const refLink = (id: string): string => {
+    const n = t.placed.get(id);
+    return n
+      ? `<a href="#k-${esc(id)}"><span class="rnum">${n}</span> ${esc(label(id))}</a>`
+      : `<a href="claim-${esc(id)}.html">${esc(label(id))}</a>`;
+  };
+  const node = (nd: TreeNode): string => {
+    const cl = nd.claim;
+    if (!cl) {
+      return `<div class="node" style="--d:${nd.depth}" id="k-${esc(nd.id)}"><div class="head"><span class="num">${nd.number}</span><span class="unresolved">${esc(nd.id)}</span><span class="tags"><span class="t gap">names no claim in this corpus</span></span></div></div>`;
+    }
+    const d = disposition(cl);
+    const b = backing(cl, c);
+    const hasAtoms = cl.atoms_for.length + cl.atoms_against.length > 0;
+    const marks = unbacked(cl, c)
+      ? `<span class="mark"><span class="bkt">[</span>unbacked${stoodOn(cl) ? ", stood on" : ""}<span class="bkt">]</span></span>` : "";
+    const tags = `<span class="tags">${marks}<span class="t">${esc(cl.epistemic_kind)}</span><span class="sep">&middot;</span><span class="t d-${d.disposition}">${d.disposition}</span>${
+      hasAtoms && !b.presentableAsBacked ? `<span class="sep">&middot;</span><span class="t gap">backing not resolvable</span>` : ""}</span>`;
+    const rel: string[] = [];
+    if (nd.placedBy && nd.parent) rel.push(`${nd.placedBy === "assumes" ? "premise of" : "part of"} ${refLink(nd.parent)}`);
+    for (const r of nd.refs) rel.push(`${r.relation === "assumes" ? "rests on" : "includes"} ${refLink(r.id)}`);
+    for (const id of conflictsFor(cl.id, c)) rel.push(`conflicts with ${refLink(id)}`);
+    for (const sid of cl.surveys ?? []) rel.push(`surveyed: <a href="survey-${esc(sid)}.html">${esc(c.surveys.get(sid)?.title ?? sid)}</a>`);
+    for (const p of passages.get(cl.id) ?? []) rel.push(`in the narrative <a href="narrative-${esc(p.slug)}.html#bind-${p.n}">${esc(p.title)}</a>`);
+    const prose = firstParagraph(cl);
+    const ev = evidenceCards(cl, c, `ev-${cl.id}`, `&#8627; evidence: ${evidenceSummary(cl, c)}`);
+    return `<div class="node" style="--d:${nd.depth}" id="k-${esc(cl.id)}"><div class="head"><span class="num">${nd.number}</span><a class="title" href="claim-${esc(cl.id)}.html" title="${esc(cl.title)}">${esc(cl.short_name ?? cl.title)}</a>${tags}</div>${
+      prose ? `<div class="prose">${prose}</div>` : ""}${rel.length || ev ? `<div class="rel">${rel.length ? `&#8627; ${rel.join(" &middot; ")}` : ""}${ev}</div>` : ""}</div>\n` + nd.children.map(node).join("");
+  };
+  const section = (s: NumberedSection): string => {
+    const tag = s.depth === 0 ? "h2" : "h3";
+    let h = `<${tag} id="s-${s.number}"><span class="hnum">${s.number}${s.depth === 0 ? "." : ""}</span>${esc(s.title)}</${tag}>\n`;
+    if (!s.roots.length && !s.sections.length) h += `<p class="sub">The cut names no roots under this heading.</p>\n`;
+    return h + s.roots.map(node).join("") + s.sections.map(section).join("");
+  };
+  const toc = (s: NumberedSection): string =>
+    `<div class="toc${s.depth}"><a href="#s-${s.number}"><span class="hnum">${s.number}${s.depth === 0 ? "." : ""}</span>${esc(s.title)}</a></div>${s.sections.map(toc).join("")}`;
+  const kinds = new Map<string, number>();
+  for (const [id] of t.placed) { const k = c.claims.get(id)?.epistemic_kind; if (k) kinds.set(k, (kinds.get(k) ?? 0) + 1); }
+  const body = `
+<h1>${esc(t.cut.title)}</h1>
+<p class="sub">A cut of <a href="index.html">${esc(c.manifest.title)}</a> &middot; ${t.placed.size} claim${t.placed.size === 1 ? "" : "s"} placed${
+    kinds.size ? ` (${[...kinds].map(([k, n]) => `${n} ${k}`).join(", ")})` : ""} &middot; the tree under each root is computed from <span class="id">decomposes-into</span> and <span class="id">assumes</span> edges, and the numbers are assigned by this rendering: cite a claim by its id.</p>
+${t.unresolvedRoots.length ? `<div class="warnbox"><b>Roots that name no claim in this corpus.</b><br>${t.unresolvedRoots.map((r) => `<span class="id">${esc(r)}</span>`).join(", ")}. They are shown in place rather than dropped.</div>` : ""}
+<nav class="toc">${t.sections.map((s) => `<div class="tocg">${toc(s)}</div>`).join("")}</nav>
+<div class="legend"><p>Each claim line reads: number, title, kind, disposition. A <span class="mark"><span class="bkt">[</span>unbacked<span class="bkt">]</span></span> mark means the backing its kind owes is absent: no atoms and no survey behind an observation, no premises and no atoms behind an argument (<span class="id">section 2, unbacked</span>); <span class="t">stood on</span> adds that someone stands on it anyway.</p>
+<p>Under each claim: <span class="t">premise of</span> and <span class="t">part of</span> name the edge that placed it under its parent; <span class="t">rests on</span> and <span class="t">includes</span> point at a claim already placed elsewhere in this document, shown once; <span class="t">conflicts with</span> reads in both directions. The evidence line opens the atoms, quote first.</p></div>
+${t.cut.preamble ? `<p class="preamble">${esc(t.cut.preamble)}</p>` : ""}
+${t.sections.map(section).join("")}`;
+  return page(t.cut.title, body, c.manifest.title, { script: true });
+}
+
 // --------------------------------------------------------------- index
-export function renderIndex(c: LoadedCorpus): string {
+export function renderIndex(c: LoadedCorpus, cuts: Cut[] = []): string {
   const dispCounts = new Map<string, number>();
   for (const cl of c.claims.values()) {
     const d = disposition(cl).disposition;
@@ -296,6 +583,14 @@ ${Object.keys(decl).filter((k) => !["type", "id", "title", "spec_version", "owne
 <ul class="plain">${c.narratives.map((n) =>
   `<li><a href="narrative-${esc(n.slug)}.html">${esc(n.title)}</a>
    <span class="id">${n.bindings.length} bindings</span></li>`).join("")}</ul>
+${cuts.length ? `
+<h2>Cuts</h2>
+<p class="sub">A cut is one ordered, numbered reading of the claims, taken from the graph rather than kept by hand (<span class="id">docs/patterns/claims-tree.md</span>). The file names roots and headings; the tree under each root is computed at render time.</p>
+<ul class="plain">${cuts.map((k) => {
+  const count = (ss: Cut["sections"]): number => ss.reduce((n, x) => n + 1 + count(x.sections), 0);
+  return `<li><a href="cut-${esc(k.name)}.html">${esc(k.title)}</a>
+   <span class="id">${count(k.sections)} sections</span></li>`;
+}).join("")}</ul>` : ""}
 
 <h2>What the corpus holds</h2>
 <table><tr><th>Type</th><th>Count</th><th>Notes</th></tr>
@@ -366,6 +661,7 @@ export function renderNarrative(n: Narrative, c: LoadedCorpus): string {
   }
 
   let html = narrativeMarkdown(text);
+  let noteCount = 0;
   html = html
     .split(OPEN).join('<span class="bind">')
     .split(CLOSE).join("</span>")
@@ -374,6 +670,9 @@ export function renderNarrative(n: Narrative, c: LoadedCorpus): string {
       + '<span class="id">ERF-31</span>, so the claims it names are not bound: '
       + esc(raw.trim()) + "</span>")
     .replace(/@@NOTE@@([^@]*)@@ENDNOTE@@/g, (_m, ids: string) => {
+      // The k-th note is the k-th binding the loader kept, in text order;
+      // its anchor is what a cut page's "in the narrative" link lands on.
+      const k = ++noteCount;
       const list = ids.trim().split(/\s+/).filter(Boolean);
       // `ERF-33`: an unresolvable binding is reported, never dropped.
       const links = list.map((id) =>
@@ -384,7 +683,7 @@ export function renderNarrative(n: Narrative, c: LoadedCorpus): string {
       const note = st && st.state !== "current"
         ? ` &middot; binding ${esc(st.state)}: ${esc(st.why)}`
         : "";
-      return '<span class="bindnote">rests on ' + links + note + "</span>";
+      return '<span class="bindnote" id="bind-' + k + '">rests on ' + links + note + "</span>";
     });
   // The page carried no heading at all until 2026-08-26, so a reader
   // arriving from a link had the narrative's title only in the browser tab.

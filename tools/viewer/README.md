@@ -12,8 +12,10 @@ Everything this renders is computed by the reference validator in
 [`implementations/yaml-markdown/typescript/`](../../implementations/yaml-markdown/typescript/) (`corpus.ts` loads, `compute.ts` derives,
 `erf-check.ts` is the command line); this folder holds only the rendering.
 
-Output is self-contained HTML. Inline CSS, no scripts, no external requests,
-so it opens from disk and hosts anywhere.
+Output is self-contained HTML: one stylesheet with the faces embedded, no
+external requests, so it opens from disk and hosts anywhere. The pages that
+show evidence cards (a cut, a narrative) carry one small inline script for
+the card cycler; every card is a disclosure that opens without it.
 
 ## Why TypeScript
 
@@ -79,6 +81,17 @@ is `ERF-52`, split before normalizing.
   and every record by type
 - **Narrative** the prose, with bound passages marked, linked to their
   claims, and carrying the binding's staleness where it is not current
+- **Cut** one `cuts/*.yaml` compiled (`docs/patterns/claims-tree.md`):
+  the preamble where there is one, the sections with their headings, the
+  numbered tree under each root computed by walking `decomposes-into` and
+  `assumes` edges, every claim shown once (a walk that reaches a claim
+  already placed, or one the cut names as a root elsewhere, refers to its
+  number instead). Each node: title or short name, kind, disposition,
+  `[unbacked]` where the backing its kind owes is absent (with `stood on`
+  when someone stands on it anyway), the edge that placed it under its
+  parent, conflicts in either direction, its surveys, the narrative
+  passages bound to it, and its evidence cards. Plain grade only: no
+  review marks
 - **Claim** disposition and why it computes that way, evidence for and
   against, coverage, relations (including conflicts declared on the other
   side of the pair), and the standings ledger
@@ -93,6 +106,18 @@ is `ERF-52`, split before normalizing.
 - **Health** claims with no evidence, uncited atoms, unaudited atoms, failed
   and unrunnable quote checks, dangling references, every computed flag, and
   records that diverge from the normative model
+
+**Evidence cards.** On a cut page each claim's evidence line opens the
+atoms behind it, for then against, one card per atom: the verbatim quote
+first, the finding fainter under it, then the citation linking to the
+capture page where the source's text is held (else to the source's entry
+in the source list), the page number when the atom's working notes record
+one, and the site it was retrieved from. The atom's id sits in the
+corner; quality and as-of date on the top line. With the script, the
+cards show one atom at a time and the arrows, the arrow keys, step
+through them; Escape closes the card. Without it, every card shows,
+stacked. The design is ported from the author's published claims-tree
+documents, which the pattern was extracted from.
 
 `--link "Label=href"` adds an entry to every page's topbar, which is how a
 render dropped under a larger site points back at it. The viewer is told

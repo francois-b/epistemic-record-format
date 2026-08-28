@@ -18,12 +18,13 @@ import { join, resolve } from "node:path";
 import { loadCorpus } from "@epistemic-record-format/yaml-markdown";
 import { claimsUsingAtom } from "@epistemic-record-format/yaml-markdown";
 import {
-  renderAtom, renderCapture, renderClaim, renderHealth, renderIndex,
+  renderAtom, renderCapture, renderClaim, renderCut, renderHealth, renderIndex,
   renderNarrative, renderSources, renderSurvey, setSiteLinks, stylesheet,
 } from "./render.ts";
 import { readTrail } from "./trail.ts";
+import { buildCutTree, readCuts } from "./cut.ts";
 
-export interface RenderedSite { corpus: string; pages: number; atoms: number; claims: number; surveys: number; findings: number; outDir: string }
+export interface RenderedSite { corpus: string; pages: number; atoms: number; claims: number; surveys: number; cuts: number; findings: number; outDir: string }
 
 /** Render a corpus to a folder of self-contained pages. The library entry; the CLI below wraps it. */
 export function renderSite(corpusDir: string, outDir: string, links: { label: string; href: string }[] = [], onPage?: (n: number, total: number) => void): RenderedSite {
@@ -44,16 +45,20 @@ export function renderSite(corpusDir: string, outDir: string, links: { label: st
     return existsSync(p) ? readFileSync(p, "utf8") : null;
   };
 
-  const total = 3 + c.narratives.length + c.claims.size + c.surveys.size + c.atoms.size * 2;
+  // Cuts are producer machinery beside the records (`cuts/*.yaml`), read
+  // here and nowhere in the validator: a corpus without any renders as before.
+  const cuts = readCuts(corpusDir);
+  const total = 3 + c.narratives.length + cuts.length + c.claims.size + c.surveys.size + c.atoms.size * 2;
   let done = 0;
   const write = (name: string, html: string) => { writeFileSync(join(outDir, name), html, "utf8"); onPage?.(++done, total); };
   const users = claimsUsingAtom(c);
   const trail = readTrail(corpusDir, (id) => c.sources.get(id)?.citation_text);
 
-  write("index.html", renderIndex(c));
+  write("index.html", renderIndex(c, cuts));
   write("sources.html", renderSources(c));
   write("health.html", renderHealth(c, captureText));
   for (const n of c.narratives) write(`narrative-${n.slug}.html`, renderNarrative(n, c));
+  for (const k of cuts) write(`cut-${k.name}.html`, renderCut(buildCutTree(k, c), c));
   for (const cl of c.claims.values()) write(`claim-${cl.id}.html`, renderClaim(cl, c, trail));
   for (const s of c.surveys.values()) write(`survey-${s.id}.html`, renderSurvey(s, c, trail));
   for (const a of c.atoms.values()) {
@@ -62,7 +67,7 @@ export function renderSite(corpusDir: string, outDir: string, links: { label: st
     write(`capture-${a.id}.html`, renderCapture(a, c, text));
   }
 
-  return { corpus: String(c.manifest.id), pages: total, atoms: c.atoms.size, claims: c.claims.size, surveys: c.surveys.size, findings: c.findings.length, outDir };
+  return { corpus: String(c.manifest.id), pages: total, atoms: c.atoms.size, claims: c.claims.size, surveys: c.surveys.size, cuts: cuts.length, findings: c.findings.length, outDir };
 }
 
 function main(argv: string[]): number {
@@ -87,7 +92,7 @@ function main(argv: string[]): number {
   }
   const r = renderSite(corpusDir, outDir, links);
   console.log(`${r.corpus}: ${r.pages} pages -> ${outDir}`);
-  console.log(`  ${r.atoms} atoms, ${r.claims} claims, ${r.surveys} surveys`);
+  console.log(`  ${r.atoms} atoms, ${r.claims} claims, ${r.surveys} surveys${r.cuts ? `, ${r.cuts} cut${r.cuts === 1 ? "" : "s"}` : ""}`);
   if (r.findings) console.log(`  ${r.findings} records diverge from the normative model (see health.html)`);
   return 0;
 }

@@ -13,7 +13,7 @@
 export const SPEC_VERSION = "0.9.0";
 
 // read: bytes to documents
-export { splitDocument, splitFrontmatter, walkFiles, fileType, bindingRe, bindingCandidates, unescapeAnchor, YAML_OPTS } from "./read.ts";
+export { splitDocument, splitFrontmatter, walkFiles, fileType, bindingRe, bindingCandidates, unescapeAnchor, YAML_OPTS, parseYaml } from "./read.ts";
 // validate: documents to a checked model
 export { loadCorpus, shipsWithCorpus, KNOWN_FIELDS } from "./validate.ts";
 // write: model to bytes

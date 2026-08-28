@@ -2,7 +2,7 @@
 title: "Pattern: the claims tree"
 purpose: "One ordered, numbered view of an argument, cut from the claim graph rather than maintained by hand; the top-down companion to a narrative."
 status: non-normative
-last_updated: 2026-08-27
+last_updated: 2026-08-28
 ---
 
 # Pattern: the claims tree
@@ -37,7 +37,9 @@ sections:
     roots: [audit-first]
 ```
 
-Numbering (1, 1.1, 1.1.2) is assigned by the traversal at render time and is stable only within a rendering; a claim is cited by its id, never by its number.
+A cut may also carry a `preamble`, one paragraph shown before the first section (a scope note, a reading instruction); it is the document's, not any claim's. Sections nest (`sections` inside a section) where the skeleton has levels.
+
+Numbering (1, 1.1, 1.1.2) is assigned by the traversal at render time and is stable only within a rendering; a claim is cited by its id, never by its number. A claim is shown once: where a walk reaches a claim already placed, or one the cut names as a root elsewhere, the line refers to its number instead of expanding it again, so a cut that lists every claim of a section as a root (the port of a hand-kept document does) reads as that document did rather than repeating each subtree under each root.
 
 ## What a rendered tree shows per node
 
@@ -54,7 +56,7 @@ Two grades of rendering: **plain**, the tree alone, which ships; **annotated**, 
 
 ## Tooling in this repository
 
-The viewer renders the claims index; a tree page over the edges is the next step, in the site and in the app. The MCP server's `decompose-claim` prompt is the top-down twin of `decompose-passage`: what would have to be true for this claim to hold, each answer a child with a `decomposes-into` edge.
+The reference viewer renders every `cuts/*.yaml` in a corpus as a cut page (`cut-<name>.html`, listed on the index): the sections, the numbered tree under each root, each node with its kind, disposition, backing marks, placing edge, conflicts, the passages bound to it, and its evidence cards (`tools/viewer/README.md`). The MCP server's `decompose-claim` prompt is the top-down twin of `decompose-passage`: what would have to be true for this claim to hold, each answer a child with a `decomposes-into` edge.
 
 ## Origin
 

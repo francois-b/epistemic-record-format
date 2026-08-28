@@ -103,6 +103,11 @@ export function splitDocument(text: string): { fm: string; body: string } | null
  * duplicate key rather than taking the last one.
  */
 export const YAML_OPTS = { schema: yaml.JSON_SCHEMA, json: false } as const;
+
+/** A whole YAML document under the same options a record's frontmatter gets: a consumer reading a producer file beside the records (a cut, a trail) reads it the one way. */
+export function parseYaml(text: string): unknown {
+  return yaml.load(text, YAML_OPTS);
+}
 const YAML_GRAPH = /(^\s*(?:[\w.-]+:|-)\s+|[\[{,]\s*)(&[A-Za-z0-9_-]+|\*[A-Za-z0-9_-]+|!![A-Za-z]+)(\s|$|[,\]}])/m;
 
 export function splitFrontmatter(text: string): { data: Record<string, unknown>; body: string } {

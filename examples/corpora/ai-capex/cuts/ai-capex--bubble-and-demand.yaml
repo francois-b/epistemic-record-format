@@ -1,0 +1,18 @@
+# A cut in the claims-tree pattern's shape (docs/patterns/claims-tree.md):
+# roots and headings; the tree under each root is computed from the claims'
+# decomposes-into and assumes edges when the viewer renders it.
+title: "AI capex: the bubble case and the demand case"
+preamble: "Two arguments over one corpus. Each root is an argument claim; what it rests on is computed from its assumes edges, so the same observation can appear once and be referred to from both sides."
+sections:
+  - title: The bubble case
+    roots:
+      - ai-capex-outpaces-realizable-revenue-bubble-risk
+      - enterprise-roi-scarcity-supports-bubble-risk-reading
+      - ai-gpu-assets-may-depreciate-faster-than-industry-schedules-assume
+  - title: The demand case
+    roots:
+      - ai-capex-sustainable-given-demand-backing
+  - title: What the macro and semiconductor readings add
+    roots:
+      - macro-models-imply-neither-transformative-near-term-growth-nor-a-purely-wasteful-buildout
+      - semiconductor-results-confirm-physical-buildout-but-not-hyperscaler-return-on-capital
